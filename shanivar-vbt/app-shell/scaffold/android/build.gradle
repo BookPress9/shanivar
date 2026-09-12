@@ -1,0 +1,28 @@
+// Shanivar VBT Android shell — top-level build file (Phase 1 scaffold)
+buildscript {
+    ext {
+        kotlin_version = '1.9.24'
+        compileSdkVersion = 34
+        minSdkVersion = 26 // AccessibilityService + exact-alarm APIs used here need 26+; raise if Discipline Engine Agent's research requires a higher floor
+        targetSdkVersion = 34
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.5.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      Shanivar VBT — Phase 1 shell manifest.
+
+      RECONCILED against shanivar-vbt/discipline-engine/platform-research.md
+      (landed after this scaffold's first pass — see architecture-decision.md
+      §6). That research's headline finding: do NOT use AccessibilityService
+      as the app-lockout mechanism — Play Store tightened autonomous
+      accessibility-API use against "convenience" apps (Jan 28 2026
+      enforcement, further restricted under Advanced Protection Mode, Mar
+      2026), and an app-blocker does not qualify as a genuine accessibility
+      tool. Recommended path instead: UsageStatsManager (foreground-app
+      polling, Settings-granted, no runtime dialog, policy-accepted — same
+      mechanism AppBlock/Block ship today) + a SYSTEM_ALERT_WINDOW-class
+      overlay to actually present the block screen. This manifest reflects
+      that recommendation; there is deliberately NO AccessibilityService
+      declared here (see discipline/LockoutMonitorService.kt).
+    -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <application
+        android:allowBackup="false"
+        android:label="Shanivar"
+        android:theme="@style/AppTheme.Saturn"
+        android:supportsRtl="true">
+
+        <!-- Capacitor's MainActivity hosts the WebView pointed at shanivar.com
+             (see ../../capacitor.config.ts). This is the ONLY activity backed
+             by a WebView — see architecture-decision.md §3 for why the alarm
+             screen deliberately is not. -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.Saturn.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Native, non-WebView, full-screen alarm activity.
+             Launched via a full-screen intent notification (Android 10+
+             pattern for alarm/call-style UI that must draw over the lock
+             screen) or directly by AlarmReceiver on lower API levels. -->
+        <activity
+            android:name=".alarm.AlarmActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/AppTheme.Saturn.Alarm" />
+
+        <receiver
+            android:name=".alarm.AlarmReceiver"
+            android:exported="false" />
+
+        <!-- Foreground service backing DisciplineLockoutPlugin's monitoring —
+             UsageStatsManager polling, NOT AccessibilityService (see manifest
+             header note + shanivar-vbt/discipline-engine/platform-research.md).
+             Declared as its own component so it keeps running independent of
+             MainActivity/WebView process state — see architecture-decision.md
+             §5. Structural stub only; real polling cadence + kill-resistance
+             tuning is a Discipline Engine Agent deliverable. -->
+        <service
+            android:name=".discipline.LockoutMonitorService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="app-lockout-during-active-practice-session" />
+        </service>
+
+        <!-- Block-screen overlay, shown by LockoutMonitorService when the
+             blocked package (Instagram, v1) is detected in the foreground
+             during an active session window. -->
+        <activity
+            android:name=".discipline.BlockOverlayActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:theme="@style/AppTheme.Saturn.Alarm" />
+
+    </application>
+</manifest>
