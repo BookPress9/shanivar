@@ -66,6 +66,11 @@ This file is the door. The rooms are elsewhere — read the relevant one before 
 
 Describing what exists, not what we wish existed.
 
+- **Repository** — `BookPress9/shanivar` is the **only** repo; `origin/main` is the trunk. The
+  `legacy-hybridmonk` remote and the `legacy-main` branch are the retired earlier project, kept for
+  history only — never push product work there. See
+  [decision 0005](docs/decisions/0005-single-repo-shanivar.md), which also lists the Render repoint
+  steps still outstanding.
 - **Backend** — Node/Express, `pg` Pool against Supabase Postgres. `db.js` exports `{ query, pool }`.
   Deployed on Render at `https://hybridmonk-api.onrender.com`. Health: `GET /api/health` (runs a
   real `SELECT 1`; a health check that doesn't touch the database is a lie).
