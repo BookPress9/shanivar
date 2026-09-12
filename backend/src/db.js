@@ -28,20 +28,26 @@ const pool = hasRealPassword
     })
   : null;
 
+let ready = Promise.resolve();
 if (pool) {
   pool.on('error', (err) => {
     console.error('❌ Unexpected DB pool error:', err.message);
   });
-  pool.on('connect', () => {
-    console.log('✅ PostgreSQL pool connected to Supabase');
-    // Align database columns
+}
+if (pool && process.env.NODE_ENV !== 'test') {
+  // Run idempotent schema alignment once at process startup. Running DDL from the pool's
+  // `connect` event repeated every ALTER/CREATE for every physical connection and could race
+  // with shutdown or ordinary requests under load.
+  ready = Promise.all([
     pool.query(`
       ALTER TABLE users ADD COLUMN IF NOT EXISTS checkins JSONB DEFAULT '[]'::jsonb;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS membership VARCHAR(50) DEFAULT 'trial';
       ALTER TABLE users ADD COLUMN IF NOT EXISTS membership_since TIMESTAMPTZ;
-    `).catch(err => {
-      console.error('❌ Failed to ensure user checkins/membership columns:', err.message);
-    });
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS preferred_language VARCHAR(2) DEFAULT 'en';
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS birth_date_input DATE;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS birth_time_input TIME;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS birth_location_input VARCHAR(160);
+    `),
     // practice_completions had no DB-level guard against double-completion (unlike
     // habit_logs, which has UNIQUE(habit_id, completed_at)) — routes/practices.js relied
     // solely on an application-level INSERT...WHERE NOT EXISTS check. Verified live against
@@ -56,9 +62,10 @@ if (pool) {
     pool.query(`
       CREATE UNIQUE INDEX IF NOT EXISTS practice_completions_user_practice_day_key
       ON practice_completions (user_id, practice_id, ((completed_at AT TIME ZONE 'UTC')::date));
-    `).catch(err => {
-      console.error('❌ Failed to ensure practice_completions uniqueness index:', err.message);
-    });
+    `)
+  ]).then(() => { console.log('✅ PostgreSQL pool connected to Supabase'); }).catch(err => {
+    console.error('❌ Failed to align Supabase schema:', err.message);
+    throw err;
   });
 }
 
@@ -71,7 +78,8 @@ const query = async (text, params) => {
       'DATABASE_URL not configured. Set your Supabase DB password in backend/.env'
     );
   }
+  await ready;
   return pool.query(text, params);
 };
 
-module.exports = { query, pool };
+module.exports = { query, pool, ready };

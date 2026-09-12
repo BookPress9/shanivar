@@ -30,6 +30,22 @@ beforeEach(() => {
 });
 
 describe('POST /api/auth/register', () => {
+  it('allows simple app signup without forcing a WhatsApp number', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ id: 'user-simple', email: 'simple@example.com', display_name: 'Simple', role: 'user' }] })
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).post('/api/auth/register').send({
+      email: 'simple@example.com', password: 'somePassword123', display_name: 'Simple', preferred_language: 'hi'
+    });
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toHaveProperty('token');
+    const [, insertParams] = mockQuery.mock.calls[1];
+    expect(insertParams[4]).toBeNull();
+    expect(insertParams[5]).toEqual(false);
+    expect(insertParams[6]).toEqual('hi');
+  });
+
   it('hashes the password with a strong bcrypt cost factor (regression: was downgraded to 4)', async () => {
     mockQuery
       .mockResolvedValueOnce({ rows: [] }) // existing email/username check -> none found

@@ -30,14 +30,18 @@ class NativeUiTest {
     }
     @Test fun introductionLeadsToEditableRoutineWithoutPermissionWall() {
         compose.setContent { ShanivarApp() }
-        compose.onNodeWithText("Find my rhythm").performScrollTo().performClick()
+        compose.onNodeWithText("English").performClick()
+        compose.onNodeWithText("Explore first").performScrollTo().performClick()
+        compose.onNodeWithText("Skip for now").performScrollTo().performClick()
+        compose.onNodeWithText("I understand").performScrollTo().performClick()
+        compose.onNodeWithText("Build my rhythm").performScrollTo().performClick()
         compose.onNodeWithText("Rise with a reason").assertExists()
-        compose.onNodeWithText("Complete a movement").performScrollTo().performClick()
+        compose.onNodeWithText("Kitchen").performScrollTo().performClick()
         compose.onNodeWithText("Gentle").performScrollTo().performClick()
         compose.onNodeWithText("Save my rhythm").performScrollTo().performClick()
-        compose.onNodeWithText("Rhythm saved on this device").assertExists()
+        compose.onNodeWithText("Saved on this device", substring = true).assertExists()
         val prefs = context.getSharedPreferences("rhythm", 0)
-        assertEquals("Complete a movement", prefs.getString("movement", null))
+        assertEquals("kitchen", prefs.getString("movementDestination", null))
         assertEquals("Gentle", prefs.getString("tone", null))
         assertFalse(prefs.contains("alarmScheduled"))
     }
@@ -45,7 +49,8 @@ class NativeUiTest {
         openReturningUser()
         compose.onNodeWithText("Your daily note").assertExists()
         compose.onNodeWithText("Focus", useUnmergedTree = true).performClick()
-        compose.onNodeWithText("App lock is not connected in this build.").assertExists()
+        compose.onNodeWithText("Sign in to start protection", substring = true).assertExists()
+        compose.onNodeWithText("Focus protected", substring = true).assertDoesNotExist()
     }
     @Test fun practiceShowsSourceAndConfirmsEarlyExit() {
         openReturningUser()

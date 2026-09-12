@@ -56,6 +56,16 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Standard runtime-dialog permission for both dismissal methods' CameraX preview/capture. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
+    <!-- An alarm has to make an alarm sound. Until 2026-09-12 this app had neither of these:
+         the only audio was whatever default notification tone the channel happened to use, at
+         notification volume, which Do Not Disturb silences - so the alarm could not reliably
+         wake anyone. AlarmRinger plays on the ALARM stream and vibrates; WAKE_LOCK keeps the
+         CPU up between the broadcast firing and the alarm screen appearing, which Doze would
+         otherwise be free to defer. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
 
     <application android:label="Shanivar" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:theme="@android:style/Theme.Material.NoActionBar" android:allowBackup="false" android:supportsRtl="true" android:usesCleartextTraffic="false">
@@ -74,6 +84,7 @@
             android:excludeFromRecents="true" android:launchMode="singleInstance" />
         <activity android:name=".QrDismissalActivity" android:exported="false" />
         <activity android:name=".PhotoMotionDismissalActivity" android:exported="false" />
+        <activity android:name=".MovementDismissalActivity" android:exported="false" />
 
         <!-- foregroundServiceType/PROPERTY_SPECIAL_USE_FGS_SUBTYPE: see the
              FOREGROUND_SERVICE_SPECIAL_USE permission comment above. -->

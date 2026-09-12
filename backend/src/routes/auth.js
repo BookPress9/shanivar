@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const db = require('../db');
 const { pool } = require('../db');
@@ -25,15 +26,25 @@ const authLimiter = rateLimit({
 // Register
 router.post('/register', authLimiter, async (req, res) => {
   try {
-    const { email, username, password, display_name, phone, birth_date, birth_time, birth_location, utcOffset, lat, lon } = req.body;
-    if (!email || !username || !password || !phone) {
-      return res.status(400).json({ error: 'Email, username, password, and WhatsApp number are required' });
+    const { email, username, password, display_name, phone, birth_date, birth_time, birth_location, preferred_language, utcOffset, lat, lon } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+    if (preferred_language !== undefined && !['en', 'hi'].includes(preferred_language)) {
+      return res.status(400).json({ error: 'preferred_language must be en or hi' });
+    }
+    if (birth_date !== undefined && birth_date !== '' && !/^\d{4}-\d{2}-\d{2}$/.test(birth_date)) {
+      return res.status(400).json({ error: 'birth_date must be YYYY-MM-DD' });
+    }
+    if (birth_time !== undefined && birth_time !== '' && !/^([01]\d|2[0-3]):[0-5]\d$/.test(birth_time)) {
+      return res.status(400).json({ error: 'birth_time must be HH:MM' });
     }
     // Normalize email case so "Foo@x.com" and "foo@x.com" are the same account both at
     // signup and login — case-sensitive matching here would be a confusing login-failure
     // trap for users, not a meaningful security boundary.
     const normalizedEmail = String(email).trim().toLowerCase();
-    const existing = await db.query('SELECT id FROM users WHERE email = $1 OR username = $2', [normalizedEmail, username]);
+    const resolvedUsername = username || `member_${crypto.randomUUID().replace(/-/g, '').slice(0, 12)}`;
+    const existing = await db.query('SELECT id FROM users WHERE email = $1 OR username = $2', [normalizedEmail, resolvedUsername]);
     if (existing.rows.length > 0) {
       return res.status(409).json({ error: 'Email or username already exists' });
     }
@@ -43,8 +54,14 @@ router.post('/register', authLimiter, async (req, res) => {
     let result;
     try {
       result = await db.query(
-        'INSERT INTO users (email, username, password_hash, display_name, phone_number, whatsapp_opt_in) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, email, username, display_name, role, xp, level, current_stage',
-        [normalizedEmail, username, password_hash, display_name || username, phone || null, !!phone]
+        `INSERT INTO users
+           (email, username, password_hash, display_name, phone_number, whatsapp_opt_in,
+            preferred_language, birth_date_input, birth_time_input, birth_location_input)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+         RETURNING id, email, username, display_name, role, xp, level, current_stage, preferred_language`,
+        [normalizedEmail, resolvedUsername, password_hash, display_name || resolvedUsername, phone || null, false,
+          preferred_language || 'en', birth_date || null, birth_time || null,
+          birth_location ? String(birth_location).trim().slice(0, 160) : null]
       );
     } catch (insertErr) {
       // Unique-constraint violation: another request won the race between our existence

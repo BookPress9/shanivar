@@ -112,6 +112,36 @@ fallback already built in, not an error.
 Family-facing install guide published as an artifact (plain-language, no self-registration assumed):
 https://claude.ai/code/artifact/236838bb-fe10-47f6-9e24-df7e375bcce8
 
+## Deployed, 2026-09-12
+Backend is live at `https://hybridmonk-api.onrender.com` running the current MVP code, and the
+Android debug build points at it — the same-Wi-Fi constraint for family testing is gone.
+
+The blocker that had to be solved to get there, worth recording because it silently predated all
+of this: Supabase's direct `db.<ref>.supabase.co` endpoint resolves **IPv6-only**, and Render's
+egress is IPv4-only, so the deployed service could never reach the database (`ENETUNREACH`). The
+old March deployment had been failing this way too — nobody noticed because the old `/api/health`
+returned `ok` unconditionally. Fixed by pointing `DATABASE_URL` at Supabase's Supavisor pooler,
+`aws-1-ap-northeast-2.pooler.supabase.com:5432` (session mode, user `postgres.<ref>`), which does
+resolve to IPv4. The region was identified by matching the IPv6 prefix against AWS's published
+ranges, not guessed — and note the project is on the `aws-1-` pooler cluster, not the legacy
+`aws-0-` one, which rejects it with "tenant not found."
+
+Two hardening fixes landed with the deploy, both caught by a production-readiness audit and both
+invisible in local testing: `app.set('trust proxy', 1)` (without it, every request behind Render's
+proxy shares one rate-limit bucket, so the 20-per-15min auth limiter becomes a platform-wide
+lockout), and `/api/health` now runs a real `SELECT` so a deploy cannot go green with a dead
+database. That second one immediately proved itself by correctly failing the first deploy attempt.
+
+Verified against production, not locally: registration, login, the lock-targets catalog, the
+broadened six-app default block list, full focus-session lifecycle including duplicate rejection
+and idempotent release, alarm creation with empty-days validation, dismissal recording, reflection
+session creation, daily insight generation, and cross-user isolation. All test accounts removed
+afterward (109 real users untouched).
+
+Code now lives in a fresh repository, `BookPress9/shanivar`, with clean history — the predecessor
+repo's history contains a committed `.env`. Render still deploys from that old repo; repointing it
+is the one remaining manual step.
+
 ## Immediate next action available right now
 Install `android-app/app/build/outputs/apk/debug/app-debug.apk` on a real Android phone on the same
 Wi-Fi as this machine, with `backend/` running (`npm start`). Sign-in, Today, Practice, and the

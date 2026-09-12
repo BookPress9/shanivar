@@ -66,8 +66,17 @@ if (pool && typeof pool.query === 'function') {
       wake_time TIME NOT NULL DEFAULT '06:00:00',
       days_of_week JSONB NOT NULL DEFAULT '[0,1,2,3,4,5,6]'::jsonb,
       sound VARCHAR(100) NOT NULL DEFAULT 'default',
-      dismissal_method VARCHAR(20) NOT NULL DEFAULT 'qr' CHECK (dismissal_method IN ('qr', 'photo_motion')),
+      dismissal_method VARCHAR(20) NOT NULL DEFAULT 'movement' CHECK (dismissal_method IN ('movement', 'accessible', 'qr', 'photo_motion')),
       block_package_list JSONB NOT NULL DEFAULT '${DEFAULT_BLOCK_LIST_SQL}'::jsonb,
+      quiet_time TIME NOT NULL DEFAULT '21:30:00',
+      focus_minutes INTEGER NOT NULL DEFAULT 30 CHECK (focus_minutes BETWEEN 5 AND 120),
+      preferred_language VARCHAR(2) NOT NULL DEFAULT 'en' CHECK (preferred_language IN ('en', 'hi')),
+      movement_destination VARCHAR(80) NOT NULL DEFAULT 'morning_light',
+      step_target INTEGER NOT NULL DEFAULT 18 CHECK (step_target BETWEEN 1 AND 200),
+      scene_confirmation BOOLEAN NOT NULL DEFAULT false,
+      whatsapp_time TIME NOT NULL DEFAULT '08:00:00',
+      whatsapp_tone VARCHAR(20) NOT NULL DEFAULT 'direct' CHECK (whatsapp_tone IN ('direct', 'gentle')),
+      daily_note_enabled BOOLEAN NOT NULL DEFAULT true,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
@@ -100,7 +109,10 @@ if (pool && typeof pool.query === 'function') {
       local_time TIME NOT NULL,
       days_of_week JSONB NOT NULL DEFAULT '[0,1,2,3,4,5,6]'::jsonb,
       sound VARCHAR(100) NOT NULL DEFAULT 'default',
-      dismissal_method VARCHAR(20) NOT NULL DEFAULT 'qr' CHECK (dismissal_method IN ('qr', 'photo_motion')),
+      dismissal_method VARCHAR(20) NOT NULL DEFAULT 'movement' CHECK (dismissal_method IN ('movement', 'accessible', 'qr', 'photo_motion')),
+      movement_destination VARCHAR(80) NOT NULL DEFAULT 'morning_light',
+      step_target INTEGER NOT NULL DEFAULT 18 CHECK (step_target BETWEEN 1 AND 200),
+      scene_confirmation BOOLEAN NOT NULL DEFAULT false,
       enabled BOOLEAN NOT NULL DEFAULT true,
       next_confirmed_occurrence TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -112,7 +124,7 @@ if (pool && typeof pool.query === 'function') {
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       alarm_schedule_id UUID REFERENCES alarm_schedules(id) ON DELETE SET NULL,
-      method VARCHAR(20) NOT NULL CHECK (method IN ('qr', 'photo_motion')),
+      method VARCHAR(20) NOT NULL CHECK (method IN ('movement', 'accessible', 'qr', 'photo_motion')),
       verified BOOLEAN NOT NULL DEFAULT false,
       verification_detail JSONB NOT NULL DEFAULT '{}'::jsonb,
       occurred_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -128,6 +140,26 @@ if (pool && typeof pool.query === 'function') {
     -- affects rows inserted from now on, never rewrites already-saved user preferences.
     ALTER TABLE discipline_preferences ALTER COLUMN block_package_list SET DEFAULT '${DEFAULT_BLOCK_LIST_SQL}'::jsonb;
     ALTER TABLE focus_sessions ALTER COLUMN block_package_list SET DEFAULT '${DEFAULT_BLOCK_LIST_SQL}'::jsonb;
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS quiet_time TIME NOT NULL DEFAULT '21:30:00';
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS focus_minutes INTEGER NOT NULL DEFAULT 30;
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS preferred_language VARCHAR(2) NOT NULL DEFAULT 'en';
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS movement_destination VARCHAR(80) NOT NULL DEFAULT 'morning_light';
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS step_target INTEGER NOT NULL DEFAULT 18;
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS scene_confirmation BOOLEAN NOT NULL DEFAULT false;
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS whatsapp_time TIME NOT NULL DEFAULT '08:00:00';
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS whatsapp_tone VARCHAR(20) NOT NULL DEFAULT 'direct';
+    ALTER TABLE discipline_preferences ADD COLUMN IF NOT EXISTS daily_note_enabled BOOLEAN NOT NULL DEFAULT true;
+    ALTER TABLE alarm_schedules ADD COLUMN IF NOT EXISTS movement_destination VARCHAR(80) NOT NULL DEFAULT 'morning_light';
+    ALTER TABLE alarm_schedules ADD COLUMN IF NOT EXISTS step_target INTEGER NOT NULL DEFAULT 18;
+    ALTER TABLE alarm_schedules ADD COLUMN IF NOT EXISTS scene_confirmation BOOLEAN NOT NULL DEFAULT false;
+    ALTER TABLE discipline_preferences ALTER COLUMN dismissal_method SET DEFAULT 'movement';
+    ALTER TABLE alarm_schedules ALTER COLUMN dismissal_method SET DEFAULT 'movement';
+    ALTER TABLE discipline_preferences DROP CONSTRAINT IF EXISTS discipline_preferences_dismissal_method_check;
+    ALTER TABLE alarm_schedules DROP CONSTRAINT IF EXISTS alarm_schedules_dismissal_method_check;
+    ALTER TABLE alarm_dismissal_events DROP CONSTRAINT IF EXISTS alarm_dismissal_events_method_check;
+    ALTER TABLE discipline_preferences ADD CONSTRAINT discipline_preferences_dismissal_method_check CHECK (dismissal_method IN ('movement', 'accessible', 'qr', 'photo_motion'));
+    ALTER TABLE alarm_schedules ADD CONSTRAINT alarm_schedules_dismissal_method_check CHECK (dismissal_method IN ('movement', 'accessible', 'qr', 'photo_motion'));
+    ALTER TABLE alarm_dismissal_events ADD CONSTRAINT alarm_dismissal_events_method_check CHECK (method IN ('movement', 'accessible', 'qr', 'photo_motion'));
   `).catch((err) => {
     console.error('❌ Failed to ensure discipline_* schema:', err.message);
   });
@@ -138,7 +170,7 @@ if (pool && typeof pool.query === 'function') {
 // ─────────────────────────────────────────────────────────────────────────
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const TIME_RE = /^([01]\d|2[0-3]):([0-5]\d)$/;
-const DISMISSAL_METHODS = ['qr', 'photo_motion'];
+const DISMISSAL_METHODS = ['movement', 'accessible', 'qr', 'photo_motion'];
 // DEFAULT_LOCK_TARGETS/DEFAULT_BLOCK_LIST are declared above, before the migration
 // block, since that block's template literal needs them at module-load time.
 
@@ -246,7 +278,11 @@ router.get('/preferences', async (req, res) => {
 router.put('/preferences', async (req, res) => {
   try {
     const userId = req.user.id;
-    const { wake_time, days_of_week, sound, dismissal_method, block_package_list } = req.body || {};
+    const {
+      wake_time, days_of_week, sound, dismissal_method, block_package_list,
+      quiet_time, focus_minutes, preferred_language, movement_destination,
+      step_target, scene_confirmation, whatsapp_time, whatsapp_tone, daily_note_enabled
+    } = req.body || {};
 
     if (wake_time !== undefined && !isValidTimeString(wake_time)) {
       return res.status(400).json({ error: 'wake_time must be HH:MM (24h)' });
@@ -260,7 +296,35 @@ router.put('/preferences', async (req, res) => {
     if (block_package_list !== undefined && !isValidPackageList(block_package_list)) {
       return res.status(400).json({ error: 'block_package_list must be an array of up to 50 package name strings' });
     }
+    if (quiet_time !== undefined && !isValidTimeString(quiet_time)) {
+      return res.status(400).json({ error: 'quiet_time must be HH:MM (24h)' });
+    }
+    if (whatsapp_time !== undefined && !isValidTimeString(whatsapp_time)) {
+      return res.status(400).json({ error: 'whatsapp_time must be HH:MM (24h)' });
+    }
+    if (focus_minutes !== undefined && (!Number.isInteger(focus_minutes) || focus_minutes < 5 || focus_minutes > 120)) {
+      return res.status(400).json({ error: 'focus_minutes must be an integer between 5 and 120' });
+    }
+    if (preferred_language !== undefined && !['en', 'hi'].includes(preferred_language)) {
+      return res.status(400).json({ error: 'preferred_language must be en or hi' });
+    }
+    if (movement_destination !== undefined && (typeof movement_destination !== 'string' || movement_destination.trim().length < 1 || movement_destination.length > 80)) {
+      return res.status(400).json({ error: 'movement_destination must be 1-80 characters' });
+    }
+    if (step_target !== undefined && (!Number.isInteger(step_target) || step_target < 1 || step_target > 200)) {
+      return res.status(400).json({ error: 'step_target must be an integer between 1 and 200' });
+    }
+    if (scene_confirmation !== undefined && typeof scene_confirmation !== 'boolean') {
+      return res.status(400).json({ error: 'scene_confirmation must be a boolean' });
+    }
+    if (daily_note_enabled !== undefined && typeof daily_note_enabled !== 'boolean') {
+      return res.status(400).json({ error: 'daily_note_enabled must be a boolean' });
+    }
+    if (whatsapp_tone !== undefined && !['direct', 'gentle'].includes(whatsapp_tone)) {
+      return res.status(400).json({ error: 'whatsapp_tone must be direct or gentle' });
+    }
     const cleanSound = sound !== undefined ? sanitizeText(sound).slice(0, 100) : undefined;
+    const cleanDestination = movement_destination !== undefined ? sanitizeText(movement_destination).trim().slice(0, 80) : undefined;
 
     // Ensure a row exists first (same get-or-create as GET), then update only supplied
     // fields via COALESCE so a partial PUT never clobbers untouched columns.
@@ -276,6 +340,15 @@ router.put('/preferences', async (req, res) => {
          sound = COALESCE($4, sound),
          dismissal_method = COALESCE($5, dismissal_method),
          block_package_list = COALESCE($6, block_package_list),
+         quiet_time = COALESCE($7, quiet_time),
+         focus_minutes = COALESCE($8, focus_minutes),
+         preferred_language = COALESCE($9, preferred_language),
+         movement_destination = COALESCE($10, movement_destination),
+         step_target = COALESCE($11, step_target),
+         scene_confirmation = COALESCE($12, scene_confirmation),
+         whatsapp_time = COALESCE($13, whatsapp_time),
+         whatsapp_tone = COALESCE($14, whatsapp_tone),
+         daily_note_enabled = COALESCE($15, daily_note_enabled),
          updated_at = NOW()
        WHERE user_id = $1
        RETURNING *`,
@@ -285,7 +358,16 @@ router.put('/preferences', async (req, res) => {
         days_of_week !== undefined ? JSON.stringify(days_of_week) : null,
         cleanSound !== undefined ? cleanSound : null,
         dismissal_method !== undefined ? dismissal_method : null,
-        block_package_list !== undefined ? JSON.stringify(block_package_list) : null
+        block_package_list !== undefined ? JSON.stringify(block_package_list) : null,
+        quiet_time !== undefined ? quiet_time : null,
+        focus_minutes !== undefined ? focus_minutes : null,
+        preferred_language !== undefined ? preferred_language : null,
+        cleanDestination !== undefined ? cleanDestination : null,
+        step_target !== undefined ? step_target : null,
+        scene_confirmation !== undefined ? scene_confirmation : null,
+        whatsapp_time !== undefined ? whatsapp_time : null,
+        whatsapp_tone !== undefined ? whatsapp_tone : null,
+        daily_note_enabled !== undefined ? daily_note_enabled : null
       ]
     );
     res.json(result.rows[0]);
@@ -420,7 +502,7 @@ router.get('/focus/active', async (req, res) => {
 router.post('/alarms', async (req, res) => {
   try {
     const userId = req.user.id;
-    const { local_time, days_of_week, sound, dismissal_method, enabled } = req.body || {};
+    const { local_time, days_of_week, sound, dismissal_method, enabled, movement_destination, step_target, scene_confirmation } = req.body || {};
 
     if (!isValidTimeString(local_time)) {
       return res.status(400).json({ error: 'local_time must be HH:MM (24h)' });
@@ -431,19 +513,32 @@ router.post('/alarms', async (req, res) => {
     if (dismissal_method !== undefined && !DISMISSAL_METHODS.includes(dismissal_method)) {
       return res.status(400).json({ error: `dismissal_method must be one of ${DISMISSAL_METHODS.join(', ')}` });
     }
+    if (movement_destination !== undefined && (typeof movement_destination !== 'string' || movement_destination.trim().length < 1 || movement_destination.length > 80)) {
+      return res.status(400).json({ error: 'movement_destination must be 1-80 characters' });
+    }
+    if (step_target !== undefined && (!Number.isInteger(step_target) || step_target < 1 || step_target > 200)) {
+      return res.status(400).json({ error: 'step_target must be an integer between 1 and 200' });
+    }
+    if (scene_confirmation !== undefined && typeof scene_confirmation !== 'boolean') {
+      return res.status(400).json({ error: 'scene_confirmation must be a boolean' });
+    }
     const cleanSound = sound !== undefined ? sanitizeText(sound).slice(0, 100) : 'default';
+    const cleanDestination = movement_destination !== undefined ? sanitizeText(movement_destination).trim().slice(0, 80) : 'morning_light';
 
     const result = await db.query(
-      `INSERT INTO alarm_schedules (user_id, local_time, days_of_week, sound, dismissal_method, enabled)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO alarm_schedules (user_id, local_time, days_of_week, sound, dismissal_method, enabled, movement_destination, step_target, scene_confirmation)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
       [
         userId,
         local_time,
         JSON.stringify(days_of_week !== undefined ? days_of_week : [0, 1, 2, 3, 4, 5, 6]),
         cleanSound,
-        dismissal_method || 'qr',
-        enabled === undefined ? true : !!enabled
+        dismissal_method || 'movement',
+        enabled === undefined ? true : !!enabled,
+        cleanDestination,
+        step_target === undefined ? 18 : step_target,
+        scene_confirmation === undefined ? false : scene_confirmation
       ]
     );
     res.status(201).json(result.rows[0]);
@@ -469,7 +564,7 @@ router.put('/alarms/:id', async (req, res) => {
     const alarm = await findOwnedAlarm(userId, req.params.id);
     if (!alarm) return res.status(404).json({ error: 'Alarm not found' });
 
-    const { local_time, days_of_week, sound, dismissal_method, enabled } = req.body || {};
+    const { local_time, days_of_week, sound, dismissal_method, enabled, movement_destination, step_target, scene_confirmation } = req.body || {};
     if (local_time !== undefined && !isValidTimeString(local_time)) {
       return res.status(400).json({ error: 'local_time must be HH:MM (24h)' });
     }
@@ -479,7 +574,17 @@ router.put('/alarms/:id', async (req, res) => {
     if (dismissal_method !== undefined && !DISMISSAL_METHODS.includes(dismissal_method)) {
       return res.status(400).json({ error: `dismissal_method must be one of ${DISMISSAL_METHODS.join(', ')}` });
     }
+    if (movement_destination !== undefined && (typeof movement_destination !== 'string' || movement_destination.trim().length < 1 || movement_destination.length > 80)) {
+      return res.status(400).json({ error: 'movement_destination must be 1-80 characters' });
+    }
+    if (step_target !== undefined && (!Number.isInteger(step_target) || step_target < 1 || step_target > 200)) {
+      return res.status(400).json({ error: 'step_target must be an integer between 1 and 200' });
+    }
+    if (scene_confirmation !== undefined && typeof scene_confirmation !== 'boolean') {
+      return res.status(400).json({ error: 'scene_confirmation must be a boolean' });
+    }
     const cleanSound = sound !== undefined ? sanitizeText(sound).slice(0, 100) : undefined;
+    const cleanDestination = movement_destination !== undefined ? sanitizeText(movement_destination).trim().slice(0, 80) : undefined;
 
     // Editing the schedule invalidates any previously-confirmed occurrence: the OS alarm
     // was scheduled against the OLD time/days, so next_confirmed_occurrence is reset to
@@ -492,6 +597,9 @@ router.put('/alarms/:id', async (req, res) => {
          sound = COALESCE($4, sound),
          dismissal_method = COALESCE($5, dismissal_method),
          enabled = COALESCE($6, enabled),
+         movement_destination = COALESCE($8, movement_destination),
+         step_target = COALESCE($9, step_target),
+         scene_confirmation = COALESCE($10, scene_confirmation),
          next_confirmed_occurrence = NULL,
          updated_at = NOW()
        WHERE id = $1 AND user_id = $7
@@ -503,7 +611,10 @@ router.put('/alarms/:id', async (req, res) => {
         cleanSound !== undefined ? cleanSound : null,
         dismissal_method !== undefined ? dismissal_method : null,
         enabled !== undefined ? !!enabled : null,
-        userId
+        userId,
+        cleanDestination !== undefined ? cleanDestination : null,
+        step_target !== undefined ? step_target : null,
+        scene_confirmation !== undefined ? scene_confirmation : null
       ]
     );
     res.json(result.rows[0]);

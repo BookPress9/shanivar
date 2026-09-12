@@ -16,8 +16,12 @@ class NativeMockLoginTest {
         Assume.assumeTrue(com.shanivar.nativeapp.BuildConfig.API_URL in listOf("http://10.0.2.2:5101/api", "http://10.0.2.2:5102/api"))
         ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("rhythm", 0)
             .edit().clear().putBoolean("introduced", true).commit()
-        if (compose.onAllNodesWithText("Find my rhythm").fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithText("Find my rhythm").performScrollTo().performClick()
+        if (compose.onAllNodesWithText("English").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithText("English").performClick()
+            compose.onNodeWithText("Explore first").performScrollTo().performClick()
+            compose.onNodeWithText("Skip for now").performScrollTo().performClick()
+            compose.onNodeWithText("I understand").performScrollTo().performClick()
+            compose.onNodeWithText("Build my rhythm").performScrollTo().performClick()
         }
         compose.onNodeWithText("Today", useUnmergedTree = true).performClick()
     }
@@ -31,6 +35,11 @@ class NativeMockLoginTest {
         compose.onNode(hasText("Sign in") and hasAnyAncestor(isDialog())).performClick()
         compose.waitUntil(30_000) { compose.onAllNodesWithText("Account").fetchSemanticsNodes().isNotEmpty() }
         compose.waitUntil(30_000) { compose.onAllNodesWithText("Local mock note: make room for one quiet moment.").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText("Rhythm", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("Kitchen").performScrollTo().performClick()
+        compose.onNodeWithText("Save my rhythm").performScrollTo().performClick()
+        compose.waitUntil(30_000) { compose.onAllNodesWithText("Saved to your Shanivar account.").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText("Today", useUnmergedTree = true).performClick()
         compose.onNodeWithText("Reflect with Shanivar").performScrollTo().performClick()
         compose.onNodeWithText("Begin reflecting").performScrollTo().performClick()
         compose.waitUntil(30_000) { compose.onAllNodesWithText("Prefer not to share").fetchSemanticsNodes().isNotEmpty() }

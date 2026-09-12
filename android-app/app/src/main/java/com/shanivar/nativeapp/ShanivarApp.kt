@@ -2,7 +2,11 @@ package com.shanivar.nativeapp
 
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.SystemClock
+import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.Canvas
@@ -52,22 +56,30 @@ fun ShanivarTheme(content: @Composable () -> Unit) {
 private fun loadRhythm(context: Context): Rhythm {
     val prefs = context.getSharedPreferences("rhythm", Context.MODE_PRIVATE)
     return Rhythm(prefs.getString("wake", "07:00")!!, prefs.getString("quiet", "21:30")!!,
-        prefs.getInt("focus", 25), prefs.getString("movement", "Scan a QR code")!!,
-        prefs.getString("whatsapp", "08:00")!!, prefs.getString("tone", "Direct")!!)
+        prefs.getInt("focus", 30), prefs.getString("movementDestination", "morning_light")!!,
+        prefs.getInt("stepTarget", 18), prefs.getBoolean("sceneConfirmation", false),
+        prefs.getBoolean("accessibleMovement", false), prefs.getString("whatsapp", "08:00")!!,
+        prefs.getString("tone", "Direct")!!, prefs.getBoolean("dailyNoteEnabled", true),
+        prefs.getStringSet("blockedPackages", DisciplineTargets.DEFAULT_BLOCKED_PACKAGES) ?: DisciplineTargets.DEFAULT_BLOCKED_PACKAGES)
         .takeIf { it.valid() } ?: Rhythm()
 }
 
 private fun saveRhythm(context: Context, rhythm: Rhythm) {
     context.getSharedPreferences("rhythm", Context.MODE_PRIVATE).edit()
         .putString("wake", rhythm.wakeTime).putString("quiet", rhythm.quietTime)
-        .putInt("focus", rhythm.focusMinutes).putString("movement", rhythm.movement)
-        .putString("whatsapp", rhythm.whatsappTime).putString("tone", rhythm.whatsappTone).apply()
+        .putInt("focus", rhythm.focusMinutes).putString("movementDestination", rhythm.movementDestination)
+        .putInt("stepTarget", rhythm.stepTarget).putBoolean("sceneConfirmation", rhythm.sceneConfirmation)
+        .putBoolean("accessibleMovement", rhythm.accessibleMovement)
+        .putString("whatsapp", rhythm.whatsappTime).putString("tone", rhythm.whatsappTone)
+        .putBoolean("dailyNoteEnabled", rhythm.dailyNoteEnabled)
+        .putStringSet("blockedPackages", rhythm.blockedPackages).apply()
 }
 
 @Composable
 fun ShanivarApp() {
     val context = LocalContext.current
     var rhythm by remember { mutableStateOf(loadRhythm(context)) }
+    var language by rememberSaveable { mutableStateOf(context.getSharedPreferences("rhythm", 0).getString("language", "en") ?: "en") }
     var tab by rememberSaveable { mutableStateOf("Today") }
     var welcome by rememberSaveable { mutableStateOf(!context.getSharedPreferences("rhythm", 0).getBoolean("introduced", false)) }
     var accountDialog by rememberSaveable { mutableStateOf(false) }
@@ -79,9 +91,21 @@ fun ShanivarApp() {
     val reflectionProtection = remember(session.api) {
         DisciplineEngine.create(context, session.api, AlarmScheduler(context)).reflectionReader()
     }
+    val discipline = remember(session.api) { DisciplineEngine.create(context, session.api, AlarmScheduler(context)) }
     val account = session.account
     LaunchedEffect(account?.id) {
-        account?.let { reflections.bind(it.id, ReflectionApi(session.api), reflectionStore) }
+        account?.let {
+            reflections.bind(it.id, ReflectionApi(session.api), reflectionStore)
+            runCatching { RoutineApi(session.api).load() }.getOrNull()?.let { remote ->
+                rhythm = Rhythm(remote.wakeTime, remote.quietTime, remote.focusMinutes,
+                    remote.movementDestination, remote.stepTarget, remote.sceneConfirmation,
+                    remote.accessibleMovement, remote.whatsappTime, remote.whatsappTone,
+                    remote.dailyNoteEnabled, remote.blockedPackages)
+                language = remote.language
+                saveRhythm(context, rhythm)
+                context.getSharedPreferences("rhythm", 0).edit().putString("language", remote.language).apply()
+            }
+        }
     }
     LaunchedEffect(ReflectionNavigation.requested, account?.id) {
         ReflectionNavigation.requested?.let { entry ->
@@ -108,7 +132,12 @@ fun ShanivarApp() {
     ShanivarTheme {
         Surface(Modifier.fillMaxSize(), color = Void, contentColor = Bone) {
         if (welcome) {
-            WelcomeScreen {
+            OnboardingFlow(session.api, account, language,
+                onLanguage = {
+                    language = it
+                    context.getSharedPreferences("rhythm", 0).edit().putString("language", it).apply()
+                },
+                onConnected = { session.connect(it) }) {
                 context.getSharedPreferences("rhythm", 0).edit().putBoolean("introduced", true).apply()
                 welcome = false
                 tab = "Rhythm"
@@ -159,7 +188,12 @@ fun ShanivarApp() {
                                 }
                             }
                             SectionCard("Your rhythm") {
-                                RhythmLine("Rise", rhythm.wakeTime, rhythm.movement)
+                                RhythmLine("Rise", rhythm.wakeTime, when (rhythm.movementDestination) {
+                                    "morning_light" -> "Morning light · ${rhythm.stepTarget} steps"
+                                    "kitchen" -> "Kitchen · ${rhythm.stepTarget} steps"
+                                    "washroom" -> "Washroom · ${rhythm.stepTarget} steps"
+                                    else -> "Chosen place · ${rhythm.stepTarget} steps"
+                                })
                                 HorizontalDivider()
                                 RhythmLine("Protect", "${rhythm.focusMinutes} min", "Focus window · lock not connected")
                                 HorizontalDivider()
@@ -172,7 +206,8 @@ fun ShanivarApp() {
                                 if (account == null) Text("Sign in to see your saved streak.", color = Muted)
                             }
                         }
-                        "Focus" -> FocusScreen(rhythm) { tab = "Rhythm" }
+                        "Focus" -> FocusScreen(rhythm, account != null, discipline,
+                            signIn = { accountDialog = true }, edit = { tab = "Rhythm" })
                         "Practice" -> {
                             Heading("Room to be.")
                             Text("Choose a quiet practice. Read at your pace, then sit with it.", color = Muted)
@@ -185,7 +220,8 @@ fun ShanivarApp() {
                                 }
                             }
                         }
-                        "Rhythm" -> RhythmScreen(rhythm) { updated ->
+                        "Rhythm" -> RhythmScreen(rhythm, account != null, session.api, language,
+                            signIn = { accountDialog = true }) { updated ->
                             saveRhythm(context, updated)
                             rhythm = updated
                         }
@@ -220,7 +256,7 @@ private fun WelcomeScreen(onContinue: () -> Unit) {
 }
 
 @Composable
-private fun SaturnRing(progress: Float = 0.72f) {
+fun SaturnRing(progress: Float = 0.72f) {
     Canvas(Modifier.fillMaxWidth().height(140.dp).clearAndSetSemantics { }) {
         val radius = size.height * .36f
         drawCircle(Gold.copy(alpha = .28f), radius, style = Stroke(2.dp.toPx()))
@@ -231,15 +267,15 @@ private fun SaturnRing(progress: Float = 0.72f) {
 }
 
 @Composable
-private fun Heading(text: String) { Text(text, fontSize = 36.sp, lineHeight = 40.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.semantics { heading() }) }
+fun Heading(text: String) { Text(text, fontSize = 36.sp, lineHeight = 40.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.semantics { heading() }) }
 
 @Composable
-private fun PrimaryAction(label: String, onClick: () -> Unit) {
+fun PrimaryAction(label: String, onClick: () -> Unit) {
     Button(onClick, Modifier.fillMaxWidth().heightIn(min = 52.dp), shape = RoundedCornerShape(8.dp)) { Text(label) }
 }
 
 @Composable
-private fun SectionCard(title: String, content: @Composable ColumnScope.() -> Unit) {
+fun SectionCard(title: String, content: @Composable ColumnScope.() -> Unit) {
     Surface(shape = RoundedCornerShape(12.dp), color = Surface, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text(title, color = Gold, fontWeight = FontWeight.SemiBold, modifier = Modifier.semantics { heading() })
@@ -286,46 +322,115 @@ private fun NoteCard(note: DailyNote?, busy: Boolean, error: String?, connected:
 }
 
 @Composable
-private fun FocusScreen(rhythm: Rhythm, edit: () -> Unit) {
+private fun FocusScreen(rhythm: Rhythm, connected: Boolean, gateway: DisciplineGateway, signIn: () -> Unit, edit: () -> Unit) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var status by remember { mutableStateOf<DisciplineStatus?>(null) }
+    var busy by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+    fun refresh() {
+        if (!connected) return
+        busy = true; error = null
+        scope.launch {
+            try { status = gateway.status() }
+            catch (e: Exception) { error = e.message ?: "Could not read protection status." }
+            finally { busy = false }
+        }
+    }
+    LaunchedEffect(connected) { refresh() }
     Heading("Less noise.\nMore of you.")
-    SaturnRing(0f)
+    SectionCard("Suggested windows") {
+        Text("Morning · ${rhythm.focusMinutes} min after waking")
+        Text("Night · 45 min before quiet time", color = Muted)
+        Text("Start with one app and adjust from experience.", color = Muted)
+    }
     SectionCard("Your focus window") {
         Text("${rhythm.focusMinutes} minutes", fontSize = 32.sp)
-        Text("Start with Instagram. Keep essential calls and the rest of your phone available.", color = Muted)
-        Text("App lock is not connected in this build.", color = Gold)
-        Text("Your plan is saved. Protection will need Usage Access and permission to display over other apps when the Android lock service is ready.", color = Muted)
+        Text("Instagram stays unavailable. Essential calls and the rest of your phone remain available.", color = Muted)
+        when {
+            !connected -> {
+                Text("Sign in to start protection and keep its state across devices.", color = Gold)
+                PrimaryAction("Sign in to protect this window", signIn)
+            }
+            status?.protection == ProtectionState.ACTIVE -> {
+                val minutes = (((status?.focusEndsAtEpochMillis ?: 0L) - System.currentTimeMillis()) / 60_000L).coerceAtLeast(0)
+                Text("Focus protected · $minutes min remaining", color = Gold, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+                OutlinedButton(onClick = {
+                    busy = true; error = null; scope.launch {
+                        try { status = gateway.releaseFocus() }
+                        catch (e: Exception) { error = e.message ?: "Protection could not be released." }
+                        finally { busy = false }
+                    }
+                }, enabled = !busy, modifier = Modifier.fillMaxWidth()) { Text("Release focus") }
+            }
+            status?.protection == ProtectionState.NEEDS_PERMISSION -> {
+                Text("Android access is needed before Shanivar can protect this window.", color = Gold)
+                OutlinedButton(onClick = { context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)) }, modifier = Modifier.fillMaxWidth()) { Text("Grant Usage access") }
+                OutlinedButton(onClick = {
+                    context.startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}")))
+                }, modifier = Modifier.fillMaxWidth()) { Text("Allow display over apps") }
+                TextButton(onClick = { refresh() }) { Text("Check access again") }
+            }
+            else -> PrimaryAction(if (busy) "Checking…" else "Start protected focus") {
+                busy = true; error = null; scope.launch {
+                    try { status = gateway.startFocus(rhythm.focusMinutes, rhythm.blockedPackages) }
+                    catch (e: Exception) { error = e.message ?: "Could not start protection." }
+                    finally { busy = false }
+                }
+            }
+        }
+        error?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
         TextButton(onClick = edit) { Text("Change focus duration") }
-    }
-    SectionCard("A commitment you choose") {
-        Text("Choose your window before you begin. See exactly what is blocked and when it ends.")
-        Text("Paid lock options are being defined. No payment or lock is activated here.", color = Muted)
     }
 }
 
 @Composable
-fun RhythmScreen(initial: Rhythm, onSave: (Rhythm) -> Unit) {
+fun RhythmScreen(initial: Rhythm, connected: Boolean, api: ShanivarApi, language: String, signIn: () -> Unit, onSave: (Rhythm) -> Unit) {
     val context = LocalContext.current
     var wake by rememberSaveable { mutableStateOf(initial.wakeTime) }
     var quiet by rememberSaveable { mutableStateOf(initial.quietTime) }
     var focus by rememberSaveable { mutableStateOf(initial.focusMinutes.toFloat()) }
-    var movement by rememberSaveable { mutableStateOf(initial.movement) }
+    var movement by rememberSaveable { mutableStateOf(initial.movementDestination) }
+    var stepTarget by rememberSaveable { mutableStateOf(initial.stepTarget.toFloat()) }
+    // Scene recognition stays false until a calibrated on-device implementation exists.
+    // This also clears an experimental value saved by earlier wireframe builds.
+    var sceneConfirmation by rememberSaveable { mutableStateOf(false) }
+    var accessibleMovement by rememberSaveable { mutableStateOf(initial.accessibleMovement) }
     var whatsapp by rememberSaveable { mutableStateOf(initial.whatsappTime) }
     var tone by rememberSaveable { mutableStateOf(initial.whatsappTone) }
+    var dailyNoteEnabled by rememberSaveable { mutableStateOf(initial.dailyNoteEnabled) }
     var saved by rememberSaveable { mutableStateOf(false) }
+    var busy by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+    var result by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
+    val scheduler = remember { AlarmScheduler(context) }
+    val permissions = remember { AndroidDisciplinePermissions(context) }
     fun pickTime(value: String, update: (String) -> Unit) {
         val time = LocalTime.parse(value)
         TimePickerDialog(context, { _, h, m -> update("%02d:%02d".format(h, m)); saved = false }, time.hour, time.minute, true).show()
     }
+    fun current() = Rhythm(wake, quiet, focus.toInt(), movement, stepTarget.toInt(), sceneConfirmation,
+        accessibleMovement, whatsapp, tone, dailyNoteEnabled, initial.blockedPackages)
     Heading("Built around\nyour day.")
-    Text("Save a rhythm for this device. Change it whenever life changes.", color = Muted)
+    Text(if (connected) "Your rhythm is saved to your account and this device." else "Explore locally. Sign in when you want this rhythm on another device.", color = Muted)
     SectionCard("Rise with a reason") {
         OutlinedButton(onClick = { pickTime(wake) { wake = it } }, modifier = Modifier.fillMaxWidth()) { Text("Wake time · $wake") }
-        Text("How would you like to get moving?", color = Muted)
-        listOf("Scan a QR code", "Complete a movement", "Solve a puzzle").forEach { choice ->
-            FilterChip(selected = movement == choice, onClick = { movement = choice; saved = false }, label = { Text(choice) })
+        Text("Where will you walk?", color = Muted)
+        listOf("morning_light" to "Morning light", "kitchen" to "Kitchen", "washroom" to "Washroom", "custom" to "Another place").forEach { (value, label) ->
+            FilterChip(selected = movement == value, onClick = { movement = value; saved = false }, label = { Text(label) })
         }
-        Text("Alarm not scheduled. Saving records your preference only.", color = Gold, fontSize = 13.sp)
+        Text("${stepTarget.toInt()} steps", fontSize = 24.sp)
+        Slider(stepTarget, { stepTarget = it; saved = false }, valueRange = 8f..40f, steps = 7,
+            modifier = Modifier.semantics { contentDescription = "Movement step target" })
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("On-device scene check · coming after camera calibration", Modifier.weight(1f))
+            Switch(checked = false, onCheckedChange = null, enabled = false)
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("Use non-walking alternative", Modifier.weight(1f)); Switch(accessibleMovement, { accessibleMovement = it; saved = false })
+        }
+        Text(if (scheduler.hasScheduledAlarm()) "Alarm confirmed on this device." else "Alarm not scheduled yet.", color = Gold, fontSize = 13.sp)
     }
     SectionCard("Protect your attention") {
         Text("${focus.toInt()} minutes", fontSize = 28.sp)
@@ -343,18 +448,61 @@ fun RhythmScreen(initial: Rhythm, onSave: (Rhythm) -> Unit) {
         Text("MESSAGE PREVIEW", color = Gold, fontSize = 11.sp, letterSpacing = 1.sp)
         Text(if (tone == "Direct") "Before the scroll: take four minutes for yourself. Your practice is waiting."
             else "A little room for you today. When you're ready, your practice is here.")
-        Text("Not connected. Your number and consent will be requested before messages can start.", color = Muted, fontSize = 13.sp)
+        Text("Delivery requires a verified number and explicit WhatsApp consent.", color = Muted, fontSize = 13.sp)
+    }
+    SectionCard("One daily note") {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("Include one intentional direction on Today", Modifier.weight(1f)); Switch(dailyNoteEnabled, { dailyNoteEnabled = it; saved = false })
+        }
+        Text("Notification delivery will stay off until consent and scheduling are connected.", color = Muted, fontSize = 13.sp)
     }
     SectionCard("Leave room for rest") {
         OutlinedButton(onClick = { pickTime(quiet) { quiet = it } }, modifier = Modifier.fillMaxWidth()) { Text("Quiet time · $quiet") }
         Text("Your home screen follows this rhythm, including overnight schedules.", color = Muted)
     }
     error?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
-    PrimaryAction(if (saved) "Rhythm saved on this device" else "Save my rhythm") {
-        val next = Rhythm(wake, quiet, focus.toInt(), movement, whatsapp, tone)
+    result?.let { Text(it, color = Gold, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
+    PrimaryAction(if (busy) "Saving…" else if (saved) "Rhythm synced" else "Save my rhythm") {
+        val next = current()
         if (!next.valid()) { error = "Choose wake and quiet times 6–20 hours apart."; saved = false }
-        else { onSave(next); saved = true; error = null }
+        else {
+            onSave(next); error = null
+            if (!connected) { saved = true; result = "Saved on this device. Sign in to sync it." }
+            else {
+                busy = true; scope.launch {
+                    try { RoutineApi(api).save(next, language); saved = true; result = "Saved to your Shanivar account." }
+                    catch (e: Exception) { error = e.message ?: "Could not sync your rhythm." }
+                    finally { busy = false }
+                }
+            }
+        }
     }
+    OutlinedButton(onClick = {
+        if (!connected) { signIn(); return@OutlinedButton }
+        val next = current(); onSave(next)
+        if (!permissions.hasExactAlarmPermission()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                context.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:${context.packageName}")))
+            }
+            error = "Allow Alarms & reminders, then return and schedule again."
+            return@OutlinedButton
+        }
+        busy = true; error = null; result = null
+        scope.launch {
+            try {
+                val routineApi = RoutineApi(api)
+                routineApi.save(next, language)
+                val remote = routineApi.createAlarm(next)
+                val now = java.time.ZonedDateTime.now()
+                var occurrence = now.toLocalDate().atTime(LocalTime.parse(wake)).atZone(now.zone)
+                if (!occurrence.isAfter(now)) occurrence = occurrence.plusDays(1)
+                check(scheduler.schedule(occurrence.toInstant().toEpochMilli(), remote.id)) { "Android did not confirm the alarm." }
+                routineApi.confirmAlarm(remote.id, occurrence.toInstant().toString())
+                result = "Alarm confirmed · ${occurrence.format(DateTimeFormatter.ofPattern("EEE, d MMM · HH:mm"))}"
+            } catch (e: Exception) { error = e.message ?: "Could not schedule the alarm." }
+            finally { busy = false }
+        }
+    }, enabled = !busy, modifier = Modifier.fillMaxWidth()) { Text(if (connected) "Schedule movement alarm" else "Sign in to schedule") }
 }
 
 @Composable

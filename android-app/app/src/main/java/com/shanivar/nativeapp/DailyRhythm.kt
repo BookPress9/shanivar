@@ -12,10 +12,15 @@ enum class DayMoment(val title: String, val action: String) {
 data class Rhythm(
     val wakeTime: String = "07:00",
     val quietTime: String = "21:30",
-    val focusMinutes: Int = 25,
-    val movement: String = "Scan a QR code",
+    val focusMinutes: Int = 30,
+    val movementDestination: String = "morning_light",
+    val stepTarget: Int = 18,
+    val sceneConfirmation: Boolean = false,
+    val accessibleMovement: Boolean = false,
     val whatsappTime: String = "08:00",
     val whatsappTone: String = "Direct",
+    val dailyNoteEnabled: Boolean = true,
+    val blockedPackages: Set<String> = DisciplineTargets.DEFAULT_BLOCKED_PACKAGES,
 ) {
     fun moment(now: LocalTime): DayMoment {
         val wake = LocalTime.parse(wakeTime)
@@ -31,7 +36,8 @@ data class Rhythm(
     fun valid(): Boolean = runCatching {
         val awake = (LocalTime.parse(quietTime).toSecondOfDay() - LocalTime.parse(wakeTime).toSecondOfDay() + 86400) % 86400
         LocalTime.parse(whatsappTime)
-        awake in 6 * 3600..20 * 3600 && focusMinutes in 5..120
+        awake in 6 * 3600..20 * 3600 && focusMinutes in 5..120 && stepTarget in 1..200 &&
+            movementDestination.isNotBlank() && blockedPackages.size <= 50
     }.getOrDefault(false)
 }
 

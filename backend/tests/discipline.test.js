@@ -99,6 +99,22 @@ describe('PUT /api/discipline/preferences', () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body.dismissal_method).toEqual('photo_motion');
   });
+
+  it('accepts the movement-first rhythm fields', async () => {
+    mockQuery.mockImplementation((text) => {
+      if (text.includes('UPDATE discipline_preferences')) {
+        return Promise.resolve({ rows: [{ id: 'p1', dismissal_method: 'movement', movement_destination: 'kitchen', step_target: 16 }] });
+      }
+      return Promise.resolve({ rows: [] });
+    });
+    const res = await request(app).put('/api/discipline/preferences').send({
+      dismissal_method: 'movement', movement_destination: 'kitchen', step_target: 16,
+      scene_confirmation: true, quiet_time: '21:30', focus_minutes: 45,
+      preferred_language: 'hi', whatsapp_time: '08:00', whatsapp_tone: 'gentle', daily_note_enabled: true
+    });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.movement_destination).toEqual('kitchen');
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -253,6 +269,15 @@ describe('POST /api/discipline/alarms', () => {
     const res = await request(app).post('/api/discipline/alarms').send({ local_time: '06:30', dismissal_method: 'qr' });
     expect(res.statusCode).toEqual(201);
     expect(res.body.id).toEqual(OWNED_ALARM_ID);
+  });
+
+  it('creates a movement alarm with a destination and step target', async () => {
+    mockQuery.mockResolvedValue({ rows: [{ id: OWNED_ALARM_ID, dismissal_method: 'movement', movement_destination: 'morning_light', step_target: 18 }] });
+    const res = await request(app).post('/api/discipline/alarms').send({
+      local_time: '06:30', dismissal_method: 'movement', movement_destination: 'morning_light', step_target: 18
+    });
+    expect(res.statusCode).toEqual(201);
+    expect(res.body.dismissal_method).toEqual('movement');
   });
 });
 

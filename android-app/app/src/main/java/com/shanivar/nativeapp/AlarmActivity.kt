@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -30,13 +31,10 @@ import androidx.compose.ui.unit.dp
  */
 class AlarmActivity : ComponentActivity() {
     private var sessionId: String = ""
+    private val ringer by lazy { AlarmRinger(this) }
+    private var dismissed = false
 
-    private val qrLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK && result.data?.getBooleanExtra(DismissalContract.EXTRA_VERIFIED, false) == true) {
-            dismissAlarm()
-        }
-    }
-    private val photoMotionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val movementLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK && result.data?.getBooleanExtra(DismissalContract.EXTRA_VERIFIED, false) == true) {
             dismissAlarm()
         }
@@ -47,14 +45,55 @@ class AlarmActivity : ComponentActivity() {
         sessionId = intent.getStringExtra(EXTRA_SESSION_ID).orEmpty()
         showOverLockScreen()
         AlarmForegroundService.start(this)
+        ringer.start(onHardCapReached = {
+            // The alarm gave up rather than being completed. Close the surface so the user isn't
+            // left staring at a dead alarm screen, and let it be recorded as abandoned - that is a
+            // materially different outcome from a dismissal and must not look like one in the data.
+            dismissed = true
+            AlarmForegroundService.stop(this)
+            finish()
+        })
+        // Back must not dismiss the alarm. BlockOverlayActivity already did this for the app-lock
+        // overlay; the alarm screen - the surface actually described to users as hard to dismiss -
+        // did not, so a single Back press silently defeated it. Swallowing the event is the whole
+        // callback: dismissal happens only through a verified result below.
+        onBackPressedDispatcher.addCallback(this) { }
         setContent {
             ShanivarTheme {
                 AlarmScreen(
-                    onScanQr = { qrLauncher.launch(Intent(this, QrDismissalActivity::class.java)) },
-                    onPhotoMotion = { photoMotionLauncher.launch(Intent(this, PhotoMotionDismissalActivity::class.java)) },
+                    alarmMuted = !ringer.alarmStreamIsAudible(),
+                    onMove = {
+                        movementLauncher.launch(Intent(this, MovementDismissalActivity::class.java)
+                            .putExtra(EXTRA_SESSION_ID, sessionId))
+                    },
                 )
             }
         }
+    }
+
+    /**
+     * Back is swallowed above, but Home is not interceptable on modern Android - the only lawful
+     * answer is to come straight back. Relaunching from the background is normally blocked since
+     * Android 10; holding SYSTEM_ALERT_WINDOW is what exempts us, the same mechanism FocusGuardService
+     * relies on to raise the block screen. Guarded by [dismissed] so a completed alarm never
+     * reappears, which would be the "won't stop after the action is done" failure.
+     */
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        if (dismissed) return
+        startActivity(
+            Intent(this, AlarmActivity::class.java)
+                .putExtra(EXTRA_SESSION_ID, sessionId)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP),
+        )
+    }
+
+    override fun onDestroy() {
+        // Belt and braces: dismissAlarm() already stops the ringer, but the process can also be
+        // torn down by the OS mid-alarm, and a MediaPlayer looping on the alarm stream that
+        // outlives its Activity would keep ringing with no way for the user to stop it.
+        ringer.stop()
+        super.onDestroy()
     }
 
     private fun showOverLockScreen() {
@@ -75,6 +114,10 @@ class AlarmActivity : ComponentActivity() {
     }
 
     private fun dismissAlarm() {
+        // Order matters: silence first, unconditionally, before service teardown or anything that
+        // could throw. Nothing about stopping the noise may depend on work that can fail.
+        dismissed = true
+        ringer.stop()
         AlarmForegroundService.stop(this)
         finish()
     }
@@ -90,16 +133,18 @@ object DismissalContract {
 }
 
 @Composable
-private fun AlarmScreen(onScanQr: () -> Unit, onPhotoMotion: () -> Unit) {
+private fun AlarmScreen(alarmMuted: Boolean, onMove: () -> Unit) {
     Surface(Modifier.fillMaxSize()) {
         Column(
             Modifier.fillMaxSize().padding(28.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
         ) {
             Text("Time to wake up.", style = MaterialTheme.typography.headlineLarge)
-            Text("Choose how you'll dismiss this alarm. Both require leaving your bed.")
-            Button(onClick = onScanQr, modifier = Modifier.fillMaxWidth()) { Text("Scan your QR code") }
-            Button(onClick = onPhotoMotion, modifier = Modifier.fillMaxWidth()) { Text("Verify motion + take a photo") }
+            if (alarmMuted) {
+                Text("Your alarm volume is turned down, so this alarm was silent. Raise the alarm volume before tonight.")
+            }
+            Text("Your chosen destination is waiting. The alarm ends after your movement is verified.")
+            Button(onClick = onMove, modifier = Modifier.fillMaxWidth()) { Text("Start moving") }
         }
     }
 }

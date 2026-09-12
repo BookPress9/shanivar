@@ -8,6 +8,10 @@ Two selectable dismissal methods for v1, both launched via the fastest possible 
 2. **Photo + genuine motion** (new, in place of ML scene-matching): accelerometer must register real ambulatory motion between alarm fire and photo capture, combined with a photo being taken — deterministic threshold check, no fuzzy image-matching risk, no sticker required.
 Rejected for v1: plain unverified photo snap (too easy to fake from bed), ML-based scene/reference-photo matching (real complexity/tuning risk for marginal gain over motion-sensing), puzzle-only (doesn't require leaving bed).
 
+## Founder supersession, 2026-09-12: movement first
+
+The founder rejected the scanner approach for the new-user experience. The current QR and photo-plus-motion code is now a legacy implementation pending migration. The approved direction is a chosen destination plus sustained step detection, with an optional on-device scene check as secondary evidence and a setup-time non-walking alternative. Do not build QR registration UI for new users. The required native-contract revision and migration rules are in `android-app/FOUNDER_MOVEMENT_ALARM_DIRECTION_2026-09-12.md`.
+
 ## Ownership
 Per `NATIVE_HANDOFF.md`, Claude owns providing the actual native engine implementation (not just a contract) — this differs from the reflection scroller feature, where Codex owned all Compose/native code. Codex still owns wiring the engine into its actual screens/settings UI and real-device verification (this machine cannot run the emulator — see memory note — so nothing here is verified on-device).
 

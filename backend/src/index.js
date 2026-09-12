@@ -20,6 +20,7 @@ const billingRoutes = require('./routes/billing');
 const habitsRoutes = require('./routes/habits');
 const reflectionsRoutes = require('./routes/reflections');
 const disciplineRoutes = require('./routes/discipline');
+const telemetryRoutes = require('./routes/telemetry');
 const db = require('./db');
 
 const app = express();
@@ -86,6 +87,7 @@ app.use('/api/billing', billingRoutes);
 app.use('/api/habits', habitsRoutes);
 app.use('/api/reflections', reflectionsRoutes);
 app.use('/api/discipline', disciplineRoutes);
+app.use('/api/telemetry', telemetryRoutes);
 app.use('/api/whatsapp', require('./routes/whatsapp'));
 
 // Health check. This is the host's health-check target, so it has to actually mean

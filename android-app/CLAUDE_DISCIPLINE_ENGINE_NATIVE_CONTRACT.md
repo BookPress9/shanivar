@@ -1,15 +1,69 @@
 # Native integration contract: Discipline Engine (app-lock + alarm) → Codex
 
-Status: backend live-verified, native engine code written and unit-tested (JVM only, no emulator/device — see the honest gap list below). Not verified on a real device. Full research/rationale: `shanivar-vbt/discipline-engine/platform-research.md`. Squad record: `ai_org/discipline_engine_squad.md`. Product-owner-level tracker across the whole app, not just this feature: `ai_org/product_owner_first_apk.md`.
+Status, updated 2026-09-12: backend live-verified against Supabase; Compose integration and the native engine pass JVM/Robolectric and Android 14 managed-emulator checks. Physical-device checks remain open; see the honest gap list below. Full research/rationale: `shanivar-vbt/discipline-engine/platform-research.md`. Squad record: `ai_org/discipline_engine_squad.md`. Product-owner-level tracker: `ai_org/product_owner_first_apk.md`.
 
-## Elevated to MVP priority — 2026-09-11
-The founder has named Alarm + social-media app-lock as *the* MVP of the product — the two features everything else is secondary to. Nothing below is called from `ShanivarApp.kt` yet, confirmed by grep: `AlarmScheduler.schedule()` is only invoked from `BootRescheduleReceiver` (which reschedules an alarm that was already scheduled — nothing schedules one the first time), and `DisciplineEngine.startFocus`/`releaseFocus` are never called outside `DisciplineEngine.kt` itself. The Focus tab's copy ("App lock is not connected in this build") and the Rhythm screen's alarm section ("Alarm not scheduled. Saving records your preference only.") are both literally accurate today. This is now the single highest-priority item across the whole app — not one item on a longer list.
+**Founder update, 2026-09-12:** the QR-first dismissal UI and the `qr`/`photo_motion` product choice below are superseded by [the movement-first alarm direction](FOUNDER_MOVEMENT_ALARM_DIRECTION_2026-09-12.md). The new-user Compose flow now saves the movement contract, schedules the alarm locally, confirms it to the API, and opens `MovementDismissalActivity`; the earlier QR/photo code remains as a legacy rollback path.
+
+## Read first: the enforcement stance, 2026-09-12
+How hard these features push is now a written founder-level decision:
+[ENFORCEMENT_STANCE_2026-09-12.md](ENFORCEMENT_STANCE_2026-09-12.md). It governs everything below.
+Short version: maximise real friction, never claim the impossible, and never let enforcement become
+a malfunction the user cannot escape. It contains the alarm escalation spec, the eight safety
+invariants that guarantee an alarm always stops when it should, the app-lock enforcement ladder with
+its honest limits, and the redirect-to-practice design for the block surface.
+
+Landed against it already: escalating alarm volume on the alarm stream, an independent 15-minute
+watchdog that silences the alarm even if the dismissal logic is broken, relaunch-on-Home for the
+alarm surface, and synchronous silencing that never waits on the network.
+
+## Elevated to MVP priority — 2026-09-11; connected 2026-09-12
+The founder named Alarm + social-media app-lock as the MVP. `ShanivarApp.kt` now calls `DisciplineEngine.status/startFocus/releaseFocus`; Rhythm creates an API alarm, calls `AlarmScheduler.schedule()`, and confirms the computed occurrence. UI state only says protected or scheduled after the engine/API succeeds.
 
 Also fixed since the last handoff, unrelated to this feature but blocking it on a real device either way: `android-app/gradle.properties`'s `shanivarApiUrl` was hardcoded to the emulator-only `10.0.2.2`; it now points at the dev machine's LAN IP, verified end to end. See `ai_org/product_owner_first_apk.md` for that account, and `ai_org/family_testing_handoff_meeting_2026-09-11.md` for why local Wi-Fi testing is the current plan.
 
 **Landed, 2026-09-12**: the default block-list is now Instagram + YouTube + TikTok + Facebook + X + Snapchat (package IDs below), still fully overridable per-user, and `GET /api/discipline/lock-targets` is live — returns `{ targets: [{ package: "com.instagram.android", label: "Instagram" }, ...] }` for exactly those six, authenticated the same as every other route in this file. Also fixed while hardening this for MVP: `POST /focus/start` had a real concurrency race (proven live — two simultaneous starts both returned 201, giving one user two active sessions at once); now enforced by a DB-level unique constraint, the same pattern already used for the auth-registration race. Everything in this doc is stable and safe to build against now — nothing pending.
 
 Package IDs, if the block-list picker needs them outside the catalog call for any reason: `com.instagram.android`, `com.google.android.youtube`, `com.zhiliaoapp.musically` (TikTok — kept its pre-2018-merger "musical.ly" id, not something with "tiktok" in it), `com.facebook.katana`, `com.twitter.android`, `com.snapchat.android`.
+
+## New, 2026-09-12: report every alarm that fires — `POST /api/telemetry/alarm-fired`
+
+`AlarmFireReceiver` must call this the moment an alarm reaches the user, before or alongside
+showing `AlarmActivity`. Fire-and-forget: never gate the ringing UI on it, exactly like dismissal
+recording.
+
+```
+POST /api/telemetry/alarm-fired
+{
+  "alarm_schedule_id": "<uuid, optional>",
+  "scheduled_for": "<ISO timestamp the alarm was set for, optional>",
+  "fired_at": "<ISO timestamp, optional — server defaults to now>",
+  "delivery_path": "full_screen_intent" | "notification_only" | "activity_direct" | "unknown",
+  "device_manufacturer": "Xiaomi",   // android.os.Build.MANUFACTURER
+  "device_model": "Redmi Note 12",   // android.os.Build.MODEL
+  "android_sdk": 34,                 // android.os.Build.VERSION.SDK_INT
+  "app_version": "0.1.0",
+  "client_event_id": "<uuid you generate per alarm occurrence>"
+}
+```
+
+**Why this matters more than it looks.** `alarm_dismissal_events` only records what happened after
+an alarm woke someone. An alarm the OS killed, deferred, or never delivered writes nothing at all —
+so "Xiaomi silently dropped it" and "this person stopped using the app" are the same shape in the
+data. With a physical-device cohort whose whole purpose is finding where alarms die, that gap makes
+the test unmeasurable. Fire events close it.
+
+**`client_event_id` is not optional in practice.** Generate one UUID per alarm occurrence and reuse
+it on retry. A device that fires offline will report late; without a stable id that retry is counted
+as a second alarm, which inflates apparent reliability — the precise opposite of what this measures.
+Retries return `200` with the original row rather than `201`.
+
+`delivery_path` is what actually got the user's attention, and it is the diagnostic that separates
+"full-screen intent was honoured" from "we only managed a notification" on OEMs that quietly
+downgrade it. Send `unknown` rather than guessing.
+
+Verified live against the production database on 2026-09-12: recording with device metadata,
+retry idempotency, cross-user rejection (404), validation rejection (400), and admin-gating of the
+aggregate (403). Backend suite 296/296.
 
 ## Build spec: the two screens that matter most
 

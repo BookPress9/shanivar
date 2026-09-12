@@ -21,8 +21,12 @@ class NativeRenderTest {
     private val context get() = ApplicationProvider.getApplicationContext<Context>()
     @Before fun prepareAccountlessDevice() {
         context.getSharedPreferences("rhythm", 0).edit().clear().putBoolean("introduced", true).commit()
-        if (compose.onAllNodesWithText("Find my rhythm").fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithText("Find my rhythm").performScrollTo().performClick()
+        if (compose.onAllNodesWithText("English").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithText("English").performClick()
+            compose.onNodeWithText("Explore first").performScrollTo().performClick()
+            compose.onNodeWithText("Skip for now").performScrollTo().performClick()
+            compose.onNodeWithText("I understand").performScrollTo().performClick()
+            compose.onNodeWithText("Build my rhythm").performScrollTo().performClick()
         }
         compose.onNodeWithText("Today", useUnmergedTree = true).performClick()
     }

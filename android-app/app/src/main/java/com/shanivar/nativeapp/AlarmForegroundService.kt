@@ -31,7 +31,7 @@ class AlarmForegroundService : Service() {
         manager.createNotificationChannel(channel)
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Alarm awaiting dismissal")
-            .setContentText("Scan your QR code or verify with motion + a photo.")
+            .setContentText("Get up and move to finish dismissing this alarm.")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setOngoing(true)
             .build()

@@ -37,7 +37,7 @@ class AlarmFireReceiver : BroadcastReceiver() {
         manager.createNotificationChannel(channel)
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle("Time to wake up")
-            .setContentText("Scan your QR code or verify with motion + a photo to dismiss.")
+            .setContentText("Walk to your chosen place to dismiss.")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
