@@ -70,3 +70,35 @@ supabase/.temp
 
 # Claude Code local settings
 .claude/
+
+# ---------------------------------------------------------------------------
+# Excluded from the Shanivar branch. All of this still exists on disk — these
+# lines keep it out of the repo, not off the machine. Delete a line to re-admit.
+# ---------------------------------------------------------------------------
+
+# Legacy Hybrid Monk web stack (Next.js app + its root dev orchestrator),
+# superseded by the native Android app. Shanivar is backend/ + android-app/.
+/frontend/
+/package.json
+/package-lock.json
+/run_local.js
+/run_real.js
+
+# Local n8n social-automation workspace: ~1,580 files including a .n8n-local
+# cache. A separate concern from the product, and not part of any build.
+automation/
+
+# Vendored agent skill copies, present at two diverging paths and regenerable.
+backend/.agents/
+backend/agent/
+backend/skills-lock.json
+
+# Deploy configs for platforms we don't use. Production is Render + the
+# Supabase pooler — see docs/decisions/0004-supavisor-pooler-required.md.
+backend/Dockerfile
+backend/.dockerignore
+backend/railway.json
+
+# Scratch harnesses and captured output. The real suite is backend/tests/.
+backend/puretest.js
+backend/test_out.txt

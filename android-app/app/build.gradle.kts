@@ -13,7 +13,7 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_URL", "\"https://shanivar.com/api\"")
+        buildConfigField("String", "API_URL", "\"https://api.thehybridmonk.com/api\"")
     }
     buildTypes {
         debug {

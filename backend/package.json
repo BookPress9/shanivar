@@ -10,7 +10,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "dev:mock": "node src/mock_server.js",
-    "test": "jest"
+    "test": "jest",
+    "test:integration:supabase": "node scripts/smoke-supabase.js"
   },
   "jest": {
     "setupFiles": [

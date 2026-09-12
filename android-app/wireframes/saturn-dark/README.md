@@ -1,20 +1,25 @@
 # Shanivar Saturn dark wireframes
 
-Interactive mobile wireframes for the native Android experience. Open `index.html` directly in a browser, choose screens from the left rail, use the on-screen actions, or move with the left and right arrow keys.
+Interactive bilingual mobile wireframes for the native Android experience. Open `index.html` directly in a browser, choose screens from the left rail, use the on-screen actions, or move with the left and right arrow keys. Select English or Hindi on the first screen; the language button below the phone switches the entire prototype at any point.
 
 ## Screen set
 
 | # | Screen | Product decision shown |
 | --- | --- | --- |
-| 01 | Arrival | Explain the structure before asking for Android access |
-| 02 | Today | One time-aware action with explicit confirmation states |
-| 03 | Focus setup | Review duration, blocked apps and required access |
-| 04 | Focus held | Amber appears only after native protection confirmation |
-| 05 | Rhythm | Separate saved preferences from scheduled/delivered states |
-| 06 | Practice | Quiet passage inside structural, live lock chrome |
-| 07 | Messages | A response is required before the next reflection |
-| 08 | Alarm | A full-screen, verified physical dismissal action |
-| 09 | Return | Report the completed practice and actual lock outcome |
+| 01 | Language | Choose English or Hindi before product explanation |
+| 02 | Account | Create an account, sign in, or explore first |
+| 03 | Birth context | Optional date, time and location with a clear purpose |
+| 04 | How it works | Explain focus, movement and daily direction before permissions |
+| 05 | Arrival | Resolve setup into a three-part mental model |
+| 06 | Today | Personal daily direction, focus suggestion and sourced practice |
+| 07 | Focus setup | Compare morning, night and custom windows before starting |
+| 08 | Focus held | Amber appears only after native protection confirmation |
+| 09 | Dincharya | Separate saved preferences from scheduled/delivered states |
+| 10 | Practice | Quiet passage inside structural, live lock chrome |
+| 11 | Messages | A response is required before the next reflection |
+| 12 | Movement cue | Choose steps, destination and optional private scene check |
+| 13 | Alarm | Verify sustained movement without a QR scanner |
+| 14 | Return | Report the completed practice and actual lock outcome |
 
 ## Visual system
 
@@ -27,7 +32,7 @@ Interactive mobile wireframes for the native Android experience. Open `index.htm
 
 ## Compose translation
 
-The prototype maps to the existing `Today`, `Focus`, `Rhythm`, `Practice` and `ReflectionScreen` destinations. Reusable Compose pieces should include `SaturnRing`, `StructuralCard`, `TruthStateLabel`, `LiveDisciplineBanner`, `SourceCitation`, `RhythmTimeline`, and `ShanivarBottomNavigation`.
+The prototype maps to the existing `Today`, `Focus`, `Rhythm`, `Practice` and `ReflectionScreen` destinations and adds the missing onboarding and movement-choice surfaces. Reusable Compose pieces should include `SaturnRing`, `StructuralCard`, `TruthStateLabel`, `LiveDisciplineBanner`, `SourceCitation`, `RhythmTimeline`, `MovementCuePicker`, and `ShanivarBottomNavigation`.
 
 UI labels must continue to reflect backend/native truth:
 
@@ -44,4 +49,6 @@ From the repository root:
 node android-app/wireframes/saturn-dark/capture.mjs
 ```
 
-This writes nine phone-frame PNGs and one workspace overview to `exports/` using the Playwright installation already present under `frontend/`.
+This writes 14 English phone-frame PNGs, 14 Hindi phone-frame PNGs and two workspace overviews to `exports-v2/` using the Playwright installation already present under `frontend/`. The earlier `exports/` folder is the superseded nine-screen revision.
+
+See [research and product decisions](RESEARCH_AND_PRODUCT_DECISIONS.md) for the evidence boundary behind focus windows, notifications and movement verification.
