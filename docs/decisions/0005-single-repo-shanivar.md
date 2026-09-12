@@ -37,6 +37,27 @@ Both contain a complete, equivalent `backend/`.
 - The legacy history is preserved: in `hybridmonk-backend` itself (archived, not deleted) and in the
   local `legacy-main` branch tracking the `legacy-hybridmonk` remote.
 
+## Verification that deleting the legacy repo loses nothing (2026-09-12)
+
+A full path diff was run between the two trunks before authorising deletion:
+
+- **`backend/src` is byte-identical** in both repos. Nothing deploy-critical is unique to the legacy.
+- The only `backend/` files unique to the legacy are `puretest.js` and `test_out.txt` — scratch
+  harnesses, already excluded by `.gitignore`.
+- Everything else unique to the legacy belongs to **The Hybrid Monk**, a different product:
+  the Next.js web frontend (56 files), `monk_social_automator`, `monk_social_webapp`, n8n, nginx,
+  Docker/AWS/Hostinger deploy scripts, and `database/schema.sql` — whose tables (`journey_stages`,
+  `badges`, `community_posts`, `user_chart`, `planet_positions`, `whatsapp_messages`, `ads`) belong
+  to that product and have no counterpart in Shanivar's 10 tables.
+- `memory/architecture.md`, `memory/api_map.md` and `memory/feature_backlog.md` describe that same
+  earlier product — glassmorphism UI, a Gemini "Inner Observer", birth-chart personalisation,
+  community circles. **A case-insensitive search across all legacy-only documentation returns zero
+  occurrences of "shanivar".**
+- Shanivar's own material — `android-app/` (160 files), `shanivar-vbt/` (47), `ai_org/` (11),
+  `marketing/` (7), `docs/` — exists only in `shanivar` and was never in the legacy repo.
+
+**Conclusion: the legacy repository may be deleted, subject to the ordering below.**
+
 ## Remaining steps — this decision is not yet fully executed
 
 1. **Rotate the Render API key** (leaked in `render_check.js`), the GitHub PAT, and the Supabase
@@ -47,8 +68,14 @@ Both contain a complete, equivalent `backend/`.
    Service environment variables live on the service, not in the repo, and carry over untouched.
 3. **Verify** `GET /api/health` returns 200 with `"database":"ok"` from a deploy sourced from
    `shanivar`.
-4. **Only then archive** `hybridmonk-backend` (read-only). Do not delete it — it is the sole
-   remote record of the earlier project phase.
+4. **Only then delete** `hybridmonk-backend`. The verification above establishes that nothing
+   Shanivar-related is lost. Founder's call, 2026-09-12: the earlier project is discontinued and its
+   history is not worth preserving remotely. A local copy remains on the `legacy-main` branch.
+
+**The ordering is not optional.** Render clones the source repository on every build. Deleting it
+while the service still points there leaves production running but unable to redeploy, restart onto
+a new instance, or roll back — and the failure surfaces at the worst moment, during the next deploy,
+not at deletion time. Steps 2 and 3 must complete first.
 
 Until step 3 passes, the live service still deploys from the old repository. Anyone shipping a
 backend change before then must push to **both** remotes or the deploy will not include it.
