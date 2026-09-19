@@ -7,10 +7,11 @@ import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import java.time.ZonedDateTime
 
 /**
  * The "block screen" launched by `FocusGuardService` when it detects a protected package in the
@@ -18,25 +19,38 @@ import androidx.compose.ui.unit.dp
  * actually buys us here: without it, Android 10+'s background-activity-start restriction would
  * block a Service from calling startActivity() on an app the user isn't currently inside of.
  *
- * Deliberately minimal: no snooze/bypass affordance beyond "back to Shanivar" - ending a session
- * early is a `DisciplineGateway.releaseFocus()` call from inside the app itself, not from here.
+ * MVP streamline task (package 5, "a door, not a wall"): someone hitting this screen is already
+ * holding the phone and already wants something - spending that moment on a bare refusal gets
+ * nothing back. The primary action is now the local one-minute pause (see [LocalPauseScreen]),
+ * offered inline without leaving this Activity; "Return to my day" is secondary and goes to the
+ * device's own home screen, not back into Shanivar, matching "device home rather than the blocked
+ * app" from the task spec. There is still no snooze/bypass affordance: ending a session early
+ * remains a `DisciplineGateway.releaseFocus()` call from inside the app itself, not from here.
  */
 class BlockOverlayActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val blockedPackage = intent.getStringExtra(EXTRA_BLOCKED_PACKAGE).orEmpty()
+        val rule = FocusScheduler(this).pendingRule()
+        val reminder = if (rule != null && FocusWindowRecurrence.isActiveAt(rule.days, rule.startTime, rule.endTime, ZonedDateTime.now()))
+            FocusCommitmentCache.read(this) else Triple("", "", "")
         // The whole point of the overlay is that a casual back-press doesn't return you to
-        // Instagram - only the explicit "Back to Shanivar" button does.
-        onBackPressedDispatcher.addCallback(this) { returnToShanivar() }
-        setContent { ShanivarTheme { BlockOverlayScreen(blockedPackage, onReturn = ::returnToShanivar, onReflect = {
-            ReflectionNavigation.fromBlockedSurface(); returnToShanivar()
-        }) } }
+        // Instagram - only an explicit action does.
+        onBackPressedDispatcher.addCallback(this) { goHome() }
+        setContent {
+            ShanivarTheme {
+                var pausing by remember { mutableStateOf(false) }
+                if (pausing) {
+                    LocalPauseScreen(isPreview = false, onExit = { goHome() })
+                } else {
+                    BlockOverlayScreen(blockedPackage, reminder, onPause = { pausing = true }, onReturn = ::goHome)
+                }
+            }
+        }
     }
 
-    private fun returnToShanivar() {
-        val home = Intent(this, MainActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(home)
+    private fun goHome() {
+        startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         finish()
     }
 
@@ -47,20 +61,22 @@ class BlockOverlayActivity : ComponentActivity() {
 }
 
 @Composable
-private fun BlockOverlayScreen(blockedPackage: String, onReturn: () -> Unit, onReflect: () -> Unit) {
+private fun BlockOverlayScreen(blockedPackage: String, reminder: Triple<String, String, String>, onPause: () -> Unit, onReturn: () -> Unit) {
     Surface(Modifier.fillMaxSize()) {
         Column(
-            Modifier.fillMaxSize().padding(28.dp),
+            Modifier.fillMaxSize().safeDrawingPadding().padding(28.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
         ) {
-            Text("Your focus window is protected.", style = MaterialTheme.typography.headlineSmall)
+            Text(reminder.first.ifBlank { "Your focus window is protected." }, style = MaterialTheme.typography.headlineSmall)
+            if (reminder.second.isNotBlank()) Text(reminder.second)
+            if (reminder.third.isNotBlank()) Text(reminder.third)
             Text(
                 if (blockedPackage.isNotBlank()) "$blockedPackage is paused until your session ends."
                 else "This app is paused until your session ends.",
             )
             Text("A brief flash of the app before this screen appears is expected - detection isn't instant.")
-            OutlinedButton(onClick = onReflect, modifier = Modifier.fillMaxWidth()) { Text("Reflect with Shanivar") }
-            Button(onClick = onReturn, modifier = Modifier.fillMaxWidth()) { Text("Back to Shanivar") }
+            PrimaryAction("Return to my day", onReturn)
+            OutlinedButton(onClick = onPause, modifier = Modifier.fillMaxWidth()) { Text("Take a one-minute pause") }
         }
     }
 }

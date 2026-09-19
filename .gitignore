@@ -39,6 +39,10 @@ archive_auxiliary/
 # binary. The strategy documents in it are tracked explicitly instead.
 marketing/shanivar/*
 !marketing/shanivar/*.md
+# Keep the new editorial plan, copy, review exports and QA evidence reviewable.
+# Future rendered campaign media belongs in assets and remains excluded.
+!marketing/shanivar/month-02/
+marketing/shanivar/month-02/assets/
 
 # Logs
 *.log

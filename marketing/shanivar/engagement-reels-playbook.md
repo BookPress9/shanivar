@@ -2,6 +2,18 @@
 
 Updated 11 September 2026. Owner: Social Media Manager. This is a working creative and measurement standard, not a promise of reach. Recheck Instagram's in-app Professional Dashboard → Best Practices before each production cycle because its guidance is personalized and changes over time.
 
+## 12 September 2026 — rolling-month operational update
+
+The [30-day campaign](month-02/README.md) is the current working proposal. Its feed cadence is a capacity decision: three originals plus one language companion each week, with optional Stories. It supersedes generic daily-post or Reel-frequency defaults for this month. Account-specific Best Practices must still be checked; neither a fixed duration nor a fixed posting time is an algorithmic guarantee.
+
+The founder's first-post URL is captured in [the intake](month-02/first-post-analysis.md). Creative and private Insights could not be fetched. There is no verified performance baseline yet. Never backfill missing reach, saves, watch time or publication dates from a draft or a public URL.
+
+Follow [the month operations standard](month-02/operations.md) for metric definitions and maturity windows. Keep language tests observational; separate Trial Reels from normal delivery, alternate language order, and log topic/weekday/voice confounds. Do not sum post reach into unique audience coverage. Average watch time divided by duration is a watch-time ratio, not completion; it can exceed 100% with repeat viewing.
+
+Weekly reviews should protect one active hypothesis rather than continuously changing creative. Hold when evidence is insufficient. Give the Creative Writer one proposed adjustment for the next cycle, with raw evidence and uncertainty. Fix false claims or unreadable text immediately and log them.
+
+Original-source recheck on 12 September: [Best Practices](https://about.fb.com/news/2024/10/best-practices-education-hub-creators-instagram/), [Trial Reels and initial metrics](https://about.fb.com/news/2024/12/trial-reels-try-content-non-followers-first-see-what-perfoms-best/), and [average watch time](https://about.fb.com/news/2023/04/instagram-reels-trending-audio-and-gifts-updates/). These pages describe platform tools; no Shanivar uplift was established. Actual in-app feature availability remains unchecked.
+
 ## What current platform evidence supports
 
 Instagram's official Best Practices hub covers creation, engagement, reach, monetization and guidelines, including personalized advice about posting frequency, attention, Reel length, trending audio, hashtags and the relationship between Reels and follower growth. This means Shanivar should use the current in-app guidance for the account instead of treating a universal posting schedule or duration as fact.

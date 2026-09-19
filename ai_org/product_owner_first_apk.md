@@ -1,5 +1,9 @@
 # Product Owner: first prototype APK — delivery tracker
 
+## Current launch task — 13 September 2026
+
+The [Claude streamlining task](../android-app/CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md) supersedes the earlier feature-complete APK bar below for the first pitch/usability cohort. Deliver alarms and focus modes with optional pause/review for parents introduced by adult children and younger self-directed users. Scroller, charts and other deferred capabilities remain preserved but deferred under the [current scope](../android-app/INITIAL_MVP_SCOPE_2026-09-13.md). Earlier dated evidence below is historical, not completion evidence for this new task. Claude owns this scoped end-to-end task; source, test output and physical-device evidence must establish completion.
+
 Role stood up 2026-09-10, by the Staff Manager, at founder request: drive toward a first prototype
 APK the founder can actually install and use, delegating backend work to Claude and frontend/UI
 work to Codex. This sits above the individual feature squads (`reflection_scroller_squad.md`,

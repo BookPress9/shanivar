@@ -1,5 +1,7 @@
 # Shanivar (The Digital Engine) & The Hybrid Monk (The Brand)
 
+Current Android pitch/usability work follows the [initial MVP scope](android-app/INITIAL_MVP_SCOPE_2026-09-13.md) and [Claude implementation task](android-app/CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md): family introductions and younger self-use, one goal/app, a short protected session, optional pause and review. The older ecosystem overview below describes the broader vision, not the current initial-launch promise. See the [staged backlog](docs/strategy/shanivar-launch-backlog.md) for later capabilities.
+
 Welcome to the central monorepo powering the **Shanivar** SaaS ecosystem and the custom-fit technical bridge for **The Hybrid Monk** e-commerce brand.
 
 ## 🌌 The Dual Architecture

@@ -34,9 +34,16 @@ class MovementDismissalActivity : ComponentActivity(), SensorEventListener {
     private var destination = "morning_light"
     private var accessible = false
     private var alarmId = ""
+    // MVP streamline task (2026-09-18): non-negotiable #2 requires the accessible path whenever a
+    // sensor cannot deliver movement data, not only when the user pre-selected it in settings.
+    // Previously, a device with neither TYPE_STEP_DETECTOR nor TYPE_ACCELEROMETER (or one whose
+    // ACTIVITY_RECOGNITION grant is denied) left the counter frozen at 0/target with no visible way
+    // out, since the accessible button only rendered when the `accessible` preference was already
+    // on - that traps exactly the person this invariant exists to protect.
+    private var sensorUnavailable by mutableStateOf(false)
 
     private val activityPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) registerSensor()
+        if (granted) registerSensor() else sensorUnavailable = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,11 +58,13 @@ class MovementDismissalActivity : ComponentActivity(), SensorEventListener {
         sensor = manager?.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
         useHardwareSteps = sensor != null
         if (sensor == null) sensor = manager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorUnavailable = sensor == null // neither sensor exists on this hardware at all
         setContent {
             ShanivarTheme {
-                MovementScreen(destination, steps, target, useHardwareSteps, accessible, onAccessible = {
-                    recordAndFinish("accessible", JSONObject().put("confirmation", "user_deliberate"))
-                })
+                MovementScreen(destination, steps, target, useHardwareSteps, accessible || sensorUnavailable,
+                    sensorUnavailable, onAccessible = {
+                        recordAndFinish("accessible", JSONObject().put("confirmation", "user_deliberate"))
+                    })
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && useHardwareSteps &&
@@ -99,7 +108,10 @@ class MovementDismissalActivity : ComponentActivity(), SensorEventListener {
 }
 
 @Composable
-private fun MovementScreen(destination: String, steps: Int, target: Int, hardware: Boolean, accessible: Boolean, onAccessible: () -> Unit) {
+private fun MovementScreen(
+    destination: String, steps: Int, target: Int, hardware: Boolean,
+    showAccessible: Boolean, sensorUnavailable: Boolean, onAccessible: () -> Unit,
+) {
     val label = when (destination) {
         "morning_light" -> "morning light"
         "kitchen" -> "the kitchen"
@@ -109,11 +121,15 @@ private fun MovementScreen(destination: String, steps: Int, target: Int, hardwar
     Surface(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize().padding(28.dp), verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)) {
             Text("Move into your morning.", style = MaterialTheme.typography.headlineLarge)
-            Text("Walk toward $label. Shanivar counts only movement after this alarm began.")
-            Text("$steps / $target steps", style = MaterialTheme.typography.displayMedium, color = MaterialTheme.colorScheme.primary)
-            LinearProgressIndicator(progress = { steps.toFloat() / target }, modifier = Modifier.fillMaxWidth())
-            Text(if (hardware) "Step detector active" else "Calibrated movement fallback active", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (accessible) OutlinedButton(onAccessible, Modifier.fillMaxWidth()) { Text("Use my accessible wake check") }
+            if (sensorUnavailable) {
+                Text("This phone can't detect movement, so this alarm ends the same way every time here: with your own confirmation.")
+            } else {
+                Text("Walk toward $label. Shanivar counts only movement after this alarm began.")
+                Text("$steps / $target steps", style = MaterialTheme.typography.displayMedium, color = MaterialTheme.colorScheme.primary)
+                LinearProgressIndicator(progress = { steps.toFloat() / target }, modifier = Modifier.fillMaxWidth())
+                Text(if (hardware) "Step detector active" else "Calibrated movement fallback active", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            if (showAccessible) OutlinedButton(onAccessible, Modifier.fillMaxWidth()) { Text("Use my accessible wake check") }
         }
     }
 }

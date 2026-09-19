@@ -47,3 +47,8 @@ becomes a permanent constraint nobody remembers choosing.
 - [0003 — Movement is the default alarm dismissal, with a mandatory accessible alternative](0003-movement-first-alarm-dismissal.md)
 - [0004 — All database connections go through the Supavisor pooler](0004-supavisor-pooler-required.md)
 - [0005 — `BookPress9/shanivar` is the only repository](0005-single-repo-shanivar.md)
+- [0006 — One simple MVP for family introductions and younger self-use](0006-two-entry-simple-mvp.md)
+- [0007 — V1 includes alarms and focus modes](0007-v1-alarms-and-focus.md)
+- [0008 — Alarm recurrence is recomputed after every fire, not pre-generated](0008-alarm-recurrence-recomputed-not-pregenerated.md)
+- [0009 — Return for the next conscious choice, not engagement](0009-behavioral-return-loop.md)
+- [0010 — Recurring focus schedules, and a when-then commitment instead of a "deepest desire" prompt](0010-focus-schedule-when-then-commitment.md)

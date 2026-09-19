@@ -20,6 +20,7 @@ class AndroidFocusGuardController(private val context: Context) : FocusGuardCont
     }
 
     override fun stop() {
+        context.getSharedPreferences("focus_guard", Context.MODE_PRIVATE).edit().clear().apply()
         context.stopService(Intent(context, FocusGuardService::class.java))
     }
 }

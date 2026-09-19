@@ -41,11 +41,14 @@ class DisciplineEngine(
         } catch (e: ApiFailure) {
             throw DisciplineError.Network(e.message ?: "Could not reach Shanivar. Try again.")
         }
-        return if (active != null) {
+        return if (active != null && active.endsAtEpochMillis > System.currentTimeMillis()) {
             activeSessionId = active.id
+            // Recover the native guard after process recreation before claiming protection.
+            guard.start(active.packageNames, active.endsAtEpochMillis)
             DisciplineStatus(ProtectionState.ACTIVE, alarmScheduled(), active.endsAtEpochMillis, active.packageNames)
         } else {
             activeSessionId = null
+            guard.stop()
             DisciplineStatus(ProtectionState.OFF, alarmScheduled())
         }
     }
@@ -57,6 +60,11 @@ class DisciplineEngine(
             )
         }
         val info = try {
+            // The server retains expired sessions for a cleanup grace period. Close only an
+            // actually elapsed session before starting again; never release a live session.
+            api.activeFocus()?.takeIf { it.endsAtEpochMillis <= System.currentTimeMillis() }?.let {
+                api.releaseFocus(it.id)
+            }
             api.startFocus(minutes, packageNames)
         } catch (e: ApiFailure) {
             throw mapFailure(e)

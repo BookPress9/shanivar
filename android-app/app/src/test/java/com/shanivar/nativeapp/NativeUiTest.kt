@@ -13,6 +13,13 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.junit.Assert.*
 
+/**
+ * MVP streamline task (2026-09-18): rewritten for the single-Home surface
+ * (`BuildConfig.STREAMLINED_LAUNCH = true` by default - see build.gradle.kts). The four-tab
+ * `LegacyTabShell` this file previously exercised is still present but compiled out of the default
+ * build, so its own reachability is no longer covered by an automated test here; see the delivery
+ * report's known-gaps note.
+ */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w390dp-h844dp-xhdpi")
 @GraphicsMode(GraphicsMode.Mode.LEGACY)
@@ -24,48 +31,44 @@ class NativeUiTest {
         context.getSharedPreferences("rhythm", 0).edit().clear().commit()
         context.getSharedPreferences("reflections", 0).edit().clear().commit()
     }
+
+    private fun completeGuestOnboarding() {
+        compose.setContent { ShanivarApp() }
+        compose.onNodeWithText("English").performClick()
+        compose.onNodeWithText("This is for me").performClick()
+    }
+
     private fun openReturningUser() {
         context.getSharedPreferences("rhythm", 0).edit().putBoolean("introduced", true).commit()
         compose.setContent { ShanivarApp() }
     }
-    @Test fun introductionLeadsToEditableRoutineWithoutPermissionWall() {
-        compose.setContent { ShanivarApp() }
-        compose.onNodeWithText("English").performClick()
-        compose.onNodeWithText("Explore first").performScrollTo().performClick()
-        compose.onNodeWithText("Skip for now").performScrollTo().performClick()
-        compose.onNodeWithText("I understand").performScrollTo().performClick()
-        compose.onNodeWithText("Build my rhythm").performScrollTo().performClick()
-        compose.onNodeWithText("Rise with a reason").assertExists()
-        compose.onNodeWithText("Kitchen").performScrollTo().performClick()
-        compose.onNodeWithText("Gentle").performScrollTo().performClick()
-        compose.onNodeWithText("Save my rhythm").performScrollTo().performClick()
-        compose.onNodeWithText("Saved on this device", substring = true).assertExists()
-        val prefs = context.getSharedPreferences("rhythm", 0)
-        assertEquals("kitchen", prefs.getString("movementDestination", null))
-        assertEquals("Gentle", prefs.getString("tone", null))
-        assertFalse(prefs.contains("alarmScheduled"))
+
+    @Test fun onboardingReachesHomeWithBothToolsAndNoPermissionWall() {
+        completeGuestOnboarding()
+        compose.onNodeWithText("Start focus").assertExists()
+        compose.onNodeWithText("Set alarm").assertExists()
+        compose.onNodeWithText("Reading", substring = true).assertExists() // default intention preset
     }
-    @Test fun todayAndFocusNeverClaimUnconnectedProtection() {
+
+    @Test fun focusCardNeverClaimsUnconnectedProtection() {
         openReturningUser()
-        compose.onNodeWithText("Your daily note").assertExists()
-        compose.onNodeWithText("Focus", useUnmergedTree = true).performClick()
+        compose.onNodeWithText("Start focus").performClick()
         compose.onNodeWithText("Sign in to start protection", substring = true).assertExists()
         compose.onNodeWithText("Focus protected", substring = true).assertDoesNotExist()
     }
-    @Test fun practiceShowsSourceAndConfirmsEarlyExit() {
+
+    @Test fun alarmCardNeverClaimsUnconnectedScheduling() {
         openReturningUser()
-        compose.onNodeWithText("Practice", useUnmergedTree = true).performClick()
-        compose.onAllNodesWithText("Open practice")[0].performScrollTo().performClick()
-        compose.onNodeWithText("Read source & adaptation").performScrollTo().performClick()
-        compose.onNodeWithText("Translation cited:", substring = true).assertExists()
-        compose.onNodeWithText("Begin quiet time").performScrollTo().performClick()
-        compose.onNodeWithText("Find a position where your spine", substring = true).assertExists()
-        compose.onNodeWithText("Back to practices").performScrollTo().performClick()
-        compose.onNodeWithText("Leave this practice?").assertExists()
-        compose.onNodeWithText("Stay").performClick()
-        compose.onNodeWithText("Find a position where your spine", substring = true).assertExists()
-        compose.onNodeWithText("Back to practices").performScrollTo().performClick()
-        compose.onNodeWithText("End practice").performClick()
-        compose.onNodeWithText("Room to be.").assertExists()
+        compose.onNodeWithText("Set alarm").performClick()
+        compose.onNodeWithText("Sign in to set a wake-up alarm.", substring = true).assertExists()
+        compose.onNodeWithText("Scheduled on this device", substring = true).assertDoesNotExist()
+    }
+
+    @Test fun focusCardPresetChoiceUpdatesIntentionAndPersistsLocally() {
+        openReturningUser()
+        compose.onNodeWithText("Start focus").performClick()
+        compose.onNodeWithText("Family time", substring = true).performScrollTo().performClick()
+        compose.onNodeWithText("← Home").performScrollTo().performClick()
+        assertEquals("Family time", context.getSharedPreferences("rhythm", 0).getString("intentionLabel", null))
     }
 }

@@ -1,5 +1,7 @@
 # Native integration contract: Discipline Engine (app-lock + alarm) → Codex
 
+Initial-launch override, 13 September: [current scope](INITIAL_MVP_SCOPE_2026-09-13.md) requires alarms plus focus modes using existing contracts. Alarm setup and repeat-day recurrence are required; automatic focus schedules remain deferred. Preserve existing safety and contract invariants, including managing already-active services on upgrade. The [Claude task](CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md) controls work sequencing over the earlier MVP checklist below.
+
 Status, updated 2026-09-12: backend live-verified against Supabase; Compose integration and the native engine pass JVM/Robolectric and Android 14 managed-emulator checks. Physical-device checks remain open; see the honest gap list below. Full research/rationale: `shanivar-vbt/discipline-engine/platform-research.md`. Squad record: `ai_org/discipline_engine_squad.md`. Product-owner-level tracker: `ai_org/product_owner_first_apk.md`.
 
 **Founder update, 2026-09-12:** the QR-first dismissal UI and the `qr`/`photo_motion` product choice below are superseded by [the movement-first alarm direction](FOUNDER_MOVEMENT_ALARM_DIRECTION_2026-09-12.md). The new-user Compose flow now saves the movement contract, schedules the alarm locally, confirms it to the API, and opens `MovementDismissalActivity`; the earlier QR/photo code remains as a legacy rollback path.

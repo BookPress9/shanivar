@@ -1,5 +1,7 @@
 # Research and product decisions
 
+Historical research retained. Active wireframes now follow [confirmed v1](../../INITIAL_MVP_SCOPE_2026-09-13.md), [marketing handoff](../../../marketing/shanivar/v1-product-direction-handoff.md) and [Alarmy/one sec patterns](../../../research/shanivar-v1-alarm-focus-patterns.md). The previous visual implementation is preserved in [the complete backup](../saturn-dark-backup-20260913-221107/index.html). Earlier charts, scroller and broad navigation are not v1 requirements.
+
 Updated 12 September 2026. These findings guide the wireframes; they do not turn Shanivar into a medical or diagnostic product.
 
 ## Focus windows

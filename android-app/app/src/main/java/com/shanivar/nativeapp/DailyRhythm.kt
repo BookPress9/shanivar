@@ -21,6 +21,11 @@ data class Rhythm(
     val whatsappTone: String = "Direct",
     val dailyNoteEnabled: Boolean = true,
     val blockedPackages: Set<String> = DisciplineTargets.DEFAULT_BLOCKED_PACKAGES,
+    // MVP streamline task, package 2: the chosen-activity preset from onboarding's PLAN page.
+    // Deliberately local-only (not part of the /discipline/preferences PUT body) - it is display
+    // copy for "what is this focus window for," not a behavior the backend needs to know, so
+    // adding it required zero backend schema change.
+    val intentionLabel: String = FocusPresets.DEFAULT.label,
 ) {
     fun moment(now: LocalTime): DayMoment {
         val wake = LocalTime.parse(wakeTime)
@@ -64,4 +69,39 @@ interface DisciplineGateway {
  * "First blocking target: Instagram" justification and discipline_engine_squad.md's locked scope. */
 object DisciplineTargets {
     val DEFAULT_BLOCKED_PACKAGES: Set<String> = setOf("com.instagram.android")
+}
+
+/** A curated toggle list for the Focus card's app picker (MVP streamline task, package 3:
+ * "selected app set... exclude system/essential communication defaults"). Deliberately a fixed,
+ * known-distracting-apps allowlist rather than a full installed-app picker: listing every
+ * installed package would also surface system and communication apps that must then be actively
+ * excluded, which is a materially larger feature than a v1 app-lock target list needs. Mirrors
+ * backend/src/routes/discipline.js's DEFAULT_LOCK_TARGETS package ids - keep both lists in sync if
+ * either changes. */
+data class DistractingApp(val packageName: String, val label: String)
+object KnownDistractingApps {
+    val ALL = listOf(
+        DistractingApp("com.instagram.android", "Instagram"),
+        DistractingApp("com.google.android.youtube", "YouTube"),
+        DistractingApp("com.zhiliaoapp.musically", "TikTok"),
+        DistractingApp("com.facebook.katana", "Facebook"),
+        DistractingApp("com.twitter.android", "X (Twitter)"),
+        DistractingApp("com.snapchat.android", "Snapchat"),
+    )
+}
+
+/** Editable presets offered on onboarding's PLAN page and the Focus card (MVP streamline task,
+ * package 2/3: "editable reading, family time, one task and quiet-time presets"). A preset only
+ * suggests an activity label and a starting duration - per the task spec, presets differ in
+ * suggested duration, never in enforcement strength; every preset uses the same focus engine and
+ * the same package-list contract. */
+data class FocusPreset(val label: String, val suggestedMinutes: Int)
+object FocusPresets {
+    val ALL = listOf(
+        FocusPreset("Reading", 30),
+        FocusPreset("Family time", 45),
+        FocusPreset("One task", 25),
+        FocusPreset("Quiet time", 20),
+    )
+    val DEFAULT = ALL.first()
 }

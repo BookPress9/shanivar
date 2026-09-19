@@ -1,5 +1,12 @@
 ﻿# Local Android frontend testing
 
+**This document predates the 2026-09-18 streamlined build and describes the emulator-based flow,
+which is forbidden on this machine (CLAUDE.md §1.6 - it crashed the laptop previously) and exercises
+the now-legacy four-tab shell.** For the current default build (`BuildConfig.STREAMLINED_LAUNCH`),
+its test commands, and its known limitations, see the "Streamlined build" section of
+[README.md](README.md). This file remains accurate for anyone who flips that flag back to the
+legacy shell and has a machine that can safely run a managed emulator.
+
 Run commands from the repository root. Requires Node.js, JDK 17, Android SDK 35, and emulator acceleration. Android Studio can open the android-app directory directly.
 
 ## Automated emulator check

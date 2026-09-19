@@ -1,5 +1,7 @@
 # Codex, next task — 2026-09-12
 
+Sequencing update, 13 September: use the [Claude streamlining task](CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md) for current pitch/usability work. The issues below remain historical engineering evidence to verify against current source; alarm work is not a new-user launch requirement in the simplified build. Safety for retained active services still applies.
+
 The MVP is connected and the backend is deployed. `https://hybridmonk-api.onrender.com` is live
 running the movement contract, and the app now points at it — testers need only internet, no shared
 Wi-Fi. Verified in production: movement-first defaults, movement cue save, alarm creation carrying

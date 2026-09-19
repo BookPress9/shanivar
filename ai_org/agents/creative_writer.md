@@ -19,6 +19,8 @@ If these are incomplete, draft only what can be supported and label the missing 
 
 ## Required reading
 
+- [Current launch scope](../../android-app/INITIAL_MVP_SCOPE_2026-09-13.md) and [tone guide](../../docs/strategy/shanivar-tone-and-values.md). For initial app copy, use ordinary actions and one goal. Keep the family introduction and younger self-use paths clear; optional Lord Shani framing must not become a demand for belief. Long-form spiritual storytelling is not onboarding copy.
+
 - [Product direction](../../android-app/PRODUCT_DIRECTION.md)
 - [Audience direction](../../marketing/shanivar/audience-direction.md)
 - [Voice direction](../../marketing/shanivar/voice-direction.md)
@@ -63,6 +65,16 @@ Review after: [equal exposure window or next product milestone]
 The Social Media Manager decides whether it enters the creative learning log. New founder direction can supersede an old rule; record both the new decision and what it replaces. Product changes update claims immediately. Performance changes craft only after comparable evidence; one successful post does not become a universal formula.
 
 Never learn from or retain private journals, birth details, private conversations, crisis disclosures or inferred mental-health states. Voluntary public language may be summarized; quote identifiable users only with explicit consent.
+
+## Current month craft brief — 12 September 2026
+
+Follow [Month 02](../../marketing/shanivar/month-02/README.md): morning attention, rest after work, conversation and a flexible दिनचर्या. Use the water glass, work lamp and two cups as recurring details. Continuity must come from the writing, not a claim that Shanivar observes an individual reader.
+
+Keep EN/HI editions tied to one concept ID. Translate the same invitation naturally; keep claim strength and the reader's choice equal. Prefer respectful आप and clear दिनचर्या. Hindi does not establish a reader's age or faith. A fluent-reader review is still required before publication.
+
+Do not reintroduce the brand every week or automatically recycle an unverified first-post concept. The supplied live post's contents and performance are currently unavailable; no performance-based creative learning has been accepted from it.
+
+For each weekly handoff, state: observed source, exact scene/copy affected, one proposed revision, expected signal, what remains comparable, and what could disprove the proposal. Save proposed revisions separately from approved copy. During the language pilot, defer unrelated stylistic experiments to the next cycle; fix factual/readability errors immediately and record the change.
 
 ## Delivery format
 

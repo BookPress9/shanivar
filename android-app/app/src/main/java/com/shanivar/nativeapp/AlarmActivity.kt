@@ -13,9 +13,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**
  * The dedicated full-screen "session alarm" Activity from platform-research.md's recommended
@@ -32,7 +38,13 @@ import androidx.compose.ui.unit.dp
 class AlarmActivity : ComponentActivity() {
     private var sessionId: String = ""
     private val ringer by lazy { AlarmRinger(this) }
+    private val scheduler by lazy { AlarmScheduler(this) }
     private var dismissed = false
+    // Approved V1 wireframe's "alarm-done" screen (v1.js): a verified dismissal shows a brief
+    // confirmation - sound already stopped, next occurrence if this alarm repeats - rather than
+    // the screen vanishing the instant the ringer goes quiet. Backed by class-level Compose state
+    // (not a local var in onCreate) so dismissAlarm() can flip it after setContent has already run.
+    private var showDoneScreen by mutableStateOf(false)
 
     private val movementLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK && result.data?.getBooleanExtra(DismissalContract.EXTRA_VERIFIED, false) == true) {
@@ -51,6 +63,10 @@ class AlarmActivity : ComponentActivity() {
             // materially different outcome from a dismissal and must not look like one in the data.
             dismissed = true
             AlarmForegroundService.stop(this)
+            // Advance the recurrence AFTER the ringer/service teardown above, and wrapped so a
+            // scheduling failure can never affect the (already-complete) stop-ringing path - see
+            // the ordering note on dismissAlarm() below.
+            runCatching { scheduler.advanceToNextOccurrence() }
             finish()
         })
         // Back must not dismiss the alarm. BlockOverlayActivity already did this for the app-lock
@@ -60,15 +76,33 @@ class AlarmActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this) { }
         setContent {
             ShanivarTheme {
-                AlarmScreen(
-                    alarmMuted = !ringer.alarmStreamIsAudible(),
-                    onMove = {
-                        movementLauncher.launch(Intent(this, MovementDismissalActivity::class.java)
-                            .putExtra(EXTRA_SESSION_ID, sessionId))
-                    },
-                )
+                if (showDoneScreen) {
+                    AlarmDoneScreen(
+                        nextOccurrenceEpochMillis = scheduler.pendingTriggerAtEpochMillis(),
+                        onOpenShanivar = ::openShanivar,
+                        onDeviceHome = ::goToDeviceHome,
+                    )
+                } else {
+                    AlarmScreen(
+                        alarmMuted = !ringer.alarmStreamIsAudible(),
+                        onMove = {
+                            movementLauncher.launch(Intent(this, MovementDismissalActivity::class.java)
+                                .putExtra(EXTRA_SESSION_ID, sessionId))
+                        },
+                    )
+                }
             }
         }
+    }
+
+    private fun openShanivar() {
+        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        finish()
+    }
+
+    private fun goToDeviceHome() {
+        startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        finish()
     }
 
     /**
@@ -119,7 +153,14 @@ class AlarmActivity : ComponentActivity() {
         dismissed = true
         ringer.stop()
         AlarmForegroundService.stop(this)
-        finish()
+        // Recurrence advance is local-only (SharedPreferences + AlarmManager, no network) and
+        // strictly after the ring has already been silenced - it must never gate or delay that.
+        // A repeat alarm that fails to re-arm here would silently stop recurring, which is why
+        // this is wrapped rather than left to propagate into the Activity teardown below.
+        runCatching { scheduler.advanceToNextOccurrence() }
+        // Show the done screen rather than finish()ing immediately - the sound is already fully
+        // stopped above, so this is presentation only, never a delay on silencing the alarm.
+        showDoneScreen = true
     }
 
     companion object {
@@ -145,6 +186,35 @@ private fun AlarmScreen(alarmMuted: Boolean, onMove: () -> Unit) {
             }
             Text("Your chosen destination is waiting. The alarm ends after your movement is verified.")
             Button(onClick = onMove, modifier = Modifier.fillMaxWidth()) { Text("Start moving") }
+        }
+    }
+}
+
+/**
+ * The approved V1 wireframe's "alarm-done" screen. Shown only after [AlarmActivity.dismissAlarm]'s
+ * verified path - never after the ringer's own hard-cap giveup, which is a materially different,
+ * abandoned outcome that must not read as a completed one.
+ */
+@Composable
+private fun AlarmDoneScreen(nextOccurrenceEpochMillis: Long?, onOpenShanivar: () -> Unit, onDeviceHome: () -> Unit) {
+    Surface(Modifier.fillMaxSize()) {
+        Column(
+            Modifier.fillMaxSize().padding(28.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+        ) {
+            Text("✓", style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.primary)
+            Text("Sound stopped. Begin your day.", style = MaterialTheme.typography.headlineLarge)
+            Text("You completed your chosen dismissal. No need to stay here.")
+            SectionCard("Next alarm") {
+                Text(
+                    nextOccurrenceEpochMillis?.let {
+                        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault())
+                            .format(DateTimeFormatter.ofPattern("EEE, d MMM · HH:mm"))
+                    } ?: "This alarm does not repeat.",
+                )
+            }
+            OutlinedButton(onClick = onDeviceHome, modifier = Modifier.fillMaxWidth()) { Text("Return to my day") }
+            TextButton(onClick = onOpenShanivar, modifier = Modifier.fillMaxWidth()) { Text("Open Shanivar") }
         }
     }
 }

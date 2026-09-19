@@ -48,6 +48,8 @@ emergency at 6am, must never be held hostage by our product.
 
 ## Alarms
 
+V1 clarification, 13 September: alarms are required alongside focus modes. The accessible non-walking alternative must never require standing or walking; this supersedes contradictory wording in invariant 8 below. Sensor failure exposes that alternative immediately. Read [current v1 scope](INITIAL_MVP_SCOPE_2026-09-13.md); retain all ringer stop, hard-cap and offline guarantees.
+
 ### Escalation
 - Start audible but not shocking: roughly 40% of the device's maximum alarm volume, with vibration
   from the first second.

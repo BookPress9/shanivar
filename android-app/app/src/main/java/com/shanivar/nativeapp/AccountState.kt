@@ -11,6 +11,20 @@ import kotlinx.coroutines.launch
 
 /** Survives activity recreation; logout invalidates pending personal-data responses. */
 class AccountState : ViewModel() {
+    private var savedSession: ReflectionStore? = null
+    private var restored = false
+    /** Separate encrypted file/key from reflection content; never persist passwords. */
+    fun restore(context: android.content.Context) {
+        if (restored) return
+        restored = true
+        savedSession = EncryptedReflectionStore(context, "account-session.enc", "shanivar-account-session")
+        val saved = savedSession?.read("account") ?: return
+        runCatching {
+            api.restoreSession(saved.getString("token"))
+            account = Account(saved.getString("id"), saved.getString("name"), saved.optInt("streak"))
+            ShanivarSession.api = api
+        }.onFailure { savedSession?.clear(); api.logout(); account = null }
+    }
     val api = ShanivarApi()
     var account by mutableStateOf<Account?>(null)
         private set
@@ -27,10 +41,15 @@ class AccountState : ViewModel() {
         invalidate()
         account = value
         ShanivarSession.api = api
+        api.sessionToken()?.let { token ->
+            runCatching { savedSession?.write("account", org.json.JSONObject()
+                .put("token", token).put("id", value.id).put("name", value.name).put("streak", value.streak)) }
+        }
     }
     fun logout() {
         invalidate()
         api.logout()
+        savedSession?.clear()
         account = null
         ShanivarSession.api = null
     }

@@ -1,4 +1,14 @@
-# Current creative revision
+# Current campaign — 30 days after the first post
+
+Latest launch correction: review the drafts below against the [two-entry audience and MVP](../../android-app/INITIAL_MVP_SCOPE_2026-09-13.md) and [plain voice guide](../../docs/strategy/shanivar-tone-and-values.md) before using them for pitching or acquisition. Parents introduced by worried adult children and younger self-directed users are both in scope. Lord Shani is an optional cultural connection. Existing campaign packages have not been rewritten or republished by the documentation update; chart/scroller launch claims and broad feature tours need removal from any initial-launch adaptation.
+
+The founder reports the first post published and supplied [this permalink](https://www.instagram.com/p/DdMA9N7lAT3/). Public fetching was throttled; live artwork, caption and Insights remain unverified. The [first-post intake](month-02/first-post-analysis.md) records the boundary without invented metrics.
+
+The next working proposal is [Month 02: A little more of your life, returned](month-02/README.md), **14 September–13 October 2026**: 16 feed editions and 30 optional Stories, complete bilingual copy and scripts, plus an evidence-based weekly review process. Open the [interactive editorial calendar](month-02/index.html) or [calendar Markdown](month-02/calendar.md). Media for this campaign has not been rendered; no new publication or scheduling occurred.
+
+This proposal supersedes the unposted older week-one schedule. The materials below remain historical creative records. Do not pair their assets with new copy without a new review.
+
+# Earlier creative revision
 
 Social production now follows the [engagement and Reels playbook](engagement-reels-playbook.md). The Social Media Manager may activate the [Creative Writer](../../ai_org/agents/creative_writer.md), with accepted changes recorded in the [creative learning log](creative-learning-log.md).
 

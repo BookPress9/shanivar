@@ -1,5 +1,7 @@
 # Feature handoff to Claude: Shanivar reflective text scroller
 
+Initial-launch override, 13 September: the [streamlining task](CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md) defers this feature's entry points. Preserve its implementation, privacy rules and contracts; do not make it a dependency of focus, the local pause or short fixed review. This handoff remains the future feature reference.
+
 Date: 9 September 2026. Status: ready for implementation; this document does not claim the feature is built or shipped.
 
 ## Founder request and outcome

@@ -133,6 +133,34 @@ if (pool && typeof pool.query === 'function') {
     CREATE INDEX IF NOT EXISTS alarm_dismissal_events_user_id_idx ON alarm_dismissal_events (user_id);
     CREATE INDEX IF NOT EXISTS alarm_dismissal_events_alarm_schedule_id_idx ON alarm_dismissal_events (alarm_schedule_id);
 
+    -- Recurring focus/app-lock windows (2026-09-19, behavioral-return-loop gap): "all day",
+    -- "a few days a week" and "custom times" are three presets over the SAME underlying shape
+    -- (days + a start/end time), not three different models — mode is stored only so the
+    -- client can redisplay which preset the user picked, never re-derived or validated against
+    -- days/times server-side. Native code (FocusScheduler, mirroring AlarmScheduler) reads this
+    -- table, decides when a window opens/closes, and calls the EXISTING /focus/start and
+    -- /focus/:id/release routes below at those instants - this table adds no new focus-session
+    -- lifecycle, only a persisted plan for when to call the lifecycle that already exists.
+    -- commitment_trigger/commitment_action are the "when-then" pair decision 0009 specifies in
+    -- place of an AI coach: the user's own words, shown back to them (in BlockOverlayActivity and
+    -- the schedule card), never generated content.
+    CREATE TABLE IF NOT EXISTS focus_schedules (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      mode VARCHAR(20) NOT NULL DEFAULT 'custom' CHECK (mode IN ('all_day', 'days', 'custom')),
+      days_of_week JSONB NOT NULL DEFAULT '[0,1,2,3,4,5,6]'::jsonb,
+      start_time TIME NOT NULL DEFAULT '00:00:00',
+      end_time TIME NOT NULL DEFAULT '23:59:00',
+      block_package_list JSONB NOT NULL DEFAULT '${DEFAULT_BLOCK_LIST_SQL}'::jsonb,
+      intention_label VARCHAR(100) NOT NULL DEFAULT '',
+      commitment_trigger VARCHAR(200) NOT NULL DEFAULT '',
+      commitment_action VARCHAR(200) NOT NULL DEFAULT '',
+      enabled BOOLEAN NOT NULL DEFAULT true,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS focus_schedules_user_id_idx ON focus_schedules (user_id);
+
     -- CREATE TABLE IF NOT EXISTS's own DEFAULT only applies to a table created fresh by
     -- this statement — on every environment where these tables already existed before
     -- 2026-09-12, that clause above is a no-op and the live column default never changed
@@ -175,12 +203,16 @@ const DISMISSAL_METHODS = ['movement', 'accessible', 'qr', 'photo_motion'];
 // block, since that block's template literal needs them at module-load time.
 
 // Duration bounds and staleness grace period are engineering defaults, not confirmed
-// founder decisions — flagged in the handoff report. 5-480 minutes covers "a single
-// scroll-avoidance session" through "a full workday," and a 30-minute grace period
-// gives a slow app-kill/network blip room before a session is presumed abandoned.
+// founder decisions — flagged in the handoff report. 5 minutes covers "a single
+// scroll-avoidance session"; the upper bound was raised from 480 to 1440 (2026-09-19) so a
+// recurring "all day" focus_schedules window (see that table's migration comment) can be
+// expressed as a single /focus/start call spanning the whole remaining day, rather than this
+// route needing its own separate all-day code path. A 30-minute grace period gives a slow
+// app-kill/network blip room before a session is presumed abandoned.
 const MIN_FOCUS_MINUTES = 5;
-const MAX_FOCUS_MINUTES = 480;
+const MAX_FOCUS_MINUTES = 1440;
 const FOCUS_STALE_GRACE_MINUTES = 30;
+const FOCUS_SCHEDULE_MODES = ['all_day', 'days', 'custom'];
 
 const MAX_VERIFICATION_DETAIL_JSON_LENGTH = 2000;
 
@@ -236,6 +268,12 @@ async function expireStaleFocusSessions(userId) {
 async function findOwnedAlarm(userId, alarmId) {
   if (!UUID_RE.test(alarmId)) return null;
   const result = await db.query('SELECT * FROM alarm_schedules WHERE id = $1 AND user_id = $2', [alarmId, userId]);
+  return result.rows[0] || null;
+}
+
+async function findOwnedFocusSchedule(userId, scheduleId) {
+  if (!UUID_RE.test(scheduleId)) return null;
+  const result = await db.query('SELECT * FROM focus_schedules WHERE id = $1 AND user_id = $2', [scheduleId, userId]);
   return result.rows[0] || null;
 }
 
@@ -493,6 +531,141 @@ router.get('/focus/active', async (req, res) => {
   } catch (err) {
     console.error('GET /discipline/focus/active error:', err);
     res.status(500).json({ error: 'Failed to load active focus session' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// Focus schedules — the recurring "all day / few days a week / custom times" plan a user sets
+// once; native code is what actually calls /focus/start and /focus/:id/release when a window
+// opens/closes (see the table's migration comment above). This is persistence only, mirroring
+// alarm_schedules' CRUD shape one-for-one so the two feel like the same feature to a client.
+// ─────────────────────────────────────────────────────────────────────────
+function validateFocusSchedulePayload(body, { partial }) {
+  const { mode, days_of_week, start_time, end_time, block_package_list, intention_label, commitment_trigger, commitment_action } = body || {};
+  if ((!partial || mode !== undefined) && !FOCUS_SCHEDULE_MODES.includes(mode)) {
+    return `mode must be one of ${FOCUS_SCHEDULE_MODES.join(', ')}`;
+  }
+  if ((!partial || days_of_week !== undefined) && !isValidDaysOfWeek(days_of_week)) {
+    return 'days_of_week must be an array of integers 0-6 (0=Sunday)';
+  }
+  if ((!partial || start_time !== undefined) && !isValidTimeString(start_time)) {
+    return 'start_time must be HH:MM (24h)';
+  }
+  if ((!partial || end_time !== undefined) && !isValidTimeString(end_time)) {
+    return 'end_time must be HH:MM (24h)';
+  }
+  if (start_time !== undefined && end_time !== undefined && end_time <= start_time) {
+    // Same-day window only for v1 - an overnight-spanning custom window (e.g. 22:00-02:00)
+    // is a real gap (flagged in the Codex handoff), not silently accepted as valid here.
+    return 'end_time must be later than start_time (overnight windows are not supported yet)';
+  }
+  if (block_package_list !== undefined && !isValidPackageList(block_package_list)) {
+    return 'block_package_list must be an array of up to 50 package name strings';
+  }
+  if (intention_label !== undefined && (typeof intention_label !== 'string' || intention_label.length > 100)) {
+    return 'intention_label must be at most 100 characters';
+  }
+  if (commitment_trigger !== undefined && (typeof commitment_trigger !== 'string' || commitment_trigger.length > 200)) {
+    return 'commitment_trigger must be at most 200 characters';
+  }
+  if (commitment_action !== undefined && (typeof commitment_action !== 'string' || commitment_action.length > 200)) {
+    return 'commitment_action must be at most 200 characters';
+  }
+  return null;
+}
+
+router.post('/focus-schedules', async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const error = validateFocusSchedulePayload(req.body, { partial: false });
+    if (error) return res.status(400).json({ error });
+    const {
+      mode, days_of_week, start_time, end_time, block_package_list,
+      intention_label, commitment_trigger, commitment_action,
+    } = req.body;
+    const result = await db.query(
+      `INSERT INTO focus_schedules
+         (user_id, mode, days_of_week, start_time, end_time, block_package_list, intention_label, commitment_trigger, commitment_action, enabled)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true)
+       RETURNING *`,
+      [
+        userId, mode, JSON.stringify(days_of_week), start_time, end_time,
+        JSON.stringify(block_package_list !== undefined ? block_package_list : DEFAULT_BLOCK_LIST),
+        sanitizeText(intention_label || '').slice(0, 100),
+        sanitizeText(commitment_trigger || '').slice(0, 200),
+        sanitizeText(commitment_action || '').slice(0, 200),
+      ]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('POST /discipline/focus-schedules error:', err);
+    res.status(500).json({ error: 'Failed to create focus schedule' });
+  }
+});
+
+router.get('/focus-schedules', async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM focus_schedules WHERE user_id = $1 ORDER BY created_at ASC', [req.user.id]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('GET /discipline/focus-schedules error:', err);
+    res.status(500).json({ error: 'Failed to load focus schedules' });
+  }
+});
+
+router.put('/focus-schedules/:id', async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const schedule = await findOwnedFocusSchedule(userId, req.params.id);
+    if (!schedule) return res.status(404).json({ error: 'Focus schedule not found' });
+
+    const error = validateFocusSchedulePayload(req.body, { partial: true });
+    if (error) return res.status(400).json({ error });
+    const {
+      mode, days_of_week, start_time, end_time, block_package_list,
+      intention_label, commitment_trigger, commitment_action, enabled,
+    } = req.body || {};
+
+    const result = await db.query(
+      `UPDATE focus_schedules SET
+         mode = COALESCE($2, mode),
+         days_of_week = COALESCE($3, days_of_week),
+         start_time = COALESCE($4, start_time),
+         end_time = COALESCE($5, end_time),
+         block_package_list = COALESCE($6, block_package_list),
+         intention_label = COALESCE($7, intention_label),
+         commitment_trigger = COALESCE($8, commitment_trigger),
+         commitment_action = COALESCE($9, commitment_action),
+         enabled = COALESCE($10, enabled),
+         updated_at = NOW()
+       WHERE id = $1 AND user_id = $11
+       RETURNING *`,
+      [
+        req.params.id, mode ?? null, days_of_week !== undefined ? JSON.stringify(days_of_week) : null,
+        start_time ?? null, end_time ?? null,
+        block_package_list !== undefined ? JSON.stringify(block_package_list) : null,
+        intention_label !== undefined ? sanitizeText(intention_label).slice(0, 100) : null,
+        commitment_trigger !== undefined ? sanitizeText(commitment_trigger).slice(0, 200) : null,
+        commitment_action !== undefined ? sanitizeText(commitment_action).slice(0, 200) : null,
+        enabled !== undefined ? !!enabled : null,
+        userId,
+      ]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('PUT /discipline/focus-schedules/:id error:', err);
+    res.status(500).json({ error: 'Failed to update focus schedule' });
+  }
+});
+
+router.delete('/focus-schedules/:id', async (req, res) => {
+  try {
+    const result = await db.query('DELETE FROM focus_schedules WHERE id = $1 AND user_id = $2 RETURNING id', [req.params.id, req.user.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Focus schedule not found' });
+    res.json({ message: 'Focus schedule deleted' });
+  } catch (err) {
+    console.error('DELETE /discipline/focus-schedules/:id error:', err);
+    res.status(500).json({ error: 'Failed to delete focus schedule' });
   }
 });
 

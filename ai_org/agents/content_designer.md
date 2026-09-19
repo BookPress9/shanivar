@@ -1,5 +1,7 @@
 # Content & Practice Designer
 
+Current first-launch scope: [one shared focus/notice/review loop](../../android-app/INITIAL_MVP_SCOPE_2026-09-13.md) for parent introductions and younger self-use. Apply the [tone guide](../../docs/strategy/shanivar-tone-and-values.md). The local pause and review are optional; the older four-step daily-message format below does not require a notification, insight or response at every app encounter. Optional Shani-inspired wording never speaks as a deity or requires belief.
+
 ## The Behavioral Loop You Serve
 Every message must deliver all four steps:
 1. **Trigger** — predictable arrival, consistent time

@@ -2,6 +2,7 @@ package com.shanivar.nativeapp
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -21,6 +22,8 @@ class ApiFailure(val status: Int, message: String, val retryAfterSeconds: Long =
 
 class ShanivarApi(private val baseUrl: String = BuildConfig.API_URL) {
     private var token: String? = null
+    internal fun sessionToken(): String? = token
+    internal fun restoreSession(value: String) { require(value.isNotBlank()); token = value }
     fun logout() { token = null }
     internal suspend fun request(path: String, body: JSONObject? = null,
         method: String = if (body == null) "GET" else "POST", key: String? = null,
@@ -58,6 +61,36 @@ class ShanivarApi(private val baseUrl: String = BuildConfig.API_URL) {
         } finally { connection.disconnect() }
         }
     }
+    /**
+     * Same request machinery as [request], for the handful of endpoints (currently only
+     * `GET /discipline/alarms`) that return a bare JSON array rather than an object. Kept as a
+     * sibling rather than folding array support into [request] itself - [request] is used by
+     * every other route in the app and this codebase's convention (per NATIVE_HANDOFF.md) is to
+     * touch shared client plumbing minimally and additively.
+     */
+    internal suspend fun requestArray(path: String): JSONArray {
+        val requestToken = token
+        return withContext(Dispatchers.IO) {
+            val connection = URL(baseUrl.trimEnd('/') + path).openConnection() as HttpURLConnection
+            try {
+                connection.connectTimeout = 20000
+                connection.readTimeout = 60000
+                connection.requestMethod = "GET"
+                connection.setRequestProperty("Content-Type", "application/json")
+                requestToken?.let { connection.setRequestProperty("Authorization", "Bearer $it") }
+                val code = connection.responseCode
+                val stream = if (code in 200..299) connection.inputStream else connection.errorStream
+                val text = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
+                if (code !in 200..299) {
+                    val errorJson = runCatching { JSONObject(text) }.getOrElse { JSONObject() }
+                    throw ApiFailure(code, errorJson.optString("error", "Could not connect. Try again."),
+                        connection.getHeaderField("Retry-After")?.toLongOrNull()?.coerceAtLeast(1) ?: 30)
+                }
+                runCatching { JSONArray(text) }.getOrElse { throw ApiFailure(code, "The server returned an unreadable response.") }
+            } finally { connection.disconnect() }
+        }
+    }
+
     suspend fun login(email: String, password: String): Account {
         val result = request("/auth/login", JSONObject().put("email", email).put("password", password))
         val value = result.getString("token")

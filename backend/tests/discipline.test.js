@@ -409,3 +409,94 @@ describe('POST /api/discipline/alarms/dismiss', () => {
     expect(res.body.id).toEqual('evt-1');
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────
+// Focus schedules (2026-09-19): the "all day / few days a week / custom times" recurring plan.
+// ─────────────────────────────────────────────────────────────────────────
+const OWNED_SCHEDULE_ID = '44444444-4444-4444-4444-444444444444';
+const OTHER_SCHEDULE_ID = '55555555-5555-5555-5555-555555555555';
+
+describe('POST /api/discipline/focus-schedules', () => {
+  const validBody = {
+    mode: 'days', days_of_week: [1, 2, 3, 4, 5], start_time: '09:00', end_time: '17:00',
+    intention_label: 'Deep work', commitment_trigger: 'When I reach for my phone',
+    commitment_action: 'I will remember why I muted it',
+  };
+
+  it('rejects an invalid mode', async () => {
+    const res = await request(app).post('/api/discipline/focus-schedules').send({ ...validBody, mode: 'sometimes' });
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it('rejects empty days_of_week', async () => {
+    const res = await request(app).post('/api/discipline/focus-schedules').send({ ...validBody, days_of_week: [] });
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it('rejects an end_time that is not after start_time', async () => {
+    const res = await request(app).post('/api/discipline/focus-schedules').send({ ...validBody, start_time: '17:00', end_time: '09:00' });
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it('accepts the "all day" preset as days=all + 00:00-23:59, same shape as any other window', async () => {
+    mockQuery.mockResolvedValue({ rows: [{ id: OWNED_SCHEDULE_ID, mode: 'all_day' }] });
+    const res = await request(app).post('/api/discipline/focus-schedules').send({
+      mode: 'all_day', days_of_week: [0, 1, 2, 3, 4, 5, 6], start_time: '00:00', end_time: '23:59',
+    });
+    expect(res.statusCode).toEqual(201);
+    expect(res.body.mode).toEqual('all_day');
+  });
+
+  it('creates a schedule and persists the when-then commitment as the user typed it, not generated content', async () => {
+    mockQuery.mockImplementation((text, params) => {
+      if (text.includes('INSERT INTO focus_schedules')) {
+        expect(params).toContain('When I reach for my phone');
+        expect(params).toContain('I will remember why I muted it');
+        return Promise.resolve({ rows: [{ id: OWNED_SCHEDULE_ID, ...validBody }] });
+      }
+      return Promise.resolve({ rows: [] });
+    });
+    const res = await request(app).post('/api/discipline/focus-schedules').send(validBody);
+    expect(res.statusCode).toEqual(201);
+  });
+});
+
+describe('PUT /api/discipline/focus-schedules/:id', () => {
+  it('404s when the schedule does not belong to the requesting user', async () => {
+    mockQuery.mockImplementation((text) => {
+      if (text.includes('SELECT * FROM focus_schedules WHERE id')) return Promise.resolve({ rows: [] });
+      return Promise.resolve({ rows: [] });
+    });
+    const res = await request(app).put(`/api/discipline/focus-schedules/${OTHER_SCHEDULE_ID}`).send({ enabled: false });
+    expect(res.statusCode).toEqual(404);
+  });
+
+  it('allows disabling an owned schedule without resending the whole shape', async () => {
+    mockQuery.mockImplementation((text) => {
+      if (text.includes('SELECT * FROM focus_schedules WHERE id')) {
+        return Promise.resolve({ rows: [{ id: OWNED_SCHEDULE_ID, user_id: 'test-user-uuid' }] });
+      }
+      if (text.includes('UPDATE focus_schedules')) {
+        return Promise.resolve({ rows: [{ id: OWNED_SCHEDULE_ID, enabled: false }] });
+      }
+      return Promise.resolve({ rows: [] });
+    });
+    const res = await request(app).put(`/api/discipline/focus-schedules/${OWNED_SCHEDULE_ID}`).send({ enabled: false });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.enabled).toEqual(false);
+  });
+});
+
+describe('DELETE /api/discipline/focus-schedules/:id', () => {
+  it('404s when nothing was deleted (not owned / not found)', async () => {
+    mockQuery.mockResolvedValue({ rows: [] });
+    const res = await request(app).delete(`/api/discipline/focus-schedules/${OTHER_SCHEDULE_ID}`);
+    expect(res.statusCode).toEqual(404);
+  });
+
+  it('deletes an owned schedule', async () => {
+    mockQuery.mockResolvedValue({ rows: [{ id: OWNED_SCHEDULE_ID }] });
+    const res = await request(app).delete(`/api/discipline/focus-schedules/${OWNED_SCHEDULE_ID}`);
+    expect(res.statusCode).toEqual(200);
+  });
+});

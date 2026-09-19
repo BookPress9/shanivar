@@ -38,9 +38,16 @@ class FocusGuardService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val saved = getSharedPreferences("focus_guard", MODE_PRIVATE)
         val packages = intent?.getStringArrayListExtra(EXTRA_PACKAGES)?.toSet()
-            ?: DisciplineTargets.DEFAULT_BLOCKED_PACKAGES
-        val endsAt = intent?.getLongExtra(EXTRA_ENDS_AT, 0L) ?: 0L
+            ?: saved.getStringSet("packages", emptySet()).orEmpty()
+        val endsAt = intent?.getLongExtra(EXTRA_ENDS_AT, 0L) ?: saved.getLong("endsAt", 0L)
+        if (endsAt <= System.currentTimeMillis() || packages.isEmpty()) {
+            saved.edit().clear().apply()
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        saved.edit().putStringSet("packages", packages).putLong("endsAt", endsAt).apply()
         startForeground(NOTIFICATION_ID, buildNotification())
         pollJob?.cancel()
         pollJob = scope.launch { pollLoop(packages, endsAt) }

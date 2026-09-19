@@ -14,6 +14,13 @@ android {
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_URL", "\"https://api.thehybridmonk.com/api\"")
+        // MVP streamline task (package 1, 2026-09-18): the one explicit switch between the
+        // simplified single-Home launch surface (ShanivarApp's `HomeScreen`) and the earlier
+        // four-tab shell (`LegacyTabShell`, kept intact rather than deleted - see CLAUDE.md
+        // section 5, "keep tested code"). Reversible by flipping this one line; nothing about the
+        // alarm/focus engines, backend contract, or persisted data differs between the two - only
+        // which composable presents them, so toggling this never orphans an active session.
+        buildConfigField("boolean", "STREAMLINED_LAUNCH", "true")
     }
     buildTypes {
         debug {

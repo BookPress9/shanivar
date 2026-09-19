@@ -2,39 +2,44 @@
 
 ## Immediate local build
 
-The current test APK is built against the Supabase-backed API running on this computer at
-`http://192.168.1.11:5000/api` and is being served on the local Wi-Fi network:
+The backend is deployed and no longer needs to run on this computer - the current test APK is
+built against the production API at `https://hybridmonk-api.onrender.com/api` directly, so a
+device only needs internet, not the same Wi-Fi network as this computer. Only the APK download
+itself uses the local network, and only because there is no hosted distribution channel set up yet
+(see "Recommended hosted test path" below for one that would remove even that requirement):
 
-`http://192.168.1.11:8088/app-debug.apk`
+`http://192.168.1.6:8088/app-debug.apk`
 
-The Android device must be on the same Wi-Fi network. Keep this computer and both local servers
-running. Android may ask the user to allow installs from the browser because this is a debug APK.
-The build supports Android 8.0/API 26 and newer.
-
-Verified build, 12 September 2026:
-
-- Size: `34,211,845` bytes
-- SHA-256: `4047D36D0E872952D31C8B77AFFE874F7B9AD11DE90246465F989974D8C4E985`
-- API health: Supabase database connected
-- Android 14 managed Pixel: 5/5 instrumentation tests
-- Android JVM/Robolectric: 71/71 tests
-- Backend: 296/296 tests plus the live Supabase disposable-account smoke
-- Android lint: passed
-
-Rebuild when the computer's local IP changes:
-
-```powershell
-$env:ANDROID_HOME = "$env:LOCALAPPDATA/Android/Sdk"
-./android-app/gradlew.bat -p android-app assembleDebug "-PshanivarApiUrl=http://YOUR_LAN_IP:5000/api"
-```
-
-Serve the resulting directory:
+Serve it (already running as of this build):
 
 ```powershell
 python -m http.server 8088 --bind 0.0.0.0 --directory android-app/app/build/outputs/apk/debug
 ```
 
-This local route is for hands-on testing only. It depends on the computer and local network.
+The Android device must be on the same Wi-Fi network as this computer to reach that URL, and keep
+this computer + that server running while installing. Android will ask to allow installs from the
+browser because this is a debug APK. Supports Android 8.0/API 26 and newer.
+
+Verified build, 19 September 2026:
+
+- Size: `34,310,109` bytes
+- SHA-256: `55E0BA368713A78583D375D9BD002E020946E1294E32B6E4EE569B0F2B6F9728`
+- API health: `https://hybridmonk-api.onrender.com/api/health` → `200 {"status":"ok","database":"ok"}`
+- Android JVM/Robolectric: 92/92 tests
+- Android lint: passed
+- Backend: 305/305 tests (added recurring focus-schedule CRUD; see
+  [decision 0010](../docs/decisions/0010-focus-schedule-when-then-commitment.md))
+- Not verified: anything requiring physical hardware (no emulator/managed-device task runs on
+  this machine) - see the eight-check protocol in `ENFORCEMENT_STANCE_2026-09-12.md`
+
+Rebuild against production (no LAN IP needed for the API anymore):
+
+```powershell
+./android-app/gradlew.bat -p android-app assembleDebug "-PshanivarApiUrl=https://hybridmonk-api.onrender.com/api"
+```
+
+This local route is for hands-on testing only. It depends on the computer and local network for
+the *download* only; the app itself, once installed, depends only on internet.
 
 ## Recommended hosted test path
 

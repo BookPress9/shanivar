@@ -9,10 +9,12 @@ private class FakePermissions(
     var usageAccess: Boolean = true,
     var overlay: Boolean = true,
     var exactAlarm: Boolean = true,
+    var notification: Boolean = true,
 ) : DisciplinePermissions {
     override fun hasUsageAccess() = usageAccess
     override fun hasOverlayPermission() = overlay
     override fun hasExactAlarmPermission() = exactAlarm
+    override fun hasNotificationPermission() = notification
 }
 
 private class FakeDisciplineApi : DisciplineApi {
@@ -62,6 +64,19 @@ private class FakeGuard : FocusGuardController {
 }
 
 class DisciplineEngineTest {
+    @Test fun expiredServerSessionDoesNotClaimProtectionOrBlockNextStart() = runBlocking {
+        val api = FakeDisciplineApi().apply {
+            active = FocusSessionInfo("elapsed", 1L, setOf("com.instagram.android"))
+        }
+        val guard = FakeGuard()
+        val engine = DisciplineEngine(FakePermissions(), api, guard)
+        assertEquals(ProtectionState.OFF, engine.status().protection)
+        assertEquals(0, guard.startCalls)
+        engine.startFocus(15, setOf("com.instagram.android"))
+        assertEquals("elapsed", api.lastReleasedSessionId)
+        assertEquals(1, api.startCalls)
+    }
+
     private fun engine(
         permissions: FakePermissions = FakePermissions(),
         api: FakeDisciplineApi = FakeDisciplineApi(),
@@ -90,12 +105,12 @@ class DisciplineEngineTest {
 
     @Test fun statusReportsActiveWithEndTimeAndPackagesFromTheBackend() = runBlocking {
         val api = FakeDisciplineApi().apply {
-            active = FocusSessionInfo(id = "session-9", endsAtEpochMillis = 555_000L, packageNames = setOf("com.instagram.android"))
+            active = FocusSessionInfo(id = "session-9", endsAtEpochMillis = Long.MAX_VALUE, packageNames = setOf("com.instagram.android"))
         }
         val (engine, _, _) = engine(api = api)
         val status = engine.status()
         assertEquals(ProtectionState.ACTIVE, status.protection)
-        assertEquals(555_000L, status.focusEndsAtEpochMillis)
+        assertEquals(Long.MAX_VALUE, status.focusEndsAtEpochMillis)
         assertEquals(setOf("com.instagram.android"), status.protectedPackages)
     }
 

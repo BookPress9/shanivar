@@ -1,11 +1,31 @@
-# Shanivar: attention returned to everyday life
+# Shanivar: focused time and awareness in everyday life
+
+## Current pitch and usability scope — 13 September 2026
+
+The corrected audiences are worried adult children introducing their parents, and younger users choosing Shanivar for their own focus and awareness of thinking. Parents may choose a respectful Lord Shani connection; belief and adoption must not be inferred from age. All ages are intended; adult testing is the first validation step, with school-age readiness gaps reported explicitly.
+
+The [initial MVP scope](INITIAL_MVP_SCOPE_2026-09-13.md) now controls launch visibility: an independent alarm tool plus immediate focus modes, editable activity presets, selected app targets, optional local pause and a short review. Use one home, familiar onboarding and the [plain voice guide](../docs/strategy/shanivar-tone-and-values.md). “Hyperfocus” is an aspiration; metacognition means examining and regulating thinking, not an established highest-intelligence ranking.
+
+The [Claude task](CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md) is prepared for implementation. Birth charts, AI scroller, larger practice library, automatic focus schedules and monetization move to the [staged backlog](../docs/strategy/shanivar-launch-backlog.md). They may exist in source but are not initial pitch requirements. Preserve safety, data and management of any already-active service when hiding features. These documents do not claim that the simplified build is already delivered.
 
 Owner: Codex, frontend/UI/UX. Backend and native discipline services: Claude.
 Founder direction recorded 2026-09-09. This expands the earlier no-monetization MVP brief: paid app locks are now part of the intended product. Working interpretation is a paid subscription for blocking; a fee for breaking a lock is not assumed or charged.
 
+## Founder outcome — clarified 13 September 2026
+
+Shanivar is for willing adults in India who want to step out of recurring mental loops, become more able to remain with boredom or an urge, and redirect attention toward curiosity, purpose, relationships and self-inquiry. Its spiritual foundation is the founder's belief in shared consciousness and loosening conditioning described as maya toward presence and cosmic flow. The product should help users examine their own experience without requiring agreement with that belief.
+
+The smallest product outcome is a personally meaningful sequence: **notice the loop → experience the urge briefly → choose one real-world action → leave the app → reflect later if useful.** App opens, card responses, streaks and session duration do not establish this outcome.
+
+Long-term success may include progressively fewer prompts and user-confirmed little or no need for Shanivar. Inactivity alone is unknown; distinguish confirmed independence, freely chosen ongoing support, unsuccessful departure and missing follow-up. Design the reflection scroller so it cannot quietly become a substitute feed.
+
+Astrology is intended to improve guidance rather than lead acquisition. Treat ephemeris/calculation correctness, user-perceived interpretive fit and incremental practical usefulness as separate validation layers. Meditation before insight is a sequence to test; preserve disagreement and do not treat post-meditation receptivity as consent to an unquestionable interpretation.
+
+See [founder direction](../docs/strategy/shanivar-founder-direction.md), [India market fit](../research/shanivar-india-market-fit.md) and the [release learning log](../ai_org/shanivar_market_fit_release_log.md).
+
 Current UI direction: [interactive Saturn dark wireframes](wireframes/saturn-dark/index.html), with the screen rationale and Compose translation in [the wireframe README](wireframes/saturn-dark/README.md).
 
-## Daily experience
+## Broader experience retained for later stages
 - Onboarding begins with English/Hindi choice, then account access, optional birth context, capability explanation and arrival. Birth details promise more relevant chart-based reflections, not better mental-health outcomes. Hindi uses **दिनचर्या (Dincharya)** for rhythm and may respectfully acknowledge Shani as a symbol of time, consequence and patient discipline without assuming faith.
 - Today answers "what should I do now?" with one primary action adapted to the user's wake/quiet schedule, including night-shift schedules.
 - Today leads with one personal-feeling daily direction in the spirit of a direct astrological reflection: one observation, one question/action, visible provenance and an interpretive-not-predictive stance. Its notification is opt-in, user-timed and limited; notification delivery is not proof that the direction was read or acted on.

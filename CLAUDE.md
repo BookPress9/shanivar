@@ -5,8 +5,28 @@ stays short on purpose: non-negotiables, where the real documentation lives, and
 an index and a set of rules, not an encyclopaedia. Every line here costs context on every turn —
 if something can live in a linked document instead, it should.
 
-Shanivar is a discipline app: alarms you cannot casually dismiss, and app locks you cannot casually
-bypass. Two features, deliberately. Everything else is downstream of those working.
+Shanivar serves **worried adult children introducing their parents, and younger people using it
+for their own focus and awareness of thinking**. Parents may choose a respectful Lord Shani framing;
+faith is an invitation, never an enforcement mechanism or an assumption about all parents.
+V1 requires both alarms and app locks/focus modes: begin a chosen action, protect time,
+notice distraction and optionally review what helped. Both tools work independently. Every participant controls their own account and
+session; a child receives no private activity report. All ages are the intended audience. The first adult cohort is a validation sequence;
+report school-age readiness gaps before claiming support for every age. See
+[`android-app/INITIAL_MVP_SCOPE_2026-09-13.md`](android-app/INITIAL_MVP_SCOPE_2026-09-13.md).
+
+The [product manager review](ai_org/product_manager_mvp_review_2026-09-13.md) prioritizes family
+acquisition learning while retaining young self-use. Reuse a local pause before signup (explicitly
+no blocking), keep the parent in control, and make optional Shani framing discoverable. Measure
+voluntary repeat by audience; do not confuse helper interest with parent adoption.
+
+Astrology, the reflection scroller, the practice library, gamification, WhatsApp, family
+dashboards and paid-plan UI are later capabilities. Existing code may remain, but it must not add
+navigation, onboarding or claims to the initial experience. Do not delete tested safety code merely
+to simplify the surface.
+
+The founder's [v1 decision](docs/decisions/0007-v1-alarms-and-focus.md) restores alarms over the earlier
+PM recommendation. Read the [marketing handoff](marketing/shanivar/v1-product-direction-handoff.md)
+and [competitor patterns](research/shanivar-v1-alarm-focus-patterns.md) before implementing Claude's task.
 
 **The horizon we are building against:** a million users within two years. That does not mean
 building a million-user system today — premature scaling has killed more projects here than late
@@ -46,6 +66,21 @@ Break any of these and the product stops being trustworthy. They are not style p
 This file is the door. The rooms are elsewhere — read the relevant one before working in that area.
 
 **Stance and direction**
+- [`android-app/INITIAL_MVP_SCOPE_2026-09-13.md`](android-app/INITIAL_MVP_SCOPE_2026-09-13.md) —
+  the current launch scope, both audience paths, plain tone and defer list. It controls
+  pitch/usability work when older documents describe a broader MVP.
+- [`android-app/CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md`](android-app/CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md) —
+  Claude's concrete implementation and verification task.
+- [`docs/decisions/0009-behavioral-return-loop.md`](docs/decisions/0009-behavioral-return-loop.md) —
+  the founder-approved V1 behavioral loop (Choose → Prepare → Protect → Notice → Review → Adjust →
+  Leave). No AI coach, feed, gamification, or engagement mechanics — read this before adding
+  anything that reminds, nudges, or motivates.
+- [`docs/decisions/0010-focus-schedule-when-then-commitment.md`](docs/decisions/0010-focus-schedule-when-then-commitment.md) —
+  recurring focus schedules (all day / a few days a week / custom times) and why the "reason to
+  keep going" is a user-authored when-then commitment, never generated copy.
+- [`android-app/CODEX_NEXT_TASK_2026-09-19.md`](android-app/CODEX_NEXT_TASK_2026-09-19.md) —
+  the focus-schedule UI handoff: backend, client and native engine are built and tested; the
+  screen is the open item.
 - [`android-app/ENFORCEMENT_STANCE_2026-09-12.md`](android-app/ENFORCEMENT_STANCE_2026-09-12.md) —
   the founder-level position on alarms and app locks, the escalation spec, the 8 safety invariants,
   and the 8-check physical-device protocol. **The single most important document in the repo.**
@@ -78,9 +113,15 @@ Describing what exists, not what we wish existed.
   (`aws-1-ap-northeast-2.pooler.supabase.com:5432`, user `postgres.<ref>`). The direct
   `db.<ref>.supabase.co` host is **IPv6-only** and Render's egress is IPv4-only — using it fails
   with `ENETUNREACH`. This has already cost one deploy.
-- **App** — Kotlin / Jetpack Compose. `minSdk 26`, `targetSdk 35`.
-- **Tests** — 296 backend, 69 Android unit, 4 instrumented classes that **have never executed**
-  (they were written against the forbidden emulator target).
+- **App** — Kotlin / Jetpack Compose. `minSdk 26`, `targetSdk 35`. Default launch surface is the
+  single-Home streamlined build (`BuildConfig.STREAMLINED_LAUNCH = true`), executed 2026-09-18 —
+  see [`android-app/README.md`](android-app/README.md)'s "Streamlined build" section for what
+  changed, and [decision 0008](docs/decisions/0008-alarm-recurrence-recomputed-not-pregenerated.md)
+  for the alarm-recurrence model. The four-tab shell is kept as `LegacyTabShell`, reachable by
+  flipping that flag.
+- **Tests** — 296 backend, 82 Android unit (verified 2026-09-18; re-check this number before
+  trusting it — it moves every time a package adds tests), 4 instrumented classes that **have
+  never executed** (they were written against the forbidden emulator target).
 
 ## 4. Known debt — and when to pay it
 
@@ -92,7 +133,8 @@ Written down so nobody rediscovers these the hard way, and so nobody "fixes" the
 | Render free tier, ~22.6s cold start | Fine for a 20-person cohort | First cohort that includes strangers |
 | Release build points at `https://api.thehybridmonk.com/api`, which **does not resolve** | We test debug builds | Any release APK reaching a human |
 | Debug build defaults to `http://10.0.2.2:5000/api` (emulator-only alias) | Overridable per build | — build with `-PshanivarApiUrl=https://hybridmonk-api.onrender.com/api` for physical devices |
-| `POST_NOTIFICATIONS` never requested at runtime | Invisible below Android 13 | **Now.** On Android 13+ the alarm never appears at all |
+| Focus card's "app to pause" picker is a fixed 6-app allowlist (`KnownDistractingApps`), not a full installed-app list | Avoids also having to exclude system/communication apps from an arbitrary list | A tester reports a distracting app that isn't one of the six |
+| The skippable session review doesn't distinguish a session reaching full duration from an early manual end — same copy either way | Simplification made under the MVP streamline task; still better than no review | The pilot's own feedback says the distinction matters |
 
 ## 5. How to work here
 
@@ -100,6 +142,13 @@ Written down so nobody rediscovers these the hard way, and so nobody "fixes" the
 reason a line is load-bearing — the race it prevents, the platform quirk it works around, the
 ordering that must not change. That is the difference between code that survives being revisited
 and code that gets "cleaned up" into a regression.
+
+**Use the straight line.** For every initial-launch screen, state the result the parent chose, the
+current status and the next required action. Insight that does not change the next action is noise.
+Use direct verbs and concrete commitments; never turn ownership into blame. This adapts the
+implementation-over-information and current-state-to-result principles described by
+[Straight-Line Leadership](https://www.straightlineleadership.com/en/); it does not copy the
+author's prose or aggressive coaching style.
 
 **Record decisions, not just changes.** Anything that closes off an alternative — a schema shape,
 a platform API declined, an enforcement boundary — goes in

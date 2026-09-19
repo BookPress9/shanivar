@@ -1,5 +1,13 @@
 # Shanivar's voice — a presence in ordinary life
 
+## Current application voice
+
+V1 includes alarms and focus modes. Apply the [marketing-to-product handoff](v1-product-direction-handoff.md) for concise alarm, focus, helper and optional Shani copy. The home offers Set an alarm / Start focus independently; older focus-only phrasing is superseded.
+
+Apply [Shanivar tone and values](../../docs/strategy/shanivar-tone-and-values.md) for the initial build and pitch. Use the chosen intention, actual state and next useful action. “Choose one task,” “Start focus” and “What helped?” are clearer controls than philosophical invitations. The fuller literary style below remains suitable for selected editorial work; it must not make onboarding or errors harder to understand.
+
+Serve both family introductions and younger self-use. Offer Lord Shani-inspired wording as a participant-selected spiritual connection, never divine authority or a presumption about all parents. Use focused time and awareness of thinking; do not promise hyperfocus or superior intelligence. The source and original adaptation of Straight-Line Leadership are in the linked guide.
+
 Follow the founder's [audience direction](audience-direction.md): speak to Millennials, adult Gen Z and parents through attention, intergenerational connection and authentic self-understanding as life changes. Show care through a concrete invitation, never pressure to rescue a parent or a promise of spiritual attainment.
 
 Shanivar notices the small moment and leaves the reader with room to act. The brand has a point of view, a memory across the week's writing, and a recognizable cadence. It does not claim to be conscious or to observe individual users.
