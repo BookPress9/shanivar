@@ -21,10 +21,14 @@ fun V1Home(
     intention: String, minutes: Int, accountName: String?, openAccount: () -> Unit,
     navigationEnabled: Boolean = true,
     focus: @Composable () -> Unit, alarm: @Composable () -> Unit,
+    breathe: @Composable (BreathingEntry, () -> Unit) -> Unit = { _, _ -> },
+    initialRoute: String = "home",
+    initialBreatheEntry: BreathingEntry = BreathingEntry.HOME,
 ) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("rhythm", 0) }
-    var route by rememberSaveable { mutableStateOf("home") }
+    var route by rememberSaveable { mutableStateOf(initialRoute) }
+    var breatheEntry by rememberSaveable { mutableStateOf(initialBreatheEntry.name) }
     var shani by rememberSaveable { mutableStateOf(prefs.getBoolean("shaniFraming", false)) }
     var resumeCount by remember { mutableIntStateOf(0) }
     OnAppResume { resumeCount++ }
@@ -32,7 +36,7 @@ fun V1Home(
     BackHandler(route != "home") { if (navigationEnabled) route = "home" }
     Crossfade(targetState = route, animationSpec = tween(180), label = "v1ScreenFade") { screen ->
         if (screen == "pause") {
-            LocalPauseScreen(isPreview = true, onExit = { route = "home" })
+            LocalPauseScreen(isPreview = true, prompt = rememberGroundingPrompt(), onExit = { route = "home" })
         } else {
             Column(Modifier.fillMaxSize().safeDrawingPadding().verticalScroll(rememberScrollState()).padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp)) {
@@ -51,6 +55,11 @@ fun V1Home(
                             Text(if (focusEnd > System.currentTimeMillis()) "$intention · focus in progress" else "$intention · $minutes minutes")
                             Text("Protect time from distracting apps.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                             PrimaryAction("Start focus") { route = "focus" }
+                            // Opens Prepare only. Finishing a practice never starts protection - the
+                            // person comes back here and presses Start focus themselves.
+                            TextButton(onClick = {
+                                breatheEntry = BreathingEntry.BEFORE_FOCUS.name; route = "breathe"
+                            }) { Text("Take a moment first · 1 min") }
                         }
                         SectionCard("Begin when you choose.") {
                             val next = AlarmScheduler(context).pendingTriggerAtEpochMillis()
@@ -59,21 +68,28 @@ fun V1Home(
                                 ?: "A wake-up action you choose.")
                             OutlinedButton(onClick = { route = "alarm" }, modifier = Modifier.fillMaxWidth()) { Text("Set alarm") }
                         }
+                        // The third pillar (decision 0011). One card, not eight - the eight practices
+                        // live behind the selection sheet.
+                        SectionCard("Breathe & reset") {
+                            Text("A short practice for this moment.")
+                            OutlinedButton(onClick = {
+                                breatheEntry = BreathingEntry.HOME.name; route = "breathe"
+                            }, modifier = Modifier.fillMaxWidth()) { Text("Choose a practice") }
+                        }
                         TextButton(onClick = { route = "pause" }, modifier = Modifier.fillMaxWidth()) { Text("Take a one-minute pause") }
                     }
                     "focus" -> focus()
                     "alarm" -> alarm()
+                    // A stored entry name that no longer exists falls back to HOME rather than
+                    // crashing - the entry point only decides copy and where exiting goes.
+                    "breathe" -> breathe(
+                        runCatching { BreathingEntry.valueOf(breatheEntry) }.getOrDefault(BreathingEntry.HOME),
+                    ) { route = "home" }
                     "settings" -> {
                         Heading("Your choices.")
                         PrimaryAction(if (accountName == null) "Sign in or create account" else "Account · $accountName", openAccount)
-                        SectionCard("Choose your wording") {
-                            Text("The same tools. A context that feels right to you.")
-                            listOf(false to "Plain", true to "Inspired by Shani").forEach { (value, label) ->
-                                FilterChip(selected = shani == value, onClick = {
-                                    shani = value; prefs.edit().putBoolean("shaniFraming", value).apply()
-                                }, label = { Text(label) })
-                            }
-                            Text("Inspired by Shani: choose your intention and act on it with patience. No belief is required.")
+                        SharedSettingsCards(shani) { value ->
+                            shani = value; prefs.edit().putBoolean("shaniFraming", value).apply()
                         }
                         TextButton(onClick = { route = "helper" }) { Text("Help a parent get started") }
                     }
@@ -91,5 +107,49 @@ fun V1Home(
                 }, modifier = Modifier.fillMaxWidth()) { Text("Return to my day") }
             }
         }
+    }
+}
+
+/**
+ * The settings cards shared by the single-Home surface and the three-tab shell's Settings panel.
+ *
+ * Extracted rather than duplicated: both surfaces exist simultaneously while `THREE_TAB_NAV` is being
+ * fitted, and two copies of a preference screen is how one of them quietly stops writing the same key.
+ */
+@Composable
+internal fun SharedSettingsCards(shaniFraming: Boolean, onShaniFramingChange: (Boolean) -> Unit) {
+    val context = LocalContext.current
+    SectionCard("Choose your wording") {
+        Text("The same tools. A context that feels right to you.")
+        listOf(false to "Plain", true to "Inspired by Shani").forEach { (value, label) ->
+            FilterChip(selected = shaniFraming == value, onClick = { onShaniFramingChange(value) },
+                label = { Text(label) })
+        }
+        Text("Inspired by Shani: choose your intention and act on it with patience. No belief is required.")
+    }
+    val breathingPrefs = remember { BreathingPreferences(context) }
+    SectionCard("Practice schedule") {
+        var wake by rememberSaveable { mutableStateOf(breathingPrefs.wakeTime.orEmpty()) }
+        var sleep by rememberSaveable { mutableStateOf(breathingPrefs.intendedSleepTime.orEmpty()) }
+        var historyCleared by remember { mutableStateOf(false) }
+        // Optional, and separate from the alarm rhythm's quiet time on purpose: "when the app goes
+        // quiet" is not a statement about when someone sleeps.
+        Text("Optional. Only used to suggest a practice. Nothing about your body is measured.",
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+        OutlinedTextField(wake, { value ->
+            wake = value; breathingPrefs.wakeTime = value.ifBlank { null }
+        }, label = { Text("Wake time (HH:mm)") }, singleLine = true)
+        OutlinedTextField(sleep, { value ->
+            sleep = value; breathingPrefs.intendedSleepTime = value.ifBlank { null }
+        }, label = { Text("Intended sleep time (HH:mm)") }, singleLine = true)
+        Text(
+            if (BreathingSchedule.parse(wake, sleep).awakeSpanMinutes == null)
+                "Not usable yet, so suggestions won't refer to your day."
+            else "Suggestions can refer to the schedule you chose."
+        )
+        TextButton(onClick = {
+            breathingPrefs.clearAll(); wake = ""; sleep = ""; historyCleared = true
+        }) { Text("Clear practice history") }
+        if (historyCleared) Text("Practice history cleared. Your alarms and focus settings are untouched.")
     }
 }

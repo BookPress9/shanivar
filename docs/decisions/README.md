@@ -52,3 +52,7 @@ becomes a permanent constraint nobody remembers choosing.
 - [0008 — Alarm recurrence is recomputed after every fire, not pre-generated](0008-alarm-recurrence-recomputed-not-pregenerated.md)
 - [0009 — Return for the next conscious choice, not engagement](0009-behavioral-return-loop.md)
 - [0010 — Recurring focus schedules, and a when-then commitment instead of a "deepest desire" prompt](0010-focus-schedule-when-then-commitment.md)
+- [0011 ? VBT breathing becomes a scoped third pillar](0011-vbt-breathing-third-pillar.md)
+- [0012 — The breathing session owner is process-scoped, not a ViewModel](0012-breathing-session-owner-is-process-scoped.md)
+- [0013 — Sadhana progression, and what "gamified" may and may not mean](0013-sadhana-progression-and-the-gamification-question.md) — **PROPOSED, founder decision required**
+- [0014 — Routine + Sadhana shell and Routine V3](0014-routine-sadhana-shell-and-routine-v3.md) — **ACCEPTED, Routine implementation authorized**

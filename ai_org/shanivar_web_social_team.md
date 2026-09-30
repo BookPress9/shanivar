@@ -1,5 +1,10 @@
 # Shanivar Web and Social Team
 
+**Execution update (2026-09-30):** [Three rendered carousels, captions, upload package and publishing audit](../marketing/shanivar/execution-2026-09-30/README.md). This is the current next-batch handoff, superseding conflicting unposted proposals. Prepared in an active team session; no new publication or ongoing worker established.
+
+
+**Latest team update (2026-09-25):** the [breathing third-pillar brief](../marketing/shanivar/breathing-feature-marketing-update-2026-09-25.md) updates product positioning and the [next Instagram post](../marketing/shanivar/next-instagram-2026-09-25/README.md) supplies rendered creative. These are repository handoffs, not evidence of an external notification or an active worker.
+
 Created at the founder's request. These roles extend the existing organization; the original five-role WhatsApp cohort remains a separate track.
 
 | Agent | Owns | Coordinates with |

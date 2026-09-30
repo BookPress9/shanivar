@@ -60,3 +60,13 @@ Supersedes:
 Review after:
 Decision owner:
 ```
+
+### 2026-09-25 ? Breathing becomes a third pillar
+
+Status: Accepted founder product direction; creative proposal ready for review.
+
+Evidence: founder requested VBT catalogue, implementation handoff, marketing update and next Instagram post. Eight starter practices are specified; app implementation remains pending. No new Insights were supplied.
+
+Decision: introduce the addition with a concrete morning-scroll moment and visible development labels. Use the [team brief](breathing-feature-marketing-update-2026-09-25.md) and [rendered next-post package](next-instagram-2026-09-25/README.md). This supersedes the two-tool-only pitch for future drafts, not historical publication records. Keep this English product update separate from bilingual paired observations.
+
+Review after: founder creative review, actual publication and mature 24-hour/7-day observations. No background monitoring or publication occurred.

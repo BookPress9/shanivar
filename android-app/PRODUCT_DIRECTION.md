@@ -1,5 +1,7 @@
 # Shanivar: focused time and awareness in everyday life
 
+> **Current product-form update (30 September 2026):** [decision 0014](../docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md) adopts two primary destinations, **Routine** and **Sadhana**, with Routine as the launch destination and Dashboard removed. Phase 1 implements Routine from the [V3 handoff](CLAUDE_ROUTINE_V3_BUILD_HANDOFF_2026-09-30.md). This file remains the outcome/audience foundation; older navigation and staged-backlog statements yield to 0014.
+
 ## Current pitch and usability scope — 13 September 2026
 
 The corrected audiences are worried adult children introducing their parents, and younger users choosing Shanivar for their own focus and awareness of thinking. Parents may choose a respectful Lord Shani connection; belief and adoption must not be inferred from age. All ages are intended; adult testing is the first validation step, with school-age readiness gaps reported explicitly.

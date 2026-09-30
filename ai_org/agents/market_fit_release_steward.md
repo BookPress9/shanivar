@@ -1,5 +1,7 @@
 # Market Fit Release Steward
 
+**Mandate update (2026-09-29):** The [latest brief](../../research/deep-foundation/FOUNDER_BRIEF_2026-09-29.md) expands international research and requires manual stance acceptance. Existing release gates remain. Coordinate with the [Staff Manager research organization](../../research/deep-foundation/RESEARCH_ORGANIZATION.md); do not treat India-only historical scope as a permanent restriction or new research as approved release content.
+
 Created 12 September 2026 at the founder's request for a separate agent preserving product-market-fit analysis for feature releases.
 
 ## Mandate

@@ -1,5 +1,10 @@
 # Current campaign — 30 days after the first post
 
+**Execution update (2026-09-30):** [Three rendered carousels, captions, upload package and publishing audit](execution-2026-09-30/README.md). This is the current next-batch handoff, superseding conflicting unposted proposals. Prepared in an active team session; no new publication or ongoing worker established.
+
+
+**Next post / latest direction (2026-09-25):** [breathing-feature team update](breathing-feature-marketing-update-2026-09-25.md) and [five-slide Instagram package](next-instagram-2026-09-25/README.md). Breathing is in development; the package is ready for review, not scheduled or published. This next-post proposal takes priority over older unposted creative without changing historical publication records.
+
 Latest launch correction: review the drafts below against the [two-entry audience and MVP](../../android-app/INITIAL_MVP_SCOPE_2026-09-13.md) and [plain voice guide](../../docs/strategy/shanivar-tone-and-values.md) before using them for pitching or acquisition. Parents introduced by worried adult children and younger self-directed users are both in scope. Lord Shani is an optional cultural connection. Existing campaign packages have not been rewritten or republished by the documentation update; chart/scroller launch claims and broad feature tours need removal from any initial-launch adaptation.
 
 The founder reports the first post published and supplied [this permalink](https://www.instagram.com/p/DdMA9N7lAT3/). Public fetching was throttled; live artwork, caption and Insights remain unverified. The [first-post intake](month-02/first-post-analysis.md) records the boundary without invented metrics.

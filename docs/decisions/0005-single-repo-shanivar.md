@@ -1,7 +1,11 @@
 # 0005 — `BookPress9/shanivar` is the only repository; `hybridmonk-backend` is retired
 
 - **Date:** 2026-09-12
-- **Status:** Accepted — **execution incomplete**, see *Remaining steps*
+- **Status:** Accepted — **steps 2-3 verified complete 2026-09-24** (Render is deploying the new
+  focus-schedules route from a commit that only exists on `shanivar`, never pushed to the legacy
+  repo — confirmed live via `GET /api/discipline/focus-schedules` returning 401, not 404). Nobody
+  recorded *when* the dashboard repoint happened; this is downstream evidence, not a witnessed
+  change. Step 1 (credential rotation) and step 4 (delete the legacy repo) remain open — see below.
 
 ## Context
 

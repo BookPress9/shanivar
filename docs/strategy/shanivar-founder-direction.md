@@ -1,5 +1,9 @@
 # Shanivar founder direction
 
+> **Accepted product-form update (30 September 2026):** [decision 0014](../decisions/0014-routine-sadhana-shell-and-routine-v3.md) establishes Routine and Sadhana as the two primary destinations, removes Dashboard and authorizes Routine implementation. Sadhana progression remains a collaborative Phase 2 decision.
+
+**Research scope update (2026-09-29):** The [latest founder brief](../../research/deep-foundation/FOUNDER_BRIEF_2026-09-29.md) adds international explorers without removing existing audiences. Tradition-specific disagreement must remain visible; shared-consciousness framing is not cross-tradition consensus. See the [proposed foundation](../../research/deep-foundation/SHANIVAR_DEEP_FOUNDATION_REPORT_V1.md) and [manual stance](../../SHANIVAR_STANCE.md).
+
 Recorded 13 September 2026 from the founder's answers to the product-market-fit inquiry. This document preserves intent. Research conclusions and product recommendations are labeled separately so they do not silently replace the founder's beliefs.
 
 ## Spiritual thesis

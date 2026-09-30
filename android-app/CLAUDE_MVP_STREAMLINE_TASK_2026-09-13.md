@@ -1,5 +1,7 @@
 # Claude task: streamline the initial Shanivar build
 
+> **Historical completed task:** preserve this as the implementation baseline. [Decision 0014](../docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md) supersedes its visible shell/navigation and authorizes the [Routine V3 build](CLAUDE_ROUTINE_V3_BUILD_HANDOFF_2026-09-30.md). Its alarm/focus safety constraints remain active.
+
 Status: founder-revised v1 ready for Claude implementation; not executed by this handoff. Alarms and app locks/focus modes are both mandatory; the previous focus-only PM recommendation is superseded. Prepared at the founder's request. The latest audience correction controls: concerned adult children introducing parents, plus younger self-directed users. Parents may choose a Lord Shani connection. Do not implement the superseded parent-only brief.
 
 ## Result

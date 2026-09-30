@@ -1,5 +1,11 @@
 # Shanivar — working agreement
 
+**Foundation research (2026-09-29):** Read the [V1 report](research/deep-foundation/SHANIVAR_DEEP_FOUNDATION_REPORT_V1.md) and [manual stance](SHANIVAR_STANCE.md) before changing philosophical framing or navigation. The founder expands international research and rejects spiritual ranking. Research conclusions remain PROPOSED; this report does not authorize a wholesale app redesign or release new practices.
+
+**Steady visual handoff (2026-09-25):** the new breathing feature is named **Steady**. Claude must read the [wireframe contract](android-app/wireframes/steady/README.md) and [clickable prototype](android-app/wireframes/steady/index.html) alongside the breathing build handoff before implementing its UI. This supersedes the working label Breathe & reset, not existing behavior or internal identifiers.
+
+**Third pillar, built 2026-09-25:** the VBT breathing feature from the [Claude handoff](android-app/CLAUDE_VBT_BREATHING_HANDOFF_2026-09-25.md), [test guide](android-app/VBT_BREATHING_TEST_GUIDE_2026-09-25.md) and [decision 0011](docs/decisions/0011-vbt-breathing-third-pillar.md) is implemented and its automated checks pass — read [the release evidence](android-app/VBT_BREATHING_RELEASE_EVIDENCE_2026-09-25.md) before claiming anything about it, because the content review, the accessibility checks and every physical-device gate are still NOT RUN. It extends the practice-library deferral below only for the eight specified starter practices. The player holds no reference to any enforcement type, and a test fails the build if that changes.
+
 **Read this before changing anything.** It is loaded into every agent session automatically, so it
 stays short on purpose: non-negotiables, where the real documentation lives, and how we work. It is
 an index and a set of rules, not an encyclopaedia. Every line here costs context on every turn —
@@ -65,6 +71,17 @@ Break any of these and the product stops being trustworthy. They are not style p
 
 This file is the door. The rooms are elsewhere — read the relevant one before working in that area.
 
+**Accepted product direction (2026-09-30):** the founder-selected [V3 wireframe](android-app/wireframes/shanivar-v3-wireframe/shanivar-v3/README.md) replaces the provisional three-tab shell with **Routine / Sadhana**. Routine is the normal launch destination; Dashboard is removed. Phase 1 Routine is authorized through [decision 0014](docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md) and the [Claude build handoff](android-app/CLAUDE_ROUTINE_V3_BUILD_HANDOFF_2026-09-30.md). Read the [test guide](android-app/ROUTINE_V3_TEST_GUIDE_2026-09-30.md) before editing scheduling. Phase 2 Sadhana progression remains collaborative and unresolved; decision 0013 still controls its gamification and intensive-practice boundaries.
+
+**Technical reality (read before trusting any capability claim below)**
+- [`SHANIVAR_TECHNICAL_MAP.md`](SHANIVAR_TECHNICAL_MAP.md) — all 20 capability areas labelled
+  SHIPPED/DORMANT/PARTIAL/ABSENT, verified 2026-09-29, plus six verified focus-scheduler defects.
+  Key finding: the shipped app makes **zero AI calls**, and there is **no `strings.xml`**.
+- [`GPT_TECH_BRIDGE.md`](GPT_TECH_BRIDGE.md) — GPT's research concepts translated into engineering
+  terms, each with a class, options and a recommendation. Three need founder decisions; eleven do not.
+- [`CLAUDE_TECHNICAL_INTEGRATION_V1.md`](CLAUDE_TECHNICAL_INTEGRATION_V1.md) — proposed knowledge, AI,
+  memory, personalization and navigation architecture; platform feasibility; spikes; P0-P3 roadmap.
+
 **Stance and direction**
 - [`android-app/INITIAL_MVP_SCOPE_2026-09-13.md`](android-app/INITIAL_MVP_SCOPE_2026-09-13.md) —
   the current launch scope, both audience paths, plain tone and defer list. It controls
@@ -78,6 +95,9 @@ This file is the door. The rooms are elsewhere — read the relevant one before 
 - [`docs/decisions/0010-focus-schedule-when-then-commitment.md`](docs/decisions/0010-focus-schedule-when-then-commitment.md) —
   recurring focus schedules (all day / a few days a week / custom times) and why the "reason to
   keep going" is a user-authored when-then commitment, never generated copy.
+- [`docs/decisions/0012-breathing-session-owner-is-process-scoped.md`](docs/decisions/0012-breathing-session-owner-is-process-scoped.md) —
+  why the breathing session lives in a process-scoped object instead of a ViewModel: it is reached
+  from three different Activities and only one session may ever be active.
 - [`android-app/CODEX_NEXT_TASK_2026-09-19.md`](android-app/CODEX_NEXT_TASK_2026-09-19.md) —
   the focus-schedule UI handoff: backend, client and native engine are built and tested; the
   screen is the open item.
@@ -103,9 +123,9 @@ Describing what exists, not what we wish existed.
 
 - **Repository** — `BookPress9/shanivar` is the **only** repo; `origin/main` is the trunk. The
   `legacy-hybridmonk` remote and the `legacy-main` branch are the retired earlier project, kept for
-  history only — never push product work there. See
-  [decision 0005](docs/decisions/0005-single-repo-shanivar.md), which also lists the Render repoint
-  steps still outstanding.
+  history only — never push product work there. Render is confirmed deploying from `shanivar` now
+  (verified 2026-09-24 — see [decision 0005](docs/decisions/0005-single-repo-shanivar.md)); credential
+  rotation and deleting the legacy repo are the two steps still open.
 - **Backend** — Node/Express, `pg` Pool against Supabase Postgres. `db.js` exports `{ query, pool }`.
   Deployed on Render at `https://hybridmonk-api.onrender.com`. Health: `GET /api/health` (runs a
   real `SELECT 1`; a health check that doesn't touch the database is a lie).
@@ -119,9 +139,10 @@ Describing what exists, not what we wish existed.
   changed, and [decision 0008](docs/decisions/0008-alarm-recurrence-recomputed-not-pregenerated.md)
   for the alarm-recurrence model. The four-tab shell is kept as `LegacyTabShell`, reachable by
   flipping that flag.
-- **Tests** — 296 backend, 82 Android unit (verified 2026-09-18; re-check this number before
-  trusting it — it moves every time a package adds tests), 4 instrumented classes that **have
-  never executed** (they were written against the forbidden emulator target).
+- **Tests** — 160 Android unit (verified 2026-09-25), 305 backend (verified 2026-09-19; `backend/`
+  has not been touched since). Re-check both before trusting them — they move every time a package
+  adds tests. Plus 4 instrumented classes that **have never executed** (they were written against
+  the forbidden emulator target).
 
 ## 4. Known debt — and when to pay it
 
@@ -134,6 +155,7 @@ Written down so nobody rediscovers these the hard way, and so nobody "fixes" the
 | Release build points at `https://api.thehybridmonk.com/api`, which **does not resolve** | We test debug builds | Any release APK reaching a human |
 | Debug build defaults to `http://10.0.2.2:5000/api` (emulator-only alias) | Overridable per build | — build with `-PshanivarApiUrl=https://hybridmonk-api.onrender.com/api` for physical devices |
 | Focus card's "app to pause" picker is a fixed 6-app allowlist (`KnownDistractingApps`), not a full installed-app list | Avoids also having to exclude system/communication apps from an arbitrary list | A tester reports a distracting app that isn't one of the six |
+| Breathing UI strings live in Kotlin, not `strings.xml`, and the practice journal has no history screen | Matches how the rest of the V1 surface is written; the journal is still capped and deletable | Externalising the strings is a prerequisite for the reviewed Hindi script, so pay it with that work |
 | The skippable session review doesn't distinguish a session reaching full duration from an early manual end — same copy either way | Simplification made under the MVP streamline task; still better than no review | The pilot's own feedback says the distinction matters |
 
 ## 5. How to work here

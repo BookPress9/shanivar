@@ -24,14 +24,19 @@ import kotlinx.coroutines.delay
  * "never" actually true rather than merely intended. It requires no free-text disclosure - only a
  * fixed prompt and a timer. [isPreview] only changes copy (the explicit "does not block other
  * apps" disclosure), never behavior.
+ *
+ * [prompt] comes from the reviewed practice catalogue (see [rememberGroundingPrompt]). It used to be
+ * one of four hardcoded lines picked at random, one of which told people to breathe out slower than
+ * they breathe in - unreviewed breath advice, which decision 0011 does not allow anywhere in the app.
+ * A null prompt shows the timer with no instruction at all, which is the honest state when the
+ * catalogue could not be read: better to say nothing than to invent guidance.
  */
 @Composable
-fun LocalPauseScreen(isPreview: Boolean, onExit: () -> Unit) {
+fun LocalPauseScreen(isPreview: Boolean, prompt: String? = null, onExit: () -> Unit) {
     var started by remember { mutableStateOf(false) }
     var paused by remember { mutableStateOf(false) }
     var deadline by remember { mutableStateOf(0L) }
     var remaining by remember { mutableStateOf(DURATION_MILLIS) }
-    val prompt = remember { PROMPTS.random() }
     LaunchedEffect(deadline, paused, started) {
         if (started && !paused) {
             while (true) {
@@ -63,7 +68,7 @@ fun LocalPauseScreen(isPreview: Boolean, onExit: () -> Unit) {
                     val seconds = (remaining + 999) / 1000
                     Text("%d:%02d".format(seconds / 60, seconds % 60), style = MaterialTheme.typography.displayMedium,
                         modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
-                    Text(prompt, style = MaterialTheme.typography.titleMedium)
+                    prompt?.let { Text(it, style = MaterialTheme.typography.titleMedium) }
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedButton(onClick = {
                             if (paused) deadline = SystemClock.elapsedRealtime() + remaining
@@ -83,9 +88,3 @@ fun LocalPauseScreen(isPreview: Boolean, onExit: () -> Unit) {
 }
 
 private const val DURATION_MILLIS = 60_000L
-private val PROMPTS = listOf(
-    "Notice one thing you can see right now.",
-    "Let your shoulders drop, if they're not already.",
-    "Breathe out slower than you breathe in.",
-    "Notice how your feet meet the ground.",
-)

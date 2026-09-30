@@ -1,5 +1,7 @@
 # Shanivar VBT — Citation Verification Report
 
+**Historical report; new feature reviewed separately (2026-09-25).** The clearance statements below apply to this report's historical scope, not the new breathing MVP. Its [source catalogue](../../research/shanivar-vbt-breathing-catalog-2026-09-25.md) documents interpretation limits and script corrections; its [test guide](../../android-app/VBT_BREATHING_TEST_GUIDE_2026-09-25.md) defines outstanding implementation and release checks.
+
 **Agent:** QA / Scriptural Integrity Agent
 **Date:** 2026-09-08
 **Scope:** All 12 Level-1 techniques in `shanivar-vbt/content/technique-01-*.md` through `technique-12-*.md`, cross-checked against `shanivar-vbt/content/README.md`'s index and the Content Agent's self-flagged items.

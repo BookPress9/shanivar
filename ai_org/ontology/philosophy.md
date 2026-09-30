@@ -1,5 +1,7 @@
 # Brahma Labs Consciousness Ontology & Philosophy
 
+**Historical document - superseded authority (2026-09-29):** The [latest founder brief](../../research/deep-foundation/FOUNDER_BRIEF_2026-09-29.md) supersedes the authority claim, consciousness ranking and mandatory scientific analogies below. Preserve this text as history, not current instructions. Use [SHANIVAR_STANCE.md](../../SHANIVAR_STANCE.md); new research entries require explicit founder acceptance.
+
 This ontology serves as the ultimate reference for all Brahma Labs AI agents. No code or script may contradict these principles.
 
 ---

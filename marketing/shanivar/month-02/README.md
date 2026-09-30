@@ -1,5 +1,7 @@
 # A little more of your life, returned
 
+**Next-post override proposal (2026-09-25):** prepare the [new breathing-feature carousel](../next-instagram-2026-09-25/README.md) next. It is a separate product update, not a replacement language-test observation. Reconcile actual publications before selecting a slot; this historical draft calendar is not a live queue.
+
 Next 30-day campaign for **@app.shanivar**, prepared 12 September 2026. Proposed dates: **14 September–13 October 2026**, Asia/Kolkata. The folder label means the next campaign after the first post; no full prior published month is assumed.
 
 Open [the interactive editorial calendar](index.html). Filter by week, format or feed language; expand any day for captions and slide/scene copy. It opens as a local HTML file without a server. This is a planning preview, not rendered Instagram artwork.

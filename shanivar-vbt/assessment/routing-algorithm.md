@@ -1,5 +1,7 @@
 # Shanivar VBT — Routing Algorithm
 
+**Superseded for the breathing MVP (2026-09-25):** use the deterministic rules in the [Claude handoff](../../android-app/CLAUDE_VBT_BREATHING_HANDOFF_2026-09-25.md). The historical algorithm below is retained for context; do not use its blanket breath defaults or placeholder taxonomy for the new eight-practice feature.
+
 **Owner:** Personalization / Assessment Agent
 **Status:** Draft v1, deterministic (no ML/black-box scoring). Built against a placeholder technique-category taxonomy — see §1 for the reconciliation note.
 

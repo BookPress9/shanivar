@@ -1,5 +1,9 @@
 # Shanivar V1: marketing-to-product handoff
 
+> **Current product update (30 September 2026):** [decision 0014](../../docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md) replaces the earlier visible shell with Routine / Sadhana and makes Routine the normal launch destination. Marketing may describe the direction as a concept only until native release evidence exists. Sadhana progression and gamification are not approved product claims.
+
+**Scope update (2026-09-25):** the [founder-authorized breathing third pillar](breathing-feature-marketing-update-2026-09-25.md) extends the two-tool direction below for eight specified practices. Its implementation is pending. Use the updated three-pillar development pitch; other deferred capabilities remain deferred.
+
 Date: 13 September 2026. Status: internal direction and original copy proposal for Claude's V1 implementation. No campaign, recruitment or publication has been executed. This document does not establish shipped capability or validated demand.
 
 ## Founder decision and evidence

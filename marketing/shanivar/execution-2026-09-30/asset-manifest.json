@@ -1,0 +1,127 @@
+{
+  "tool": "Python/Pillow original typography and geometry; no generated people or product UI",
+  "source": "posts.json",
+  "humanReview": "Pending",
+  "assets": [
+    {
+      "postId": "SHN-20260930-STEADY-EN",
+      "file": "SHN-20260930-STEADY-EN/slide-01.jpg",
+      "sha256": "ffc13ec116a2624bf599f68b6fd89e7a1ea1fc4108ba22f1edd0a7207ca729cc",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20260930-STEADY-EN",
+      "file": "SHN-20260930-STEADY-EN/slide-02.jpg",
+      "sha256": "926559007e743fcb92f1d4ef3b12099755c5bd05ae2748e8fed77a96abb984ae",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20260930-STEADY-EN",
+      "file": "SHN-20260930-STEADY-EN/slide-03.jpg",
+      "sha256": "b13783a7f75494dfde7b100e973c208333b3f936920c61c6be1f8e764eec31da",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20260930-STEADY-EN",
+      "file": "SHN-20260930-STEADY-EN/slide-04.jpg",
+      "sha256": "0fba188aa14a8438e3c3427281406a4b6c45750fdec91739eb9643eecaa1ee65",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20261002-LAMP-EN",
+      "file": "SHN-20261002-LAMP-EN/slide-01.jpg",
+      "sha256": "2b2983d224366173e373520f28e72752c55b1c37534d1f51a2be18884c5c8d22",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20261002-LAMP-EN",
+      "file": "SHN-20261002-LAMP-EN/slide-02.jpg",
+      "sha256": "a3e822b2850c5ba2628566cdea7e57ede907fc110d39cfc858c2e708f8394b6d",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20261002-LAMP-EN",
+      "file": "SHN-20261002-LAMP-EN/slide-03.jpg",
+      "sha256": "9d0aed48bcbf5b6425040f15ffb486973fcd25a57d20d1968f78503e46878bc7",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20261002-LAMP-EN",
+      "file": "SHN-20261002-LAMP-EN/slide-04.jpg",
+      "sha256": "7557bc941a15f90fd502228f00545cf78dca38e5e9273276a71960c23c3e9bf2",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20261005-CUPS-EN",
+      "file": "SHN-20261005-CUPS-EN/slide-01.jpg",
+      "sha256": "3957d29047bf37e2a0fbde3a67a8a63a590401786cc3a12831bf09a41a67c04f",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20261005-CUPS-EN",
+      "file": "SHN-20261005-CUPS-EN/slide-02.jpg",
+      "sha256": "ac61e41b467dcf546730b7d0acf12d60a3ba712aff5e8f999432276200204297",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20261005-CUPS-EN",
+      "file": "SHN-20261005-CUPS-EN/slide-03.jpg",
+      "sha256": "aa355108ab6a458afe44182df567aa6fbf7fdea3df611f9a52af9c8106b14036",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    },
+    {
+      "postId": "SHN-20261005-CUPS-EN",
+      "file": "SHN-20261005-CUPS-EN/slide-04.jpg",
+      "sha256": "df0342caeb9f60c2b57905ef4cfd63763e5ecc58e105a5496e179723435d82d4",
+      "dimensions": [
+        1080,
+        1350
+      ],
+      "status": "Ready for review"
+    }
+  ]
+}

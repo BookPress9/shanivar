@@ -1,5 +1,7 @@
 # Shanivar's voice — a presence in ordinary life
 
+**Latest scope (2026-09-25):** add the upcoming breathing/attention pillar using the [marketing update](breathing-feature-marketing-update-2026-09-25.md). Describe recommendations from chosen feelings and wake/sleep schedules without claiming mood detection, circadian measurement or medical outcomes.
+
 ## Current application voice
 
 V1 includes alarms and focus modes. Apply the [marketing-to-product handoff](v1-product-direction-handoff.md) for concise alarm, focus, helper and optional Shani copy. The home offers Set an alarm / Start focus independently; older focus-only phrasing is superseded.

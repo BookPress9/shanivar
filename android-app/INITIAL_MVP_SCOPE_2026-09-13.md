@@ -1,5 +1,7 @@
 # Shanivar v1: alarms, focus modes and presence
 
+> **Supersession note (30 September 2026):** alarms, app protection, agency and safety constraints below remain active. The visible shell and Routine organization are superseded by [decision 0014](../docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md): two bottom destinations, Routine and Sadhana; Routine launches first; Dashboard is absent. Use the [Routine V3 handoff](CLAUDE_ROUTINE_V3_BUILD_HANDOFF_2026-09-30.md) for implementation scope.
+
 Status: founder-revised scope, 13 September 2026; implementation pending. Alarms and app locks are both required. This supersedes the earlier focus-only PM recommendation. Read the [Claude task](CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md), [marketing handoff](../marketing/shanivar/v1-product-direction-handoff.md) and [competitor reference](../research/shanivar-v1-alarm-focus-patterns.md).
 
 ## Offer and audience

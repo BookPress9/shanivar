@@ -1,5 +1,7 @@
 # Shanivar audience direction
 
+**Research scope update (2026-09-29):** The [foundation brief](../../research/deep-foundation/FOUNDER_BRIEF_2026-09-29.md) expands discovery to India, diaspora and international explorers while preserving willing parents and younger self-use. These are research groups, not validated new personas. See [audience hypotheses](../../research/deep-foundation/INTERNATIONAL_AUDIENCE_RESEARCH.md); new claims and campaigns are not automatically approved.
+
 ## Current audience and initial offer — latest correction, 13 September 2026
 
 Latest founder revision restores **alarms and app locks/focus modes** to v1. All ages are intended; adult testing comes first while school-age readiness is assessed explicitly. Use the [marketing-to-product handoff](v1-product-direction-handoff.md) and [current scope](../../android-app/INITIAL_MVP_SCOPE_2026-09-13.md). Earlier focus-only and alarm-deferred wording below is superseded. No audience or channel has validated traction yet.

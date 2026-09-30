@@ -21,6 +21,12 @@ android {
         // alarm/focus engines, backend contract, or persisted data differs between the two - only
         // which composable presents them, so toggling this never orphans an active session.
         buildConfigField("boolean", "STREAMLINED_LAUNCH", "true")
+        // Founder direction 2026-09-29: a three-tab shell (Dashboard / Routine / Sadhana). Default
+        // false because the visual contract for it does not exist yet - GPT's wireframe is pending -
+        // and the shipped single-Home surface must not move while a scaffold is being fitted. The
+        // tabs re-home existing composables rather than replacing them, so flipping this switches
+        // presentation only: same alarm engine, same focus engine, same Steady player, same storage.
+        buildConfigField("boolean", "THREE_TAB_NAV", "false")
     }
     buildTypes {
         debug {

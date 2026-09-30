@@ -1,6 +1,12 @@
 # Shanivar Android
 
-Current implementation task: [streamlined two-entry MVP](CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md), **executed 2026-09-18** - see "Streamlined build" below for what changed, how to build it, and what still needs a physical device. Its [scope](INITIAL_MVP_SCOPE_2026-09-13.md) controls the first pitch/usability build. The rest of this file (and LOCAL_TESTING.md) describes the broader/earlier app and its emulator-based workflow; treat those as historical for anything the streamlined section below overrides. Claude leads this scoped task across the existing UI/backend ownership boundary.
+**Current authorized build direction (2026-09-30):** implement the founder-selected **Routine / Sadhana** shell and Phase 1 Routine from [decision 0014](../docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md), [Claude's build handoff](CLAUDE_ROUTINE_V3_BUILD_HANDOFF_2026-09-30.md), [test guide](ROUTINE_V3_TEST_GUIDE_2026-09-30.md) and [V3 wireframe](wireframes/shanivar-v3-wireframe/shanivar-v3/index.html). Routine becomes the normal launch destination; Dashboard is removed. Sadhana progression remains Phase 2 and must not be inferred from the provisional wireframe chapters.
+
+**Breathing UI reference (2026-09-25):** **Steady** is the new feature name. See the [interactive wireframe](wireframes/steady/index.html), [screen board](wireframes/steady/exports/index.html) and [Claude visual contract](wireframes/steady/README.md). These are design simulations, not native release evidence.
+
+**Next authorized feature (2026-09-25):** [VBT breathing third-pillar handoff for Claude](CLAUDE_VBT_BREATHING_HANDOFF_2026-09-25.md), with [testing guidelines](VBT_BREATHING_TEST_GUIDE_2026-09-25.md). This adds eight scoped practices to the existing streamlined app; implementation is pending. It supersedes the earlier library deferral only for that scope.
+
+Historical implementation baseline: [streamlined two-entry MVP](CLAUDE_MVP_STREAMLINE_TASK_2026-09-13.md), executed 2026-09-18. Its code and safety behavior remain the migration source, but V3 supersedes its navigation and visible Routine treatment. The rest of this file records that earlier implementation unless a current-direction notice says otherwise.
 
 ## Streamlined build (2026-09-18)
 

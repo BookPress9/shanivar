@@ -69,6 +69,11 @@ class AlarmActivity : ComponentActivity() {
             runCatching { scheduler.advanceToNextOccurrence() }
             finish()
         })
+        // An alarm outranks every breathing host: stop the practice's cues and record it truthfully as
+        // interrupted. Deliberately after the ringer has already started and wrapped in runCatching -
+        // nothing about a meditation may delay or endanger the alarm sounding, and no automatic
+        // resumption follows the dismissal.
+        runCatching { BreathingSessionOwner.interrupt(this) }
         // Back must not dismiss the alarm. BlockOverlayActivity already did this for the app-lock
         // overlay; the alarm screen - the surface actually described to users as hard to dismiss -
         // did not, so a single Back press silently defeated it. Swallowing the event is the whole
@@ -79,7 +84,8 @@ class AlarmActivity : ComponentActivity() {
                 if (showDoneScreen) {
                     AlarmDoneScreen(
                         nextOccurrenceEpochMillis = scheduler.pendingTriggerAtEpochMillis(),
-                        onOpenShanivar = ::openShanivar,
+                        onOpenShanivar = { openShanivar() },
+                        onQuietMinute = { openShanivar(breathing = true) },
                         onDeviceHome = ::goToDeviceHome,
                     )
                 } else {
@@ -95,8 +101,18 @@ class AlarmActivity : ComponentActivity() {
         }
     }
 
-    private fun openShanivar() {
-        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    /**
+     * [breathing] only chooses which screen the app opens on. It runs strictly after
+     * [dismissAlarm]'s silence-and-teardown sequence has already completed, and it is reachable only
+     * from the verified done screen - never from the ringer's hard-cap giveup, which is an abandoned
+     * outcome, not a finished one. Breathing never gates or delays silencing anything.
+     */
+    private fun openShanivar(breathing: Boolean = false) {
+        startActivity(
+            Intent(this, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(MainActivity.EXTRA_OPEN_BREATHING, breathing)
+        )
         finish()
     }
 
@@ -196,7 +212,12 @@ private fun AlarmScreen(alarmMuted: Boolean, onMove: () -> Unit) {
  * abandoned outcome that must not read as a completed one.
  */
 @Composable
-private fun AlarmDoneScreen(nextOccurrenceEpochMillis: Long?, onOpenShanivar: () -> Unit, onDeviceHome: () -> Unit) {
+private fun AlarmDoneScreen(
+    nextOccurrenceEpochMillis: Long?,
+    onOpenShanivar: () -> Unit,
+    onQuietMinute: () -> Unit,
+    onDeviceHome: () -> Unit,
+) {
     Surface(Modifier.fillMaxSize()) {
         Column(
             Modifier.fillMaxSize().padding(28.dp),
@@ -214,6 +235,9 @@ private fun AlarmDoneScreen(nextOccurrenceEpochMillis: Long?, onOpenShanivar: ()
                 )
             }
             OutlinedButton(onClick = onDeviceHome, modifier = Modifier.fillMaxWidth()) { Text("Return to my day") }
+            // Optional, and offered only after the dismissal above already succeeded. Declining it
+            // leaves immediately; the alarm does not come back either way.
+            TextButton(onClick = onQuietMinute, modifier = Modifier.fillMaxWidth()) { Text("Take a quiet minute") }
             TextButton(onClick = onOpenShanivar, modifier = Modifier.fillMaxWidth()) { Text("Open Shanivar") }
         }
     }

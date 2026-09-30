@@ -57,7 +57,7 @@ fun OnboardingFlow(
         // Pre-account, offline, no permissions - available the moment someone opens the app,
         // per "offer the local pause without sign-in" and "never count preview use as protected
         // activation." Exiting returns to wherever the pause was opened from.
-        LocalPauseScreen(isPreview = true, onExit = { showPause = false })
+        LocalPauseScreen(isPreview = true, prompt = rememberGroundingPrompt(), onExit = { showPause = false })
         return
     }
 

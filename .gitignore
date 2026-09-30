@@ -43,6 +43,9 @@ marketing/shanivar/*
 # Future rendered campaign media belongs in assets and remains excluded.
 !marketing/shanivar/month-02/
 marketing/shanivar/month-02/assets/
+!marketing/shanivar/execution-2026-09-30/
+marketing/shanivar/execution-2026-09-30/**/*.jpg
+marketing/shanivar/execution-2026-09-30/*.zip
 
 # Logs
 *.log
@@ -106,3 +109,8 @@ backend/railway.json
 # Scratch harnesses and captured output. The real suite is backend/tests/.
 backend/puretest.js
 backend/test_out.txt
+
+# Scratch extraction from source PDFs (page images, raw text dumps). Research outputs
+# belong in research/ as bibliography and original synthesis - never the extracted
+# pages themselves, which would put copyrighted material in the repo permanently.
+tmp/

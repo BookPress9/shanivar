@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import java.time.ZonedDateTime
 
@@ -39,11 +40,19 @@ class BlockOverlayActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this) { goHome() }
         setContent {
             ShanivarTheme {
-                var pausing by remember { mutableStateOf(false) }
-                if (pausing) {
-                    LocalPauseScreen(isPreview = false, onExit = { goHome() })
-                } else {
-                    BlockOverlayScreen(blockedPackage, reminder, onPause = { pausing = true }, onReturn = ::goHome)
+                var inline by remember { mutableStateOf("block") }
+                when (inline) {
+                    "pause" -> LocalPauseScreen(isPreview = false, prompt = rememberGroundingPrompt(), onExit = { goHome() })
+                    // This host owns the exit: finishing, ending or backing out of a practice goes to
+                    // the device home screen, never back into the app that was paused. The player has
+                    // no way to release protection, so there is nothing to bypass here.
+                    "breathe" -> BreathingHost(BreathingEntry.BLOCK_OVERLAY, rememberProtectionSnapshot(), onExit = ::goHome)
+                    else -> BlockOverlayScreen(
+                        blockedPackage, reminder,
+                        onPause = { inline = "pause" },
+                        onBreathe = { inline = "breathe" },
+                        onReturn = ::goHome,
+                    )
                 }
             }
         }
@@ -60,8 +69,34 @@ class BlockOverlayActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Reads the focus engine's own local record of when protection ends. Read-only by construction - this
+ * is a SharedPreferences get, not a gateway - and it re-reads on resume so a window that expired while
+ * someone was practising is reported as expired rather than silently claimed as still protecting. An
+ * absent record means unknown, which is shown as unknown: a wrong "off" would invite someone straight
+ * back into the app they just paused.
+ */
 @Composable
-private fun BlockOverlayScreen(blockedPackage: String, reminder: Triple<String, String, String>, onPause: () -> Unit, onReturn: () -> Unit) {
+private fun rememberProtectionSnapshot(): BreathingProtectionSnapshot {
+    val context = LocalContext.current
+    var resumeCount by remember { mutableIntStateOf(0) }
+    OnAppResume { resumeCount++ }
+    val endsAt = remember(resumeCount) { context.getSharedPreferences("focus_guard", 0).getLong("endsAt", 0L) }
+    return when {
+        endsAt <= 0L -> BreathingProtectionSnapshot(ProtectionState.UNAVAILABLE, null)
+        endsAt > System.currentTimeMillis() -> BreathingProtectionSnapshot(ProtectionState.ACTIVE, endsAt)
+        else -> BreathingProtectionSnapshot(ProtectionState.OFF, null)
+    }
+}
+
+@Composable
+private fun BlockOverlayScreen(
+    blockedPackage: String,
+    reminder: Triple<String, String, String>,
+    onPause: () -> Unit,
+    onBreathe: () -> Unit,
+    onReturn: () -> Unit,
+) {
     Surface(Modifier.fillMaxSize()) {
         Column(
             Modifier.fillMaxSize().safeDrawingPadding().padding(28.dp),
@@ -76,6 +111,7 @@ private fun BlockOverlayScreen(blockedPackage: String, reminder: Triple<String, 
             )
             Text("A brief flash of the app before this screen appears is expected - detection isn't instant.")
             PrimaryAction("Return to my day", onReturn)
+            OutlinedButton(onClick = onBreathe, modifier = Modifier.fillMaxWidth()) { Text("Choose a short practice") }
             OutlinedButton(onClick = onPause, modifier = Modifier.fillMaxWidth()) { Text("Take a one-minute pause") }
         }
     }

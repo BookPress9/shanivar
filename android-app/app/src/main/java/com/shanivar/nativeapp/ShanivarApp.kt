@@ -104,7 +104,7 @@ private fun saveAlarmPlan(context: Context, plan: AlarmPlan) {
 }
 
 @Composable
-fun ShanivarApp() {
+fun ShanivarApp(openBreathing: Boolean = false) {
     val context = LocalContext.current
     var rhythm by remember { mutableStateOf(loadRhythm(context)) }
     var alarmPlan by remember { mutableStateOf(loadAlarmPlan(context)) }
@@ -203,6 +203,7 @@ fun ShanivarApp() {
                 alarmPlan = alarmPlan, onAlarmPlanChange = { alarmPlan = it; saveAlarmPlan(context, it) },
                 connected = account != null, account = account, api = session.api, language = language,
                 discipline = discipline, signIn = { accountDialog = true }, onOpenAccount = { accountDialog = true },
+                openBreathing = openBreathing,
             )
         } else {
             LegacyTabShell(rhythm, { rhythm = it; saveRhythm(context, it) }, tab, { tab = it }, account, session,
@@ -244,11 +245,65 @@ private fun HomeScreen(
     alarmPlan: AlarmPlan, onAlarmPlanChange: (AlarmPlan) -> Unit,
     connected: Boolean, account: Account?, api: ShanivarApi, language: String,
     discipline: DisciplineGateway, signIn: () -> Unit, onOpenAccount: () -> Unit,
+    openBreathing: Boolean = false,
 ) {
+    val context = LocalContext.current
     var operationBusy by remember { mutableStateOf(false) }
+    if (BuildConfig.THREE_TAB_NAV) {
+        var resumeCount by remember { mutableIntStateOf(0) }
+        OnAppResume { resumeCount++ }
+        // Re-read on resume rather than observing: all three sources are written by engines outside
+        // this composition (the focus guard, AlarmManager, the schedule receiver), and returning to the
+        // app is exactly when a stale value would be visible.
+        val snapshot = remember(resumeCount, rhythm) {
+            HomeSnapshot(
+                nowEpochMillis = System.currentTimeMillis(),
+                focusEndsAtEpochMillis = context.getSharedPreferences("focus_guard", 0).getLong("endsAt", 0L),
+                nextAlarmEpochMillis = AlarmScheduler(context).pendingTriggerAtEpochMillis(),
+                hasFocusSchedule = FocusScheduler(context).pendingRule() != null,
+                intentionLabel = rhythm.intentionLabel,
+                focusMinutes = rhythm.focusMinutes,
+                // Known gap: BreathingRecord carries no date, so "did they practise today" is not
+                // answerable from the journal. Left false rather than guessed - it only decides whether
+                // a practice is *offered*, and adding a timestamp to a privacy-sensitive journal is a
+                // decision to take deliberately, not as a side effect of building a navigation shell.
+                practisedToday = false,
+                scheduleWindow = BreathingPreferences(context).schedule().window(LocalTime.now()),
+            )
+        }
+        var shani by rememberSaveable { mutableStateOf(context.getSharedPreferences("rhythm", 0).getBoolean("shaniFraming", false)) }
+        ShanivarShell(
+            snapshot = snapshot,
+            accountName = account?.name,
+            onOpenAccount = onOpenAccount,
+            onReturnToDay = {
+                context.startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            },
+            routineAlarm = { AlarmCard(rhythm, onRhythmChange, alarmPlan, onAlarmPlanChange, connected, api, language, signIn) { operationBusy = it } },
+            routineFocus = { FocusCard(rhythm, onRhythmChange, connected, api, discipline, signIn) { operationBusy = it } },
+            sadhana = { entry, exit -> BreathingHost(entry, onExit = exit) },
+            settings = {
+                Heading("Your choices.")
+                PrimaryAction(if (account == null) "Sign in or create account" else "Account · ${account.name}", onOpenAccount)
+                SharedSettingsCards(shani) { value ->
+                    shani = value
+                    context.getSharedPreferences("rhythm", 0).edit().putBoolean("shaniFraming", value).apply()
+                }
+            },
+            navigationEnabled = !operationBusy,
+            initialTab = if (openBreathing) ShanivarTab.SADHANA else ShanivarTab.DASHBOARD,
+        )
+        return
+    }
     V1Home(rhythm.intentionLabel, rhythm.focusMinutes, account?.name, onOpenAccount, navigationEnabled = !operationBusy,
         focus = { FocusCard(rhythm, onRhythmChange, connected, api, discipline, signIn) { operationBusy = it } },
-        alarm = { AlarmCard(rhythm, onRhythmChange, alarmPlan, onAlarmPlanChange, connected, api, language, signIn) { operationBusy = it } })
+        alarm = { AlarmCard(rhythm, onRhythmChange, alarmPlan, onAlarmPlanChange, connected, api, language, signIn) { operationBusy = it } },
+        // Note what is not passed: `discipline`. The breathing host gets navigation and nothing else,
+        // so it has no way to start focus, release it, or touch an alarm (handoff section 6).
+        breathe = { entry, exit -> BreathingHost(entry, onExit = exit) },
+        initialRoute = if (openBreathing) "breathe" else "home",
+        initialBreatheEntry = if (openBreathing) BreathingEntry.AFTER_ALARM else BreathingEntry.HOME)
 }
 
 @Composable

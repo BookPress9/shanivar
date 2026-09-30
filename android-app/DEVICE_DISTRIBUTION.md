@@ -20,17 +20,23 @@ The Android device must be on the same Wi-Fi network as this computer to reach t
 this computer + that server running while installing. Android will ask to allow installs from the
 browser because this is a debug APK. Supports Android 8.0/API 26 and newer.
 
-Verified build, 19 September 2026:
+Verified build, 25 September 2026:
 
-- Size: `34,310,109` bytes
-- SHA-256: `55E0BA368713A78583D375D9BD002E020946E1294E32B6E4EE569B0F2B6F9728`
+- Size: `34,445,969` bytes
+- SHA-256: `5DCB45BB733E88D5053654EAE9B8013F99D4071A3BBAE50C452D7FDF1FE71737`
 - API health: `https://hybridmonk-api.onrender.com/api/health` → `200 {"status":"ok","database":"ok"}`
-- Android JVM/Robolectric: 92/92 tests
-- Android lint: passed
-- Backend: 305/305 tests (added recurring focus-schedule CRUD; see
-  [decision 0010](../docs/decisions/0010-focus-schedule-when-then-commitment.md))
+  in 22.6s (free-tier cold start)
+- Android JVM/Robolectric: 160/160 tests, 0 skipped
+- Android lint: 0 errors
+- Adds the breathing third pillar (see
+  [decision 0011](../docs/decisions/0011-vbt-breathing-third-pillar.md) and
+  [the release evidence](VBT_BREATHING_RELEASE_EVIDENCE_2026-09-25.md), which lists what is still
+  NOT RUN). No backend change, so `backend/` was not rebuilt or retested for this build; its last
+  verified figure is 305/305 on 19 September 2026.
 - Not verified: anything requiring physical hardware (no emulator/managed-device task runs on
-  this machine) - see the eight-check protocol in `ENFORCEMENT_STANCE_2026-09-12.md`
+  this machine) - see the eight-check protocol in `ENFORCEMENT_STANCE_2026-09-12.md`. For the
+  breathing feature this specifically covers the tone actually stopping, lock-screen behaviour,
+  process death and alarm-during-practice.
 
 Rebuild against production (no LAN IP needed for the API anymore):
 
