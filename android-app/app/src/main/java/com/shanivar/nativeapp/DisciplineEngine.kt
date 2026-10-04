@@ -13,14 +13,34 @@ import android.content.Context
  *   "focus was on" flag, because the guard service literally cannot detect or block without them.
  * - startFocus() checks permissions locally *before* calling the backend, so a permission gap
  *   never shows up disguised as a network/entitlement failure.
- * - releaseFocus() only stops the local guard service *after* the backend confirms release, so a
- *   network failure leaves protection running rather than silently dropping it - the caller (UI)
- *   is expected to keep the session screen open and retry per NATIVE_HANDOFF.md.
+ * - releaseFocus() stops the local guard **first**, then tells the server. See below.
+ *
+ * ## Order of authority changed in Routine V3 (decision 0014)
+ *
+ * `releaseFocus()` used to stop the guard only *after* the backend confirmed, deliberately, so that
+ * a network failure left protection running rather than silently dropping it. That reasoning
+ * protected the wrong thing: it also meant a person with no signal **could not get their own apps
+ * back**, because the API call threw before `guard.stop()` was ever reached.
+ *
+ * 0014 settles it - "the local device state is authoritative for scheduling and recovery", and
+ * immediate stop must not require a server response. So the guard stops first and the server release
+ * is best-effort. A failed server release leaves a stale session that the next `status()` or
+ * `startFocus()` reconciles; it does not re-lock the device.
+ *
+ * `status()` likewise falls back to the device's own record when the server is unreachable, instead
+ * of raising a network error over a question the device can already answer truthfully.
  */
 class DisciplineEngine(
     private val permissions: DisciplinePermissions,
     private val api: DisciplineApi,
     private val guard: FocusGuardController,
+    /** The device's own record of what it is enforcing, used when the server cannot be reached.
+     * Null only in tests that do not exercise the offline path.
+     *
+     * Declared before [alarmScheduled] on purpose: several call sites pass `alarmScheduled` with
+     * trailing-lambda syntax, which binds to the *last* parameter, so adding a parameter after it
+     * silently rebinds those lambdas to the wrong argument. */
+    private val localState: ProtectionStateStore? = null,
     private val alarmScheduled: () -> Boolean = { false },
 ) : DisciplineGateway {
 
@@ -39,6 +59,12 @@ class DisciplineEngine(
         val active = try {
             api.activeFocus()
         } catch (e: ApiFailure) {
+            // Offline. The device still knows exactly what it is enforcing, so report that rather
+            // than a network complaint - and never downgrade a live window to OFF, which would tell
+            // the user their apps are available when the guard is still blocking them.
+            localState?.read()?.takeIf { it.isActiveAt(System.currentTimeMillis()) }?.let {
+                return DisciplineStatus(ProtectionState.ACTIVE, alarmScheduled(), it.endsAtEpochMillis, it.packages)
+            }
             throw DisciplineError.Network(e.message ?: "Could not reach Shanivar. Try again.")
         }
         return if (active != null && active.endsAtEpochMillis > System.currentTimeMillis()) {
@@ -75,19 +101,19 @@ class DisciplineEngine(
     }
 
     override suspend fun releaseFocus(): DisciplineStatus {
-        val sessionId = activeSessionId ?: api.activeFocus()?.id
-        if (sessionId != null) {
-            try {
-                api.releaseFocus(sessionId)
-            } catch (e: ApiFailure) {
-                throw mapFailure(e)
-            }
-        }
-        // No known/active session server-side is treated the same as a successful release
-        // (idempotent, matching the backend's own "already released" no-op semantics) - there is
-        // nothing to release, so proceed to stop the local guard rather than getting stuck.
-        activeSessionId = null
+        // Stop enforcing first, unconditionally. The person asked for their own apps back; the
+        // device can do that without anyone's permission, and no network error may stand between
+        // them and it. This ordering is what makes the test guide's "stop protection works locally
+        // without network, sign-in, payment, timer or practice" true, and it is the foundation the
+        // essential-access path (DEV-10) has to build on.
         guard.stop()
+        val sessionId = activeSessionId
+        activeSessionId = null
+        // Best-effort server release. A stale server session is reconciled by the next status() or
+        // startFocus() - both already close an elapsed session - so failing here costs bookkeeping,
+        // not protection. Deliberately swallowed rather than mapped to an error: the user-visible
+        // operation already succeeded.
+        runCatching { (sessionId ?: api.activeFocus()?.id)?.let { api.releaseFocus(it) } }
         return DisciplineStatus(ProtectionState.OFF, alarmScheduled())
     }
 
@@ -105,6 +131,7 @@ class DisciplineEngine(
                 HttpDisciplineApi(api),
                 AndroidFocusGuardController(appContext),
                 alarmScheduled = { alarmScheduler.hasScheduledAlarm() },
+                localState = AndroidProtectionStateStore(appContext),
             )
         }
     }

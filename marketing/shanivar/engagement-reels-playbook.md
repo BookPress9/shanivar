@@ -1,5 +1,8 @@
 # Shanivar engagement and Reels playbook
 
+**Cadence supersession ? 2 October 2026:** follow [the marketing operating system](marketing-operating-system.md): two UGC-style Reels and one carousel weekly when rendering access exists, with rendered carousel fallback and a seven-day ready reserve. This replaces conflicting September 12 capacity/language schedules for future unposted slots. Preserve historical records and do not describe the new videos as a controlled continuation of the unstarted language test.
+
+
 Updated 11 September 2026. Owner: Social Media Manager. This is a working creative and measurement standard, not a promise of reach. Recheck Instagram's in-app Professional Dashboard → Best Practices before each production cycle because its guidance is personalized and changes over time.
 
 ## 12 September 2026 — rolling-month operational update

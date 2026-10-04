@@ -1,5 +1,24 @@
 # Shanivar Web and Social Team
 
+## Current organization ? 2 October 2026
+
+Founder stance and accepted decisions ? Social Media Manager ? Creative Writer / UGC Video Producer / Social Video Editor / Social Publishing Operations. Staff Manager coordinates research review; Sadhak Researcher supplies source-backed explanation briefs to the manager. The manager owns routine creative decisions, delegation, finished reserve and actual publication follow-through.
+
+| Role | Responsibility | Reports to |
+| --- | --- | --- |
+| [Social Media Manager](agents/social_media_manager.md) | Stance intake, claims, assignments, internal approval, cadence and learning | Founder |
+| [Creative Writer](agents/creative_writer.md) | Exact scripts, captions, shot lists and carousel copy | Social Media Manager |
+| [UGC Video Producer](agents/ugc_video_producer.md) | Presenter/source footage, actual generation, rights and model provenance | Social Media Manager |
+| [Social Video Editor](agents/social_video_editor.md) | Finished video, captions, cover, disclosure and full-playback QA | Social Media Manager |
+| [Social Publishing Operations](agents/social_publishing_ops.md) | Connected queue, deduplication, actual receipts and Insights | Social Media Manager |
+| [Sadhak Researcher](agents/sadhak_researcher.md) | Contemplative/color/energy source inquiry and reviewed public explanations | Staff Manager; editorial handoff to Social Media Manager |
+| [Web Developer](agents/web_developer.md) | Verified destinations and web implementation when needed | Existing UI/UX ownership; receives marketing briefs |
+
+Execute [the marketing operating system](../marketing/shanivar/marketing-operating-system.md). Current pilot: [two UGC scripts](../marketing/shanivar/ugc-pilot-2026-09-30/briefs.md), [tool connection decisions](../marketing/shanivar/ai-video-toolchain-2026-09-30.md), and [three rendered reserve carousels](../marketing/shanivar/execution-2026-09-30/README.md). Target two videos and one carousel weekly after video access, with three ready packages in reserve. Earlier conflicting unposted cadence/assignment notes below are historical.
+
+The original WhatsApp cohort remains separate. Roles do not establish persistent workers; no new public post, connected video generator or live scheduler is claimed. Research findings are proposed until the applicable source/stance/release decisions are recorded.
+
+
 **Execution update (2026-09-30):** [Three rendered carousels, captions, upload package and publishing audit](../marketing/shanivar/execution-2026-09-30/README.md). This is the current next-batch handoff, superseding conflicting unposted proposals. Prepared in an active team session; no new publication or ongoing worker established.
 
 

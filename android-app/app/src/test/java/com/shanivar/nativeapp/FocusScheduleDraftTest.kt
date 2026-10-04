@@ -17,11 +17,17 @@ class FocusScheduleDraftTest {
         assertEquals("09:00", allDay.preset("custom").start)
     }
 
-    @Test fun rejectsOvernightAndEmptyTargetsBeforeSaving() {
+    @Test fun rejectsEmptyTargetsButNowAcceptsAnOvernightWindow() {
         val ready = FocusScheduleDraft(intention = "Read", packages = setOf("com.instagram.android"))
         assertNull(ready.problem())
-        assertNotNull(ready.copy(start = "22:00", end = "02:00").problem())
+        // Routine V3 (decision 0014): an end earlier than the start is an overnight window, and the
+        // selected day owns the start. This assertion was inverted before - overnight was refused,
+        // which is what made sleep preparation unreachable (DEV-5).
+        assertNull(ready.copy(start = "22:00", end = "02:00").problem())
+        // Equal times stay refused: "no minutes" and "a whole day" are opposite readings.
+        assertNotNull(ready.copy(start = "09:00", end = "09:00").problem())
         assertNotNull(ready.copy(days = emptySet()).problem())
         assertNotNull(ready.copy(packages = emptySet()).problem())
+        assertNotNull(ready.copy(intention = " ").problem())
     }
 }

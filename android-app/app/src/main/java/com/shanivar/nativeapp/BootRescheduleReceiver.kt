@@ -47,17 +47,23 @@ class BootRescheduleReceiver : BroadcastReceiver() {
         // window - FocusWindowRecurrence.nextBoundary already resolves to today's END when
         // called from inside an active window, with no special-casing needed here.
         runCatching { focusScheduler.scheduleNext(focusRule, now) }
-        if (!FocusWindowRecurrence.isActiveAt(focusRule.days, focusRule.startTime, focusRule.endTime, now)) return
+        // One call answers both "is an occurrence running?" and "when does *it* end?". Previously
+        // this asked isActiveAt() and then re-derived the end from nextBoundary(), which was correct
+        // only because the guard above happened to precede it - the same shape that became a
+        // 24-hour session in FocusScheduleReceiver once its guard was absent (DEV-1).
+        val activeEnd = FocusWindowRecurrence.activeWindowEnd(
+            focusRule.days, focusRule.startTime, focusRule.endTime, now,
+        ) ?: return
 
-        // We're inside the window and it was missed (device was off/rebooting through its
-        // start) - start protection now for whatever remains, via the same best-effort session
-        // bridge FocusScheduleReceiver and MovementDismissalActivity already depend on.
+        // We are inside the window and it was missed (device off or rebooting through its start), so
+        // start protection now for whatever remains - via the same best-effort session bridge
+        // FocusScheduleReceiver and MovementDismissalActivity already depend on.
         val api = ShanivarSession.api ?: return
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                val (end, _) = FocusWindowRecurrence.nextBoundary(focusRule.days, focusRule.startTime, focusRule.endTime, now) ?: return@launch
-                val minutes = ((end.toInstant().toEpochMilli() - now.toInstant().toEpochMilli()) / 60_000L).coerceIn(1L, 24 * 60L).toInt()
+                val minutes = ((activeEnd.toInstant().toEpochMilli() - now.toInstant().toEpochMilli()) / 60_000L)
+                    .coerceIn(1L, 24 * 60L).toInt()
                 val discipline = DisciplineEngine.create(context, api, alarmScheduler)
                 runCatching { discipline.startFocus(minutes, focusRule.blockPackages) }
             } finally {

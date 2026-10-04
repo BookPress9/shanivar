@@ -1,5 +1,7 @@
 # Shanivar — working agreement
 
+> **Collaboration supersession — 4 October 2026:** Claude is no longer an active collaborator. Codex is lead integrator and the Grok Bot named `app.shanivar` handles newly assigned bounded work through [AGENTS.md](AGENTS.md) and the [collaboration queue](ai_org/collaboration/README.md). Historical Claude deliverables remain evidence and their safety constraints remain active unless a later accepted decision changes them. Do not infer that old Claude ownership starts a worker or blocks Codex from maintaining the project.
+
 **Foundation research (2026-09-29):** Read the [V1 report](research/deep-foundation/SHANIVAR_DEEP_FOUNDATION_REPORT_V1.md) and [manual stance](SHANIVAR_STANCE.md) before changing philosophical framing or navigation. The founder expands international research and rejects spiritual ranking. Research conclusions remain PROPOSED; this report does not authorize a wholesale app redesign or release new practices.
 
 **Steady visual handoff (2026-09-25):** the new breathing feature is named **Steady**. Claude must read the [wireframe contract](android-app/wireframes/steady/README.md) and [clickable prototype](android-app/wireframes/steady/index.html) alongside the breathing build handoff before implementing its UI. This supersedes the working label Breathe & reset, not existing behavior or internal identifiers.

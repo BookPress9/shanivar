@@ -46,7 +46,10 @@ internal data class FocusScheduleDraft(
         days.isEmpty() -> "Choose at least one day."
         packages.isEmpty() -> "Choose at least one installed app to pause."
         intention.isBlank() -> "Name the activity you want this time for."
-        start >= end -> "End time must be later than start time. Overnight windows are not available yet."
+        // An end earlier than the start is an overnight window, and the selected day owns the start
+        // (Monday 22:00-06:00 is a Monday rule finishing Tuesday). Equal times are refused because
+        // "no minutes" and "a whole day" are opposite readings of the same input - see decision 0014.
+        start == end -> "Start and end cannot be the same time. For an overnight window, set an end time in the morning."
         else -> null
     }
 }

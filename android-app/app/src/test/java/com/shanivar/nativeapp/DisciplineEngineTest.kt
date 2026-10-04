@@ -198,15 +198,55 @@ class DisciplineEngineTest {
         assertEquals("session-42", api.lastReleasedSessionId)
     }
 
-    @Test fun releaseFocusKeepsTheGuardRunningWhenTheBackendCallFails() = runBlocking {
-        // NATIVE_HANDOFF.md: "On release failure keep the session screen open with retry" - i.e.
-        // the local guard must NOT be torn down just because the server call failed, or the user
-        // would silently lose protection state the backend still thinks is active.
+    @Test fun releaseFocusStopsTheGuardEvenWhenTheBackendCallFails() = runBlocking {
+        // INVERTED for Routine V3 (decision 0014), and the old assertion is worth remembering.
+        //
+        // This used to assert the opposite, citing NATIVE_HANDOFF.md's "on release failure keep the
+        // session screen open with retry" - the goal being not to drop protection the server still
+        // thought was active. That reasoning protected the wrong party: it also meant a person with
+        // no signal could not get their own apps back, because the API call threw before
+        // guard.stop() was ever reached.
+        //
+        // 0014 settles it: "the local device state is authoritative for scheduling and recovery",
+        // and immediate stop must not need a server response. A stale server session is reconciled
+        // by the next status()/startFocus(); a user locked out of their phone is not reconciled by
+        // anything.
         val api = FakeDisciplineApi().apply { releaseFailure = ApiFailure(500, "Server error") }
         val (engine, _, guard) = engine(api = api)
         engine.startFocus(25, setOf("com.instagram.android")) // establishes a session id so release actually calls the backend
-        val error = runCatching { engine.releaseFocus() }.exceptionOrNull()
-        assertTrue(error is DisciplineError.Network)
-        assertEquals(0, guard.stopCalls)
+        val status = engine.releaseFocus()
+        assertEquals(ProtectionState.OFF, status.protection)
+        assertEquals(1, guard.stopCalls)
+        // The failure is swallowed rather than surfaced: the user-visible operation succeeded.
+        assertEquals(1, api.releaseCalls)
+    }
+
+    @Test fun statusKeepsReportingActiveFromTheDeviceRecordWhenTheServerIsUnreachable() = runBlocking {
+        // Offline, mid-window. The guard is still blocking apps, so reporting OFF would tell the
+        // person their apps are available while the overlay keeps appearing, and raising a network
+        // error would complain about a question the device can already answer.
+        val api = FakeDisciplineApi()
+        val failing = object : DisciplineApi by api {
+            override suspend fun activeFocus(): FocusSessionInfo? = throw ApiFailure(500, "offline")
+        }
+        val guard = FakeGuard()
+        val stored = LocalProtection(setOf("com.instagram.android"), System.currentTimeMillis() + 600_000L)
+        val engine = DisciplineEngine(FakePermissions(), failing, guard, { stored })
+        val status = engine.status()
+        assertEquals(ProtectionState.ACTIVE, status.protection)
+        assertEquals(setOf("com.instagram.android"), status.protectedPackages)
+        assertEquals(stored.endsAtEpochMillis, status.focusEndsAtEpochMillis)
+    }
+
+    @Test fun statusStillErrorsOfflineWhenTheDeviceRecordHasElapsed() = runBlocking {
+        // An elapsed record is not an active window, so there is nothing truthful to report and the
+        // network failure is the honest answer.
+        val api = FakeDisciplineApi()
+        val failing = object : DisciplineApi by api {
+            override suspend fun activeFocus(): FocusSessionInfo? = throw ApiFailure(500, "offline")
+        }
+        val elapsed = LocalProtection(setOf("com.instagram.android"), System.currentTimeMillis() - 1_000L)
+        val engine = DisciplineEngine(FakePermissions(), failing, FakeGuard(), { elapsed })
+        assertTrue(runCatching { engine.status() }.exceptionOrNull() is DisciplineError.Network)
     }
 }

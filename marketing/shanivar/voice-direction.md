@@ -1,5 +1,12 @@
 # Shanivar's voice — a presence in ordinary life
 
+## Latest stance and creative direction ? 2 October 2026
+
+[SHANIVAR_STANCE](../../SHANIVAR_STANCE.md) and accepted decision 0014 control current direction. Notice an ordinary moment, offer an optional way to observe, and leave the choice with the person. Routine and Sadhana describe accepted product direction; public availability needs separate evidence. Older scroller, chart and AI-personalization language below is historical intention, not current launch promotion. Proposed stance entries must not become asserted doctrine.
+
+Use intimate UGC-style scenes with believable pauses and useful meaning. Synthetic people/scenes are disclosed dramatization, not customers. Research-led stories may explain a tradition or invite non-diagnostic color observation, but never promise permanent bliss, energy cleansing or spiritual rank. The [manager-led operating system](marketing-operating-system.md) supersedes earlier weekly-arc/calendar defaults.
+
+
 **Latest scope (2026-09-25):** add the upcoming breathing/attention pillar using the [marketing update](breathing-feature-marketing-update-2026-09-25.md). Describe recommendations from chosen feelings and wake/sleep schedules without claiming mood detection, circadian measurement or medical outcomes.
 
 ## Current application voice

@@ -433,9 +433,21 @@ describe('POST /api/discipline/focus-schedules', () => {
     expect(res.statusCode).toEqual(400);
   });
 
-  it('rejects an end_time that is not after start_time', async () => {
-    const res = await request(app).post('/api/discipline/focus-schedules').send({ ...validBody, start_time: '17:00', end_time: '09:00' });
+  it('accepts an end_time earlier than start_time as an overnight window (Routine V3)', async () => {
+    // Decision 0014: an earlier end_time crosses midnight and the selected day owns the start, so
+    // Monday 22:00-06:00 is a Monday rule finishing Tuesday morning. This used to be a 400, which
+    // is why sleep preparation was unreachable.
+    mockQuery.mockResolvedValue({ rows: [{ id: OWNED_SCHEDULE_ID, start_time: '22:00', end_time: '06:00' }] });
+    const res = await request(app).post('/api/discipline/focus-schedules').send({
+      ...validBody, days_of_week: [1], start_time: '22:00', end_time: '06:00',
+    });
+    expect(res.statusCode).toEqual(201);
+  });
+
+  it('rejects an end_time equal to start_time rather than guessing zero minutes or a whole day', async () => {
+    const res = await request(app).post('/api/discipline/focus-schedules').send({ ...validBody, start_time: '09:00', end_time: '09:00' });
     expect(res.statusCode).toEqual(400);
+    expect(res.body.error).toMatch(/differ from start_time/);
   });
 
   it('accepts the "all day" preset as days=all + 00:00-23:59, same shape as any other window', async () => {

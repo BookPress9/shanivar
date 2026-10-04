@@ -1,5 +1,8 @@
 # Current campaign — 30 days after the first post
 
+**Current team direction ? 2 October 2026:** the [marketing operating system](marketing-operating-system.md) makes the Social Media Manager responsible for stance intake, specialist delegation, internal approval and the publication ledger. Target two UGC-style Reels plus one carousel weekly; [two production briefs](ugc-pilot-2026-09-30/briefs.md) await actual video access. [AI tool decisions](ai-video-toolchain-2026-09-30.md) and [rendered carousel reserve](execution-2026-09-30/README.md) support the transition. These supersede conflicting unposted calendar proposals, not historical publication records. [New sadhak research](../../research/sadhak-inquiry/README.md) feeds reviewed education, not automatic public claims. No account connection, new post or persistent worker is confirmed.
+
+
 **Execution update (2026-09-30):** [Three rendered carousels, captions, upload package and publishing audit](execution-2026-09-30/README.md). This is the current next-batch handoff, superseding conflicting unposted proposals. Prepared in an active team session; no new publication or ongoing worker established.
 
 

@@ -554,10 +554,14 @@ function validateFocusSchedulePayload(body, { partial }) {
   if ((!partial || end_time !== undefined) && !isValidTimeString(end_time)) {
     return 'end_time must be HH:MM (24h)';
   }
-  if (start_time !== undefined && end_time !== undefined && end_time <= start_time) {
-    // Same-day window only for v1 - an overnight-spanning custom window (e.g. 22:00-02:00)
-    // is a real gap (flagged in the Codex handoff), not silently accepted as valid here.
-    return 'end_time must be later than start_time (overnight windows are not supported yet)';
+  if (start_time !== undefined && end_time !== undefined && end_time === start_time) {
+    // Overnight windows ARE supported as of Routine V3 (decision 0014): an end_time earlier than
+    // start_time means the window crosses midnight, and the selected day owns the start - Monday
+    // 22:00-06:00 is a Monday rule that finishes Tuesday morning. Equal times remain invalid,
+    // because "zero minutes" and "a full 24 hours" are opposite readings of the same input and
+    // guessing either one silently is worse than refusing. All-day, if ever needed, gets modelled
+    // explicitly rather than encoded as 00:00-23:59, which leaves a one-minute hole every night.
+    return 'end_time must differ from start_time (an earlier end_time means an overnight window)';
   }
   if (block_package_list !== undefined && !isValidPackageList(block_package_list)) {
     return 'block_package_list must be an array of up to 50 package name strings';
