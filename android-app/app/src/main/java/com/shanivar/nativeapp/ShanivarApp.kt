@@ -175,20 +175,60 @@ fun ShanivarApp(openBreathing: Boolean = false) {
 
     ShanivarTheme {
         Surface(Modifier.fillMaxSize(), color = Void, contentColor = Bone) {
+        // Stable across the welcome toggle so Compose hooks are not conditional.
+        val onboardingGateway = remember(context) { AndroidProtectionGateway(context) }
+        val onboardingPlanRepo = remember(context) {
+            ProtectionSyncingRoutinePlanRepository(SharedPrefsRoutinePlanRepository(context), onboardingGateway)
+        }
         if (welcome) {
-            OnboardingFlow(session.api, account, language,
-                onLanguage = {
-                    language = it
-                    context.getSharedPreferences("rhythm", 0).edit().putString("language", it).apply()
-                },
-                onConnected = { session.connect(it) },
-                onIntentionChosen = { preset ->
-                    rhythm = rhythm.copy(intentionLabel = preset.label, focusMinutes = preset.suggestedMinutes)
-                    saveRhythm(context, rhythm)
-                }) {
-                context.getSharedPreferences("rhythm", 0).edit().putBoolean("introduced", true).apply()
-                welcome = false
-                tab = "Rhythm"
+            val useV3Onboarding = shouldUseRoutineV3Onboarding(
+                routineV3 = BuildConfig.ROUTINE_V3,
+                debugBuild = BuildConfig.DEBUG,
+                debugPrefEnabled = readDebugV3OnboardingPref(context),
+            )
+            if (useV3Onboarding) {
+                // V3 first-run sets up Routine (actual day). ROUTINE_V3 stays default-false;
+                // debug builds can force this path with SharedPreferences debug_v3_onboarding=true.
+                RoutineOnboardingFlow(
+                    repository = onboardingPlanRepo,
+                    onWakeAlarmArmed = { days, _ ->
+                        val wake = onboardingPlanRepo.current().wakeTime?.toString()?.take(5) ?: rhythm.wakeTime
+                        rhythm = rhythm.copy(wakeTime = wake)
+                        saveRhythm(context, rhythm)
+                        // Local arm only — no account id. AlarmCard can sync to the server later if signed in.
+                        alarmPlan = AlarmPlan(remoteId = null, days = days, enabled = true)
+                        saveAlarmPlan(context, alarmPlan)
+                    },
+                    onComplete = {
+                        val plan = onboardingPlanRepo.current()
+                        plan.wakeTime?.let { wake ->
+                            rhythm = rhythm.copy(wakeTime = wake.toString().take(5))
+                        }
+                        plan.intendedSleepTime?.let { sleep ->
+                            // quietTime remains the legacy rhythm field; breathing prefs are mirrored by the repo.
+                            rhythm = rhythm.copy(quietTime = sleep.toString().take(5))
+                        }
+                        saveRhythm(context, rhythm)
+                        context.getSharedPreferences("rhythm", 0).edit().putBoolean("introduced", true).apply()
+                        welcome = false
+                        tab = "Rhythm"
+                    },
+                )
+            } else {
+                OnboardingFlow(session.api, account, language,
+                    onLanguage = {
+                        language = it
+                        context.getSharedPreferences("rhythm", 0).edit().putString("language", it).apply()
+                    },
+                    onConnected = { session.connect(it) },
+                    onIntentionChosen = { preset ->
+                        rhythm = rhythm.copy(intentionLabel = preset.label, focusMinutes = preset.suggestedMinutes)
+                        saveRhythm(context, rhythm)
+                    }) {
+                    context.getSharedPreferences("rhythm", 0).edit().putBoolean("introduced", true).apply()
+                    welcome = false
+                    tab = "Rhythm"
+                }
             }
         } else if (!BuildConfig.STREAMLINED_LAUNCH && reflectionOpen && account != null && reflections.owner == account.id) {
             ReflectionScreen(reflections, reflectionEntry, protection = reflectionProtection,

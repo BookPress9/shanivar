@@ -157,7 +157,7 @@ private fun StatusLine(state: FocusRuleState, text: String) {
 
 /** Exact repair steps for whatever access is missing — re-read on resume by the caller. */
 @Composable
-private fun ProtectionRepairActions(missing: Set<FocusDeviceAccess>) {
+internal fun ProtectionRepairActions(missing: Set<FocusDeviceAccess>) {
     val context = LocalContext.current
     if (FocusDeviceAccess.EXACT_ALARM in missing && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         OutlinedButton(onClick = {
