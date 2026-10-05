@@ -30,6 +30,11 @@ import java.time.ZonedDateTime
  * behavior is to start protecting now, for whatever remains of the window - not to wait, silent
  * and unprotected, until tomorrow's 9:00. Skipping the catch-up here would be the more consistent
  * engineering choice but the wrong product one.
+ *
+ * v3 local-first (DEV-21): that catch-up is a device action. It uses [LocalProtectionController]
+ * and [FocusWindowRecurrence.activeWindowEnd] with no account and no network, then re-arms the
+ * next boundary, and only afterwards mirrors to the server if a session happens to already be warm.
+ * Same order as [FocusScheduleReceiver]. A missing session is not a reason to stay unprotected.
  */
 class BootRescheduleReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -43,27 +48,22 @@ class BootRescheduleReceiver : BroadcastReceiver() {
         val focusScheduler = FocusScheduler(context)
         val focusRule = focusScheduler.pendingRule() ?: return
         val now = ZonedDateTime.now()
-        // Re-arm the correct next boundary regardless of whether we're currently inside the
-        // window - FocusWindowRecurrence.nextBoundary already resolves to today's END when
-        // called from inside an active window, with no special-casing needed here.
-        runCatching { focusScheduler.scheduleNext(focusRule, now) }
-        // One call answers both "is an occurrence running?" and "when does *it* end?". Previously
-        // this asked isActiveAt() and then re-derived the end from nextBoundary(), which was correct
-        // only because the guard above happened to precede it - the same shape that became a
-        // 24-hour session in FocusScheduleReceiver once its guard was absent (DEV-1).
-        val activeEnd = FocusWindowRecurrence.activeWindowEnd(
-            focusRule.days, focusRule.startTime, focusRule.endTime, now,
-        ) ?: return
 
-        // We are inside the window and it was missed (device off or rebooting through its start), so
-        // start protection now for whatever remains - via the same best-effort session bridge
-        // FocusScheduleReceiver and MovementDismissalActivity already depend on.
-        val api = ShanivarSession.api ?: return
+        // ── 1 + 2. Local catch-up and the next boundary, with no session ───────────────────────
+        val outcome = BootFocusCatchUp.apply(
+            rule = focusRule,
+            now = now,
+            local = LocalProtectionController.create(context),
+            scheduleNext = { rule, at -> focusScheduler.scheduleNext(rule, at) },
+        )
+
+        // ── 3. Server mirror, best effort ───────────────────────────────────────────────────────
+        val api = ShanivarSession.api
+        val minutes = outcome.mirrorMinutes
+        if (!outcome.started || api == null || minutes == null) return
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                val minutes = ((activeEnd.toInstant().toEpochMilli() - now.toInstant().toEpochMilli()) / 60_000L)
-                    .coerceIn(1L, 24 * 60L).toInt()
                 val discipline = DisciplineEngine.create(context, api, alarmScheduler)
                 runCatching { discipline.startFocus(minutes, focusRule.blockPackages) }
             } finally {
@@ -71,4 +71,51 @@ class BootRescheduleReceiver : BroadcastReceiver() {
             }
         }
     }
+}
+
+/**
+ * Reboot (and clock-change) catch-up for one persisted focus rule.
+ *
+ * This type has no session, API, or network parameter on purpose. Callers that want a server
+ * mirror do it *after* [apply] returns, and only when [Outcome.started] is true. Duration for that
+ * mirror is the remaining time until [FocusWindowRecurrence.activeWindowEnd], never "until the
+ * next boundary," which is how a closed window became a 24-hour session (DEV-1).
+ */
+internal object BootFocusCatchUp {
+    data class Outcome(
+        /** True only when local protection actually started for the occurrence active at [now]. */
+        val started: Boolean,
+        /** Whole minutes until that occurrence ends. Null when protection did not start. */
+        val mirrorMinutes: Int?,
+    )
+
+    fun apply(
+        rule: FocusScheduler.Rule,
+        now: ZonedDateTime,
+        local: LocalProtectionController,
+        scheduleNext: (FocusScheduler.Rule, ZonedDateTime) -> Unit,
+    ): Outcome {
+        val activeEnd = FocusWindowRecurrence.activeWindowEnd(
+            rule.days, rule.startTime, rule.endTime, now,
+        )
+        val started = activeEnd != null &&
+            local.start(rule.blockPackages, activeEnd.toInstant().toEpochMilli())
+        // Always re-arm, including when this boot is outside the window. AlarmManager was wiped
+        // by the reboot either way, and that does not depend on a session.
+        runCatching { scheduleNext(rule, now) }
+        val minutes = activeEnd?.takeIf { started }?.let { wholeMinutesUntil(it, now) }
+        return Outcome(started, minutes)
+    }
+
+    /**
+     * Whole minutes from [now] until [end], for the server's `/focus/start`, which takes a duration
+     * rather than an end timestamp. The clamp is a backstop; the end itself comes from the
+     * occurrence active right now.
+     */
+    internal fun wholeMinutesUntil(end: ZonedDateTime, now: ZonedDateTime): Int {
+        val minutes = (end.toInstant().toEpochMilli() - now.toInstant().toEpochMilli()) / 60_000L
+        return minutes.coerceIn(0L, MAX_WINDOW_MINUTES).toInt()
+    }
+
+    private const val MAX_WINDOW_MINUTES = 24 * 60L
 }
