@@ -18,10 +18,11 @@ enum class FocusWindowAction { START, END }
  * - `start > end` — an **overnight** window, and **the selected day owns the start**. Monday
  *   22:00-06:00 means Monday night through Tuesday 06:00, and is *not* active on Sunday night
  *   unless Sunday is also selected. This is what makes sleep preparation expressible at all.
- * - `start == end` — **invalid**. It is rejected rather than interpreted, because the two readings
- *   ("zero minutes" and "a full 24 hours") are opposites and guessing either one silently is worse
- *   than refusing. "All day" must be modelled explicitly if it is ever required; encoding it as
- *   `00:00-23:59` leaves a one-minute hole every day and is not the same claim.
+ * - `start == end == 00:00` — the **explicit full calendar day** encoding (DEV-6). Selected day
+ *   owns midnight start; the occurrence ends at the next midnight. This is overnight math, not
+ *   `00:00-23:59` (which leaves a one-minute hole and must never be marketed as continuous).
+ * - any other `start == end` — **invalid**. "Zero minutes" and "a full 24 hours" are opposite
+ *   readings of the same input; only midnight-to-midnight is the named all-day shape.
  *
  * A window has two boundaries per occurrence, not one. For a same-day window both fall on a
  * selected day; for an overnight window the END falls on the day *after* a selected start day,
@@ -29,12 +30,18 @@ enum class FocusWindowAction { START, END }
  */
 object FocusWindowRecurrence {
 
+    /** Explicit all-day / full-calendar-day encoding: midnight through next midnight. */
+    fun isFullCalendarDay(startTime: LocalTime, endTime: LocalTime): Boolean =
+        startTime == LocalTime.MIDNIGHT && endTime == LocalTime.MIDNIGHT
+
     /** Whether this window shape can be scheduled at all. Callers validating user input should use
      * this rather than inferring validity from a null boundary, which cannot distinguish "bad
      * shape" from "no selected days". */
-    fun isValidShape(startTime: LocalTime, endTime: LocalTime): Boolean = startTime != endTime
+    fun isValidShape(startTime: LocalTime, endTime: LocalTime): Boolean =
+        startTime != endTime || isFullCalendarDay(startTime, endTime)
 
-    fun isOvernight(startTime: LocalTime, endTime: LocalTime): Boolean = startTime > endTime
+    fun isOvernight(startTime: LocalTime, endTime: LocalTime): Boolean =
+        startTime > endTime || isFullCalendarDay(startTime, endTime)
 
     /**
      * True when [at] falls inside an occurrence of this window.
@@ -73,10 +80,13 @@ object FocusWindowRecurrence {
         }
 
         // Overnight, evening half: still on the start day, so the window closes tomorrow.
+        // Full calendar day (00:00-00:00) is always in the evening half for the start day.
         if (today in days && !time.isBefore(startTime)) {
             return at.toLocalDate().plusDays(1).atTime(endTime).atZone(at.zone)
         }
         // Overnight, morning half: the occurrence started yesterday, so yesterday must be selected.
+        // For full calendar day, time.isBefore(MIDNIGHT) is never true, so this branch only applies
+        // to ordinary overnight windows that finish after midnight.
         if (previousDay(today) in days && time.isBefore(endTime)) {
             return at.toLocalDate().atTime(endTime).atZone(at.zone)
         }
@@ -86,9 +96,11 @@ object FocusWindowRecurrence {
     /**
      * The next boundary strictly after [after], and whether it opens or closes the window.
      *
-     * Null only for invalid input (no selected days, or `start == end`); any validated window has a
-     * next boundary. When an occurrence is currently active this returns its END, because that END
-     * is nearer than the following occurrence's START.
+     * Null only for invalid input (no selected days, or an invalid equal-times shape); any
+     * validated window has a next boundary. When an occurrence is currently active this returns
+     * its END, because that END is nearer than the following occurrence's START — except when a
+     * full-calendar-day stretch abuts the next selected day at the same midnight, in which case
+     * START is preferred so protection rolls into the new day instead of releasing for one instant.
      */
     fun nextBoundary(
         days: Set<Int>,
@@ -103,10 +115,12 @@ object FocusWindowRecurrence {
             nextStart == null && nextEnd == null -> null
             nextEnd == null -> nextStart!! to FocusWindowAction.START
             nextStart == null -> nextEnd to FocusWindowAction.END
-            // Equal instants cannot happen for a valid shape (start != end), so a strict comparison
-            // is total here.
             nextStart.isBefore(nextEnd) -> nextStart to FocusWindowAction.START
-            else -> nextEnd to FocusWindowAction.END
+            nextEnd.isBefore(nextStart) -> nextEnd to FocusWindowAction.END
+            // Equal instants: only the full-calendar-day overnight encoding can produce this
+            // (START of day N and END of day N-1 share midnight). Prefer START so consecutive
+            // selected days stay covered without a release gap (DEV-6).
+            else -> nextStart to FocusWindowAction.START
         }
     }
 

@@ -27,8 +27,10 @@ import android.content.Context
  * is best-effort. A failed server release leaves a stale session that the next `status()` or
  * `startFocus()` reconciles; it does not re-lock the device.
  *
- * `status()` likewise falls back to the device's own record when the server is unreachable, instead
- * of raising a network error over a question the device can already answer truthfully.
+ * `status()` likewise reads the device's own record **first** (DEV-3): a live guard record is
+ * reported ACTIVE without a server round-trip, and the server can no longer stop protection that
+ * the device started without a session (scheduled window, reboot catch-up). The server is only
+ * consulted when the device is not enforcing anything - to recover a session after process death.
  */
 class DisciplineEngine(
     private val permissions: DisciplinePermissions,
@@ -56,15 +58,23 @@ class DisciplineEngine(
         if (!hasRequiredPermissions()) {
             return DisciplineStatus(ProtectionState.NEEDS_PERMISSION, alarmScheduled())
         }
+        // Local first (decision 0014, DEV-3). The guard's own record is the engine confirmation and
+        // the device is authoritative, so a live record answers the question without the server -
+        // online or offline. Asking the server first was wrong in two ways: a scheduled window or
+        // reboot catch-up starts protection with no server session (DEV-4, DEV-21), and the
+        // "no session" branch below then called guard.stop() and reported OFF, silently ending
+        // protection the person had chosen just because they opened the app.
+        localState?.read()?.takeIf { it.isActiveAt(System.currentTimeMillis()) }?.let {
+            // Re-assert the guard (idempotent) so a service killed since the record was written is
+            // running again before ACTIVE is claimed - same rule as the server-recovery path below.
+            guard.start(it.packages, it.endsAtEpochMillis)
+            return DisciplineStatus(ProtectionState.ACTIVE, alarmScheduled(), it.endsAtEpochMillis, it.packages)
+        }
         val active = try {
             api.activeFocus()
         } catch (e: ApiFailure) {
-            // Offline. The device still knows exactly what it is enforcing, so report that rather
-            // than a network complaint - and never downgrade a live window to OFF, which would tell
-            // the user their apps are available when the guard is still blocking them.
-            localState?.read()?.takeIf { it.isActiveAt(System.currentTimeMillis()) }?.let {
-                return DisciplineStatus(ProtectionState.ACTIVE, alarmScheduled(), it.endsAtEpochMillis, it.packages)
-            }
+            // Offline, and the device record above already said nothing is running, so there is no
+            // truthful state to report from here - the network failure is the honest answer.
             throw DisciplineError.Network(e.message ?: "Could not reach Shanivar. Try again.")
         }
         return if (active != null && active.endsAtEpochMillis > System.currentTimeMillis()) {

@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalTime
@@ -28,29 +29,36 @@ private val SCHEDULE_DAYS = listOf("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")
 internal data class FocusScheduleDraft(
     val mode: String = "days",
     val days: Set<Int> = WEEKDAYS,
+    // Full calendar day is midnight→next midnight (DEV-6), not 00:00–23:59.
     val start: String = "00:00",
-    val end: String = "23:59",
+    val end: String = "00:00",
     val packages: Set<String> = emptySet(),
     val intention: String = "",
     val trigger: String = "",
     val action: String = "",
 ) {
     fun preset(next: String): FocusScheduleDraft = when (next) {
-        "all_day" -> copy(mode = next, days = EVERY_DAY, start = "00:00", end = "23:59")
-        "days" -> copy(mode = next, days = if (days == EVERY_DAY) WEEKDAYS else days, start = "00:00", end = "23:59")
+        "all_day" -> copy(mode = next, days = EVERY_DAY, start = "00:00", end = "00:00")
+        "days" -> copy(mode = next, days = if (days == EVERY_DAY) WEEKDAYS else days, start = "00:00", end = "00:00")
         "custom" -> copy(mode = next, days = if (days == EVERY_DAY) WEEKDAYS else days, start = "09:00", end = "17:00")
         else -> this
     }
 
-    fun problem(): String? = when {
-        days.isEmpty() -> "Choose at least one day."
-        packages.isEmpty() -> "Choose at least one installed app to pause."
-        intention.isBlank() -> "Name the activity you want this time for."
-        // An end earlier than the start is an overnight window, and the selected day owns the start
-        // (Monday 22:00-06:00 is a Monday rule finishing Tuesday). Equal times are refused because
-        // "no minutes" and "a whole day" are opposite readings of the same input - see decision 0014.
-        start == end -> "Start and end cannot be the same time. For an overnight window, set an end time in the morning."
-        else -> null
+    fun problem(): String? {
+        val startTime = runCatching { LocalTime.parse(start) }.getOrNull()
+        val endTime = runCatching { LocalTime.parse(end) }.getOrNull()
+        return when {
+            days.isEmpty() -> "Choose at least one day."
+            packages.isEmpty() -> "Choose at least one installed app to pause."
+            intention.isBlank() -> "Name the activity you want this time for."
+            startTime == null || endTime == null -> "Choose a valid start and end time."
+            // Overnight (end earlier than start) is valid; selected day owns the start.
+            // Equal times are refused except midnight→midnight, the explicit full-calendar-day
+            // encoding (DEV-6 / decision 0014). Do not use 00:00–23:59 — that leaves a gap.
+            !FocusWindowRecurrence.isValidShape(startTime, endTime) ->
+                "Start and end cannot be the same time. For an overnight window, set an end time in the morning."
+            else -> null
+        }
     }
 }
 
@@ -129,6 +137,13 @@ internal fun FocusScheduleCard(
         }.map { it.packageName }.toSet()
     }
     val next = scheduler.pendingTriggerAtEpochMillis()
+    // Re-derive on resume (permissions, guard record) and on a slow tick (window boundaries). The
+    // guard and the scheduler are written outside this composition, so nothing here can observe them.
+    var statusTick by remember { mutableLongStateOf(0L) }
+    LaunchedEffect(Unit) { while (true) { delay(30_000L); statusTick++ } }
+    val scheduleStatus = remember(remote, next, permissionRevision, statusTick, busy) {
+        remote?.let { focusScheduleStatusFor(context, it, scheduler, permissions) }
+    }
     SectionCard("Focus on your routine") {
         Text("Protect time on the days you choose.")
         if (!connected) {
@@ -150,11 +165,38 @@ internal fun FocusScheduleCard(
             Text(saved.intentionLabel, style = MaterialTheme.typography.titleLarge)
             Text(when (saved.mode) { "all_day" -> "All day"; "days" -> "A few days a week"; else -> "Custom times" })
             Text(if (saved.daysOfWeek == EVERY_DAY) "Every day" else SCHEDULE_DAYS.filterIndexed { i, _ -> i in saved.daysOfWeek }.joinToString(", "))
-            Text("${saved.startTime}–${saved.endTime}")
+            Text(
+                runCatching {
+                    val s = LocalTime.parse(saved.startTime)
+                    val e = LocalTime.parse(saved.endTime)
+                    if (FocusWindowRecurrence.isFullCalendarDay(s, e)) "Full calendar day"
+                    else "${saved.startTime}–${saved.endTime}"
+                }.getOrElse { "${saved.startTime}–${saved.endTime}" },
+            )
             if (saved.commitmentTrigger.isNotBlank()) Text(saved.commitmentTrigger)
             if (saved.commitmentAction.isNotBlank()) Text(saved.commitmentAction)
-            Text(if (saved.enabled && next != null) "Next change: " + Instant.ofEpochMilli(next).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("EEE, d MMM · HH:mm"))
-                else "Not scheduled on this device.", color = if (saved.enabled && next != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
+            // DEV-3: the state word comes from device evidence, never from "a trigger is pending".
+            // Only ACTIVE (guard-confirmed) is shown in the primary colour; Ready is neutral.
+            val status = scheduleStatus ?: FocusScheduleStatus(FocusRuleState.NEEDS_ATTENTION)
+            Text(
+                status.describe { Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("EEE, d MMM · HH:mm")) },
+                color = when (status.state) {
+                    FocusRuleState.ACTIVE -> MaterialTheme.colorScheme.primary
+                    FocusRuleState.NEEDS_DEVICE_ACCESS, FocusRuleState.NEEDS_ATTENTION -> MaterialTheme.colorScheme.error
+                    FocusRuleState.READY -> MaterialTheme.colorScheme.onSurface
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+            )
+            if (FocusDeviceAccess.EXACT_ALARM in status.missingAccess && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) OutlinedButton(onClick = {
+                context.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:${context.packageName}")))
+            }, modifier = Modifier.fillMaxWidth()) { Text("Allow Alarms & reminders") }
+            if (FocusDeviceAccess.USAGE_ACCESS in status.missingAccess) OutlinedButton(onClick = {
+                context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+            }, modifier = Modifier.fillMaxWidth()) { Text("Grant Usage access") }
+            if (FocusDeviceAccess.OVERLAY in status.missingAccess) OutlinedButton(onClick = {
+                context.startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}")))
+            }, modifier = Modifier.fillMaxWidth()) { Text("Allow display over apps") }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Switch(checked = saved.enabled && next != null, enabled = !busy, onCheckedChange = { enabled ->
                     if (enabled) {
@@ -199,7 +241,7 @@ internal fun FocusScheduleCard(
             if (draft.mode == "custom") {
                 OutlinedButton(onClick = { pickTime(draft.start) { draft = draft.copy(start = it) } }, modifier = Modifier.fillMaxWidth()) { Text("Start · ${draft.start}") }
                 OutlinedButton(onClick = { pickTime(draft.end) { draft = draft.copy(end = it) } }, modifier = Modifier.fillMaxWidth()) { Text("End · ${draft.end}") }
-                Text("The end must be later on the same day.")
+                Text("An earlier end time means overnight. Midnight to midnight is a full calendar day.")
             }
             OutlinedTextField(draft.intention, { draft = draft.copy(intention = it.take(60)) }, label = { Text("Your chosen activity") }, singleLine = true, modifier = Modifier.fillMaxWidth())
             Text("Apps to pause")
@@ -234,7 +276,8 @@ internal fun FocusScheduleCard(
                         if (!saved.enabled) remote = routine.setFocusScheduleEnabled(saved.id, true)
                         FocusCommitmentCache.store(context, remote!!)
                         editing = false
-                        result = "Scheduled on this device."
+                        // Saved and armed is not protecting yet; the status line above says which state it is.
+                        result = "Saved on this device."
                     } catch (e: Exception) {
                         if (armedThisAttempt) { scheduler.cancel(); FocusCommitmentCache.clear(context) }
                         error = e.message ?: "Could not save this focus schedule."
@@ -248,4 +291,28 @@ internal fun FocusScheduleCard(
         result?.let { Text(it, color = MaterialTheme.colorScheme.primary, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
         error?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
     }
+}
+
+/**
+ * Reads this device's evidence for [saved] and resolves its displayed state (DEV-3). The guard record
+ * is the engine confirmation; the account copy only says what the person asked for.
+ */
+internal fun focusScheduleStatusFor(
+    context: Context, saved: RemoteFocusSchedule, scheduler: FocusScheduler, permissions: DisciplinePermissions,
+): FocusScheduleStatus {
+    // An account copy whose times do not parse cannot be armed or confirmed; never call it anything green.
+    val rule = saved.toSchedulerRule() ?: return FocusScheduleStatus(FocusRuleState.NEEDS_ATTENTION)
+    return FocusScheduleStatusResolver.resolve(
+        FocusScheduleInputs(
+            now = java.time.ZonedDateTime.now(),
+            savedRule = rule,
+            enabled = saved.enabled,
+            armedRule = scheduler.pendingRule(),
+            nextTriggerAtEpochMillis = scheduler.pendingTriggerAtEpochMillis(),
+            hasExactAlarm = permissions.hasExactAlarmPermission(),
+            hasUsageAccess = permissions.hasUsageAccess(),
+            hasOverlay = permissions.hasOverlayPermission(),
+            localProtection = AndroidProtectionStateStore(context).read(),
+        ),
+    )
 }

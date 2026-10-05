@@ -27,6 +27,10 @@ android {
         // tabs re-home existing composables rather than replacing them, so flipping this switches
         // presentation only: same alarm engine, same focus engine, same Steady player, same storage.
         buildConfigField("boolean", "THREE_TAB_NAV", "false")
+        // Decision 0014 Routine V3 two-tab shell (Routine | Sadhana). Default false so V1Home
+        // remains the launch path until the Routine timeline / multi-window UI is device-gated.
+        // Flipping this only switches presentation: same engines, same Steady, same storage.
+        buildConfigField("boolean", "ROUTINE_V3", "false")
     }
     buildTypes {
         debug {

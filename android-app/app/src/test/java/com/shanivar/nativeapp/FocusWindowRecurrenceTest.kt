@@ -152,14 +152,60 @@ class FocusWindowRecurrenceTest {
     }
 
     @Test fun midnightToOneMinuteBeforeMidnightLeavesARealGapSoItIsNotAllDay() {
-        // Documents DEV-6: 00:00-23:59 is a same-day window with a 60-second hole every night, so it
-        // must not be presented as continuous protection. Kept as a test rather than a comment so a
-        // future "all day" preset cannot quietly reintroduce the claim.
+        // Documents DEV-6 anti-pattern: 00:00-23:59 is a same-day window with a 60-second hole
+        // every night. The all-day preset must not use this shape.
         val allDays = (0..6).toSet()
-        val midnight = LocalTime.of(0, 0)
+        val midnight = LocalTime.MIDNIGHT
         val justBefore = LocalTime.of(23, 59)
         assertTrue(FocusWindowRecurrence.isActiveAt(allDays, midnight, justBefore, at(14, 3, 0)))
         assertFalse(FocusWindowRecurrence.isActiveAt(allDays, midnight, justBefore, at(14, 23, 59)))
+    }
+
+    // ── Full calendar day (DEV-6) ───────────────────────────────────────────────────────────────
+
+    @Test fun fullCalendarDayIsMidnightToNextMidnightNotEqualTimesInGeneral() {
+        val midnight = LocalTime.MIDNIGHT
+        assertTrue(FocusWindowRecurrence.isFullCalendarDay(midnight, midnight))
+        assertTrue(FocusWindowRecurrence.isValidShape(midnight, midnight))
+        assertTrue(FocusWindowRecurrence.isOvernight(midnight, midnight))
+        assertFalse(FocusWindowRecurrence.isFullCalendarDay(LocalTime.of(9, 0), LocalTime.of(9, 0)))
+        assertFalse(FocusWindowRecurrence.isValidShape(LocalTime.of(9, 0), LocalTime.of(9, 0)))
+    }
+
+    @Test fun fullCalendarDayCoversEndOfSelectedDayWithNoOneMinuteGap() {
+        val monday = setOf(1)
+        val midnight = LocalTime.MIDNIGHT
+        // Active for the whole Monday calendar day, including 23:59.
+        assertTrue(FocusWindowRecurrence.isActiveAt(monday, midnight, midnight, at(14, 0, 0)))
+        assertTrue(FocusWindowRecurrence.isActiveAt(monday, midnight, midnight, at(14, 12, 0)))
+        assertTrue(FocusWindowRecurrence.isActiveAt(monday, midnight, midnight, at(14, 23, 59)))
+        assertEquals(at(15, 0, 0), FocusWindowRecurrence.activeWindowEnd(monday, midnight, midnight, at(14, 23, 59)))
+        // Tuesday 00:00 is the exclusive end when only Monday is selected.
+        assertFalse(FocusWindowRecurrence.isActiveAt(monday, midnight, midnight, at(15, 0, 0)))
+        assertNull(FocusWindowRecurrence.activeWindowEnd(monday, midnight, midnight, at(15, 0, 0)))
+    }
+
+    @Test fun fullCalendarDayAllSevenDaysStaysActiveAcrossMidnightWithNoGap() {
+        val allDays = (0..6).toSet()
+        val midnight = LocalTime.MIDNIGHT
+        assertTrue(FocusWindowRecurrence.isActiveAt(allDays, midnight, midnight, at(14, 23, 59)))
+        assertTrue(FocusWindowRecurrence.isActiveAt(allDays, midnight, midnight, at(15, 0, 0)))
+        assertTrue(FocusWindowRecurrence.isActiveAt(allDays, midnight, midnight, at(15, 0, 1)))
+        // At the abutting midnight, prefer START so consecutive days roll without a release gap.
+        val atMondayEnd = FocusWindowRecurrence.nextBoundary(allDays, midnight, midnight, at(14, 12, 0))!!
+        assertEquals(at(15, 0, 0), atMondayEnd.first)
+        assertEquals(FocusWindowAction.START, atMondayEnd.second)
+    }
+
+    @Test fun fullCalendarDayWeekdaysEndsAtSaturdayMidnight() {
+        val weekdays = setOf(1, 2, 3, 4, 5)
+        val midnight = LocalTime.MIDNIGHT
+        assertTrue(FocusWindowRecurrence.isActiveAt(weekdays, midnight, midnight, at(18, 23, 0))) // Friday
+        assertEquals(at(19, 0, 0), FocusWindowRecurrence.activeWindowEnd(weekdays, midnight, midnight, at(18, 23, 0)))
+        assertFalse(FocusWindowRecurrence.isActiveAt(weekdays, midnight, midnight, at(19, 0, 0))) // Saturday
+        val afterFriday = FocusWindowRecurrence.nextBoundary(weekdays, midnight, midnight, at(18, 12, 0))!!
+        assertEquals(at(19, 0, 0), afterFriday.first)
+        assertEquals(FocusWindowAction.END, afterFriday.second)
     }
 
     // ── Clock and zone behaviour ────────────────────────────────────────────────────────────────

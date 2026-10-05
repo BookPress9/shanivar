@@ -450,13 +450,21 @@ describe('POST /api/discipline/focus-schedules', () => {
     expect(res.body.error).toMatch(/differ from start_time/);
   });
 
-  it('accepts the "all day" preset as days=all + 00:00-23:59, same shape as any other window', async () => {
-    mockQuery.mockResolvedValue({ rows: [{ id: OWNED_SCHEDULE_ID, mode: 'all_day' }] });
+  it('accepts the "all day" preset as days=all + 00:00-00:00 (full calendar day, DEV-6)', async () => {
+    mockQuery.mockResolvedValue({ rows: [{ id: OWNED_SCHEDULE_ID, mode: 'all_day', start_time: '00:00', end_time: '00:00' }] });
     const res = await request(app).post('/api/discipline/focus-schedules').send({
-      mode: 'all_day', days_of_week: [0, 1, 2, 3, 4, 5, 6], start_time: '00:00', end_time: '23:59',
+      mode: 'all_day', days_of_week: [0, 1, 2, 3, 4, 5, 6], start_time: '00:00', end_time: '00:00',
     });
     expect(res.statusCode).toEqual(201);
     expect(res.body.mode).toEqual('all_day');
+  });
+
+  it('still accepts legacy 00:00-23:59 as a same-day window shape (gap remains; not presented as all-day)', async () => {
+    mockQuery.mockResolvedValue({ rows: [{ id: OWNED_SCHEDULE_ID, mode: 'custom', start_time: '00:00', end_time: '23:59' }] });
+    const res = await request(app).post('/api/discipline/focus-schedules').send({
+      ...validBody, mode: 'custom', start_time: '00:00', end_time: '23:59',
+    });
+    expect(res.statusCode).toEqual(201);
   });
 
   it('creates a schedule and persists the when-then commitment as the user typed it, not generated content', async () => {

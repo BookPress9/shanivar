@@ -249,6 +249,66 @@ private fun HomeScreen(
 ) {
     val context = LocalContext.current
     var operationBusy by remember { mutableStateOf(false) }
+    if (BuildConfig.ROUTINE_V3) {
+        val gateway = remember(context) { AndroidProtectionGateway(context) }
+        // Saving through this wrapper syncs plan.windows → FocusScheduler registry only when the
+        // protection config changed; anchor/activity edits never arm anything.
+        val repo = remember(context) { ProtectionSyncingRoutinePlanRepository(SharedPrefsRoutinePlanRepository(context), gateway) }
+        val protection = remember(repo, connected, discipline) {
+            RoutineProtectionController(repo, gateway, mirrorRelease = { if (connected) discipline.releaseFocus() })
+        }
+        val scope = rememberCoroutineScope()
+        var resumeCount by remember { mutableIntStateOf(0) }
+        var protectionRevision by remember { mutableIntStateOf(0) }
+        OnAppResume { resumeCount++ }
+        val nextAlarm = remember(resumeCount) { AlarmScheduler(context).pendingTriggerAtEpochMillis() }
+        val alarmArmed = nextAlarm != null
+        val overview = rememberProtectionOverview(protection, protectionRevision)
+        val windowLabels = remember(overview) {
+            val now = java.time.ZonedDateTime.now()
+            overview.windows.associate { it.windowId to it.status.chip { ms -> epochToClock(ms, now) } }
+        }
+        val protectionApps = remember(resumeCount, protectionRevision) {
+            ProtectionAppCatalog.options(repo.current().protectedPackages) { pkg ->
+                runCatching { context.packageManager.getPackageInfo(pkg, 0) }.isSuccess
+            }
+        }
+        var shani by rememberSaveable { mutableStateOf(context.getSharedPreferences("rhythm", 0).getBoolean("shaniFraming", false)) }
+        RoutineShell(
+            routine = {
+                RoutineScreen(
+                    repository = repo,
+                    alarm = { AlarmCard(rhythm, onRhythmChange, alarmPlan, onAlarmPlanChange, connected, api, language, signIn) { operationBusy = it } },
+                    // V3: App protection replaces the single-rule FocusScheduleCard (which would cancel the
+                    // whole registry when the account has no schedule). Manual focus stays.
+                    focus = { FocusCard(rhythm, onRhythmChange, connected, api, discipline, signIn, showSchedule = false) { operationBusy = it } },
+                    nextAlarmEpochMillis = nextAlarm,
+                    alarmArmed = alarmArmed,
+                    protectionStatusByWindowId = windowLabels,
+                    protectionSummary = { plan, open ->
+                        RoutineProtectionSummary(plan, overview, onEdit = open, onStop = {
+                            scope.launch { protection.stopNow(); protectionRevision++ }
+                        })
+                    },
+                    protectionEditor = { close ->
+                        AppProtectionEditor(protection, protectionApps, overview, onRefresh = { protectionRevision++ }, onClose = close)
+                    },
+                )
+            },
+            sadhana = { entry, exit -> BreathingHost(entry, onExit = exit) },
+            settings = {
+                Heading("Your choices.")
+                PrimaryAction(if (account == null) "Sign in or create account" else "Account · ${account.name}", onOpenAccount)
+                SharedSettingsCards(shani) { value ->
+                    shani = value
+                    context.getSharedPreferences("rhythm", 0).edit().putBoolean("shaniFraming", value).apply()
+                }
+            },
+            navigationEnabled = !operationBusy,
+            initialDestination = if (openBreathing) RoutineDestination.SADHANA else RoutineDestination.ROUTINE,
+        )
+        return
+    }
     if (BuildConfig.THREE_TAB_NAV) {
         var resumeCount by remember { mutableIntStateOf(0) }
         OnAppResume { resumeCount++ }
@@ -307,7 +367,7 @@ private fun HomeScreen(
 }
 
 @Composable
-private fun FocusCard(rhythm: Rhythm, onRhythmChange: (Rhythm) -> Unit, connected: Boolean, api: ShanivarApi, gateway: DisciplineGateway, signIn: () -> Unit, onBusy: (Boolean) -> Unit) {
+private fun FocusCard(rhythm: Rhythm, onRhythmChange: (Rhythm) -> Unit, connected: Boolean, api: ShanivarApi, gateway: DisciplineGateway, signIn: () -> Unit, showSchedule: Boolean = true, onBusy: (Boolean) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var status by remember { mutableStateOf<DisciplineStatus?>(null) }
@@ -431,7 +491,7 @@ private fun FocusCard(rhythm: Rhythm, onRhythmChange: (Rhythm) -> Unit, connecte
             }
         }) { Text("End focus") } },
         dismissButton = { TextButton(onClick = { confirmEnd = false }) { Text("Keep focusing") } })
-    FocusScheduleCard(connected, api, signIn) { scheduleBusy = it }
+    if (showSchedule) FocusScheduleCard(connected, api, signIn) { scheduleBusy = it }
 }
 
 @Composable

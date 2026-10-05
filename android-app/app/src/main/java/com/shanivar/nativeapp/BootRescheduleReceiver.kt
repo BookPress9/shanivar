@@ -46,15 +46,28 @@ class BootRescheduleReceiver : BroadcastReceiver() {
         }
 
         val focusScheduler = FocusScheduler(context)
-        val focusRule = focusScheduler.pendingRule() ?: return
+        val focusRules = focusScheduler.enabledRules()
+        if (focusRules.isEmpty()) {
+            // Still try legacy single pending rule so pre-migration installs recover.
+            focusScheduler.pendingRule()?.let { legacy ->
+                val now = ZonedDateTime.now()
+                BootFocusCatchUp.apply(
+                    rules = listOf(legacy),
+                    now = now,
+                    local = LocalProtectionController.create(context),
+                    rearm = { at -> focusScheduler.rearm(at) },
+                )
+            }
+            return
+        }
         val now = ZonedDateTime.now()
 
         // ── 1 + 2. Local catch-up and the next boundary, with no session ───────────────────────
         val outcome = BootFocusCatchUp.apply(
-            rule = focusRule,
+            rules = focusRules,
             now = now,
             local = LocalProtectionController.create(context),
-            scheduleNext = { rule, at -> focusScheduler.scheduleNext(rule, at) },
+            rearm = { at -> focusScheduler.rearm(at) },
         )
 
         // ── 3. Server mirror, best effort ───────────────────────────────────────────────────────
@@ -62,10 +75,11 @@ class BootRescheduleReceiver : BroadcastReceiver() {
         val minutes = outcome.mirrorMinutes
         if (!outcome.started || api == null || minutes == null) return
         val pendingResult = goAsync()
+        val packages = outcome.packages
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
                 val discipline = DisciplineEngine.create(context, api, alarmScheduler)
-                runCatching { discipline.startFocus(minutes, focusRule.blockPackages) }
+                runCatching { discipline.startFocus(minutes, packages) }
             } finally {
                 pendingResult.finish()
             }
@@ -74,38 +88,64 @@ class BootRescheduleReceiver : BroadcastReceiver() {
 }
 
 /**
- * Reboot (and clock-change) catch-up for one persisted focus rule.
+ * Reboot (and clock-change) catch-up for the focus registry.
  *
- * This type has no session, API, or network parameter on purpose. Callers that want a server
- * mirror do it *after* [apply] returns, and only when [Outcome.started] is true. Duration for that
- * mirror is the remaining time until [FocusWindowRecurrence.activeWindowEnd], never "until the
- * next boundary," which is how a closed window became a 24-hour session (DEV-1).
+ * Overlap is rejected in the first release, so at most one occurrence should be active. If more
+ * than one is somehow active, packages are unioned and protection lasts until the earliest end
+ * (same ownership stance as [FocusWindowEndHandler]).
+ *
+ * No session/API/network parameter on purpose. Mirror only after [Outcome.started].
  */
 internal object BootFocusCatchUp {
     data class Outcome(
-        /** True only when local protection actually started for the occurrence active at [now]. */
+        /** True only when local protection actually started for an occurrence active at [now]. */
         val started: Boolean,
         /** Whole minutes until that occurrence ends. Null when protection did not start. */
         val mirrorMinutes: Int?,
+        /** Packages started locally — for the optional server mirror. */
+        val packages: Set<String> = emptySet(),
     )
 
+    fun apply(
+        rules: List<FocusScheduler.Rule>,
+        now: ZonedDateTime,
+        local: LocalProtectionController,
+        rearm: (ZonedDateTime) -> Unit,
+    ): Outcome {
+        val active = rules.mapNotNull { rule ->
+            FocusWindowRecurrence.activeWindowEnd(rule.days, rule.startTime, rule.endTime, now)
+                ?.let { rule to it }
+        }
+        val started: Boolean
+        val minutes: Int?
+        val packages: Set<String>
+        if (active.isEmpty()) {
+            started = false
+            minutes = null
+            packages = emptySet()
+        } else {
+            packages = active.flatMapTo(mutableSetOf()) { it.first.blockPackages }
+            val end = active.minOf { it.second }
+            started = local.start(packages, end.toInstant().toEpochMilli())
+            minutes = if (started) wholeMinutesUntil(end, now) else null
+        }
+        // Always re-arm the global next boundary. AlarmManager was wiped by the reboot.
+        runCatching { rearm(now) }
+        return Outcome(started, minutes, packages)
+    }
+
+    /** Single-rule convenience used by older unit tests. */
     fun apply(
         rule: FocusScheduler.Rule,
         now: ZonedDateTime,
         local: LocalProtectionController,
         scheduleNext: (FocusScheduler.Rule, ZonedDateTime) -> Unit,
-    ): Outcome {
-        val activeEnd = FocusWindowRecurrence.activeWindowEnd(
-            rule.days, rule.startTime, rule.endTime, now,
-        )
-        val started = activeEnd != null &&
-            local.start(rule.blockPackages, activeEnd.toInstant().toEpochMilli())
-        // Always re-arm, including when this boot is outside the window. AlarmManager was wiped
-        // by the reboot either way, and that does not depend on a session.
-        runCatching { scheduleNext(rule, now) }
-        val minutes = activeEnd?.takeIf { started }?.let { wholeMinutesUntil(it, now) }
-        return Outcome(started, minutes)
-    }
+    ): Outcome = apply(
+        rules = listOf(rule),
+        now = now,
+        local = local,
+        rearm = { at -> scheduleNext(rule, at) },
+    )
 
     /**
      * Whole minutes from [now] until [end], for the server's `/focus/start`, which takes a duration

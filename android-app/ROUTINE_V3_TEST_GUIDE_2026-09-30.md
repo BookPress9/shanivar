@@ -98,6 +98,8 @@ Record raw task output and exact test count. A prior run is evidence for its own
 
 ## Physical-device matrix
 
+**Dated crisp checklist (DEV-7, 5 Oct 2026):** [ROUTINE_V3_DEVICE_QA_2026-10-05.md](ROUTINE_V3_DEVICE_QA_2026-10-05.md) — short pass/fail matrix for physical-phone QA. Prefer that sheet when running founder device gates; the numbered list below remains the broader coverage map.
+
 Run each case on at least one Android 14+ device and one supported older-device version where available. Record manufacturer restrictions and battery settings.
 
 1. Fresh install -> onboarding -> Routine.

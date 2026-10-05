@@ -34,10 +34,10 @@ data class RemoteAlarm(
 )
 
 /** `mode` is display-only (which of the three presets the user picked) - `days`/`startTime`/
- * `endTime` are the actual rule; "all day" is simply days=all-7 with startTime=00:00,
- * endTime=23:59, not a structurally different case. `commitmentTrigger`/`commitmentAction` are
- * the user's own when-then pair ("When ___, I will ___") - see decision 0010 - never
- * server-generated, and blank is valid (the field is optional). */
+ * `endTime` are the actual rule. Full calendar day ("all day" / few-days full-day) is encoded
+ * as startTime=00:00 and endTime=00:00 — midnight through next midnight — not 00:00–23:59
+ * (DEV-6). `commitmentTrigger`/`commitmentAction` are the user's own when-then pair
+ * ("When ___, I will ___") - see decision 0010 - never server-generated, and blank is valid. */
 data class RemoteFocusSchedule(
     val id: String,
     val mode: String,

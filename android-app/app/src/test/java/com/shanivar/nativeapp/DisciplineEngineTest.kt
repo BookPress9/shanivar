@@ -249,4 +249,34 @@ class DisciplineEngineTest {
         val engine = DisciplineEngine(FakePermissions(), failing, FakeGuard(), { elapsed })
         assertTrue(runCatching { engine.status() }.exceptionOrNull() is DisciplineError.Network)
     }
+
+    // ── DEV-3: local first ──────────────────────────────────────────────────────────────────────
+
+    @Test fun statusReportsActiveFromALiveDeviceRecordWithoutTheServerStoppingIt() = runBlocking {
+        // A scheduled window / reboot catch-up starts protection with no server session. Opening
+        // the app used to ask the server first, get "no session", call guard.stop() and say OFF.
+        val api = FakeDisciplineApi() // active = null: the server knows nothing about this window
+        val guard = FakeGuard()
+        val stored = LocalProtection(setOf("com.instagram.android"), System.currentTimeMillis() + 600_000L)
+        val engine = DisciplineEngine(FakePermissions(), api, guard, { stored })
+        val status = engine.status()
+        assertEquals(ProtectionState.ACTIVE, status.protection)
+        assertEquals(stored.endsAtEpochMillis, status.focusEndsAtEpochMillis)
+        assertEquals(0, guard.stopCalls)
+        // Re-asserted, not stopped: a killed service is running again before ACTIVE is claimed.
+        assertEquals(1, guard.startCalls)
+        assertEquals(stored.packages, guard.lastPackages)
+    }
+
+    @Test fun statusDoesNotClaimActiveFromALiveRecordWhenPermissionsAreMissing() = runBlocking {
+        val stored = LocalProtection(setOf("com.instagram.android"), System.currentTimeMillis() + 600_000L)
+        val engine = DisciplineEngine(FakePermissions(overlay = false), FakeDisciplineApi(), FakeGuard(), { stored })
+        assertEquals(ProtectionState.NEEDS_PERMISSION, engine.status().protection)
+    }
+
+    @Test fun statusWithNoDeviceRecordAndNoServerSessionIsOff() = runBlocking {
+        val elapsed = LocalProtection(setOf("com.instagram.android"), System.currentTimeMillis() - 1_000L)
+        val engine = DisciplineEngine(FakePermissions(), FakeDisciplineApi(), FakeGuard(), { elapsed })
+        assertEquals(ProtectionState.OFF, engine.status().protection)
+    }
 }

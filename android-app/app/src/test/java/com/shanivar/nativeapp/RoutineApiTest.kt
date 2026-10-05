@@ -110,9 +110,9 @@ class RoutineApiTest {
             assertEquals("days", created.mode)
             assertEquals(setOf(1, 2, 3, 4, 5), created.daysOfWeek)
 
-            server.enqueue(MockResponse().setBody("""{"id":"$id","mode":"all_day","days_of_week":[0,1,2,3,4,5,6],"start_time":"00:00:00","end_time":"23:59:00","enabled":true}"""))
+            server.enqueue(MockResponse().setBody("""{"id":"$id","mode":"all_day","days_of_week":[0,1,2,3,4,5,6],"start_time":"00:00:00","end_time":"00:00:00","enabled":true}"""))
             val edited = RoutineApi(api).editFocusSchedule(
-                id, mode = "all_day", days = (0..6).toSet(), startTime = "00:00", endTime = "23:59",
+                id, mode = "all_day", days = (0..6).toSet(), startTime = "00:00", endTime = "00:00",
                 blockedPackages = setOf("com.instagram.android"), intentionLabel = "Deep work",
                 commitmentTrigger = "", commitmentAction = "",
             )

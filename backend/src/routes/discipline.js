@@ -557,11 +557,14 @@ function validateFocusSchedulePayload(body, { partial }) {
   if (start_time !== undefined && end_time !== undefined && end_time === start_time) {
     // Overnight windows ARE supported as of Routine V3 (decision 0014): an end_time earlier than
     // start_time means the window crosses midnight, and the selected day owns the start - Monday
-    // 22:00-06:00 is a Monday rule that finishes Tuesday morning. Equal times remain invalid,
-    // because "zero minutes" and "a full 24 hours" are opposite readings of the same input and
-    // guessing either one silently is worse than refusing. All-day, if ever needed, gets modelled
-    // explicitly rather than encoded as 00:00-23:59, which leaves a one-minute hole every night.
-    return 'end_time must differ from start_time (an earlier end_time means an overnight window)';
+    // 22:00-06:00 is a Monday rule that finishes Tuesday morning.
+    // Equal times remain invalid *except* midnight→midnight (00:00/00:00), the explicit full
+    // calendar day encoding (DEV-6). 00:00–23:59 must not be used as "all day" — it leaves a
+    // one-minute hole every night and must not be described as continuous/unbreakable protection.
+    const isExplicitFullCalendarDay = start_time === '00:00' && end_time === '00:00';
+    if (!isExplicitFullCalendarDay) {
+      return 'end_time must differ from start_time (an earlier end_time means an overnight window; 00:00-00:00 is the full calendar day)';
+    }
   }
   if (block_package_list !== undefined && !isValidPackageList(block_package_list)) {
     return 'block_package_list must be an array of up to 50 package name strings';
