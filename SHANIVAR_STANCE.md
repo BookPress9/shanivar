@@ -274,7 +274,7 @@ Those instructions supersede the authority claim and six-level ranking in [the h
 
 **Topic:** The principles that run both The Hybrid Monk project and Shanivar, and tie them together.
 
-**Status:** PROPOSED — founder-reviewed principles, 6 October 2026. The wording is the founder's own. Acceptance of this exact entry/version is still to be recorded.
+**Status:** ACCEPTED — accepted by the founder, Shubham Kumar, on 6 October 2026 (voice call). The wording is the founder's own.
 
 **Traditional source:** None claimed. These are the founder's own principles.
 
@@ -305,6 +305,6 @@ Those instructions supersede the authority claim and six-level ranking in [the h
 
 **Claim limitations:** These are founder principles, not empirical or metaphysical findings.
 
-**Founder decision:** Given by the founder on 2026-10-06. Wording kept verbatim.
+**Founder decision:** Given and accepted by the founder on 2026-10-06 (voice call). Wording kept verbatim.
 
-**Date accepted:** Not accepted. Becomes ACCEPTED when the founder accepts this exact entry and the date is recorded here.
+**Date accepted:** 2026-10-06
