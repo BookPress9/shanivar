@@ -1,5 +1,11 @@
 package com.shanivar.nativeapp
 
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
 enum class BreathingPhase {
     READY,
     RUNNING,
@@ -158,6 +164,11 @@ data class BreathingSession(
  * text, no blocked package name, nothing that could be uploaded to describe someone's inner state
  * (handoff section 5). [entryContext] records which host opened the player, which is a navigation
  * fact, not a mood.
+ *
+ * [practisedAtEpochMillis] (wish-list B2, decision 0013 Option A) is the wall-clock instant the record
+ * was written - the session's end, or its start for a session lost to process death. It exists only to
+ * say *when* someone last sat with a practice; it is never used for duration, which stays monotonic.
+ * Null for rows saved before it existed: unknown, not guessed.
  */
 data class BreathingRecord(
     val sessionId: String,
@@ -169,6 +180,7 @@ data class BreathingRecord(
     val activeSeconds: Int,
     val outcome: BreathingPhase,
     val feedback: BreathingFeedback? = null,
+    val practisedAtEpochMillis: Long? = null,
 )
 
 enum class BreathingEntry { HOME, BEFORE_FOCUS, BLOCK_OVERLAY, AFTER_ALARM, PREVIEW }
@@ -181,3 +193,23 @@ fun trimBreathingJournal(records: List<BreathingRecord>): List<BreathingRecord> 
     if (records.size <= MAX_BREATHING_RECORDS) records else records.takeLast(MAX_BREATHING_RECORDS)
 
 const val MAX_BREATHING_RECORDS = 100
+
+/**
+ * The local date each practice was last sat with, from the bounded journal (B2). A fact about the
+ * newest dated row per practice and nothing more: no counts, no runs of days, no totals. Undated
+ * legacy rows simply contribute nothing.
+ */
+fun lastPractisedDates(records: List<BreathingRecord>, zone: ZoneId): Map<String, LocalDate> =
+    records.mapNotNull { record -> record.practisedAtEpochMillis?.let { record.practiceId to it } }
+        .groupBy({ it.first }, { it.second })
+        .mapValues { (_, instants) -> Instant.ofEpochMilli(instants.max()).atZone(zone).toLocalDate() }
+
+/** "Last practised today / yesterday / 3 Oct" - or null when there is nothing dated to say. */
+fun lastPractisedLabel(date: LocalDate?, today: LocalDate): String? = when (date) {
+    null -> null
+    today -> "Last practised today"
+    today.minusDays(1) -> "Last practised yesterday"
+    else -> "Last practised " + date.format(
+        DateTimeFormatter.ofPattern(if (date.year == today.year) "d MMM" else "d MMM yyyy", Locale.ENGLISH)
+    )
+}

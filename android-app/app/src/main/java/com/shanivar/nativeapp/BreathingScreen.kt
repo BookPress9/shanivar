@@ -92,6 +92,10 @@ private fun PracticeSelection(
     var priorComfort by remember { mutableStateOf(prefs.priorBreathComfort) }
     var showAll by rememberSaveable { mutableStateOf(false) }
     val draft = owner.draft
+    // B2: read once each time the list is shown - it re-enters composition after every practice.
+    val today = owner.wallClock()
+    val lastPractised = remember { lastPractisedDates(prefs.journal(), today.zone) }
+    fun lastLabel(option: BreathingOption) = lastPractisedLabel(lastPractised[option.practice.id], today.toLocalDate())
 
     Heading("Breathe & reset")
     Text("A short practice for this moment.")
@@ -201,16 +205,16 @@ private fun PracticeSelection(
         }
         is BreathingSuggestion.Offered -> {
             Text(suggestion.reason, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
-            suggestion.primary?.let { PracticeOptionCard(owner, it, suggested = true) }
+            suggestion.primary?.let { PracticeOptionCard(owner, it, suggested = true, lastLabel(it)) }
                 ?: Text("Nothing is suggested automatically right now. Choose from the list if you want to.")
-            suggestion.alternatives.forEach { PracticeOptionCard(owner, it, suggested = false) }
+            suggestion.alternatives.forEach { PracticeOptionCard(owner, it, suggested = false, lastLabel(it)) }
             TextButton(onClick = { showAll = !showAll }, modifier = Modifier.fillMaxWidth()) {
                 Text(if (showAll) "Hide other options" else "All suitable options")
             }
             if (showAll) {
                 val shown = listOfNotNull(suggestion.primary) + suggestion.alternatives
                 suggestion.allSuitable.filterNot { option -> shown.any { it.practice.id == option.practice.id } }
-                    .forEach { PracticeOptionCard(owner, it, suggested = false) }
+                    .forEach { PracticeOptionCard(owner, it, suggested = false, lastLabel(it)) }
             }
         }
     }
@@ -218,13 +222,22 @@ private fun PracticeSelection(
 }
 
 @Composable
-private fun PracticeOptionCard(owner: BreathingSessionOwner, option: BreathingOption, suggested: Boolean) {
+private fun PracticeOptionCard(
+    owner: BreathingSessionOwner,
+    option: BreathingOption,
+    suggested: Boolean,
+    lastPractised: String? = null,
+) {
     val context = LocalContext.current
     var sourceOpen by rememberSaveable(option.practice.id) { mutableStateOf(false) }
     val practice = option.practice
     SectionCard(practice.title) {
         if (suggested) Text("Suggested", color = MaterialTheme.colorScheme.primary)
         Text(practice.originLabel, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        // A quiet fact, never a prompt: nothing at all is shown for a practice never dated.
+        lastPractised?.let {
+            Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
         Text(practice.stages[BreathingStageId.INSTRUCTION].orEmpty())
         when (val duration = option.duration) {
             is BreathingDuration.Ready -> {

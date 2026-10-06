@@ -94,6 +94,24 @@ class BreathingUiTest {
         assertEquals(1, journal.size)
         assertEquals(BreathingPhase.ENDED_USER, journal.single().outcome)
         assertEquals(BreathingEntry.HOME, journal.single().entryContext)
+        // B2: the row is dated from the injected wall clock, never from the monotonic one.
+        assertEquals(BreathingSessionOwner.wallClock().toInstant().toEpochMilli(), journal.single().practisedAtEpochMillis)
+    }
+
+    @Test fun b2_eachPracticeShowsOnlyAQuietDateOfWhenItWasLastPractised() {
+        val yesterday = BreathingSessionOwner.wallClock().minusDays(1).toInstant().toEpochMilli()
+        BreathingPreferences(context).append(
+            BreathingRecord("s0", "external_grounding", "v1", 1, BreathingEntry.HOME, 60, 60, BreathingPhase.ENDED_TIMER,
+                practisedAtEpochMillis = yesterday)
+        )
+        openHost()
+        confirmSafeSetting()
+        compose.onNodeWithText("Last practised yesterday").assertExists()
+        // One fact for one practice; never a count, run or score.
+        compose.onAllNodesWithText("Last practised", substring = true).assertCountEquals(1)
+        listOf("streak", "in a row", "XP", "badge", "score").forEach {
+            compose.onAllNodesWithText(it, substring = true, ignoreCase = true).assertCountEquals(0)
+        }
     }
 
     @Test fun i12_aSessionLostToProcessDeathIsRecordedOnceAsInterruptedAndNeverResumed() {

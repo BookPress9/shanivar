@@ -363,10 +363,9 @@ private fun HomeScreen(
                 hasFocusSchedule = FocusScheduler(context).pendingRule() != null,
                 intentionLabel = rhythm.intentionLabel,
                 focusMinutes = rhythm.focusMinutes,
-                // Known gap: BreathingRecord carries no date, so "did they practise today" is not
-                // answerable from the journal. Left false rather than guessed - it only decides whether
-                // a practice is *offered*, and adding a timestamp to a privacy-sensitive journal is a
-                // decision to take deliberately, not as a side effect of building a navigation shell.
+                // BreathingRecord now carries a date (wish-list B2, shown per practice in Steady), but
+                // this superseded Dashboard scaffold (decision 0014) is deliberately not rewired to it:
+                // left false rather than widening B2 into deciding when a practice is *offered*.
                 practisedToday = false,
                 scheduleWindow = BreathingPreferences(context).schedule().window(LocalTime.now()),
             )

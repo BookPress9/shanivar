@@ -63,7 +63,8 @@ object BreathingSessionOwner {
     /** Monotonic time. Injectable so the reducer tests and Robolectric UI tests can drive it. */
     var monotonicMillis: () -> Long = { SystemClock.elapsedRealtime() }
 
-    /** Local wall time, for schedule-aware *suggestions* only - never for duration. */
+    /** Local wall time, for schedule-aware *suggestions* and the date stamped on each journal record
+     * (B2) only - never for duration. */
     var wallClock: () -> ZonedDateTime = { ZonedDateTime.now() }
 
     var newSessionId: () -> String = { UUID.randomUUID().toString() }
@@ -235,6 +236,7 @@ object BreathingSessionOwner {
             selectedDurationSeconds = state.durationSeconds,
             activeSeconds = (state.elapsedActiveMillis(monotonicMillis()) / 1000).toInt(),
             outcome = outcome,
+            practisedAtEpochMillis = wallClock().toInstant().toEpochMilli(),
         )
 
     /** Test seam: resets process state between Robolectric cases. */

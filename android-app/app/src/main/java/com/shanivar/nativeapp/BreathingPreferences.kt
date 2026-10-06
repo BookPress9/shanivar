@@ -62,6 +62,7 @@ class BreathingPreferences(context: Context) {
                     activeSeconds = item.optInt("activeSeconds"),
                     outcome = enumOrNull<BreathingPhase>(item.optString("outcome")) ?: BreathingPhase.INTERRUPTED,
                     feedback = enumOrNull<BreathingFeedback>(item.optString("feedback")),
+                    practisedAtEpochMillis = item.epochMillisOrNull(KEY_PRACTISED_AT),
                 )
             }.getOrNull()
         }
@@ -83,6 +84,7 @@ class BreathingPreferences(context: Context) {
                     .put("activeSeconds", entry.activeSeconds)
                     .put("outcome", entry.outcome.name)
                     .put("feedback", entry.feedback?.name)
+                    .put(KEY_PRACTISED_AT, entry.practisedAtEpochMillis)
             )
         }
         prefs.edit().putString(KEY_JOURNAL, array.toString()).apply()
@@ -106,6 +108,8 @@ class BreathingPreferences(context: Context) {
                 .put("contentVersion", record.contentVersion)
                 .put("entryContext", record.entryContext.name)
                 .put("selectedDurationSeconds", record.selectedDurationSeconds)
+                // Wall-clock start, for the date only (B2). Safe across reboot, unlike elapsedRealtime.
+                .put(KEY_PRACTISED_AT, record.practisedAtEpochMillis)
                 .toString())
             .apply()
     }
@@ -129,6 +133,7 @@ class BreathingPreferences(context: Context) {
                 // Unknown rather than guessed: nothing survived that could measure it honestly.
                 activeSeconds = 0,
                 outcome = BreathingPhase.INTERRUPTED,
+                practisedAtEpochMillis = item.epochMillisOrNull(KEY_PRACTISED_AT),
             )
         )
         return true
@@ -146,8 +151,13 @@ class BreathingPreferences(context: Context) {
         private const val KEY_SLEEP = "intendedSleepTime"
         private const val KEY_JOURNAL = "journal"
         private const val KEY_IN_FLIGHT = "inFlight"
+        private const val KEY_PRACTISED_AT = "practisedAtEpochMillis"
     }
 }
 
 private inline fun <reified T : Enum<T>> enumOrNull(name: String?): T? =
     name?.takeIf { it.isNotBlank() }?.let { value -> enumValues<T>().firstOrNull { it.name == value } }
+
+/** Absent, null or malformed reads as unknown (records saved before B2), never as zero or now. */
+private fun JSONObject.epochMillisOrNull(key: String): Long? =
+    if (isNull(key)) null else optLong(key, -1L).takeIf { it > 0L }
