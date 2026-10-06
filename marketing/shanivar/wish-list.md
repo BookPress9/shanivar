@@ -66,7 +66,7 @@ Started 6 October 2026 by the Grok Bot collaborator at the founder's request. Ev
 
 | # | Wish | Source | Stance check | Status |
 |---|---|---|---|---|
-| F1 | XP, ranks, scores, badges, streaks (including "light" streak gamification), streak-loss pressure, leaderboards; consciousness stages | Handoff:52; backlog:25 (Hold); 0009:15; ST-005; founder resolution 6 Oct 2026 (see A6) | **Fails**: Agency ✗ · Noise ✗. Kept here only as a visible "no". **Any future streak-like feature needs a new decision record that explicitly amends decision 0009** (and ST-005 and the Steady contract); a wish-list entry is not enough | wish, not committed (stance-failing) |
+| F1 | XP, ranks, scores, badges, streaks (including "light" streak gamification), streak-loss pressure, leaderboards; consciousness stages | Handoff:52; backlog:25 (Hold); 0009:15; ST-005; founder resolution 6 Oct 2026 (see A6) | **Fails**: Agency ✗ · Noise ✗. Kept here only as a visible "no". Streaks stay out under decision 0009, ST-005 and the Steady contract as written | wish, not committed (stance-failing) |
 | F2 | A new navigation framework solely for two destinations | Handoff:58 | Timing ✗ | wish, not committed |
 | F3 | Apparel integration and in-app content campaigns | Backlog:26 (Hold); Hybrid Monk clothing kept separate (`ai_org/agents/social_media_manager.md:47`) | Noise ✗ · Timing ✗ | wish, not committed |
 
