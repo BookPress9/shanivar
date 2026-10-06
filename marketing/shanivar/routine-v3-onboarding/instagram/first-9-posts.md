@@ -1,5 +1,5 @@
 > **STATUS: DRAFTS. Not approved. Not posted. Not scheduled.**
-> Copied into the repo on 6 October 2026, unchanged below this box, from `/workspace/instagram/first-9-posts.md` (outside the repo) so that Darpan (`ai_org/agents/instagram_keeper.md`) and the Social Media Manager (`ai_org/agents/social_media_manager.md`) can cite it. Being in the repo is not founder approval, internal editorial approval or a publishing authorization. Marketing is paused (`routine-onboarding-marketing-plan.md:3`, D6/D8 at `:267-269`). Posts 3, 4 and 7 carry status lines that must be re-checked against the repo and QA files on posting day. The body's line "Nothing has been posted, scheduled, committed or pushed" describes the file when it was drafted. The live profile as of 6 Oct 2026 is recorded in `ai_org/agents/instagram_keeper.md`, "Current profile state".
+> Copied into the repo on 6 October 2026 from `/workspace/instagram/first-9-posts.md` (outside the repo). The body below this box matches that file. On 6 Oct 2026 the mark descriptions in both copies were aligned to the live profile mark (founder instruction). This copy exists so that Darpan (`ai_org/agents/instagram_keeper.md`) and the Social Media Manager (`ai_org/agents/social_media_manager.md`) can cite it. Being in the repo is not founder approval, internal editorial approval or a publishing authorization. Marketing is paused (`routine-onboarding-marketing-plan.md:3`, D6/D8 at `:267-269`). Posts 3, 4 and 7 carry status lines that must be re-checked against the repo and QA files on posting day. The body's line "Nothing has been posted, scheduled, committed or pushed" describes the file when it was drafted. The live profile as of 6 Oct 2026 is recorded in `ai_org/agents/instagram_keeper.md`, "Current profile state".
 
 # Shanivar (@app.shanivar): first 9 Instagram posts. DRAFT for founder review
 
@@ -9,10 +9,10 @@ Display name: `Shanivar · by The Hybrid Monk`. Bio (being set): `Life been drif
 
 **Titles, order, formats and pins** come from `marketing/shanivar/routine-v3-onboarding/social-presence-from-scratch.md:112-128` (§7 "First 9 posts"). Angles A1–A6 and claim gates are from `routine-onboarding-marketing-plan.md:81-171`. Quoted product lines are verbatim from `source/ui-copy-inventory.md`. I checked them against `android-app/app/src/main/java/com/shanivar/nativeapp/RoutineOnboardingFlow.kt` at HEAD, and the line numbers still match.
 
-**Shared visual system** (website `marketing/shanivar/routine-v3-onboarding/website/style.css:7-12`, `favicon.svg`; plan `social-presence-from-scratch.md:128`):
+**Shared visual system** (website `marketing/shanivar/routine-v3-onboarding/website/style.css:7-12`; mark from the live `@app.shanivar` profile picture; plan `social-presence-from-scratch.md:128`):
 - Colours: background V3 black `#0b0d0b`, panel `#0f120f`, ink `#f7f5ee`, muted `#c9cec7`. Cream-paper cards `#f2efe6` with ink `#111510`. Sage accent `#d8e5b7`, gold accent `#c9aa73` (`#7a5c2b` on paper).
 - Type: serif headings (Iowan Old Style / Palatino / Georgia stack, weight 600, tight leading). Sans body (system-ui / Roboto). Small uppercase letter-spaced gold eyebrows.
-- **Saturn mark:** sage-to-black radial sphere (`#9eaa88→#2e372c→#111510`), gold ring tilted −15°, small sage moon at top left. It is **decoration only and never a breathing pacer** (`website/index.html:66`, `style.css:79`). In Reels it may drift slowly but must not pulse in a breath rhythm.
+- **Saturn mark (matches the live `@app.shanivar` profile picture; founder instruction, 6 Oct 2026):** a thin gold outline of a ringed planet (an outlined circle with a tilted elliptical ring, no fill, no moon), with `SHANIVAR` in spaced capitals underneath, on V3 black `#0b0d0b`. Gold is the V3 accent `#c9aa73` unless matched to the live file. **Reference:** the live Instagram profile picture. The closest source asset in the repo is the Android launcher icon, `android-app/app/src/main/res/drawable/ic_launcher_foreground.xml:2-5`: a thin gold `#C4AB72` outline circle with a ring tilted −22°, on `#0A0A0C` (`res/values/colors.xml:1`). It has no wordmark. The wordmark follows the in-app letter-spaced "SHANIVAR" (`RoutineOnboardingFlow.kt:112`). **Open item:** no repo file reproduces the full live lock-up, and the website `favicon.svg` is a different mark (a filled sage-to-black sphere with a small sage moon). Don't use the favicon mark in these posts. The mark is **decoration only and never a breathing pacer** (`website/index.html:66`, `style.css:79`). In Reels it may drift slowly but must not pulse in a breath rhythm.
 - Format: 4:5 (1080×1350), with headline and mark kept inside the 3:4 grid crop. 9:16 Reels with burned-in captions. No app UI is shown. If any screen is ever shown, label it "DESIGN IN DEVELOPMENT — NOT RELEASED" (`social-presence-from-scratch.md:128`).
 - Status footer used throughout: **"Shanivar · in development"**. The plan requires every item to say it is in development (`routine-onboarding-marketing-plan.md:209`).
 
@@ -43,7 +43,7 @@ Sources: `RoutineOnboardingFlow.kt:274-276`, `:278`; slide 3 adapted from `websi
 > In development. Not released yet.
 
 **Hashtags:** #Shanivar #TheHybridMonk #DailyRoutine #Focus #BuildInPublic
-**Alt text:** (1) Black slide, serif cream text: "Stop leaving your life to chance." Small gold label above: "Discipline for real life." (2) Cream paper card on black: "Work gets calendars. Deadlines get reminders. Other people get your structure." (3) Black slide: "Your own growth gets memory and mood." (4) Cream card: "Shanivar is being built to give some of that structure back to you." (5) Saturn-like planet with a gold ring on black, text "Build the day you intend to live. Shanivar, in development."
+**Alt text:** (1) Black slide, serif cream text: "Stop leaving your life to chance." Small gold label above: "Discipline for real life." (2) Cream paper card on black: "Work gets calendars. Deadlines get reminders. Other people get your structure." (3) Black slide: "Your own growth gets memory and mood." (4) Cream card: "Shanivar is being built to give some of that structure back to you." (5) Thin gold outline of a ringed planet with SHANIVAR in spaced capitals beneath it, on black, and the text "Build the day you intend to live. Shanivar, in development."
 **Visual:** All type, alternating black and cream-paper slides. A gold eyebrow on slide 1, the Saturn mark only on slide 5, a lot of empty space.
 
 ---
@@ -70,7 +70,7 @@ Sources: `RoutineOnboardingFlow.kt:304-305`, `:313`, `:320`; hook from plan A2 (
 > In development for Android.
 
 **Hashtags:** #Shanivar #DailyRoutine #Attention #AndroidApp #BuildInPublic
-**Alt text / description:** Typographic video on black. Cream serif lines appear one at a time: "No 5am. No ice bath. Give the day two fixed points. When you actually wake. When you make room for sleep. Not an ideal morning. Your actual life." It ends on a ringed planet mark and "Shanivar, in development." No music lyrics, no voiceover.
+**Alt text / description:** Typographic video on black. Cream serif lines appear one at a time: "No 5am. No ice bath. Give the day two fixed points. When you actually wake. When you make room for sleep. Not an ideal morning. Your actual life." It ends on a thin gold ringed-planet outline with SHANIVAR beneath it, and "in development." No music lyrics, no voiceover.
 **Visual:** Black frame, one line at a time, hard cuts. "two fixed points" set as two small sage dots on a thin gold line. No clocks, sunrises or body imagery.
 **Guard:** no circadian or "ideal timetable" wording, and no claim that wake/sleep times arm an alarm (`routine-onboarding-marketing-plan.md:103`; `RoutineOnboardingFlow.kt:322`; `docs/decisions/0014-…md:37`).
 
@@ -98,7 +98,7 @@ Sources: `RoutineOnboardingFlow.kt:364`, `:468`; `RoutineProtectionScreen.kt:236
 
 **Hashtags:** #Shanivar #Attention #Focus #ScreenTime #AndroidApp #BuildInPublic
 **Alt text:** (1) Black slide, cream serif: "Choose what loses access to you." (2) Cream card: "You already know which apps take more than they give." (3) Three small labels in a row, Morning, Work, Night, with the question "Which one do you want back first?" (4) Cream card labelled "Honest limits": Shanivar can't block a browser, a second phone, or someone determined to get around it, and will never be called impossible to bypass. (5) Black slide: "Protection is voluntary and stoppable, never unbreakable. You set every boundary. You can stop it, inside Shanivar."
-**Visual:** Slide 3 uses three thin sage arcs, like ring segments, for Morning, Work and Night. Slide 4 is a cream paper card with a gold "HONEST LIMITS" eyebrow, made to look like a plain notice, not a warning.
+**Visual:** Slide 3 uses three thin gold outline arcs, echoing the mark's ring, for Morning, Work and Night. Slide 4 is a cream paper card with a gold "HONEST LIMITS" eyebrow, made to look like a plain notice, not a warning.
 **Guard:** no "blocks Instagram", no detox, and no claim that multiple windows work (`routine-onboarding-marketing-plan.md:113`). "Stop" means inside Shanivar, not from the blocked screen (`:123`, `:239`).
 
 ---
@@ -125,7 +125,7 @@ Sources: `RoutineOnboardingFlow.kt:368`, `:468`, `:524`; plan A4 hooks (`routine
 > In development. Phone testing is next. [RE-CHECK ON POSTING DAY]
 
 **Hashtags:** #Shanivar #TheHybridMonk #Focus #BuildInPublic #IndieApp
-**Alt text / description:** Typographic video on black. Lines: "Strict with you. Honest about itself." "A strict app can fail you two ways: pretend it's unbreakable, or pretend it's on." "Saved is not Active." "Missing access? It's built to say Needs device access, not pretend you are protected." "Phone testing hasn't happened yet. That's next." It ends on the Saturn mark.
+**Alt text / description:** Typographic video on black. Lines: "Strict with you. Honest about itself." "A strict app can fail you two ways: pretend it's unbreakable, or pretend it's on." "Saved is not Active." "Missing access? It's built to say Needs device access, not pretend you are protected." "Phone testing hasn't happened yet. That's next." It ends on the gold ringed-planet outline with SHANIVAR beneath it.
 **Visual:** Two status words, "SAVED" in muted grey and "ACTIVE" in sage, set side by side, with a thin gold "≠" between them. Typography only, no fake app screens.
 **Guard:** no claim that status reporting is accurate or tested before DEV-7 §3 (`routine-onboarding-marketing-plan.md:123`).
 
@@ -183,7 +183,7 @@ Sources: plan hook (`routine-onboarding-marketing-plan.md:38`, `:91`); bio line 
 
 **Hashtags:** #Shanivar #TheHybridMonk #DailyRoutine #Attention #BuildInPublic
 **Alt text / description:** Handheld footage of an ordinary desk: a phone face down, morning light through a window, a hand writing two times in a notebook. Text over the footage: "If the last few months have felt off… maybe it isn't motivation. Maybe everyone else got your structure. This isn't a verdict. It's an invitation. Take the day back."
-**Visual:** Real, lived-in footage graded slightly towards black and cream, with text in serif cream on a dark lower third. The end card is the Saturn mark on `#0b0d0b`. No phone screen visible.
+**Visual:** Real, lived-in footage graded slightly towards black and cream, with text in serif cream on a dark lower third. The end card is the gold outline Saturn mark with the SHANIVAR wordmark on `#0b0d0b`. No phone screen visible.
 **Guard:** an invitation, never "you've wasted your life" (`routine-onboarding-marketing-plan.md:38`). No transformation promise (`SHANIVAR_STANCE.md:267`). If AI footage or a presenter replaces the founder footage, disclose it (`social-presence-from-scratch.md:167`).
 
 ---
@@ -216,7 +216,7 @@ Status evidence (6 Oct 2026):
 
 **Hashtags:** #Shanivar #BuildInPublic #IndieApp #AndroidApp #TheHybridMonk
 **Alt text:** Five slides styled like a dated log. (1) "Build log, [date]: Where Shanivar actually is today." (2) Written: Routine, a day plan with wake and sleep anchors, an optional wake alarm and app protection windows. (3) Switched off: the new Routine isn't turned on in any build people use yet. (4) Next: the founder's test on a real phone, which hasn't happened yet. (5) Not decided: a release date. Not available: download, Play Store, iPhone.
-**Visual:** Cream-paper "log sheet" slides on a black border, monospace-style dates, status words in gold (Written / Switched off / Next / Not decided), and a small Saturn mark on the cover.
+**Visual:** Cream-paper "log sheet" slides on a black border, monospace-style dates, status words in gold (Written / Switched off / Next / Not decided), and a small gold outline Saturn mark on the cover.
 
 ---
 
@@ -241,8 +241,8 @@ Sources: `RoutineOnboardingFlow.kt:282`, `:287`; plan A6 hook (`routine-onboardi
 > In development.
 
 **Hashtags:** #Shanivar #Attention #SelfAwareness #TheHybridMonk #BuildInPublic
-**Alt text / description:** Typographic video on black. Lines: "Shanivar is not here to keep you busy. It is here to make what matters harder to ignore. Do the work. Need fewer prompts. The goal is an app you need less." It ends with "Notice the mind. Don't control it." beside a ringed planet mark.
-**Visual:** Slow, still typography with long holds. The Saturn mark drifts very slowly, never pulsing (no breath-pacer look).
+**Alt text / description:** Typographic video on black. Lines: "Shanivar is not here to keep you busy. It is here to make what matters harder to ignore. Do the work. Need fewer prompts. The goal is an app you need less." It ends with "Notice the mind. Don't control it." beside a thin gold ringed-planet outline with SHANIVAR beneath it.
+**Visual:** Slow, still typography with long holds. The gold outline mark drifts very slowly, never pulsing (no breath-pacer look).
 **Guard:** no Sadhana levels or progression, and no claim that Steady is public (`routine-onboarding-marketing-plan.md:143`). No lasting-change claim (ST-008, `SHANIVAR_STANCE.md:267`). Caption copy adapted from `website/index.html:216`.
 
 ---
@@ -296,6 +296,7 @@ Sources: `RoutineOnboardingFlow.kt:377`, `:354`; plan A5 hook 2 (`routine-onboar
 9. **No streaks or gamification** in any post, per `docs/decisions/0009-behavioral-return-loop.md:15`, `:17`, ST-005 (`SHANIVAR_STANCE.md:167`), `0014-…md:71` and `wish-list.md` F1. 0013 is still PROPOSED (`0013-…md:4`). Recent commits `a74aa3f` and `12fbecd` add a dated "Last practised" record to Steady. That is factual history, not a streak, and it isn't marketed here.
 10. **Breathing pillar.** 0011 put "Breathe & reset" on the native Home (`0011-…md:16`). 0014 supersedes that context: Steady sits inside Sadhana and is the only Sadhana content (`0014-…md:18`). Only post 7 mentions Steady, optionally, as internal-only. None of the 9 claim meditation, nervous-system or clinical effects (`research/deep-foundation/PRACTICE_SAFETY.md:51`).
 11. **Saturn motif in Reels** must not animate like a breathing pacer (`website/index.html:66`; `style.css:79`).
+12. **Mark source (open).** These drafts follow the live profile mark: a thin gold ringed-planet outline with SHANIVAR beneath it. No repo file reproduces that full lock-up. The closest asset is the Android launcher icon (`ic_launcher_foreground.xml:2-5`, which has no wordmark), and the website `favicon.svg` is a different, sage-sphere mark. Export the live picture, or add a matching source file, before rendering.
 
 ---
 
@@ -304,7 +305,7 @@ Sources: `RoutineOnboardingFlow.kt:377`, `:354`; plan A5 hook 2 (`routine-onboar
 - **Grid and pinning (from the plan):** publish 1→9 in order and pin 1, 3 and 7 (`social-presence-from-scratch.md:116-126`, `:182`). *Suggestion:* pin 7 first, then 3, then 1, so the manifesto lands in the first slot (the most recent pin usually shows first; check in the app). Design every cover to read inside the 3:4 grid crop (`:128`).
 - **Clean the grid first (plan):** export and audit existing posts, including BASE-01, and archive rather than delete anything off-strategy before post 1, so legacy posts don't sit among the first nine (`social-presence-from-scratch.md:102-108`). Archiving is a founder action.
 - **Cadence (plan):** 3 feed posts a week (2 Reels + 1 carousel) once rendering works. The floor is 2 carousels a week (`social-presence-from-scratch.md:146`; `marketing-operating-system.md:32`). That makes these 9 roughly a 3-week run. The slot is 19:30 IST = 16:00 CEST, which becomes 15:00 CET from 26 Oct. This is a planning convention, not a measured optimum (`routine-onboarding-marketing-plan.md:209`). *Suggestion:* if Reels can't be rendered, post the carousel fallbacks and keep the order.
-- **Highlights (plan):** Why · Routine · Protection · Honest · Build log · FAQ, with sage or gold icons on black covers. Seed Why, Honest and Build log first (`social-presence-from-scratch.md:89-98`, `:180`). Posts 1, 3/4 and 7 feed those three.
-- **Profile category (plan):** "App page" or "Software". No email or phone buttons until there's a monitored inbox. Profile image is the Saturn mark on `#0b0d0b`, with no Lord Shani imagery (`social-presence-from-scratch.md:63`, `:87`).
+- **Highlights (plan):** Why · Routine · Protection · Honest · Build log · FAQ, with thin gold outline icons on black covers, in the line style of the live mark (the plan allows sage or gold). Seed Why, Honest and Build log first (`social-presence-from-scratch.md:89-98`, `:180`). Posts 1, 3/4 and 7 feed those three.
+- **Profile category (plan):** "App page" or "Software". No email or phone buttons until there's a monitored inbox. Profile image is already live: the thin gold ringed-planet outline with SHANIVAR beneath it, on black, with no Lord Shani imagery (`social-presence-from-scratch.md:63`, `:87`; the plan doesn't specify which mark, so the live picture is the reference).
 - **Bio link (plan):** add it only after shanivar.com serves the site and a test sign-up shows up in Netlify Forms. Use one link with no link-tree: `https://shanivar.com/?utm_source=instagram&utm_medium=bio&utm_campaign=m0_waitlist` (`social-presence-from-scratch.md:83`, `:179`). Until then, captions mention no link at all.
 - **Accessibility and community (plan + suggestion):** write custom alt text on every image and burn captions into Reels. No "comment YES" bait, auto-DMs or giveaways (`social-presence-from-scratch.md:157`). *Suggestion:* try Trial Reels for hook tests once the account qualifies. Eligibility is unknown (`:149`).

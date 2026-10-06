@@ -7,6 +7,7 @@ This repository is led by **Codex**. The founder has replaced the former Claude 
 - Founder: product direction, acceptance of important intellectual stance changes, spending, public release and consequential external actions.
 - Codex: lead integrator, task decomposition, product/technical coherence, final repository review and conflict resolution.
 - `app.shanivar` Grok Bot: bounded research, creative exploration, adversarial review and implementation tasks assigned through `ai_org/collaboration/tasks/`.
+- `Darpan` Grok Bot: separate chat agent, Instagram keeper for `@app.shanivar` (profile, account readiness, posting-day status checks); prepares and checks, never acts on the live account without the founder's approval for that specific action. Role file: `ai_org/agents/instagram_keeper.md`.
 - Specialist role files under `ai_org/agents/`: reusable working instructions. A role file is not proof of a running worker.
 
 Read `SHANIVAR_STANCE.md`, `ai_org/collaboration/README.md`, and the assigned task before work. For research work also read `research/deep-foundation/KNOWLEDGE_GOVERNANCE.md`. For marketing work read `marketing/shanivar/marketing-operating-system.md`.
