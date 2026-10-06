@@ -1,6 +1,6 @@
 # Shanivar pre-launch website (draft, local, not deployed)
 
-Status on 6 October 2026: **local draft only.** Nothing here is deployed, pushed or published. No form backend is connected and no third-party script, font or CDN is used.
+Status on 6 October 2026: **founder approved go-live.** Hosted on Netlify (free tier), with the waitlist collected by Netlify Forms. A visible notice beside the form says the privacy notice is a draft pending legal review. No third-party script, font or CDN is used.
 
 Domain: **https://shanivar.com** is the canonical domain. The founder owns it, registered through Hostinger (RDAP: registrar Hostinger, registered 2025-10-04, currently on parking nameservers). It is used in canonical, Open Graph, `robots.txt` and `sitemap.xml`.
 
@@ -23,7 +23,8 @@ Plain HTML and CSS, one small vanilla script (`site.js`), no build step. `404.ht
 | `privacy.html` | **DRAFT** privacy placeholder, clearly marked, pending legal review |
 | `404.html` | Not-found page ("Attention moved. Return."), `noindex` |
 | `style.css` | Visual system adapted from the V3 wireframe |
-| `site.js` | Stops the unconnected form from submitting; copies UTM tags into the hidden `source` field and onto internal links. No network, cookies or storage |
+| `site.js` | Copies UTM tags into the hidden `source` field and onto internal links. The form submits natively to Netlify Forms |
+| `thanks.html` | Shown after a waitlist sign-up (noindex) |
 | `favicon.svg` | Saturn motif |
 | `og-image.png` | 1200×630 Open Graph image, generated locally with PIL (no remote image) |
 | `robots.txt`, `sitemap.xml` | For https://shanivar.com |
@@ -79,7 +80,9 @@ social posts / link in bio  ->  shanivar.com (this site)  ->  waitlist form
 
 Pattern: lowercase `utm_source` = platform, `utm_medium` = placement, `utm_campaign` = `m<milestone>_<goal>`.
 
-### Form backend: founder decision
+### Form backend: Netlify Forms (chosen 6 Oct 2026)
+
+The founder approved go-live. The form uses `data-netlify="true"`, a `bot-field` honeypot and real `name` attributes, and redirects to `thanks.html`. The original options are kept below for the record.
 
 A static host serves files only, so it **cannot collect sign-ups by itself**. The form is static markup with a visible "TODO: form not connected" flag. Its inputs have `data-field` attributes but no `name` attributes, so nothing can be submitted. Options for the founder to choose (nothing has been set up or signed up for):
 

@@ -257,36 +257,30 @@
             <li>Early builds can have bugs. Do not rely on them for anything critical.</li>
           </ul>
         </div>
-        <!--
-          TODO(form-backend): This form is static markup only. It is NOT connected to any backend,
-          email service or third-party script. Inputs deliberately have no "name" attributes, so
-          nothing can be submitted. site.js shows a "preview only" message on submit.
-          Before connecting: founder approval, chosen provider, consent text and privacy policy
-          reviewed by a legal professional. See README.md.
-        -->
-        <form class="signup" id="early-access-form" action="#early-access" method="get" aria-describedby="form-todo">
-          <p class="todo-flag" id="form-todo">TODO: form not connected. Preview only. Nothing you type is sent or stored.</p>
-          <!-- Funnel attribution. site.js copies utm_source / utm_medium / utm_campaign from the page URL
-               into this field (e.g. "instagram / bio / m0_waitlist"), locally only.
-               TODO(form-backend): rename data-field to a real name="source" when a backend is connected. -->
-          <input type="hidden" id="ea-source" data-field="source" value="direct">
+        <!-- Waitlist form, collected by Netlify Forms (free tier). Approved by the founder for launch on 6 Oct 2026.
+             The privacy notice is still a draft pending legal review, which the notice below says plainly. -->
+        <form class="signup" id="early-access-form" name="early-access" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="early-access">
+          <p hidden><label>Leave this empty: <input name="bot-field"></label></p>
+          <!-- Funnel attribution: site.js copies utm_source / utm_medium / utm_campaign from the page URL into this field. -->
+          <input type="hidden" id="ea-source" name="source" value="direct">
           <div class="field">
             <label for="ea-email">Email address</label>
-            <input id="ea-email" data-field="email" type="email" autocomplete="email" required aria-describedby="ea-email-hint">
+            <input id="ea-email" name="email" type="email" autocomplete="email" required aria-describedby="ea-email-hint">
             <span class="hint" id="ea-email-hint">Used only to invite you to early testing.</span>
           </div>
           <div class="field">
             <label for="ea-phone">Android phone model <span style="font-weight:400">(optional)</span></label>
-            <input id="ea-phone" data-field="phone_model" type="text" autocomplete="off" aria-describedby="ea-phone-hint">
+            <input id="ea-phone" name="phone_model" type="text" autocomplete="off" aria-describedby="ea-phone-hint">
             <span class="hint" id="ea-phone-hint">For example: Samsung Galaxy A54. Alarms and app protection behave differently across phone makers.</span>
           </div>
           <div class="check">
-            <input id="ea-adult" data-field="adult_confirmed" type="checkbox" required>
+            <input id="ea-adult" name="adult_confirmed" value="yes" type="checkbox" required>
             <label for="ea-adult">I am 18 or older and I understand Shanivar is unreleased test software.</label>
           </div>
           <button class="btn btn-primary" type="submit">Join the early-access list</button>
           <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-          <p class="hint" style="font-size:.88rem;color:var(--muted)">See the <a href="privacy.html">draft privacy notice</a>.</p>
+          <p class="hint draft-notice" style="font-size:.88rem;color:var(--muted)"><strong>Draft privacy notice:</strong> our <a href="privacy.html">privacy notice</a> is a draft pending legal review. We use your email only to invite you to early testing, never sell it, and will delete it if you reply to any invite and ask.</p>
         </form>
       </div>
     </section>

@@ -1,9 +1,7 @@
 /*
-  The only script on this site. No network requests, no cookies, no storage, no third parties.
+  The only script on this site. No network requests from this script, no cookies, no storage, no third-party scripts.
 
-  1. Early-access form: no backend is connected yet (see README.md, open TODOs), so submit is
-     stopped and a "preview only" message is shown.
-     TODO(form-backend): replace this handler once the founder approves a backend.
+  1. Early-access form: submitted natively to Netlify Forms (no script needed).
   2. Funnel attribution: copies utm_source / utm_medium / utm_campaign from the page URL into the
      hidden "source" field, and carries those UTM parameters onto internal links so a visitor who
      lands on about.html?utm_... keeps the tag when they reach the form. Nothing leaves the browser.
@@ -35,15 +33,4 @@
     source.value = keys.map(function (k) { return utm.get(k) || '-'; }).join(' / ');
   }
 
-  var form = document.getElementById('early-access-form');
-  if (!form) return;
-  var status = document.getElementById('form-status');
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
-    status.textContent = 'Preview only. This form is not connected yet, so nothing was sent or saved.';
-  });
 })();
