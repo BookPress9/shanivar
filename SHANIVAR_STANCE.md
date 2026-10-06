@@ -269,3 +269,42 @@ Those instructions supersede the authority claim and six-level ranking in [the h
 **Founder decision:** Pending.
 
 **Date accepted:** Not accepted.
+
+## ST-009 — Six founder principles
+
+**Topic:** The principles that run both The Hybrid Monk project and Shanivar, and tie them together.
+
+**Status:** PROPOSED — founder-reviewed principles, 6 October 2026. The wording is the founder's own. Acceptance of this exact entry/version is still to be recorded.
+
+**Traditional source:** None claimed. These are the founder's own principles.
+
+**Tradition:** Not attributed to any tradition.
+
+**Primary text:** None claimed.
+
+**Commentary:** None added.
+
+**Modern scholarship:** Not applicable.
+
+**What the sources actually say:** Shubham's six principles, in his words and in his order:
+
+1. Discipline
+2. Keep moving forward
+3. Learning
+4. Curiosity
+5. Be more present, be more in your body
+6. Walk towards your purpose
+
+**Areas of disagreement:** None recorded in this entry.
+
+**Shanivar interpretation:** None added. The principles stand in his wording.
+
+**Product implication:** None stated here. Accepted decisions and the entries above are unchanged by this entry.
+
+**Practice implication:** None stated here.
+
+**Claim limitations:** These are founder principles, not empirical or metaphysical findings.
+
+**Founder decision:** Given by the founder on 2026-10-06. Wording kept verbatim.
+
+**Date accepted:** Not accepted. Becomes ACCEPTED when the founder accepts this exact entry and the date is recorded here.
