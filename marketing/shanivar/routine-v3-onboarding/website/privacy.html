@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Privacy notice (draft) · Shanivar</title>
+  <meta name="description" content="Draft privacy notice for the Shanivar website and Android app in development. Pending legal review.">
+  <link rel="canonical" href="https://shanivar.com/privacy.html">
+  <meta name="theme-color" content="#0b0d0b">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Shanivar">
+  <meta property="og:title" content="Privacy notice (draft) · Shanivar">
+  <meta property="og:description" content="Draft privacy notice for the Shanivar website and Android app in development. Pending legal review.">
+  <meta property="og:url" content="https://shanivar.com/privacy.html">
+  <meta property="og:image" content="https://shanivar.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Shanivar. Build the day you intend to live. Android app in development.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="style.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="status-ribbon" role="note">
+    <div class="wrap"><p><strong>Pre-launch.</strong> Shanivar is in development for Android. It is not released and not in the Play Store yet.</p></div>
+  </div>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Shanivar by The Hybrid Monk, home">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="14" fill="#5d6a55"/><ellipse cx="32" cy="32" rx="26" ry="7.5" fill="none" stroke="#c9aa73" stroke-width="3" transform="rotate(-15 32 32)"/><circle cx="14" cy="15" r="3" fill="#d8e5b7"/></svg>
+        <span>SHANIVAR<small>BY THE HYBRID MONK</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html#routine">Routine</a></li>
+          <li><a href="index.html#sadhana">Sadhana</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a class="nav-cta" href="index.html#early-access">Join the list</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="section paper" aria-labelledby="privacy-title">
+      <div class="wrap prose">
+        <div class="draft-banner" role="note">
+          <strong>DRAFT. Not a privacy policy yet.</strong>
+          This placeholder describes how the app in development is designed to handle data, based on the current project files. It has not been reviewed by a lawyer and must not be published as a final policy. TODO(legal): full legal review before any launch, early-test signup or data collection.
+        </div>
+        <p class="eyebrow">Privacy</p>
+        <h1 id="privacy-title" style="font-size:clamp(2rem,6vw,3.2rem);margin:.7rem 0 1rem;color:var(--paper-ink)">Privacy notice (draft)</h1>
+        <p>Last edited 6 October 2026. Applies to this website and to the Shanivar Android app in development.</p>
+
+        <h2>This website</h2>
+        <ul>
+          <li>No cookies, no analytics, no advertising and no third-party scripts or fonts.</li>
+          <li>The early-access form is not connected to anything yet. Nothing you type into it is sent or stored. TODO(form-backend): describe the provider, what is stored, for how long and how to delete it, once chosen.</li>
+          <li>If you arrive through a link with a campaign tag (for example <code>?utm_source=instagram</code>), the page reads it in your browser only, to note where a sign-up came from. Nothing is sent today. TODO(legal): once the form is connected, this tag may be stored with your sign-up; disclose it.</li>
+          <li>The web host, once one is chosen, may keep standard server logs. TODO(hosting): document this.</li>
+        </ul>
+
+        <h2>The app: designed to be local-first</h2>
+        <ul>
+          <li><strong>Your Routine plan stays on your phone.</strong> Wake and sleep times, activities, selected apps and protection windows are stored locally on the device.</li>
+          <li><strong>Device boundaries do not depend on a server.</strong> The phone is the authority for when an alarm or protection window runs, and Stop protection works locally.</li>
+          <li><strong>No cloud backup of app data.</strong> The app is set to opt out of Android's automatic backup.</li>
+          <li><strong>Steady keeps practice data local.</strong> The breathing practice makes no network calls, and a feeling you choose is not stored.</li>
+          <li><strong>No analytics or push messaging in the app today.</strong> Anything added later, such as crash reporting, must be described here before release. TODO(legal): confirm against the release build.</li>
+        </ul>
+
+        <h2>Device access the app asks for</h2>
+        <ul>
+          <li><strong>Alarms &amp; reminders</strong>: to schedule the wake alarm and protection boundaries exactly.</li>
+          <li><strong>Usage access</strong>: to notice when a selected app is open so protection can respond.</li>
+          <li><strong>Display over other apps</strong>: to show the protection screen.</li>
+          <li><strong>Notifications</strong>: so the wake screen can appear.</li>
+        </ul>
+        <p>These are optional until you want the alarm or protection to work. Declining never deletes your saved plan. TODO(legal): list every Android permission in the release build, including those used by the wake alarm, with its purpose.</p>
+
+        <h2>Accounts</h2>
+        <p>Some app features can use a Shanivar account on a server, which can include preferences, alarm and protection schedules. TODO(legal): document exactly what is sent, where it is stored, retention and deletion before any release that includes accounts.</p>
+
+        <h2>Contact</h2>
+        <p>TODO(founder): add a contact address for privacy questions.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy (draft)</a></li>
+        <li><a href="index.html#early-access">Early access</a></li>
+      </ul>
+      <p>Shanivar by The Hybrid Monk. Pre-launch draft. Android app in development, not yet released.</p>
+    </div>
+  </footer>
+</body>
+</html>
