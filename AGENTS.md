@@ -11,6 +11,14 @@ This repository is led by **Codex**. The founder has replaced the former Claude 
 
 Read `SHANIVAR_STANCE.md`, `ai_org/collaboration/README.md`, and the assigned task before work. For research work also read `research/deep-foundation/KNOWLEDGE_GOVERNANCE.md`. For marketing work read `marketing/shanivar/marketing-operating-system.md`.
 
+## Build principle — read what exists before answering
+
+Added by founder instruction, 6 October 2026.
+
+Before answering any question about what exists in Shanivar, or giving a design or implementation answer, read the relevant project files first. Start with `ai_org/agents/`, then the decisions in `docs/decisions/`, the handoffs and test guides in `android-app/`, and any file the question touches. Do not answer from memory or a chat summary. Improve what is already built instead of designing from scratch, and say which files the answer rests on.
+
+Why: on 5 October 2026, Sadhana answers were given from memory. Steady already defines Sadhana's practice structure (the 8-practice catalogue and player in decision 0011, the progression rules in decision 0013, the VBT breathing handoff). So Ujjayi was framed as something new, and a timed breath "recipe" was proposed that the existing content check deliberately refuses. Ujjayi should have been slotted into the existing catalogue process. The work of the past weeks is meant to be used, not lost.
+
 ## Collaboration protocol
 
 1. Codex creates one task file with an ID, owner, bounded files, inputs, deliverables and acceptance checks.
