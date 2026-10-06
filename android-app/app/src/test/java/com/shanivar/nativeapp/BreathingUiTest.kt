@@ -101,7 +101,7 @@ class BreathingUiTest {
     @Test fun b2_eachPracticeShowsOnlyAQuietDateOfWhenItWasLastPractised() {
         val yesterday = BreathingSessionOwner.wallClock().minusDays(1).toInstant().toEpochMilli()
         BreathingPreferences(context).append(
-            BreathingRecord("s0", "external_grounding", "v1", 1, BreathingEntry.HOME, 60, 60, BreathingPhase.ENDED_TIMER,
+            BreathingRecord("s0", "external_grounding", "v1", 1, BreathingEntry.HOME, 180, 180, BreathingPhase.ENDED_TIMER,
                 practisedAtEpochMillis = yesterday)
         )
         openHost()

@@ -194,13 +194,27 @@ fun trimBreathingJournal(records: List<BreathingRecord>): List<BreathingRecord> 
 
 const val MAX_BREATHING_RECORDS = 100
 
+/** Founder decision, 6 Oct 2026: the least practised time (pauses excluded) for a session to count. */
+const val MIN_PRACTISED_SECONDS = 90
+
+/**
+ * Whether this row counts as having practised. [BreathingRecord.activeSeconds] is practice time from
+ * the monotonic clock with pauses excluded (0013: practice minutes, never session minutes). Every row
+ * stays in the journal as a factual attempt (0009); this only decides what "Last practised" may say.
+ * An interrupted session never counts, however long it ran.
+ */
+val BreathingRecord.countsAsPractised: Boolean
+    get() = (outcome == BreathingPhase.ENDED_TIMER || outcome == BreathingPhase.ENDED_USER) &&
+        activeSeconds >= MIN_PRACTISED_SECONDS
+
 /**
  * The local date each practice was last sat with, from the bounded journal (B2). A fact about the
- * newest dated row per practice and nothing more: no counts, no runs of days, no totals. Undated
- * legacy rows simply contribute nothing.
+ * newest dated row per practice that [countsAsPractised] and nothing more: no counts, no runs of days,
+ * no totals. Undated legacy rows simply contribute nothing.
  */
 fun lastPractisedDates(records: List<BreathingRecord>, zone: ZoneId): Map<String, LocalDate> =
-    records.mapNotNull { record -> record.practisedAtEpochMillis?.let { record.practiceId to it } }
+    records.filter { it.countsAsPractised }
+        .mapNotNull { record -> record.practisedAtEpochMillis?.let { record.practiceId to it } }
         .groupBy({ it.first }, { it.second })
         .mapValues { (_, instants) -> Instant.ofEpochMilli(instants.max()).atZone(zone).toLocalDate() }
 
