@@ -346,6 +346,7 @@ private fun HomeScreen(
             },
             navigationEnabled = !operationBusy,
             initialDestination = if (openBreathing) RoutineDestination.SADHANA else RoutineDestination.ROUTINE,
+            initialSadhanaEntry = if (openBreathing) BreathingEntry.AFTER_ALARM else BreathingEntry.HOME,
         )
         return
     }

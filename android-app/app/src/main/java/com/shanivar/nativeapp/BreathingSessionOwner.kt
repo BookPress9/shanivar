@@ -8,6 +8,30 @@ import androidx.compose.runtime.setValue
 import java.time.ZonedDateTime
 import java.util.UUID
 
+/**
+ * Founder decision, 6 Oct 2026 (Sadhana proposal, 60 vs 90, option A): a practice opened from the
+ * Sadhana tab defaults to 3 minutes, so a default session that runs to the end clears
+ * [MIN_PRACTISED_SECONDS]. Every catalogue practice offers 180 s.
+ */
+const val SADHANA_DEFAULT_SECONDS = 180
+
+/**
+ * The short host entries - after the alarm, before focus, from a blocked app - stay one-minute pauses.
+ * They are journalled like any other attempt, but at 60 s they never show as "Last practised", and
+ * that is intended: a pause is not a practice.
+ */
+const val PAUSE_DEFAULT_SECONDS = 60
+
+/** The length preselected when a host opens the player. Exhaustive on purpose: a new entry point has
+ * to decide whether it is a practice or a pause. */
+fun defaultBudgetSeconds(entry: BreathingEntry): Int = when (entry) {
+    BreathingEntry.HOME -> SADHANA_DEFAULT_SECONDS
+    BreathingEntry.BEFORE_FOCUS,
+    BreathingEntry.BLOCK_OVERLAY,
+    BreathingEntry.AFTER_ALARM,
+    BreathingEntry.PREVIEW -> PAUSE_DEFAULT_SECONDS
+}
+
 /** Everything the person answered this visit. Ephemeral by design - never written to storage. */
 data class BreathingDraft(
     val feeling: BreathingFeeling? = null,
@@ -15,7 +39,10 @@ data class BreathingDraft(
     val sleepIntent: Boolean = false,
     val sleepyNow: Boolean = false,
     val breathComfort: Boolean? = null,
-    val budgetSeconds: Int? = 60,
+    val budgetSeconds: Int? = SADHANA_DEFAULT_SECONDS,
+    /** True once the person picked a length this visit. Their choice then wins over the entry default
+     * (a rotation or re-entry into the same host must not reset it). Ephemeral like the rest. */
+    val budgetChosen: Boolean = false,
     val safeSettingConfirmed: Boolean = false,
     val feltWorseIds: Set<String> = emptySet(),
 )
@@ -72,7 +99,13 @@ object BreathingSessionOwner {
     private val tone = BreathingTonePlayer()
 
     fun load(context: Context, entryContext: BreathingEntry) {
+        // The entry decides the preselected length: 3 min from Sadhana, a 1-minute pause from a host.
+        // A length the person chose this visit is kept, unless a different host has opened the player.
+        val entryChanged = entryContext != entry
         entry = entryContext
+        if (entryChanged || !draft.budgetChosen) {
+            draft = draft.copy(budgetSeconds = defaultBudgetSeconds(entryContext), budgetChosen = false)
+        }
         if (catalogue == null && contentProblems.isEmpty()) {
             when (val result = BreathingCatalog.load(context)) {
                 is BreathingCatalogResult.Valid -> catalogue = result.catalogue

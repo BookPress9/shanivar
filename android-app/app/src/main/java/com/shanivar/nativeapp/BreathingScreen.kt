@@ -160,7 +160,7 @@ private fun PracticeSelection(
         listOf(60 to "1 min", 180 to "3 min", 300 to "5 min").forEach { (seconds, label) ->
             FilterChip(
                 selected = draft.budgetSeconds == seconds,
-                onClick = { owner.draft = draft.copy(budgetSeconds = seconds) },
+                onClick = { owner.draft = draft.copy(budgetSeconds = seconds, budgetChosen = true) },
                 label = { Text(label) },
             )
         }

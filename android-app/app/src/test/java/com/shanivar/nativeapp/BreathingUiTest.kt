@@ -78,6 +78,8 @@ class BreathingUiTest {
         compose.onAllNodesWithText("Start").onFirst().performScrollTo().performClick()
         compose.waitForIdle()
         assertEquals(BreathingPhase.RUNNING, BreathingSessionOwner.session?.phase)
+        // Opened from Sadhana: the 3-minute default (founder, 6 Oct 2026).
+        assertEquals(SADHANA_DEFAULT_SECONDS, BreathingSessionOwner.session?.durationSeconds)
 
         clock = 20_000
         compose.onNodeWithText("Pause").performScrollTo().performClick()
@@ -85,7 +87,7 @@ class BreathingUiTest {
         clock = 60_000
         compose.onNodeWithText("Resume").performScrollTo().performClick()
         // Resuming continues the remaining time; it does not restart the practice.
-        assertEquals(40_000L, BreathingSessionOwner.session?.remainingMillis(60_000))
+        assertEquals(160_000L, BreathingSessionOwner.session?.remainingMillis(60_000))
 
         compose.onNodeWithText("End").performScrollTo().performClick()
         compose.waitForIdle()
@@ -182,6 +184,47 @@ class BreathingUiTest {
         assertEquals(BreathingFeedback.FELT_WORSE, BreathingPreferences(context).journal().single().feedback)
         val stored = context.getSharedPreferences(BreathingPreferences.NAMESPACE, 0).all.toString()
         listOf("scattered", "tense", "agitated", "feeling").forEach { assertFalse(it in stored) }
+    }
+
+    @Test fun theSadhanaTabPreselectsThreeMinutesAndStillOffersOneThreeAndFive() {
+        openHost(BreathingEntry.HOME)
+        confirmSafeSetting()
+        compose.waitForIdle()
+        assertEquals(180, BreathingSessionOwner.draft.budgetSeconds)
+        // The chips stay 1 / 3 / 5; the practice cards show the length they will run at, now 3 min.
+        listOf("1 min", "3 min", "5 min").forEach { compose.onAllNodesWithText(it).onFirst().assertExists() }
+        assertTrue(compose.onAllNodesWithText("3 min").fetchSemanticsNodes().size >= 2)
+        compose.onAllNodesWithText("1 min").assertCountEquals(1)
+    }
+
+    @Test fun aLengthThePersonChoseWinsOverTheDefaultAndSurvivesReEntry() {
+        openHost(BreathingEntry.HOME)
+        confirmSafeSetting()
+        compose.onAllNodesWithText("1 min").onFirst().performScrollTo().performClick()
+        compose.waitForIdle()
+        // What a rotation or returning to the same host does.
+        BreathingSessionOwner.load(context, BreathingEntry.HOME)
+        assertEquals(60, BreathingSessionOwner.draft.budgetSeconds)
+        compose.onAllNodesWithText("Start").onFirst().performScrollTo().performClick()
+        compose.waitForIdle()
+        assertEquals(60, BreathingSessionOwner.session?.durationSeconds)
+    }
+
+    @Test fun theBlockedAppHostStaysAOneMinutePauseThatIsSavedButNotLastPractised() {
+        openHost(BreathingEntry.BLOCK_OVERLAY)
+        confirmSafeSetting()
+        compose.onAllNodesWithText("Start").onFirst().performScrollTo().performClick()
+        compose.waitForIdle()
+        assertEquals(PAUSE_DEFAULT_SECONDS, BreathingSessionOwner.session?.durationSeconds)
+        clock = 60_000
+        compose.runOnIdle { BreathingSessionOwner.tick(context) }
+        compose.waitForIdle()
+        val row = BreathingPreferences(context).journal().single()
+        assertEquals(BreathingPhase.ENDED_TIMER, row.outcome)
+        assertEquals(BreathingEntry.BLOCK_OVERLAY, row.entryContext)
+        assertEquals(60, row.activeSeconds)
+        assertFalse(row.countsAsPractised)
+        compose.onAllNodesWithText("Last practised", substring = true).assertCountEquals(0)
     }
 
     /**

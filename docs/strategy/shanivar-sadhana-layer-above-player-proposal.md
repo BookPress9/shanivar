@@ -40,6 +40,8 @@
 | B | Lower the rule to 60 s | Simple, but reverses the founder's 6 Oct decision |
 | C | A timer-completed session counts at any length; an ended-by-user session counts from 90 s | Two rules to explain, and it blurs what "practised" means |
 
+**Founder choice, 2026-10-06 (D):** option A: keep `MIN_PRACTISED_SECONDS = 90`, default to 3 min (180 s) when Sadhana is opened from its tab, and keep the alarm, pre-focus and block-screen entries as 1-minute pauses that do not count as "Last practised".
+
 ---
 
 ## 2. Sequencing: the sitting (P, built on D)

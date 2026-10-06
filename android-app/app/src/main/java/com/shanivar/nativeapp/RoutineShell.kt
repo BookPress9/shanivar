@@ -46,8 +46,12 @@ fun RoutineShell(
     settings: @Composable () -> Unit,
     navigationEnabled: Boolean = true,
     initialDestination: RoutineDestination = RoutineDestination.ROUTINE,
+    /** AFTER_ALARM when the alarm's "Take a quiet minute" opened Sadhana, so that visit stays a
+     * one-minute pause. Choosing a tab afterwards is an ordinary Sadhana visit (HOME, 3 min). */
+    initialSadhanaEntry: BreathingEntry = BreathingEntry.HOME,
 ) {
     var tab by rememberSaveable { mutableStateOf(initialDestination.name) }
+    var sadhanaEntry by rememberSaveable { mutableStateOf(initialSadhanaEntry.name) }
     var settingsOpen by rememberSaveable { mutableStateOf(false) }
     val current = runCatching { RoutineDestination.valueOf(tab) }.getOrDefault(RoutineDestination.ROUTINE)
 
@@ -66,6 +70,7 @@ fun RoutineShell(
                             if (navigationEnabled) {
                                 settingsOpen = false
                                 tab = destination.name
+                                sadhanaEntry = BreathingEntry.HOME.name
                             }
                         },
                         enabled = navigationEnabled,
@@ -101,7 +106,9 @@ fun RoutineShell(
                     when (screen) {
                         "settings" -> settings()
                         RoutineDestination.ROUTINE.name -> routine()
-                        RoutineDestination.SADHANA.name -> sadhana(BreathingEntry.HOME) {}
+                        RoutineDestination.SADHANA.name -> sadhana(
+                            runCatching { BreathingEntry.valueOf(sadhanaEntry) }.getOrDefault(BreathingEntry.HOME),
+                        ) {}
                     }
                 }
             }

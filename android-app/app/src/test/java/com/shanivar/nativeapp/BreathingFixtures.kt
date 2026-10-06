@@ -65,14 +65,15 @@ object BreathingFixtures {
         ),
     )
 
-    val naturalAnchor = practice("natural_anchor", BreathingKind.BREATH_AWARENESS, listOf(60, 180, 300), 60, breathComfort = true)
-    val breathTurn = practice("breath_turn", BreathingKind.BREATH_AWARENESS, listOf(60, 180, 300), 60, breathComfort = true, priorComfort = true)
-    val humListen = practice("hum_listen", BreathingKind.BREATH_SOUND, listOf(60, 180), 60, breathComfort = true, soundConsent = true)
-    val breathWord = practice("breath_word", BreathingKind.BREATH_AWARENESS, listOf(60, 180, 300), 60, breathComfort = true)
-    val emotionSpace = practice("emotion_space", BreathingKind.ATTENTION, listOf(60, 180), 60)
-    val soundListen = practice("sound_listen", BreathingKind.SOUND_ATTENTION, listOf(60, 180), 60, soundConsent = true, tone = "original_fading_tone")
+    // Content defaults: 180 s for every entry since the founder's 6 Oct 2026 choice (3 min from Sadhana).
+    val naturalAnchor = practice("natural_anchor", BreathingKind.BREATH_AWARENESS, listOf(60, 180, 300), 180, breathComfort = true)
+    val breathTurn = practice("breath_turn", BreathingKind.BREATH_AWARENESS, listOf(60, 180, 300), 180, breathComfort = true, priorComfort = true)
+    val humListen = practice("hum_listen", BreathingKind.BREATH_SOUND, listOf(60, 180), 180, breathComfort = true, soundConsent = true)
+    val breathWord = practice("breath_word", BreathingKind.BREATH_AWARENESS, listOf(60, 180, 300), 180, breathComfort = true)
+    val emotionSpace = practice("emotion_space", BreathingKind.ATTENTION, listOf(60, 180), 180)
+    val soundListen = practice("sound_listen", BreathingKind.SOUND_ATTENTION, listOf(60, 180), 180, soundConsent = true, tone = "original_fading_tone")
     val sleepThreshold = practice("sleep_threshold", BreathingKind.SLEEP_ATTENTION, listOf(60, 180, 300), 180, sleepIntent = true, sleepyNow = true)
-    val externalGrounding = practice("external_grounding", BreathingKind.EXTERNAL_ATTENTION, listOf(60, 180), 60, sourced = false)
+    val externalGrounding = practice("external_grounding", BreathingKind.EXTERNAL_ATTENTION, listOf(60, 180), 180, sourced = false)
 
     val catalogue = BreathingCatalogue(
         schemaVersion = 1,
