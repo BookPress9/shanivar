@@ -46,6 +46,9 @@ marketing/shanivar/month-02/assets/
 !marketing/shanivar/execution-2026-09-30/
 marketing/shanivar/execution-2026-09-30/**/*.jpg
 marketing/shanivar/execution-2026-09-30/*.zip
+# Routine V3 onboarding pack and pre-launch website (text, HTML, CSS only).
+!marketing/shanivar/routine-v3-onboarding/
+marketing/shanivar/routine-v3-onboarding/website/.netlify/
 
 # Logs
 *.log
