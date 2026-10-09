@@ -48,6 +48,7 @@ fun BreathingHost(
     // Leaving mid-practice ends the session first. Back is not a pause and not a bypass.
     BackHandler {
         if (session != null && !session.phase.terminal) owner.end(context)
+        InitiationSitting.end()
         owner.leave()
         onExit()
     }
@@ -64,6 +65,8 @@ fun BreathingHost(
                 owner.leave(); onExit()
             }
             owner.catalogue == null -> Text("Loading practices…")
+            // "Your first sitting" (InitiationSitting.kt): hard-coded Arrive -> practice -> Close.
+            InitiationSitting.step != null -> SittingHostContent(owner, InitiationSitting.step!!, protection, onExit)
             session != null && practice != null && session.phase != BreathingPhase.READY ->
                 PracticeStage(owner, practice, session, protection, onExit)
             else -> PracticeSelection(owner, protection, onExit)
@@ -100,6 +103,8 @@ private fun PracticeSelection(
     Heading("Breathe & reset")
     Text("A short practice for this moment.")
     protection?.let { ProtectionNote(it) }
+    // Phase A entry (proposal :111-114). Sadhana visits only; never from the pause hosts.
+    if (owner.entry == BreathingEntry.HOME) FirstSittingEntryCard()
 
     if (owner.interruptedEarlier) {
         Text("A practice was interrupted earlier. Nothing was resumed; start fresh when you want to.")
@@ -275,6 +280,51 @@ private fun SourceDetail(practice: BreathingPractice) {
         color = MaterialTheme.colorScheme.onSurfaceVariant)
 }
 
+/** The first sitting's screens. The practice itself reuses [PracticeStage] unchanged, plus Skip. */
+@Composable
+private fun SittingHostContent(
+    owner: BreathingSessionOwner,
+    step: SittingStep,
+    protection: BreathingProtectionSnapshot?,
+    onExit: () -> Unit,
+) {
+    val context = LocalContext.current
+    val session = owner.session
+    val practice = owner.practice
+    val sankalp = remember(step) { SankalpStore(context).line }
+    val finish = { owner.clearSession(); owner.leave(); InitiationSitting.end(); onExit() }
+    when {
+        step == SittingStep.END -> {
+            if (session != null && practice != null && session.phase.terminal) {
+                PracticeEnded(owner, practice, session, onExit, sankalpLine = sankalp, inSitting = true)
+            } else {
+                Heading("You stopped there.")
+                Text("However that felt, it's information. Nothing to fix.")
+                sankalp?.let { SankalpEcho(it) }
+                PrimaryAction("Done", finish)
+            }
+        }
+        step == SittingStep.PRACTICE && session != null && practice != null && session.phase != BreathingPhase.READY -> {
+            if (session.phase.terminal) {
+                // The timer finished: on to the Close. End or an interruption: straight to the End screen.
+                LaunchedEffect(session.sessionId, session.phase) {
+                    InitiationSitting.goTo(SittingFlow.afterPractice(session.phase))
+                }
+            } else {
+                PracticeStage(owner, practice, session, protection, onExit)
+                SittingPracticeSkip(owner)
+            }
+        }
+        else -> InitiationSittingFrames(step, owner, onExit)
+    }
+}
+
+@Composable
+internal fun SankalpEcho(line: String) {
+    Text(InitiationSittingCopy.READY_LEAD, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Text(line, style = MaterialTheme.typography.titleMedium)
+}
+
 @Composable
 private fun PracticeStage(
     owner: BreathingSessionOwner,
@@ -347,6 +397,8 @@ private fun PracticeEnded(
     practice: BreathingPractice,
     session: BreathingSession,
     onExit: () -> Unit,
+    sankalpLine: String? = null,
+    inSitting: Boolean = false,
 ) {
     val context = LocalContext.current
     var answered by rememberSaveable(session.sessionId) { mutableStateOf(false) }
@@ -378,8 +430,12 @@ private fun PracticeEnded(
         }
     }
     if (answered) Text("Noted on this device only. We won't suggest that one again today.")
-    PrimaryAction("Done") { owner.clearSession(); owner.leave(); onExit() }
-    TextButton(onClick = { owner.clearSession() }, modifier = Modifier.fillMaxWidth()) { Text("Choose another practice") }
+    // Only inside the first sitting, word for word, no edit and no prompt (proposal :34).
+    sankalpLine?.let { SankalpEcho(it) }
+    PrimaryAction("Done") { owner.clearSession(); owner.leave(); if (inSitting) InitiationSitting.end(); onExit() }
+    if (!inSitting) {
+        TextButton(onClick = { owner.clearSession() }, modifier = Modifier.fillMaxWidth()) { Text("Choose another practice") }
+    }
 }
 
 /** Shows protection state only when the engine actually confirmed it. An unavailable status says so
