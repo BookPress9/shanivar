@@ -65,7 +65,7 @@ fun BreathingHost(
                 owner.leave(); onExit()
             }
             owner.catalogue == null -> Text("Loading practices…")
-            // "Your first sitting" (InitiationSitting.kt): hard-coded Arrive -> practice -> Close.
+            // "Your first sitting" (InitiationSitting.kt): six-step body scan.
             InitiationSitting.step != null -> SittingHostContent(owner, InitiationSitting.step!!, protection, onExit)
             session != null && practice != null && session.phase != BreathingPhase.READY ->
                 PracticeStage(owner, practice, session, protection, onExit)
@@ -304,15 +304,14 @@ private fun SittingHostContent(
                 PrimaryAction("Done", finish)
             }
         }
-        step == SittingStep.PRACTICE && session != null && practice != null && session.phase != BreathingPhase.READY -> {
+        step in SittingFlow.timedSteps && session != null -> {
             if (session.phase.terminal) {
-                // The timer finished: on to the Close. End or an interruption: straight to the End screen.
+                // The timer finished: on to Ask. End or an interruption: straight to the End screen.
                 LaunchedEffect(session.sessionId, session.phase) {
                     InitiationSitting.goTo(SittingFlow.afterPractice(session.phase))
                 }
             } else {
-                PracticeStage(owner, practice, session, protection, onExit)
-                SittingPracticeSkip(owner)
+                SittingTimedStep(owner, session, step)
             }
         }
         else -> InitiationSittingFrames(step, owner, onExit)

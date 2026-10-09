@@ -39,33 +39,58 @@ class InitiationSittingTest {
 
     // ---- pure ----
 
-    @Test fun flowIsArriveThenOnePracticeThenCloseThenEnd() {
+    @Test fun flowIsSixStepsInOrder() {
         val order = generateSequence(SittingStep.STOP) { s -> SittingFlow.next(s).takeIf { it != s } }.toList()
-        assertEquals(
-            listOf(SittingStep.STOP, SittingStep.ARRIVE, SittingStep.NOISE, SittingStep.PRACTICE,
-                SittingStep.QUESTION, SittingStep.LINE, SittingStep.END), order)
+        assertEquals(listOf(SittingStep.STOP, SittingStep.SETTLE, SittingStep.SCAN, SittingStep.STAY,
+            SittingStep.ASK, SittingStep.CLOSE), order)
     }
 
-    @Test fun afterThePracticeOnlyAFinishedTimerGoesOnToTheClose() {
-        assertEquals(SittingStep.QUESTION, SittingFlow.afterPractice(BreathingPhase.ENDED_TIMER))
+    @Test fun theClockMovesTheTimedMiddleOnAndSkipNeverMovesItBack() {
+        assertEquals(SittingStep.SETTLE, SittingFlow.stepAtElapsed(0))
+        assertEquals(SittingStep.SCAN, SittingFlow.stepAtElapsed(30))
+        assertEquals(SittingStep.STAY, SittingFlow.stepAtElapsed(120))
+        assertEquals(SittingStep.STAY, SittingFlow.shownStep(SittingStep.SETTLE, 150))
+        assertEquals(SittingStep.STAY, SittingFlow.shownStep(SittingStep.STAY, 10))
+        assertEquals(SittingStep.SCAN, SittingFlow.shownStep(SittingStep.SCAN, 10))
+    }
+
+    @Test fun afterThePracticeOnlyAFinishedTimerGoesOnToAsk() {
+        assertEquals(SittingStep.ASK, SittingFlow.afterPractice(BreathingPhase.ENDED_TIMER))
         assertEquals(SittingStep.END, SittingFlow.afterPractice(BreathingPhase.ENDED_USER))
         assertEquals(SittingStep.END, SittingFlow.afterPractice(BreathingPhase.INTERRUPTED))
     }
 
-    @Test fun everyFrameScreenCarriesAnEndAndTheCopyIsTheApprovedCopy() {
-        assertEquals("Stop for three minutes.", InitiationSittingCopy.stop.title)
+    @Test fun theShippedCopyIsTheApprovedCopyAndHasNoBannedPhrases() {
+        assertEquals("Stop.", InitiationSittingCopy.stop.title)
         assertEquals("Not now", InitiationSittingCopy.stop.endLabel)
-        assertEquals("Where do you want to reach?", InitiationSittingCopy.question.title)
+        assertEquals("Scan, top to bottom.", InitiationSittingCopy.scan.title)
+        assertTrue(InitiationSittingCopy.scan.lines.first().startsWith("Head, face, jaw, neck, shoulders, chest, stomach, hands, legs, feet"))
+        assertEquals("Where do you want to reach?", InitiationSittingCopy.ASK_TITLE)
         assertEquals(60, SankalpStore.MAX_LENGTH)
         val all = InitiationSittingCopy.allText().joinToString("\n").lowercase()
-        SittingFlow.forbiddenWords.forEach { assertFalse("forbidden: $it", all.contains(it)) }
-        assertFalse(all.contains("breathe in"))
+        (SittingFlow.forbiddenWords + SittingFlow.bannedPhrases).forEach { assertFalse("banned: $it", all.contains(it)) }
+        // The only breath word anywhere is the optional exhale line.
+        assertTrue(all.contains("on the exhale"))
+        assertFalse(all.contains("breath"))
     }
 
-    @Test fun noGuideAudioIsBundledAndTheHookDefaultsToSilence() {
+    @Test fun theScanStepDirectsNoBreathAtAll() {
+        val scan = (listOf(InitiationSittingCopy.scan.title) + InitiationSittingCopy.scan.lines).joinToString(" ").lowercase()
+        listOf("breath", "exhale", "inhale", "hold").forEach { assertFalse(it, scan.contains(it)) }
+    }
+
+    @Test fun iAllowIsOptionalAndNothingDependsOnIt() {
+        assertTrue(InitiationSittingCopy.STAY_OPTIONAL.contains("Optional"))
+        assertTrue(InitiationSittingCopy.STAY_OPTIONAL.contains("I allow"))
+        assertTrue(InitiationSittingCopy.STAY_OPTIONAL.contains("leave this out"))
+        assertFalse(InitiationSittingCopy.stay.lines.joinToString().contains("I allow"))
+    }
+
+    @Test fun noGuideAudioIsBundledAndTheHookNamesAreThePerStepKeys() {
         SittingStep.values().forEach { assertNull(SittingGuideAudio.clipResId(context, it)) }
         assertSame(SittingGuideAudio.None, InitiationSitting.guide)
-        assertEquals("sitting_guide_question", SittingGuideAudio.resourceName(SittingStep.QUESTION))
+        assertEquals("sitting_guide_settle", SittingGuideAudio.resourceName(SittingStep.SETTLE))
+        assertEquals("sitting_guide_ask", SittingGuideAudio.resourceName(SittingStep.ASK))
     }
 
     @Test fun theHookIsCalledPerStepAndNeverPlaysAnythingByItself() {
@@ -75,17 +100,25 @@ class InitiationSittingTest {
             override fun onLeave() { seen += SittingStep.END }
         }
         InitiationSitting.begin(); InitiationSitting.skip(); InitiationSitting.end()
-        assertEquals(listOf(SittingStep.STOP, SittingStep.ARRIVE, SittingStep.END), seen)
+        assertEquals(listOf(SittingStep.STOP, SittingStep.SETTLE, SittingStep.END), seen)
         assertNull(InitiationSitting.step)
     }
 
-    @Test fun theSittingPracticeIsTheCatalogueGroundingAt180SecondsAndTheMinimumRuleIsUntouched() {
-        assertEquals("external_grounding", INITIATION_PRACTICE_ID)
+    @Test fun the180SecondSittingCountsAsPractisedAndTheMinimumRuleIsUntouched() {
+        assertEquals("body_scan_sitting", INITIATION_PRACTICE_ID)
         assertEquals(180, INITIATION_PRACTICE_SECONDS)
         assertEquals(90, MIN_PRACTISED_SECONDS)
         val row = BreathingRecord("s", INITIATION_PRACTICE_ID, "v1", 1, BreathingEntry.HOME,
             INITIATION_PRACTICE_SECONDS, INITIATION_PRACTICE_SECONDS, BreathingPhase.ENDED_TIMER)
         assertTrue(row.countsAsPractised)
+        val short = BreathingRecord("s", INITIATION_PRACTICE_ID, "v1", 1, BreathingEntry.HOME, 180, 89, BreathingPhase.ENDED_USER)
+        assertFalse(short.countsAsPractised)
+    }
+
+    @Test fun theBodyScanStageIsInCodeNotInTheCatalogueAndGroundingIsLeftAlone() {
+        assertEquals(INITIATION_PRACTICE_ID, bodyScanPractice().id)
+        assertFalse(bodyScanPractice().presentation.showCompletionQuestions)
+        assertNull(bodyScanPractice().source)
     }
 
     // ---- UI ----
@@ -98,7 +131,15 @@ class InitiationSittingTest {
         click(InitiationSittingCopy.SAFE_CHIP)
         click("Begin")
     }
-    private fun runToReady() { beginSitting(); click("Continue"); click("Continue") }
+    private fun tickTo(seconds: Long) {
+        clock = seconds * 1000
+        compose.runOnIdle { BreathingSessionOwner.tick(context) }
+        compose.mainClock.advanceTimeBy(600)   // lets the on-screen loop notice the new time
+        compose.waitForIdle()
+    }
+    private fun assertSkipAndEnd() {
+        compose.onNodeWithText("Skip").assertExists(); compose.onNodeWithText("End").assertExists()
+    }
 
     @Test fun entryIsOnTheSadhanaSelection() {
         open()
@@ -110,66 +151,98 @@ class InitiationSittingTest {
         compose.onAllNodesWithText("Your first sitting").assertCountEquals(0)
     }
 
-    @Test fun beginIsWithheldUntilSafeAndEveryFrameHasSkipAndEnd() {
+    @Test fun beginAndSkipAreWithheldUntilSafeAndEveryStepHasSkipAndEnd() {
         open(); click("Start your first sitting")
+        compose.onNodeWithText("Stop.").assertExists()
         compose.onNodeWithText("Begin").assertIsNotEnabled()
-        compose.onNodeWithText("Skip").assertExists(); compose.onNodeWithText("Not now").assertExists()
+        compose.onNodeWithText("Skip").assertIsNotEnabled()
+        compose.onNodeWithText("Not now").assertExists()
         click(InitiationSittingCopy.SAFE_CHIP)
         compose.onNodeWithText("Begin").assertIsEnabled()
         click("Begin")
-        listOf("Feel what holds you up.", "Let the noise be noise.").forEach {
-            compose.onNodeWithText(it).assertExists()
-            compose.onNodeWithText("Skip").assertExists(); compose.onNodeWithText("End").assertExists()
-            click("Continue")
-        }
-        compose.onNodeWithText("Notice the room").assertExists()
-        compose.onNodeWithText("Skip").assertExists(); compose.onNodeWithText("End").assertExists()
+        // Step 2, 3, 4: text, Skip, End (timer runs behind them)
+        compose.onNodeWithText("Settle.").assertExists(); assertSkipAndEnd()
+        compose.onNodeWithText("Notice how your body is held up.").assertExists()
+        click("Skip")
+        compose.onNodeWithText("Scan, top to bottom.").assertExists(); assertSkipAndEnd()
+        click("Skip")
+        compose.onNodeWithText("Stay with one spot.").assertExists(); assertSkipAndEnd()
+        compose.onNodeWithText(InitiationSittingCopy.STAY_OPTIONAL).assertExists()
+        click("Skip")
+        // Step 5
+        compose.onNodeWithText("Where do you want to reach?").assertExists(); assertSkipAndEnd()
+        click("Skip")
+        // Step 6
+        compose.onNodeWithText("The time has passed.").assertExists()
+        compose.onNodeWithText("Done").assertExists()
     }
 
-    @Test fun endOnAnyScreenLeavesAtOnceWithNothingRecorded() {
-        beginSitting(); click("Continue"); click("End")
+    @Test fun beginStartsTheSessionAt180Seconds() {
+        beginSitting()
+        assertEquals(INITIATION_PRACTICE_SECONDS, BreathingSessionOwner.session?.durationSeconds)
+        assertEquals(BreathingPhase.RUNNING, BreathingSessionOwner.session?.phase)
+    }
+
+    @Test fun notNowLeavesAtOnceWithNothingRecorded() {
+        open(); click("Start your first sitting"); click("Not now")
         assertNull(InitiationSitting.step)
         assertNull(BreathingSessionOwner.session)
         assertTrue(BreathingPreferences(context).journal().isEmpty())
         compose.onNodeWithText("Breathe & reset").assertExists()
     }
 
-    @Test fun skipMovesThroughEveryFrameAndThePracticeWithoutAJournalRow() {
+    @Test fun theClockMovesSettleToScanToStay() {
         beginSitting()
-        click("Skip"); click("Skip"); click("Skip")   // arrive, noise, practice (Ready)
-        compose.onNodeWithText("Where do you want to reach?").assertExists()
-        click("Skip")
-        compose.onNodeWithText("Write it in your own words.").assertExists()
-        click("Leave it blank")
-        compose.onNodeWithText("You stopped there.").assertExists()
-        assertNull(SankalpStore(context).line)
-        assertTrue(BreathingPreferences(context).journal().isEmpty())
+        compose.onNodeWithText("Settle.").assertExists()
+        tickTo(31); compose.onNodeWithText("Scan, top to bottom.").assertExists()
+        tickTo(121); compose.onNodeWithText("Stay with one spot.").assertExists()
     }
 
-    @Test fun fullSittingAt180SecondsCountsAsPractisedAndShowsTheLineBackOnReadyAndEnd() {
+    @Test fun skipMovesThroughEveryStepAndLeavesNoLineWithNoRowBeyondTheSkippedTimer() {
+        beginSitting()
+        click("Skip"); click("Skip"); click("Skip")
+        compose.onNodeWithText("Where do you want to reach?").assertExists()
+        click("Skip")
+        compose.onNodeWithText("The time has passed.").assertExists()
+        assertNull(SankalpStore(context).line)
+        compose.onAllNodesWithText(InitiationSittingCopy.READY_LEAD).assertCountEquals(0)
+    }
+
+    @Test fun endDuringTheTimedMiddleGoesToTheEarlyEndScreenWithAShortFactualRow() {
         SankalpStore(context).save("Steady and kind")
-        runToReady()
-        // Ready shows the line verbatim.
-        compose.onNodeWithText("Steady and kind").assertExists()
-        click("Start")
-        assertEquals(INITIATION_PRACTICE_SECONDS, BreathingSessionOwner.session?.durationSeconds)
-        clock = 180_000
-        compose.runOnIdle { BreathingSessionOwner.tick(context) }
-        compose.waitForIdle()
+        beginSitting()
+        clock = 30_000
+        click("End")
+        compose.onNodeWithText("You stopped there.").assertExists()
+        val row = BreathingPreferences(context).journal().single()
+        assertFalse(row.countsAsPractised)
+        assertEquals(BreathingPhase.ENDED_USER, row.outcome)
+        click("Done"); assertNull(InitiationSitting.step)
+    }
+
+    @Test fun endOnAskLeavesAndEndIsOnEveryTimedStep() {
+        beginSitting(); tickTo(31); compose.onNodeWithText("End").assertExists()
+        tickTo(180)
+        compose.onNodeWithText("Where do you want to reach?").assertExists()
+        click("End")
+        assertNull(InitiationSitting.step)
+    }
+
+    @Test fun full180SecondSittingCountsAsPractisedAndShowsTheLineBackOnClose() {
+        beginSitting()
+        tickTo(180)
         assertEquals(BreathingPhase.ENDED_TIMER, BreathingSessionOwner.session?.phase)
         compose.onNodeWithText("Where do you want to reach?").assertExists()
-        click("Continue")
-        // Write a new line, keep it.
         compose.onNodeWithText("your words").performTextReplacement("Clear head, open hands")
         click("Keep")
         compose.onNodeWithText("The time has passed.").assertExists()
+        compose.onNodeWithText(InitiationSittingCopy.READY_LEAD).assertExists()
         compose.onNodeWithText("Clear head, open hands").assertExists()
         val journal = BreathingPreferences(context).journal()
         assertEquals(1, journal.size)
         assertTrue(journal.single().countsAsPractised)
         assertEquals(180, journal.single().activeSeconds)
         assertEquals("Clear head, open hands", SankalpStore(context).line)
-        // The line is not in the journal.
         assertFalse(context.getSharedPreferences(BreathingPreferences.NAMESPACE, 0).all.values.joinToString().contains("Clear head"))
         click("Done")
         assertNull(InitiationSitting.step)
@@ -177,7 +250,7 @@ class InitiationSittingTest {
 
     @Test fun theTextFieldStopsAtSixtyCharactersAndClearEmptiesTheStoredLine() {
         SankalpStore(context).save("old line")
-        beginSitting(); click("Skip"); click("Skip"); click("Skip"); click("Skip")
+        beginSitting(); tickTo(180)
         compose.onNodeWithText("old line").assertExists()
         click("Clear")
         assertNull(SankalpStore(context).line)
@@ -187,20 +260,10 @@ class InitiationSittingTest {
         assertEquals("x".repeat(60), SankalpStore(context).line)
     }
 
-    @Test fun endingThePracticeEarlyGoesStraightToTheEndScreenAndTheShortRowIsStillFactual() {
-        runToReady(); click("Start")
-        clock = 30_000
-        click("End")
-        compose.onNodeWithText("You stopped there.").assertExists()
-        val row = BreathingPreferences(context).journal().single()
-        assertFalse(row.countsAsPractised)
-        assertEquals(BreathingPhase.ENDED_USER, row.outcome)
-    }
-
-    @Test fun skipDuringThePracticeEndsItOnceAndGoesOnToTheClose() {
-        runToReady(); click("Start")
-        clock = 100_000
-        click("Skip to the close")
+    @Test fun skipOnStayEndsTheTimerOnceAndGoesOnToAsk() {
+        beginSitting(); click("Skip"); click("Skip")
+        clock = 130_000
+        click("Skip")
         compose.onNodeWithText("Where do you want to reach?").assertExists()
         assertEquals(1, BreathingPreferences(context).journal().size)
     }

@@ -7,109 +7,152 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 /*
- * "Your first sitting" - Phase A, INTERNAL TEST BUILD ONLY.
- * Design: docs/strategy/shanivar-sankalp-and-sittings-initiation-proposal.md (§1 copy :23-34, §2 :36-48,
- * §4 Phase A :111-122). Entry: BreathingScreen.kt PracticeSelection (HOME only), which both the
- * current V1Home and the V3 RoutineShell Sadhana tab reach through BreathingHost. Hard-coded:
- * Arrive (screens 1-3) -> one practice (external_grounding, 180 s) -> Close (screens 4-5) -> the
- * existing End screen. No streaks, scores, counts, rewards, reminders. Sankalp stays in SankalpStore.
- * Frame text is new script text: a qualified human must review it before public release
- * (research/deep-foundation/PRACTICE_SAFETY.md "Review and testing contract").
+ * "Your first sitting" - SIX-STEP BODY-SCAN version, INTERNAL TEST BUILD ONLY (founder's daily baseline).
+ * Original design: docs/strategy/shanivar-sankalp-and-sittings-initiation-proposal.md. Entry:
+ * BreathingScreen.kt PracticeSelection (HOME only), reached from V1Home and the V3 Sadhana tab.
+ * Steps: 1 Stop, 2 Settle, 3 Scan, 4 Stay (2-4 are one 180 s UNPACED timed session, counted as practised
+ * under the unchanged 90 s rule), 5 Ask (Sankalp line, SankalpStore), 6 Close. No streaks, scores, counts.
+ * No breath is ever directed, counted or held. No effect claims. Wording adapted from an unattributed
+ * Instagram post (see shanivar-vbt/content/drafts/DRAFT-body-scan-NOT-REVIEWED-internal-only.md): a
+ * qualified human must review it before ANY public release (research/deep-foundation/PRACTICE_SAFETY.md).
+ * The body-scan stage lives in code only; it is NOT in the reviewed breathing catalogue.
  */
 
-const val INITIATION_PRACTICE_ID = "external_grounding"
+const val INITIATION_PRACTICE_ID = "body_scan_sitting"
 
 /** Reuses the Sadhana default so the sitting counts as practised at the end of the timer
  * (`BreathingSessionOwner.kt:16`, `MIN_PRACTISED_SECONDS = 90` in BreathingSessionState.kt:198 untouched). */
 const val INITIATION_PRACTICE_SECONDS = SADHANA_DEFAULT_SECONDS
 
+/** Elapsed active seconds at which the timed middle moves on: Settle 0-30, Scan 30-120, Stay 120-180. */
+const val SCAN_STARTS_AT_SECONDS = 30
+const val STAY_STARTS_AT_SECONDS = 120
+
 enum class SittingStep(val key: String) {
-    STOP("stop"), ARRIVE("arrive"), NOISE("noise"),
-    PRACTICE("practice"),
-    QUESTION("question"), LINE("line"),
+    STOP("stop"), SETTLE("settle"), SCAN("scan"), STAY("stay"),
+    ASK("ask"), CLOSE("close"),
+    /** The early-end screen (End pressed or interrupted during the timed middle). Not a step of the six. */
     END("end"),
 }
 
-/** Exact approved copy (proposal §1 table). The Practice and End steps use catalogue/End-screen text. */
+/** Approved copy. */
 data class SittingFrame(
     val title: String,
     val lines: List<String>,
     val primary: String,
-    /** Label of the End action on this screen (screen 1 keeps the approved "Not now"). */
+    /** Label of the End action on this screen (step 1 keeps the approved "Not now"). */
     val endLabel: String = "End",
 )
 
 object InitiationSittingCopy {
     val stop = SittingFrame(
-        "Stop for three minutes.",
-        listOf("Sit somewhere safe. Put the phone where you can still read it.", "You can end this at any time."),
+        "Stop.",
+        listOf("Find a safe place for three minutes.", "You can end this at any time."),
         "Begin", endLabel = "Not now",
     )
-    val arrive = SittingFrame(
-        "Feel what holds you up.",
-        listOf("The chair, the floor, your own weight.", "Leave your breathing alone.", "Look around the room once."),
+    val settle = SittingFrame(
+        "Settle.",
+        listOf("Close your eyes if that's comfortable.", "Notice how your body is held up."),
         "Continue",
     )
-    val noise = SittingFrame(
-        "Let the noise be noise.",
-        listOf("Thoughts will keep running. You don't have to stop them.",
-            "Stay with the weight under you, and let them run."),
+    val scan = SittingFrame(
+        "Scan, top to bottom.",
+        listOf("Head, face, jaw, neck, shoulders, chest, stomach, hands, legs, feet.",
+            "Notice where there's sensation, and where there's none."),
         "Continue",
     )
-    val question = SittingFrame(
-        "Where do you want to reach?",
-        listOf("Not what you should want. Not what is realistic.",
-            "Take as long as you like. Nothing is generated for you here."),
+    val stay = SittingFrame(
+        "Stay with one spot.",
+        listOf("Pick the strongest sensation.", "No need to fix or explain it. Let it be there."),
         "Continue",
     )
-    const val LINE_TITLE = "Write it in your own words."
-    const val LINE_HELP = "One line. 60 characters."
+    /** Optional, skippable; never required for anything. */
+    const val STAY_OPTIONAL = "Optional: on the exhale, you may quietly say \"I allow\". Or leave this out."
+    const val ASK_TITLE = "Where do you want to reach?"
+    const val ASK_HELP = "Your own words. One line, up to 60 characters."
     const val LINE_HINT = "your words"
     const val LINE_PRIVACY = "It stays on this phone. Nobody scores it. Edit or clear it whenever you like."
+    const val CLOSE_TITLE = "The time has passed."
     const val SAFE_SETTING_NOTE = "Please don't use this while driving, in water, or doing anything that needs your attention."
     const val SAFE_CHIP = "I'm somewhere safe and still"
     const val ENTRY_TITLE = "Your first sitting"
-    const val ENTRY_BODY = "About seven minutes: arrive, one short practice, and one line about where you want to reach."
+    const val ENTRY_BODY = "A six-step body-scan sitting, about five minutes: three minutes of attention, then one line about where you want to reach."
     const val READY_LEAD = "Where you want to reach:"
 
     fun frame(step: SittingStep): SittingFrame? = when (step) {
         SittingStep.STOP -> stop
-        SittingStep.ARRIVE -> arrive
-        SittingStep.NOISE -> noise
-        SittingStep.QUESTION -> question
+        SittingStep.SETTLE -> settle
+        SittingStep.SCAN -> scan
+        SittingStep.STAY -> stay
         else -> null
     }
 
-    /** Every user-visible string, for the forbidden-words test. */
-    fun allText(): List<String> = listOf(stop, arrive, noise, question).flatMap { listOf(it.title) + it.lines + it.primary + it.endLabel } +
-        listOf(LINE_TITLE, LINE_HELP, LINE_HINT, LINE_PRIVACY, SAFE_SETTING_NOTE, SAFE_CHIP, ENTRY_TITLE, ENTRY_BODY, READY_LEAD)
+    /** Every user-visible string of the shipped steps, for the forbidden-words test. */
+    fun allText(): List<String> = listOf(stop, settle, scan, stay).flatMap { listOf(it.title) + it.lines + it.primary + it.endLabel } +
+        listOf(STAY_OPTIONAL, ASK_TITLE, ASK_HELP, LINE_HINT, LINE_PRIVACY, CLOSE_TITLE, SAFE_SETTING_NOTE, SAFE_CHIP,
+            ENTRY_TITLE, ENTRY_BODY, READY_LEAD)
 }
 
-/** Pure flow rules, no Android. Skip always means "go to the next screen"; End always leaves. */
+/** Pure flow rules, no Android. Skip always means "go to the next step"; End always leaves. */
 object SittingFlow {
     fun next(step: SittingStep): SittingStep = when (step) {
-        SittingStep.STOP -> SittingStep.ARRIVE
-        SittingStep.ARRIVE -> SittingStep.NOISE
-        SittingStep.NOISE -> SittingStep.PRACTICE
-        SittingStep.PRACTICE -> SittingStep.QUESTION
-        SittingStep.QUESTION -> SittingStep.LINE
-        SittingStep.LINE -> SittingStep.END
+        SittingStep.STOP -> SittingStep.SETTLE
+        SittingStep.SETTLE -> SittingStep.SCAN
+        SittingStep.SCAN -> SittingStep.STAY
+        SittingStep.STAY -> SittingStep.ASK
+        SittingStep.ASK -> SittingStep.CLOSE
+        SittingStep.CLOSE -> SittingStep.CLOSE
         SittingStep.END -> SittingStep.END
     }
 
-    /** After the practice session reaches a terminal phase: a finished timer goes on to Close; the
-     * person pressing End (or an interruption) goes straight to the End screen, with no more asked. */
+    val timedSteps = listOf(SittingStep.SETTLE, SittingStep.SCAN, SittingStep.STAY)
+
+    /** The timed middle step the clock alone points at. */
+    fun stepAtElapsed(elapsedSeconds: Long): SittingStep = when {
+        elapsedSeconds >= STAY_STARTS_AT_SECONDS -> SittingStep.STAY
+        elapsedSeconds >= SCAN_STARTS_AT_SECONDS -> SittingStep.SCAN
+        else -> SittingStep.SETTLE
+    }
+
+    /** The step to show: the clock moves it on, a Skip can move it on further, never back. */
+    fun shownStep(current: SittingStep, elapsedSeconds: Long): SittingStep {
+        val byClock = stepAtElapsed(elapsedSeconds)
+        return if (timedSteps.indexOf(byClock) > timedSteps.indexOf(current)) byClock else current
+    }
+
+    /** After the timed session reaches a terminal phase: a finished timer goes on to Ask; the person
+     * pressing End (or an interruption) goes straight to the End screen, with no more asked. */
     fun afterPractice(phase: BreathingPhase): SittingStep =
-        if (phase == BreathingPhase.ENDED_TIMER) SittingStep.QUESTION else SittingStep.END
+        if (phase == BreathingPhase.ENDED_TIMER) SittingStep.ASK else SittingStep.END
 
     val forbiddenWords = listOf("higher self", "deepest", "manifest", "transform", "unlock", "journey",
         "streak", "reward", "badge", "awaken")
+
+    /** Phrases that must never appear in the shipped step copy: directed breath and effect claims. */
+    val bannedPhrases = listOf("deep breath", "breathe in", "breathe out", "breathe into", "hold your breath",
+        "inhale", "count", "heal", "blood flow", "circulation", "nervous system", "pain relief", "relieve",
+        "cure", "therapy", "treat", "release tension", "energy", "don't run", "do not run")
 }
+
+/** The in-code body-scan stage the session timer runs on. Not in the catalogue; presentation has no tone,
+ * no completion questions, no sleep handling. Stage texts are unused (the sitting shows the step copy). */
+fun bodyScanPractice(): BreathingPractice = BreathingPractice(
+    id = INITIATION_PRACTICE_ID, title = "Body scan sitting", kind = BreathingKind.ATTENTION,
+    contentVersion = 1, status = "draft_internal", source = null,
+    allowedDurationsSeconds = listOf(INITIATION_PRACTICE_SECONDS), defaultDurationSeconds = INITIATION_PRACTICE_SECONDS,
+    suitableFeelings = emptySet(), suitableContexts = emptySet(),
+    requiresBreathComfort = false, requiresSoundConsent = false, requiresPriorComfort = false,
+    requiresSleepIntent = false, requiresSleepyNow = false, safeStationarySettingRequired = true,
+    stages = emptyMap(),
+    presentation = BreathingPresentation(eyesOpenAllowed = true, keepScreenOn = true, closingBell = false,
+        showCompletionQuestions = false, toneAsset = null),
+)
 
 /**
  * Process-level position in the sitting, like [BreathingSessionOwner]: the Sadhana host can be
@@ -135,7 +178,7 @@ object InitiationSitting {
 /**
  * Slot for the founder's own recorded voice (no audio is shipped, no TTS, no generated persona).
  * To add it later: drop one file per screen into `app/src/main/res/raw/` named
- * `sitting_guide_<key>` (`stop`, `arrive`, `noise`, `practice`, `question`, `line`, `end`), implement
+ * `sitting_guide_<key>` (`stop`, `settle`, `scan`, `stay`, `ask`, `close`, `end`), implement
  * this interface with a player, and set `InitiationSitting.guide`. Playback must sit behind the
  * existing sound-consent gate (`BreathingPreferences.soundConsent`), stop on End/background, and
  * never loop. Until then [None] is used and nothing is played.
@@ -173,32 +216,35 @@ fun FirstSittingEntryCard() {
     }
 }
 
-/** Screens that are not the practice itself: frames 1-3, 4, 5 and the Ready step. */
+/** Steps 1 and 5-6 (the timed middle is [SittingTimedStep]). */
 @Composable
 fun InitiationSittingFrames(step: SittingStep, owner: BreathingSessionOwner, onExit: () -> Unit) {
     val context = LocalContext.current
     val store = remember { SankalpStore(context) }
     val endAndLeave = { owner.leave(); InitiationSitting.end(); onExit() }
     when (step) {
-        SittingStep.STOP, SittingStep.ARRIVE, SittingStep.NOISE, SittingStep.QUESTION -> {
-            val frame = InitiationSittingCopy.frame(step) ?: return
+        SittingStep.STOP -> {
             var safe by remember { mutableStateOf(owner.draft.safeSettingConfirmed) }
+            val frame = InitiationSittingCopy.stop
             Heading(frame.title)
             frame.lines.forEach { Text(it) }
-            if (step == SittingStep.STOP) {
-                Text(InitiationSittingCopy.SAFE_SETTING_NOTE, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                FilterChip(
-                    selected = safe,
-                    onClick = { safe = !safe; owner.draft = owner.draft.copy(safeSettingConfirmed = safe) },
-                    label = { Text(InitiationSittingCopy.SAFE_CHIP) },
-                )
+            Text(InitiationSittingCopy.SAFE_SETTING_NOTE, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            FilterChip(
+                selected = safe,
+                onClick = { safe = !safe; owner.draft = owner.draft.copy(safeSettingConfirmed = safe) },
+                label = { Text(InitiationSittingCopy.SAFE_CHIP) },
+            )
+            // Begin and Skip both start the 3-minute unpaced session; both wait for the safe chip.
+            val begin = { startSittingPractice(context, owner); InitiationSitting.skip() }
+            PrimaryActionEnabled(frame.primary, enabled = safe) { begin() }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                TextButton(onClick = { begin() }, enabled = safe) { Text("Skip") }
+                TextButton(onClick = endAndLeave) { Text(frame.endLabel) }
             }
-            PrimaryActionEnabled(frame.primary, enabled = step != SittingStep.STOP || safe) { InitiationSitting.skip() }
-            SkipEndRow(endLabel = frame.endLabel, onSkip = { InitiationSitting.skip() }, onEnd = endAndLeave)
         }
-        SittingStep.PRACTICE -> SittingReady(owner, store, endAndLeave)
-        SittingStep.LINE -> SittingLine(store, endAndLeave)
-        SittingStep.END -> Unit
+        SittingStep.ASK -> SittingAsk(store, endAndLeave)
+        SittingStep.CLOSE -> SittingClose(store) { owner.clearSession(); owner.leave(); InitiationSitting.end(); onExit() }
+        else -> Unit
     }
 }
 
@@ -207,47 +253,54 @@ private fun PrimaryActionEnabled(label: String, enabled: Boolean, onClick: () ->
     Button(onClick, Modifier.fillMaxWidth().heightIn(min = 52.dp), enabled = enabled) { Text(label) }
 }
 
-@Composable
-private fun SkipEndRow(endLabel: String, onSkip: () -> Unit, onEnd: () -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        TextButton(onClick = onSkip) { Text("Skip") }
-        TextButton(onClick = onEnd) { Text(endLabel) }
-    }
-}
-
-@Composable
-private fun SittingReady(owner: BreathingSessionOwner, store: SankalpStore, onEnd: () -> Unit) {
-    val context = LocalContext.current
-    val practice = owner.catalogue?.practice(INITIATION_PRACTICE_ID)
-    if (practice == null) {
-        Text("This practice is unavailable on this device. You can skip it.")
-        SkipEndRow("End", onSkip = { InitiationSitting.skip() }, onEnd = onEnd)
-        return
-    }
-    Heading(practice.title)
-    Text(practice.originLabel, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    Text(practice.stages[BreathingStageId.INSTRUCTION].orEmpty())
-    store.line?.let {
-        Text(InitiationSittingCopy.READY_LEAD, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(it, style = MaterialTheme.typography.titleMedium)
-    }
-    Text("${INITIATION_PRACTICE_SECONDS / 60} min")
-    PrimaryAction("Start") { startSittingPractice(context, owner, practice) }
-    Text(BREATHING_SAFETY_NOTE, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    SkipEndRow("End", onSkip = { InitiationSitting.skip() }, onEnd = onEnd)
-}
-
-/** Starts the one practice at 180 s regardless of the draft's chosen length, and marks the entry card as used. */
-fun startSittingPractice(context: Context, owner: BreathingSessionOwner, practice: BreathingPractice) {
-    owner.choose(practice, INITIATION_PRACTICE_SECONDS)
+/** Starts the one 180 s unpaced session regardless of the draft's chosen length. */
+fun startSittingPractice(context: Context, owner: BreathingSessionOwner) {
+    owner.clearSession()
+    owner.choose(bodyScanPractice(), INITIATION_PRACTICE_SECONDS)
     owner.start(context)
 }
 
+/** Steps 2-4 while the session runs: the step shown follows the clock; Skip moves on, End ends the session. */
 @Composable
-private fun SittingLine(store: SankalpStore, onEnd: () -> Unit) {
+fun SittingTimedStep(owner: BreathingSessionOwner, session: BreathingSession, step: SittingStep) {
+    val context = LocalContext.current
+    var elapsed by remember(session.sessionId) { mutableStateOf(session.elapsedActiveMillis(owner.monotonicMillis()) / 1000) }
+    var remaining by remember(session.sessionId) { mutableStateOf(session.remainingMillis(owner.monotonicMillis())) }
+    LaunchedEffect(session.sessionId, session.phase) {
+        while (owner.session?.phase?.counting == true) {
+            owner.tick(context)
+            val live = owner.session ?: break
+            elapsed = live.elapsedActiveMillis(owner.monotonicMillis()) / 1000
+            remaining = live.remainingMillis(owner.monotonicMillis())
+            val shown = SittingFlow.shownStep(InitiationSitting.step ?: step, elapsed)
+            if (shown != InitiationSitting.step && !live.phase.terminal) InitiationSitting.goTo(shown)
+            delay(250)
+        }
+    }
+    val frame = InitiationSittingCopy.frame(step) ?: return
+    Heading(frame.title)
+    frame.lines.forEach { Text(it) }
+    if (step == SittingStep.STAY) Text(InitiationSittingCopy.STAY_OPTIONAL, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    val seconds = (remaining + 999) / 1000
+    Text("%d:%02d".format(seconds / 60, seconds % 60), style = MaterialTheme.typography.titleMedium)
+    if (owner.pausedByHost) Text("Paused when the app went to the background. Nothing was missed.")
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        OutlinedButton(onClick = { if (session.phase == BreathingPhase.PAUSED) owner.resume() else owner.pause(context) }) {
+            Text(if (session.phase == BreathingPhase.PAUSED) "Resume" else "Pause")
+        }
+        TextButton(onClick = {
+            // Skip on Settle/Scan moves the text on; the timer keeps running. Skip on Stay ends the timer the normal way.
+            if (step == SittingStep.STAY) { owner.end(context); InitiationSitting.goTo(SittingStep.ASK) } else InitiationSitting.skip()
+        }) { Text("Skip") }
+        TextButton(onClick = { owner.end(context) }) { Text("End") }
+    }
+}
+
+@Composable
+private fun SittingAsk(store: SankalpStore, onEnd: () -> Unit) {
     var text by remember { mutableStateOf(store.line.orEmpty()) }
-    Heading(InitiationSittingCopy.LINE_TITLE)
-    Text(InitiationSittingCopy.LINE_HELP)
+    Heading(InitiationSittingCopy.ASK_TITLE)
+    Text(InitiationSittingCopy.ASK_HELP)
     OutlinedTextField(
         value = text,
         onValueChange = { text = SankalpStore.limitInput(it) },
@@ -262,14 +315,14 @@ private fun SittingLine(store: SankalpStore, onEnd: () -> Unit) {
     }
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         TextButton(onClick = { store.clear(); text = "" }) { Text("Clear") }
-        TextButton(onClick = { InitiationSitting.skip() }) { Text("Leave it blank") }
+        TextButton(onClick = { InitiationSitting.skip() }) { Text("Skip") }
         TextButton(onClick = onEnd) { Text("End") }
     }
 }
 
-/** Under the running practice: Skip moves on to Close (ending the practice the normal way, one journal row). */
 @Composable
-fun SittingPracticeSkip(owner: BreathingSessionOwner) {
-    val context = LocalContext.current
-    TextButton(onClick = { owner.end(context); InitiationSitting.goTo(SittingStep.QUESTION) }) { Text("Skip to the close") }
+private fun SittingClose(store: SankalpStore, onDone: () -> Unit) {
+    Heading(InitiationSittingCopy.CLOSE_TITLE)
+    store.line?.let { SankalpEcho(it) }
+    PrimaryAction("Done", onDone)
 }

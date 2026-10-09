@@ -49,3 +49,7 @@ No safety test should ask participants to endure an unsafe practice. Test exclus
 ## Claims to reject now
 
 “Clinically proven VBT,” “reset your nervous system,” “cure brain rot,” “unlock kundalini,” “heal trauma in one minute,” “your emotions reveal your dosha/chart,” and “engineered to your cortisol cycle” exceed the evidence reviewed. Prefer an invitation: “Try a brief practice. Notice whether it helps.” Source details can explain traditional context and modern adaptation without making the user read a safety or philosophy essay before a simple, voluntary choice.
+
+## Open review items
+
+- **Body-scan sitting (internal test build, 2026-10-10): OPEN, not reviewed.** Six-step "Your first sitting" (`InitiationSitting.kt`; script record `shanivar-vbt/content/drafts/DRAFT-body-scan-NOT-REVIEWED-internal-only.md`). Wording is adapted from an unattributed Instagram post with claims removed. Needs the practice review above, a source/attribution check, and a ruling on the optional "I allow" exhale line, before any public release. Internal test only until then.
