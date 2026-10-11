@@ -19,7 +19,7 @@ Source: `RoutineOnboardingFlow.kt` `WelcomePage` (lines 272-290) plus shared hea
 | --- | --- | --- |
 | Wordmark | "SHANIVAR" | RoutineOnboardingFlow.kt:112 |
 | Step label | "01 · Welcome" | RoutineOnboardingFlow.kt:264 |
-| Eyebrow ★ | "DISCIPLINE FOR REAL LIFE" | RoutineOnboardingFlow.kt:274 |
+| Eyebrow ★ | "DISCIPLINE IS FREEDOM" | RoutineOnboardingFlow.kt:274 |
 | Heading ★ | "Stop leaving your life\nto chance." | RoutineOnboardingFlow.kt:275 |
 | Body ★ | "Work gets calendars. Deadlines get reminders. Other people get your structure. Shanivar starts giving some of it back to you." | RoutineOnboardingFlow.kt:276 |
 | Card title | "ROUTINE" | RoutineOnboardingFlow.kt:277 |
@@ -263,7 +263,7 @@ Source: `RoutineProtectionScreen.kt` `AppProtectionEditor`, `ProtectionWindowCar
 
 ## Lines most useful for marketing (★ shortlist)
 
-1. "DISCIPLINE FOR REAL LIFE" — RoutineOnboardingFlow.kt:274
+1. "DISCIPLINE IS FREEDOM" — RoutineOnboardingFlow.kt:274
 2. "Stop leaving your life\nto chance." — RoutineOnboardingFlow.kt:275
 3. "Work gets calendars. Deadlines get reminders. Other people get your structure. Shanivar starts giving some of it back to you." — RoutineOnboardingFlow.kt:276
 4. "Not an ideal morning. Your actual life." — RoutineOnboardingFlow.kt:305; RoutineScreen.kt:98 (heading form)

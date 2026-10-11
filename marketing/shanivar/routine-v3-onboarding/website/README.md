@@ -97,8 +97,8 @@ Every headline and product claim, with the repo file it rests on. "UI" means a v
 
 | Site copy (page · section) | Source |
 | --- | --- |
-| "Discipline for real life" (index · hero eyebrow) | UI `RoutineOnboardingFlow.kt` welcome: `DISCIPLINE FOR REAL LIFE` |
-| "Build the day you intend to live." (index · hero H1, OG) | UI `RoutineOnboardingFlow.kt` welcome |
+| "Discipline is freedom." (index · hero H1, title, OG; founder-given 2026-10-11) | UI `RoutineOnboardingFlow.kt` welcome: `DISCIPLINE IS FREEDOM` |
+| "Build the day you intend to live." (index · Routine copy, meta description) | UI `RoutineOnboardingFlow.kt` welcome |
 | "Work gets calendars. Deadlines get reminders. Other people get your structure." (hero) | UI `RoutineOnboardingFlow.kt` welcome |
 | "Your own life gets memory and mood… the moment you stop leaving it to chance." | Wireframe README voice example ("memory and mood") + UI heading "Stop leaving your life to chance." + founder positioning (calling) |
 | "Routine shapes the day. Sadhana trains attention until the practice can leave the phone…" | Decision 0014 (two destinations) + UI welcome "Train attention until the practice can leave the phone and enter your life." |

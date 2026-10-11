@@ -27,7 +27,7 @@ Marked `[RE-CHECK ON POSTING DAY]` = a status line that must still be true on th
 
 | Slide | On-image text |
 |---|---|
-| 1 | Eyebrow: DISCIPLINE FOR REAL LIFE · Heading: **Stop leaving your life to chance.** |
+| 1 | Eyebrow: DISCIPLINE IS FREEDOM · Heading: **Stop leaving your life to chance.** |
 | 2 | Work gets calendars. Deadlines get reminders. Other people get your structure. |
 | 3 | Your own growth gets memory and mood. |
 | 4 | Shanivar is being built to give some of that structure back to you. |
@@ -43,7 +43,7 @@ Sources: `RoutineOnboardingFlow.kt:274-276`, `:278`; slide 3 adapted from `websi
 > In development. Not released yet.
 
 **Hashtags:** #Shanivar #TheHybridMonk #DailyRoutine #Focus #BuildInPublic
-**Alt text:** (1) Black slide, serif cream text: "Stop leaving your life to chance." Small gold label above: "Discipline for real life." (2) Cream paper card on black: "Work gets calendars. Deadlines get reminders. Other people get your structure." (3) Black slide: "Your own growth gets memory and mood." (4) Cream card: "Shanivar is being built to give some of that structure back to you." (5) Thin gold outline of a ringed planet with SHANIVAR in spaced capitals beneath it, on black, and the text "Build the day you intend to live. Shanivar, in development."
+**Alt text:** (1) Black slide, serif cream text: "Stop leaving your life to chance." Small gold label above: "Discipline is freedom." (2) Cream paper card on black: "Work gets calendars. Deadlines get reminders. Other people get your structure." (3) Black slide: "Your own growth gets memory and mood." (4) Cream card: "Shanivar is being built to give some of that structure back to you." (5) Thin gold outline of a ringed planet with SHANIVAR in spaced capitals beneath it, on black, and the text "Build the day you intend to live. Shanivar, in development."
 **Visual:** All type, alternating black and cream-paper slides. A gold eyebrow on slide 1, the Saturn mark only on slide 5, a lot of empty space.
 
 ---

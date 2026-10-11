@@ -57,6 +57,7 @@ Saved 2026-10-06 with Shubham's approval. Re-confirm with him before relying on 
 | Handle | `@app.shanivar` |
 | Display name | `Shanivar · by The Hybrid Monk` |
 | Bio | `Life been drifting? Take the day back. / High standards. Honest tools. Your actual life. / In development.` |
+| Tagline (founder-given 2026-10-11, not yet in the live bio) | `Discipline is freedom.` See `marketing/shanivar/brand/tagline.md`. To-do for Darpan: the live bio still has the old line; update only on Shubham's go-ahead |
 | Picture | Existing Saturn mark: a thin gold ringed-planet outline with "SHANIVAR" in spaced capitals underneath, on V3 black. This is the reference for all post visuals (`first-9-posts.md:15`) |
 | Address line | `Niwaru road, Jaipur, Rajasthan 302012`, kept at Shubham's choice |
 | Link | None (see the bio-link rule above) |

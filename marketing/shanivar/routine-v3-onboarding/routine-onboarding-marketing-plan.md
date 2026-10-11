@@ -82,14 +82,14 @@ How this reconciles with the existing files:
 
 Each angle quotes the UI verbatim. In Phase 0, hooks describe **the problem or the intention**, never a working feature.
 
-### A1 — "Discipline for real life" / "Stop leaving your life to chance."
+### A1 — "Discipline is freedom" / "Stop leaving your life to chance."
 
-- **Source lines:** "DISCIPLINE FOR REAL LIFE" (`RoutineOnboardingFlow.kt:274`); "Stop leaving your life\nto chance." (`:275`); "Work gets calendars. Deadlines get reminders. Other people get your structure. Shanivar starts giving some of it back to you." (`:276`).
+- **Source lines:** "DISCIPLINE IS FREEDOM" (`RoutineOnboardingFlow.kt:274`); "Stop leaving your life\nto chance." (`:275`); "Work gets calendars. Deadlines get reminders. Other people get your structure. Shanivar starts giving some of it back to you." (`:276`).
 - **Insight:** high-velocity people already run on structure, but it is all lent out. The calling is to keep some for yourself.
 - **Hooks:**
   1. "Your manager's meeting has a calendar invite. Your own work has 'whenever'."
   2. "If the last few months have felt off, it may not be motivation. It may be that everyone else got your structure."
-  3. "Discipline for real life, not for the highlight reel."
+  3. "Discipline is freedom, not a highlight reel."
 - **Must NOT claim:** that Shanivar schedules or runs your day now; productivity gains; "discipline guaranteed".
 
 ### A2 — "Not an ideal morning. Your actual life."

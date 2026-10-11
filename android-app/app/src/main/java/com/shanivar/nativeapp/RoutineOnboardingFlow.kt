@@ -271,7 +271,7 @@ private fun StepLabel(page: RoutineOnboardingPage) {
 
 @Composable
 private fun WelcomePage(onStart: () -> Unit) {
-    Text("DISCIPLINE FOR REAL LIFE", color = MaterialTheme.colorScheme.primary, letterSpacing = 2.sp, modifier = Modifier.semantics { heading() })
+    Text("DISCIPLINE IS FREEDOM", color = MaterialTheme.colorScheme.primary, letterSpacing = 2.sp, modifier = Modifier.semantics { heading() })
     Heading("Stop leaving your life\nto chance.")
     Text("Work gets calendars. Deadlines get reminders. Other people get your structure. Shanivar starts giving some of it back to you.")
     SectionCard("ROUTINE") {

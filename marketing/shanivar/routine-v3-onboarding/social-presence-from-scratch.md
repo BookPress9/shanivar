@@ -65,7 +65,7 @@ The profile turns this into **"high standards, honest tools, your actual life"**
 **Bio (max 150 characters). Option A, recommended (V3 copy):**
 
 ```
-Discipline for real life.
+Discipline is freedom.
 Choose what loses access to you. Set it once.
 Android app in development · early access ↓
 ```
