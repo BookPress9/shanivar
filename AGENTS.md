@@ -43,6 +43,19 @@ Task states: `READY`, `CLAIMED`, `IN_PROGRESS`, `REVIEW`, `REVISION`, `ACCEPTED`
 Codex and Grok may independently read, research, draft, implement and test within an assigned task. Recurring or unattended work is real only when its trigger, connected workspace, credentials/permissions, run history and failure reporting are verified. Local queue files do not themselves start either agent.
 
 
+## Decision gate — documents first
+
+Added by founder instruction, 11 October 2026. Applies to every agent (Codex, `app.shanivar`, `Darpan`, Sankalpa, any subagent) before any decision, plan, question, copy, code or content change. Full procedure: [`docs/sop/SOP-00-decision-gate.md`](docs/sop/SOP-00-decision-gate.md).
+
+1. **Read first.** Open the documents that govern the work: `docs/blueprint/` (PRD, DESIGN_SYSTEM, ARCHITECTURE, DATABASE, SECURITY, CODE_STYLE, TESTING), `SHANIVAR_STANCE.md`, `docs/decisions/`, and the relevant `docs/sop/` procedure. Find the passage that answers the question or authorises the work, and cite it as `file:line`.
+2. **Documents are the only source.** Work, questions and options must arise from these documents. Do not act on chat memory, an agent's own preference, a screenshot or a third-party post unless a document records it.
+3. **If something new is needed:** stop, ask the founder one short question, record the answer in the right document (or `ai_org/collaboration/founder_answers.md`, then the document), and only then proceed. If a document says `UNRESOLVED:`, ask; never fill it by guessing.
+4. **Focus check.** State in one line which part of the PRD the work serves. If it serves none, it is out of scope: ask first.
+5. **Conflict rule.** If documents disagree, do not pick one silently: list the conflict, ask the founder, then fix the documents.
+6. **Evidence in the report.** Every report lists the documents read, the passage relied on, and any document changed.
+
+Honest limit: this is a written working agreement. Agents follow it only when they read it. It is not an automatic technical block.
+
 ## Documentation map
 
 Added 11 October 2026. Baseline documentation system following "The Vibe Coding Blueprint"; it extends, and does not replace or weaken, any rule above. Index and "which doc answers which question": [`docs/README.md`](docs/README.md).

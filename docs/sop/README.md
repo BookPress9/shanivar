@@ -4,6 +4,7 @@ One short document each. Every SOP has Purpose, Owner, Preconditions, Steps, App
 
 | SOP | Covers |
 |---|---|
+| [SOP-00](SOP-00-decision-gate.md) | Decision gate: read documents first, ask before adding anything new (applies to every task) |
 | [SOP-01](SOP-01-app-build-and-test-apk-release.md) | App build and test-APK release |
 | [SOP-02](SOP-02-website-change-and-deploy.md) | Website change and deploy (shanivar.com, Netlify) |
 | [SOP-03](SOP-03-web-app-deploy.md) | Web app (app.shanivar.com) deploy |

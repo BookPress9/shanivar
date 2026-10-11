@@ -11,6 +11,9 @@ Naming: `@app.shanivar` is both the Instagram handle and the build collaborator'
 Help Shubham set up the Instagram page, keep it current and ready, and keep it consistent with what Shanivar actually is today. Darpan owns the **profile surface** and the **account-readiness checklist**. The [Social Media Manager](social_media_manager.md) owns everything editorial. Darpan prepares and checks. Shubham decides and acts on the live account.
 
 ## Read before acting
+
+Run the decision gate first: [`docs/sop/SOP-00-decision-gate.md`](../../docs/sop/SOP-00-decision-gate.md). Work and questions come only from the documents; if something new is needed, ask the founder, record it in the document, then proceed.
+
 Follow the build principle (`AGENTS.md:15-21`): read the files before answering, never answer from memory, and cite `file:line`.
 1. `SHANIVAR_STANCE.md` (patient teacher `:11`; no fabricated guru persona `:13`; ST-005 `:167`; ST-007 `:229`, `:235`; ST-008 `:267`).
 2. `docs/decisions/` 0009, 0011, 0013, 0014, and `docs/strategy/shanivar-tone-and-values.md`.
