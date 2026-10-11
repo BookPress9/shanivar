@@ -42,3 +42,12 @@ Task states: `READY`, `CLAIMED`, `IN_PROGRESS`, `REVIEW`, `REVISION`, `ACCEPTED`
 
 Codex and Grok may independently read, research, draft, implement and test within an assigned task. Recurring or unattended work is real only when its trigger, connected workspace, credentials/permissions, run history and failure reporting are verified. Local queue files do not themselves start either agent.
 
+
+## Documentation map
+
+Added 11 October 2026. Baseline documentation system following "The Vibe Coding Blueprint"; it extends, and does not replace or weaken, any rule above. Index and "which doc answers which question": [`docs/README.md`](docs/README.md).
+
+- Core documents in [`docs/blueprint/`](docs/blueprint/): `PRD.md`, `DESIGN_SYSTEM.md`, `ARCHITECTURE.md`, `DATABASE.md`, `SECURITY.md`, `CODE_STYLE.md`, `TESTING.md`, `AGENTS.md` (blueprint copy; this root file is the one tools discover and it wins on conflict).
+- Procedures in [`docs/sop/`](docs/sop/README.md) (SOP-01 to SOP-09), including the "always true" rules.
+- Source library and Sadhana numbers in [`docs/sources/`](docs/sources/README.md) and [`docs/sources/SADHANA_CALCULATIONS.md`](docs/sources/SADHANA_CALCULATIONS.md).
+- Where something is unknown the docs say `UNRESOLVED:` with the question. Do not fill those by guessing; ask the founder.
