@@ -38,7 +38,7 @@
       <nav class="site-nav" aria-label="Main">
         <ul>
           <li><a href="#routine">Routine</a></li>
-          <li><a href="#sadhana">Sadhana</a></li>
+          <li><a href="#sadhak">Sadhana</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="about.html">About</a></li>
           <li><a class="nav-cta" href="#early-access">Join the list</a></li>
@@ -48,18 +48,16 @@
   </header>
 
   <main id="main">
-    <!-- HERO -->
     <section class="hero dark" aria-labelledby="hero-title">
       <div class="wrap hero-grid">
         <div>
           <p class="eyebrow">Shanivar · Android app in development</p>
           <h1 id="hero-title">Discipline is freedom.</h1>
-          <p class="lede">Your work has a calendar. Your life runs on memory and mood. Put it on the calendar.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="#early-access">Join the early-access list</a>
-            <a class="btn btn-secondary" href="#routine">See how Routine works</a>
+          <p class="lede">Shape the day with <strong>Routine</strong>. Practise with <strong>Sadhana</strong> until the skill survives without the app.</p>
+          <div class="actions doors">
+            <a class="btn btn-primary" href="#routine">Build your routine</a>
+            <a class="btn btn-secondary" href="#sadhak">Become a Sadhak</a>
           </div>
-          <p class="hero-note">An Android app for your day: wake alarm, app protection and a short breathing practice. Built by The Hybrid Monk. In development, not released. <strong>Routine</strong> shapes the day. <strong>Sadhana</strong> trains attention until the practice can leave the phone and enter your life.</p>
         </div>
         <div aria-hidden="true">
           <div class="saturn" aria-hidden="true"><div class="orbit"><i></i></div><div class="body"></div><div class="ring"></div></div>
@@ -67,178 +65,88 @@
       </div>
     </section>
 
-    <!-- PROBLEM -->
-    <section class="section paper" aria-labelledby="problem-title">
-      <div class="wrap">
-        <div class="statement">
-          <p class="eyebrow">The problem</p>
-          <h2 id="problem-title" style="margin:.7rem 0 1.5rem">Stop leaving your life to chance.</h2>
-          <p class="big">You follow calendars for meetings, deadlines and other people. Then you expect your own growth to survive on memory and mood.</p>
-          <p class="big">That is backwards. Put it on the calendar.</p>
-          <p style="margin-top:1.5rem">And there is the other part. Boredom, effort or discomfort shows up, and the hand is already reaching for the phone. You opened it for one thing. What was it?</p>
-          <p class="pull">Shanivar is not here to keep you busy. It is here to make what matters harder to ignore.</p>
-          <h3 style="font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--paper-ink);margin:2.5rem 0 .8rem">Strict about the plan.</h3>
-          <p>Clear next action. You do the work. No pep talk, no wellness wallpaper, no shame when a day goes sideways. A missed day is information. Start again tomorrow.</p>
-          <p>Strict does not mean caged. Every boundary in Shanivar is one you set, and one you can stop.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ROUTINE -->
-    <section class="section dark" id="routine" aria-labelledby="routine-title">
-      <div class="wrap">
-        <div class="section-head">
+    <!-- 1. ROUTINE -->
+    <section class="section paper" id="routine" aria-labelledby="routine-title">
+      <div class="wrap two-col">
+        <div>
           <p class="eyebrow">Routine · in development</p>
-          <h2 id="routine-title">Wake. Focus. Protect time. Put your personal work on the calendar.</h2>
-          <p class="lede">Routine is the first place Shanivar opens. Here is the setup flow as it is being built. It is not released and has not finished testing on real phones yet.</p>
-        </div>
-
-        <ol class="steps">
-          <li class="step light">
-            <p class="eyebrow">Your day</p>
-            <h3>Give the day two fixed points.</h3>
-            <p class="ui-line">Start with your real wake and sleep times.</p>
-            <p>Two questions to start: <em>I usually wake around</em> and <em>I make room for sleep around</em>. Your answers place the day you can actually follow.</p>
-            <ul class="ticks">
-              <li>Add personal activities with a name, time, duration and Every day, Weekly or Custom days.</li>
-              <li>Gym, Read a book and Extend Sadhana are just editable starting points.</li>
-              <li>Activities organise your calendar. They never set an alarm or start protection on their own.</li>
-            </ul>
-          </li>
-
-          <li class="step">
-            <p class="eyebrow">Guardrails</p>
-            <h3>Set it once. Then get on with life.</h3>
-            <p>Two tools. Both editable. Both optional. Neither should need your attention every day.</p>
-            <ul class="ticks">
-              <li><strong>Wake alarm: start when you said you would.</strong> It can use your wake anchor. The wake screen may ask you to stand or move, but an accessible exit with no physical task is always there, and a hard time limit always ends the ringing.</li>
-              <li><strong>App protection: choose what loses access to you.</strong> Pick distracting apps once, then set protection windows: several a day, across the week, overnight if you need. Every day, Weekdays, Weekends or Custom.</li>
-            </ul>
-          </li>
-
-          <li class="step">
-            <p class="eyebrow">Honest boundaries</p>
-            <h3>Voluntary and stoppable. Never unbreakable.</h3>
-            <p class="ui-line">You already know which apps take more than they give. Select them once.</p>
-            <ul class="ticks">
-              <li>Essential access stays available. Calls and system apps are never selected.</li>
-              <li>Stop protection anytime: no waiting, no payment, no forced practice, no server.</li>
-              <li>Protection is hard to undo from bed, not impossible. You can still get around it in Android Settings, a browser or another phone.</li>
-            </ul>
-          </li>
-
-          <li class="step light">
-            <p class="eyebrow">Saved is not Active</p>
-            <h3>The app says only what is true.</h3>
-            <p>A saved plan is not proof that protection is on. Each window shows its real state, and "Active" is meant to appear only when the phone confirms it.</p>
-            <ul class="states" aria-label="Protection states">
-              <li class="chip" style="color:#3c4439">Saved</li>
-              <li class="chip" style="color:#7a4f12">Needs device access</li>
-              <li class="chip" style="color:#3d5320">Ready</li>
-              <li class="chip" style="color:#25301f">Active</li>
-              <li class="chip" style="color:#7a4f12">Needs attention</li>
-              <li class="chip" style="color:#4a4f47">Off</li>
-            </ul>
-            <p style="margin-top:1rem">If you decline a permission, your plan is kept. Shanivar will say it needs device access. It will not pretend you are protected.</p>
-          </li>
-        </ol>
-
-        <div class="timeline-wrap">
-          <div>
-            <p class="eyebrow">Today</p>
-            <h3 style="font-family:var(--serif);font-size:1.7rem;font-weight:600;margin:.6rem 0 .8rem">One timeline, built from what you saved.</h3>
-            <p style="color:var(--muted)">Routine combines your wake and sleep anchors, your activities and your device boundaries into a single readable day. Only device-backed items, the alarm and protection windows, carry a status. It does not calculate an "ideal" biological timetable. The schedule follows your stated life.</p>
+          <h2 id="routine-title">Your day. Two fixed points.</h2>
+          <p class="lede">Pick when you wake and make room for sleep. Your day forms around them.</p>
+          <div class="builder" id="day-builder" role="group" aria-label="Your day illustration: choose times">
+            <label for="wake">I usually wake around
+              <select id="wake"><option>05:30</option><option>06:00</option><option selected>06:30</option><option>07:00</option><option>07:30</option><option>08:00</option></select></label>
+            <label for="sleep">I make room for sleep around
+              <select id="sleep"><option>21:30</option><option>22:00</option><option selected>22:30</option><option>23:00</option><option>23:30</option></select></label>
           </div>
-          <figure class="timeline">
-            <figcaption>Illustration with sample times. Not a screenshot of the app.</figcaption>
-            <ol>
-              <li class="event"><div class="row"><div><time>06:30</time><strong>Wake</strong></div><span class="chip saved">Wake alarm · saved</span></div></li>
-              <li class="event"><div class="row"><div><time>07:00 · 45 min</time><strong>Gym</strong><p>Personal activity</p></div></div></li>
-              <li class="event"><div class="row"><div><time>09:00 – 12:00</time><strong>Protection window</strong><p>Selected apps paused</p></div><span class="chip needs">Needs device access</span></div></li>
-              <li class="event"><div class="row"><div><time>21:00 · 30 min</time><strong>Read a book</strong><p>Personal activity</p></div></div></li>
-              <li class="event"><div class="row"><div><time>22:30</time><strong>Make room for sleep</strong></div></div></li>
-            </ol>
-          </figure>
+          <ul class="facts">
+            <li><strong>Wake alarm.</strong> An accessible way out is always there.</li>
+            <li><strong>App protection.</strong> Voluntary. Stop it anytime. Never unbreakable.</li>
+            <li><strong>Saved is not Active.</strong> The app says only what the phone confirms.</li>
+          </ul>
+        </div>
+        <figure class="timeline day" aria-live="polite">
+          <figcaption>Illustration, not the app. Sample activities.</figcaption>
+          <ol id="day-list">
+            <li class="event"><time>06:30</time><strong>Wake</strong><span class="chip saved">Wake alarm · saved</span></li>
+            <li class="event"><time>07:00 · 45 min</time><strong>Gym</strong></li>
+            <li class="event"><time>09:00 – 12:00</time><strong>Protection window</strong><span class="chip needs">Needs device access</span></li>
+            <li class="event"><time>21:00 · 30 min</time><strong>Read a book</strong></li>
+            <li class="event"><time>22:30</time><strong>Make room for sleep</strong></li>
+          </ol>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 2. STILLNESS -->
+    <section class="section dark" id="still" aria-labelledby="still-title">
+      <div class="wrap still">
+        <p class="eyebrow">Try 30 seconds · nothing is recorded</p>
+        <h2 id="still-title">Natural breath. Nothing else.</h2>
+        <p class="safe">Only where you are still and somewhere suitable. Not while driving, cycling or operating anything.</p>
+        <div class="still-box" id="still-box">
+          <p class="still-step" data-step="intro">When you are ready, begin. There is no timer.</p>
+          <p class="still-step" data-step="on">Do not make it deeper. Do not slow it down. Do not count it. When attention moves, return to the next breath. End whenever you like.</p>
+          <p class="still-step" data-step="end">However that felt, it's information. Nothing to fix.</p>
+          <div class="actions" hidden id="still-controls">
+            <button class="btn btn-primary" type="button" id="still-begin">Begin</button>
+            <button class="btn btn-secondary" type="button" id="still-end" hidden>End</button>
+          </div>
         </div>
       </div>
     </section>
 
-
-    <aside class="cta-band" aria-label="Early access">
-      <div class="wrap">
-        <div><p class="cta-title">Set it once. Then get on with life.</p><p>Routine is not released yet. Get on the list and be first to test it.</p></div>
-        <a class="btn btn-primary" href="#early-access">Join the early-access list</a>
-      </div>
-    </aside>
-
-    <!-- SADHANA -->
-    <section class="section paper" id="sadhana" aria-labelledby="sadhana-title">
+    <!-- 3. SADHAK PATH -->
+    <section class="section paper" id="sadhak" aria-labelledby="sadhak-title">
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow">Sadhana · in development</p>
-          <h2 id="sadhana-title">Do the work. Need fewer prompts.</h2>
-          <p class="lede">Train attention until the practice can leave the phone and enter your life. The practice is working when you can carry it without the player.</p>
+          <h2 id="sadhak-title">The Sadhak path.</h2>
+          <p class="lede">Six founder principles. His words, his order.</p>
         </div>
-        <div class="two-col">
-          <article class="card">
-            <p class="eyebrow">Steady · natural breath · as designed</p>
-            <h3>Natural breath. Nothing else.</h3>
-            <p>Do not make it deeper. Do not slow it down. Do not count it. Attention will move. When it does, return to the next breath.</p>
-            <ul class="cue-list">
-              <li>One minute, after you confirm you are still and somewhere suitable.</li>
-              <li>Shanivar does not pace the breath or ask you to hold it.</li>
-              <li>Pause or end at any time. Reflection afterwards is optional, and "it felt uncomfortable" is a valid answer.</li>
-            </ul>
-          </article>
-          <article class="card">
-            <p class="eyebrow">What is decided, what is not</p>
-            <h3>Progression waits.</h3>
-            <p>Steady is the only Sadhana practice in internal builds today. Its content still needs review before any public release.</p>
-            <p>How Sadhana grows from here is still being designed with the founder. Two things hold already: no streaks, points or ranks in this build, and time in the app never unlocks more intense practice.</p>
-            <p>Less reliance on Shanivar can be a good outcome.</p>
-          </article>
-        </div>
+        <ol class="path">
+          <li><details><summary><span>1</span>Discipline</summary><p>Founder principle 1 of 6. No interpretation added.</p></details></li>
+          <li><details><summary><span>2</span>Keep moving forward</summary><p>Founder principle 2 of 6. No interpretation added.</p></details></li>
+          <li><details><summary><span>3</span>Learning</summary><p>Founder principle 3 of 6. No interpretation added.</p></details></li>
+          <li><details><summary><span>4</span>Curiosity</summary><p>Founder principle 4 of 6. No interpretation added.</p></details></li>
+          <li><details><summary><span>5</span>Be more present, be more in your body</summary><p>Founder principle 5 of 6. No interpretation added.</p></details></li>
+          <li><details><summary><span>6</span>Walk towards your purpose</summary><p>Founder principle 6 of 6. No interpretation added.</p></details></li>
+        </ol>
+        <p class="path-note">Steady, one minute with your natural breath, is the only Sadhana practice in internal builds. No streaks, points or ranks.</p>
       </div>
     </section>
 
-    <!-- STANCE -->
-    <section class="section panel" id="stance" aria-labelledby="stance-title">
+    <!-- 4. IS / ISN'T -->
+    <section class="section panel" id="not" aria-labelledby="not-title">
       <div class="wrap">
-        <div class="section-head">
-          <p class="eyebrow">The stance</p>
-          <h2 id="stance-title">Notice the mind. Don't control it.</h2>
-        </div>
-        <p class="stance-quote">Notice what is already happening inside, before you react. Then choose what comes next.</p>
-        <ul class="teacher">
-          <li><strong>A patient teacher.</strong>It notices something precise. It offers a question. It may suggest one small practice. Then it gives you space to find out for yourself.</li>
-          <li><strong>Your judgement stays yours.</strong>You can disagree, skip, change direction or stop. Stopping is a valid answer, not resistance to overcome.</li>
-          <li><strong>Leave more present.</strong>The aim is not more time in Shanivar. The aim is that you leave Shanivar more present than when you opened it.</li>
-        </ul>
-      </div>
-    </section>
-
-
-    <aside class="cta-band" aria-label="Early access">
-      <div class="wrap">
-        <div><p class="cta-title">Join the early testers.</p><p>Testers get the first builds and tell us what breaks. Join the list.</p></div>
-        <a class="btn btn-primary" href="#early-access">Join the early-access list</a>
-      </div>
-    </aside>
-
-    <!-- WHAT IT ISN'T -->
-    <section class="section paper" id="not" aria-labelledby="not-title">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="eyebrow">What Shanivar isn't</p>
-          <h2 id="not-title">Not another thing to scroll.</h2>
-        </div>
-        <ul class="not-list">
-          <li><strong>Not a detox.</strong>No vow to quit your phone. You choose the apps and the windows, and you can stop.</li>
-          <li><strong>Not a wellness or therapy app.</strong>No diagnosis, no treatment claims, no promise that one minute fixes anything.</li>
-          <li><strong>Not a meditation library.</strong>One short natural-breath practice, meant to need the phone less over time.</li>
-          <li><strong>Not a horoscope.</strong>No astrology in what is being built now. No readings, no destiny.</li>
-          <li><strong>Not social.</strong>No feed, no followers, no leaderboards, no reports to family.</li>
-          <li><strong>Not a trap.</strong>No lock you cannot leave, no fee to unlock early, ever.</li>
+        <p class="eyebrow">What it is and isn't</p>
+        <h2 id="not-title">Notice the mind. Don't control it.</h2>
+        <ul class="toggles">
+          <li><button type="button" class="tog" aria-expanded="true" aria-controls="t1">A detox?</button><p id="t1">No. You choose the apps and windows, and you can stop.</p></li>
+          <li><button type="button" class="tog" aria-expanded="true" aria-controls="t2">Therapy?</button><p id="t2">No. No diagnosis, no treatment claims.</p></li>
+          <li><button type="button" class="tog" aria-expanded="true" aria-controls="t3">A horoscope?</button><p id="t3">No. No astrology in what is being built.</p></li>
+          <li><button type="button" class="tog" aria-expanded="true" aria-controls="t4">Social?</button><p id="t4">No feed, no followers, no leaderboards.</p></li>
+          <li><button type="button" class="tog" aria-expanded="true" aria-controls="t5">A trap?</button><p id="t5">No. No lock you cannot leave, no fee to unlock early.</p></li>
+          <li><button type="button" class="tog" aria-expanded="true" aria-controls="t6">The goal?</button><p id="t6">Needing Shanivar less can be a good outcome.</p></li>
         </ul>
       </div>
     </section>
@@ -249,11 +157,10 @@
         <div>
           <p class="eyebrow">Early access</p>
           <h2 id="ea-title" style="margin:.7rem 0 1rem">Not released yet.</h2>
-          <p class="lede">Join the list for first access to test builds. Testers report what works and what doesn't.</p>
           <ul class="ticks">
             <li>Android only, version 8.0 or newer.</li>
-            <li>Early testing starts with adults (18+).</li>
-            <li>Early builds can have bugs. Do not rely on them for anything critical.</li>
+            <li>Adults (18+) first.</li>
+            <li>Early builds can have bugs.</li>
           </ul>
         </div>
         <!-- Waitlist form, collected by Netlify Forms (free tier). Approved by the founder for launch on 6 Oct 2026.
@@ -287,40 +194,12 @@
     <!-- FAQ -->
     <section class="section paper" id="faq" aria-labelledby="faq-title">
       <div class="wrap"><div class="faq">
-        <p class="eyebrow">FAQ</p>
-        <h2 id="faq-title" style="margin:.7rem 0 1.5rem">Straight answers.</h2>
-        <details>
-          <summary>Can I download Shanivar now?</summary>
-          <p>No. Shanivar is in development for Android. There is no public release and no Play Store listing yet. Join the early-access list and you will be invited when there is a build to test.</p>
-        </details>
-        <details>
-          <summary>Is it on iPhone?</summary>
-          <p>No. Shanivar is being built for Android only.</p>
-        </details>
-        <details>
-          <summary>Can it lock me out of my phone?</summary>
-          <p>No. Essential access stays available, and calls and system apps are never selected. You can stop protection from inside Shanivar at any time, with no waiting, no payment and no practice required first.</p>
-        </details>
-        <details>
-          <summary>Is app protection impossible to get around?</summary>
-          <p>No, and we will never claim it is. It is meant to be deliberately hard to undo in a weak moment. Someone determined can still get past it, for example through Android Settings, a browser or another phone. Shanivar does not use device-administrator tricks to stop you from uninstalling it. Your phone stays yours.</p>
-        </details>
-        <details>
-          <summary>Do I need an internet connection?</summary>
-          <p>The wake alarm, protection windows and Stop protection are being built to run on your phone without needing a network or a server. That is still being verified on real devices.</p>
-        </details>
-        <details>
-          <summary>Is this a meditation app?</summary>
-          <p>Not in the usual sense. Sadhana starts with Steady, a one-minute practice with your natural breath. The goal is that you can do it without the app.</p>
-        </details>
-        <details>
-          <summary>Does it use astrology?</summary>
-          <p>No. Astrology is not part of what is being built now.</p>
-        </details>
-        <details>
-          <summary>What will it cost?</summary>
-          <p>Pricing has not been decided, and nothing on this site is a price. One thing is ruled out: Shanivar will never charge you to end a protection window early.</p>
-        </details>
+        <h2 id="faq-title" style="margin:0 0 1rem">Straight answers.</h2>
+        <details><summary>Can I download Shanivar now?</summary><p>No. It is in development for Android. No public release, no Play Store listing yet.</p></details>
+        <details><summary>Is it on iPhone?</summary><p>No. Android only.</p></details>
+        <details><summary>Can it lock me out of my phone?</summary><p>No. Calls and system apps are never selected. Stop protection anytime: no waiting, no payment, no practice first.</p></details>
+        <details><summary>Is app protection impossible to get around?</summary><p>No, and we will never claim it is. It is hard to undo in a weak moment, not impossible. Your phone stays yours.</p></details>
+        <details><summary>What will it cost?</summary><p>Not decided. Shanivar will never charge you to end a protection window early.</p></details>
       </div></div>
     </section>
   </main>

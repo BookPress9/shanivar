@@ -219,3 +219,33 @@ input::placeholder{color:#9aa198}
 h1,h2,.cta-title{text-wrap:balance}
 .faq summary{list-style-position:inside}
 @media(max-width:47.99rem){.saturn{width:min(13rem,60vw)}}
+
+/* V4 interactive redesign (2026-10-12) */
+.doors .btn{min-width:13rem}
+.builder{display:grid;gap:.9rem;margin:1.6rem 0}
+.builder label{display:grid;gap:.35rem;font-weight:700;color:var(--paper-ink)}
+.builder select{font:inherit;min-height:2.75rem;padding:.4rem .6rem;border:1px solid var(--paper-line);border-radius:.5rem;background:#fff;color:var(--paper-ink);max-width:10rem}
+.facts{list-style:none;padding:0;margin:1.2rem 0 0;display:grid;gap:.5rem}
+.timeline.day ol{list-style:none;margin:0;padding:0}
+.timeline.day .event{display:flex;flex-wrap:wrap;gap:.2rem .8rem;align-items:baseline;padding:.75rem 0;border-bottom:1px solid #343a33}
+.timeline.day time{min-width:7.5rem;font-variant-numeric:tabular-nums;color:var(--gold)}
+.timeline.day{background:var(--bg);color:var(--ink);padding:1.4rem;border-radius:1rem}
+.timeline.day figcaption{font-size:.85rem;color:var(--muted);margin-bottom:.6rem;font-weight:700}
+.still{max-width:40rem}
+.still .safe{color:var(--muted);margin:.8rem 0 1.4rem;font-size:.95rem}
+.still-box{border:1px solid var(--line);border-radius:1rem;padding:1.5rem;background:var(--surface)}
+.still-step{font-size:1.15rem}
+.js .still-step{display:none}
+.js .still-box[data-state=intro] [data-step=intro],.js .still-box[data-state=on] [data-step=on],.js .still-box[data-state=end] [data-step=end]{display:block}
+.still-box .actions{margin-top:1.2rem}
+.path{list-style:none;padding:0;margin:0;display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+.path details{background:#fff8;border:1px solid var(--paper-line);border-radius:.8rem;padding:.2rem 1rem}
+.path summary{cursor:pointer;min-height:2.9rem;display:flex;align-items:center;gap:.7rem;font-weight:700;color:var(--paper-ink);font-size:1.05rem}
+.path summary span{font-family:var(--serif);color:var(--gold-on-paper);font-size:1.3rem}
+.path details p{padding:0 0 .9rem;font-size:.92rem}
+.path-note{margin-top:1.4rem;max-width:40rem}
+.toggles{list-style:none;padding:0;margin:1.8rem 0 0;display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+.tog{font:inherit;font-weight:700;width:100%;text-align:left;min-height:2.9rem;padding:.6rem 1rem;border-radius:.7rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.tog[aria-expanded=true]{border-color:var(--sage)}
+.toggles p{padding:.5rem 1rem 0;color:var(--muted)}
+[hidden]{display:none!important}
