@@ -65,7 +65,7 @@ No Device Admin or AccessibilityService (0002, permanent); no streaks, ranks, le
 ## 10. Constraints
 - **Technical:** no release signing (DEV-17, `SHANIVAR_TECHNICAL_MAP.md:280`); no migration runner (DEV-9, `:274`); no CI (DEV-15, `:279`); debug builds only (`android-app/app/build.gradle.kts:35-42`); Android emulator not authorized, hardware only (`ROUTINE_V3_TEST_GUIDE_2026-09-30.md:3`).
 - **Business:** founder approves spending, public release, external actions (`AGENTS.md:7`). Marketing paused (founder, 2026-10-06; `routine-onboarding-marketing-plan.md:3`).
-- **Design:** `DESIGN_SYSTEM.md`. **Timeline:** UNRESOLVED: no dated plan; the marketing plan forbids publishing a launch date (`routine-onboarding-marketing-plan.md:253`).
+- **Design:** `DESIGN_SYSTEM.md`; app design source of truth is `android-app/wireframes/initiation-v1/` (`index.html`, `HANDOFF.md`) per decision 0016 (accounts at launch, cloud sync, Living Orbit, 60-second practice; supersedes 0014 local-only). **Timeline:** UNRESOLVED: no dated plan; the marketing plan forbids publishing a launch date (`routine-onboarding-marketing-plan.md:253`).
 
 ## 11. Assumptions
 Founder convictions (one consciousness, maya) are not product claims (`shanivar-founder-direction.md:13-17`). Religious resonance with parents is a hypothesis (`:27`). Meditation-before-insight improving receptivity is untested (`:44`).

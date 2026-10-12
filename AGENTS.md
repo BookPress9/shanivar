@@ -65,6 +65,7 @@ Added 12 October 2026. The founder's Sadhak and Hybrid Monk definitions are core
 Added 11 October 2026. Baseline documentation system following "The Vibe Coding Blueprint"; it extends, and does not replace or weaken, any rule above. Index and "which doc answers which question": [`docs/README.md`](docs/README.md).
 
 - Core documents in [`docs/blueprint/`](docs/blueprint/): `PRD.md`, `DESIGN_SYSTEM.md`, `ARCHITECTURE.md`, `DATABASE.md`, `SECURITY.md`, `CODE_STYLE.md`, `TESTING.md`, `AGENTS.md` (blueprint copy; this root file is the one tools discover and it wins on conflict).
+- App design source of truth: [`android-app/wireframes/initiation-v1/`](android-app/wireframes/initiation-v1/) (`index.html` + `HANDOFF.md`), adopted by `docs/decisions/0016-initiation-v1-wireframe-adopted.md`.
 - Procedures in [`docs/sop/`](docs/sop/README.md) (SOP-01 to SOP-09), including the "always true" rules.
 - Source library and Sadhana numbers in [`docs/sources/`](docs/sources/README.md) and [`docs/sources/SADHANA_CALCULATIONS.md`](docs/sources/SADHANA_CALCULATIONS.md).
 - Where something is unknown the docs say `UNRESOLVED:` with the question. Do not fill those by guessing; ask the founder.
