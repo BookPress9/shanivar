@@ -41,7 +41,7 @@ class SadhanaUiTest {
         noSanskritShown(); shot("01-sadhana-home")
         click("Enter the Living Spine")
         compose.onNodeWithText("One axis.\nSeven doorways.").assertExists()
-        compose.onNodeWithContentDescription("Seven-centre subtle-body study map").performScrollTo()
+        compose.onNodeWithContentDescription("Living Spine: 33", substring = true).performScrollTo()
         compose.onNode(SemanticsMatcher("click label") { it.config.getOrElseNullable(androidx.compose.ui.semantics.SemanticsActions.OnClick) { null }?.label == "Open Crown" }).performClick()
         compose.onNodeWithText("SELECTED WAYPOINT · CROWN").assertExists()
         noSanskritShown(); shot("02-living-spine")
@@ -107,6 +107,25 @@ class SadhanaUiTest {
                 androidx.compose.ui.semantics.ProgressBarRangeInfo.Indeterminate))
         compose.onNodeWithText("PREPARING SADHANA").assertExists()
         shot("12-loading")
+    }
+
+    @Test fun saturnLoadingWithSpinningRings() {
+        compose.mainClock.autoAdvance = false
+        compose.setContent { SadhanaLoadingSurface(LoadState.Visible("Preparing Sadhana"), reduceMotion = false, onRetry = {}, onDismiss = {}) }
+        compose.mainClock.advanceTimeBy(9_000)
+        compose.onNodeWithText(SadhanaLoadingMotion.CREDIT).assertExists()
+        shot("13-saturn-loading")
+    }
+
+    @Test fun spineShowsThirtyThreeStagesWithPlainWaypoints() {
+        repeat(6) { c.recordOwn() }
+        c.go(SadhanaView.SPINE)
+        launch()
+        compose.onNodeWithText("07 / 33").performScrollTo()
+        compose.onNodeWithText("4 stages to Mid torso").assertExists()
+        noSanskritShown()
+        compose.onNodeWithContentDescription("Living Spine", substring = true).performScrollTo()
+        shot("14-spine-33")
     }
 
     @Test fun loadingErrorOffersRetryAndContinue() {

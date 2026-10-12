@@ -44,11 +44,21 @@ class SadhanaLoadingTest {
         advanceTimeBy(1_000); runCurrent(); assertEquals(LoadState.Idle, g.state); job.join()
         g.run<Unit>("x") { error("boom") }; assertEquals(LoadState.Idle, g.state)
     }
-    @Test fun motionIsOneWayAndNotBreathPaced() {
-        assertTrue(SadhanaLoadingMotion.END_SCALE > SadhanaLoadingMotion.START_SCALE)
-        assertTrue("slower than any breath cycle", SadhanaLoadingMotion.DRIFT_MS >= 15_000)
+    @Test fun ringsSpinSteadilyOneDirectionNoScalePulse() {
+        assertEquals(0f, SadhanaLoadingMotion.ringAngle(0), 0f)
+        assertEquals(90f, SadhanaLoadingMotion.ringAngle(30_000), 0.01f)
+        assertTrue("monotonic within a turn", SadhanaLoadingMotion.ringAngle(60_000) > SadhanaLoadingMotion.ringAngle(59_000))
+        assertTrue("far slower than any breath cycle", SadhanaLoadingMotion.RING_TURN_MS >= 60_000)
         val src = File("src/main/java/com/shanivar/nativeapp/SadhanaLoading.kt").readText()
-        assertFalse(src.contains("RepeatMode") || src.contains("infiniteRepeatable"))
-        assertFalse("never named breathing", Regex("(?i)breath(e|ing)").containsMatchIn(src.replace("cannot pace breathing", "")))
+        assertFalse("no in/out cycle", src.contains("RepeatMode.Reverse"))
+        assertFalse("no scale pulse", Regex("scaleX|scaleY|graphicsLayer|Animatable").containsMatchIn(src))
+        assertFalse("never named breathing", Regex("(?i)breath(e|ing)").containsMatchIn(src.replace("pace breath", "")))
+        assertFalse("kaleidoscope removed", src.contains("kaleido") || src.contains("sadhana_loading_debug_only"))
+    }
+    @Test fun saturnAssetHasRecordedSourceAndCredit() {
+        val notes = File("ASSET_NOTES.md").readText()
+        assertTrue(notes.contains("PIA06193") && notes.contains("NASA/JPL/Space Science Institute") && notes.contains("images.nasa.gov"))
+        assertTrue(File("src/main/res/drawable-nodpi/saturn_cassini_pia06193.jpg").exists())
+        assertFalse(File("src/debug/res/drawable-nodpi/sadhana_loading_debug_only.jpg").exists())
     }
 }

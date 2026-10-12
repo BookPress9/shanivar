@@ -63,6 +63,30 @@ object SadhanaSpine {
 
     fun byId(id: String) = centres.firstOrNull { it.id == id } ?: centres.last()
 
+    /** 33 stages, base (1) to crown (33). Founder's updated sadhana-v1 app.js, 13 Oct 2026. */
+    const val STAGES = 33
+
+    /** Centre waypoint stage, from app.js CHAKRAS[].threshold (1, 5, 11, 17, 24, 29, 33). */
+    val thresholds: Map<String, Int> = mapOf("muladhara" to 1, "svadhisthana" to 5, "manipura" to 11, "anahata" to 17,
+        "vishuddha" to 24, "ajna" to 29, "sahasrara" to 33)
+    fun threshold(id: String): Int = thresholds.getValue(id)
+
+    enum class Region(val label: String) { COCCYGEAL("Co4"), SACRAL("S5"), LUMBAR("L5"), THORACIC("T12"), CERVICAL("C7") }
+    /** Regions counted from the base: Co4, S5, L5, T12, C7 (4+5+5+12+7 = 33). */
+    fun region(stage: Int): Region = when (stage) {
+        in 1..4 -> Region.COCCYGEAL; in 5..9 -> Region.SACRAL; in 10..14 -> Region.LUMBAR; in 15..26 -> Region.THORACIC; else -> Region.CERVICAL
+    }
+
+    /**
+     * Practice stage, as app.js spineLevel(): 1 + completed attempts + self-reported independent practice, capped at 33.
+     * Ended or interrupted attempts stay visible in the record but do not advance a stage. Missed days remove nothing.
+     * Visual only; it never unlocks practice, study or capability.
+     */
+    fun stageLevel(r: SadhanaRecord): Int = minOf(STAGES, 1 + r.attempts.count { it.outcome == SadhanaOutcome.COMPLETED } + r.independentCount)
+
+    /** Next centre above the current stage, for the plain readout. */
+    fun nextCentre(level: Int): SpineCentre? = centres.filter { threshold(it.id) > level }.minByOrNull { threshold(it.id) }
+
     /** Practice-trace layer: wireframe meter min(100, 20 + attempts*12 + independent*8), from the record only. */
     fun tracePercent(r: SadhanaRecord): Int = minOf(100, 20 + r.attemptCount * 12 + r.independentCount * 8)
 }

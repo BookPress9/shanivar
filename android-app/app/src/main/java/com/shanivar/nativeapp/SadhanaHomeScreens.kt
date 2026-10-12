@@ -16,10 +16,10 @@ import androidx.compose.ui.unit.sp
 
 /* Sadhana screens A (DEV-31): home, Living Spine, Path. Copy verbatim from app.js unless listed in 0017 honesty edits. */
 
-@Composable fun SadhanaHomeScreen(c: SadhanaController) {
+@Composable fun SadhanaHomeScreen(c: SadhanaController, reduceMotion: Boolean = true) {
     val p = c.practice; val r = c.record
     STop("SADHANA", "", if (c.minimal) "GUIDANCE: MINIMAL" else "TODAY · ${c.nowLabel()}")
-    SpineMap(c.ui.centre, compact = true) { c.selectCentre(it) }
+    SpineMap(c.ui.centre, compact = true, level = SadhanaSpine.stageLevel(c.record), reduceMotion = reduceMotion) { c.selectCentre(it) }
     SHead("YOUR PRACTICE", "The path lives\nwithin you.", "The map offers a language. Your practice remains your own.")
     SCard(light = true) {
         SMeta("TODAY’S PRACTICE · ${p.capability?.label}", light = true)
@@ -31,12 +31,21 @@ import androidx.compose.ui.unit.sp
     SText("Enter the Living Spine") { c.go(SadhanaView.SPINE) }
 }
 
-@Composable fun SpineScreen(c: SadhanaController) {
+@Composable fun SpineScreen(c: SadhanaController, reduceMotion: Boolean = true) {
     val r = c.record; val centre = SadhanaSpine.byId(c.ui.centre)
     STop("←", "THE LIVING SPINE", "STUDY + PRACTICE", onLeft = { c.go(SadhanaView.HOME) })
     SHead("A TECHNICAL SUBTLE-BODY MAP", "One axis.\nSeven doorways.",
         "Explore one contemporary seven-centre teaching map. Historical systems differ; this is not a scan of your body or energy.")
-    SpineMap(c.ui.centre, compact = false) { c.selectCentre(it) }
+    val level = SadhanaSpine.stageLevel(r)
+    SpineMap(c.ui.centre, compact = false, level = level, reduceMotion = reduceMotion) { c.selectCentre(it) }
+    val next = SadhanaSpine.nextCentre(level)
+    Row(Modifier.fillMaxWidth().padding(vertical = 6.dp).border(1.dp, Sad.Line).padding(14.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+        Column(Modifier.weight(1f)) {
+            Text("PRACTICE STAGE", fontSize = 9.sp, letterSpacing = 1.5.sp, color = Sad.Bronze)
+            Text(next?.let { val n = SadhanaSpine.threshold(it.id) - level; "$n stage${if (n == 1) "" else "s"} to ${it.plainLabel}" } ?: "All waypoints reached", fontSize = 10.sp, color = Sad.Ash)
+        }
+        Text("%02d / 33".format(level), fontFamily = Sad.Serif, fontSize = 28.sp, color = Sad.Ivory)
+    }
     Column(Modifier.fillMaxWidth().padding(vertical = 10.dp).border(1.dp, Sad.Line).background(androidx.compose.ui.graphics.Color(0xFF10110F)).padding(15.dp)) {
         Text("SELECTED WAYPOINT · ${centre.plainLabel.uppercase()}", fontSize = 11.sp, color = Sad.Ash)
         Text(centre.plainLabel, style = Sad.H3, modifier = Modifier.padding(vertical = 8.dp))

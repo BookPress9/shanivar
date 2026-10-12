@@ -85,8 +85,8 @@ object SystemSadhanaClock : SadhanaClock {
     Column(Modifier.fillMaxSize().background(Sad.Void).systemBarsPadding()) {
         Column(Modifier.weight(1f).verticalScroll(scroll).padding(horizontal = 24.dp, vertical = 16.dp)) {
             when (v) {
-                SadhanaView.HOME -> SadhanaHomeScreen(c)
-                SadhanaView.SPINE -> SpineScreen(c)
+                SadhanaView.HOME -> SadhanaHomeScreen(c, reduceMotion)
+                SadhanaView.SPINE -> SpineScreen(c, reduceMotion)
                 SadhanaView.PATH -> PathScreen(c)
                 SadhanaView.PRACTICE -> PracticeDetailScreen(c, reduceMotion)
                 SadhanaView.PREPARE -> PrepareScreen(c)

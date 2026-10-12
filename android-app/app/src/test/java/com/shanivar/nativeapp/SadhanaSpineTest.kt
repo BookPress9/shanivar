@@ -29,4 +29,26 @@ class SadhanaSpineTest {
         val r = SadhanaRecord().addIndependent(LocalDate.of(2026, 10, 12), 3)
         assertEquals(28, SadhanaSpine.tracePercent(r))
     }
+
+    @Test fun thirtyThreeStagesWithFounderThresholds() {
+        assertEquals(33, SadhanaSpine.STAGES)
+        assertEquals(listOf(33, 29, 24, 17, 11, 5, 1), SadhanaSpine.centres.map { SadhanaSpine.threshold(it.id) })
+        assertEquals(listOf(4, 5, 5, 12, 7), SadhanaSpine.Region.entries.map { r -> (1..33).count { SadhanaSpine.region(it) == r } })
+    }
+    @Test fun stageAdvancesOnlyOnCompletedOrSelfReportAndCaps() {
+        fun a(id: String, o: SadhanaOutcome) = SadhanaAttempt(id, "natural", "v", 0, "UTC", 60, 30_000, o)
+        var r = SadhanaRecord().withAttempt(a("e", SadhanaOutcome.ENDED)).withAttempt(a("i", SadhanaOutcome.INTERRUPTED))
+        assertEquals(1, SadhanaSpine.stageLevel(r))
+        r = r.withAttempt(a("c", SadhanaOutcome.COMPLETED)).addIndependent(LocalDate.of(2026, 10, 13), 3)
+        assertEquals(3, SadhanaSpine.stageLevel(r))
+        repeat(40) { r = r.addIndependent(LocalDate.of(2026, 10, 13), 3) }
+        assertEquals(33, SadhanaSpine.stageLevel(r))
+        assertNull(SadhanaSpine.nextCentre(33)); assertEquals("Lower abdomen", SadhanaSpine.nextCentre(1)!!.plainLabel)
+    }
+    @Test fun shimmerIsRandomisedNotPeriodic() {
+        val src = java.io.File("src/main/java/com/shanivar/nativeapp/SadhanaTheme.kt").readText()
+        val spine = src.substring(src.indexOf("fun SpineMap"), src.indexOf("fun SMeter"))
+        assertTrue(spine.contains("rnd.nextInt") && spine.contains("if (!reduceMotion)"))
+        assertFalse(spine.contains("infiniteRepeatable") || spine.contains("RepeatMode"))
+    }
 }

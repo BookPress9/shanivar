@@ -13,6 +13,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -129,36 +132,73 @@ object Sad {
 @Composable fun SRitual(view: OrbitView, still: Boolean, reduceMotion: Boolean) = LivingOrbitView(view, still, reduceMotion)
 
 /**
- * The Living Spine map (spine.css). Waypoints carry plain labels only (naming rule, 0017 as amended).
+ * The Living Spine (founder update 13 Oct): 33 vertebra-like stages from base (1) to crown (33), with the seven
+ * centre waypoints placed at their founder-defined stages. Plain labels only (naming rule). Clean and minimal:
+ * thin bronze outlines, soft glow on reached stages, and a shimmer that travels up the lit trace at irregular,
+ * randomised intervals and speeds (never periodic, never breath-paced). Off under reduced motion.
  * Selection is navigation; nothing here is an energy reading.
  */
-@Composable fun SpineMap(selected: String, compact: Boolean, onSelect: (String) -> Unit) {
-    val h = if (compact) 255.dp else 390.dp
-    Box(Modifier.fillMaxWidth().height(h).semantics { contentDescription = "Seven-centre subtle-body study map" }) {
+@Composable fun SpineMap(selected: String, compact: Boolean, level: Int = 1, reduceMotion: Boolean = true, onSelect: (String) -> Unit) {
+    val h = if (compact) 255.dp else 430.dp
+    val shimmer = remember { androidx.compose.animation.core.Animatable(-1f) }
+    if (!reduceMotion) LaunchedEffect(Unit) {
+        val rnd = java.util.Random()
+        while (true) {
+            kotlinx.coroutines.delay(4_000L + rnd.nextInt(9_000))          // irregular gap 4-13 s
+            shimmer.snapTo(0f)
+            shimmer.animateTo(1f, androidx.compose.animation.core.tween(5_000 + rnd.nextInt(6_000), easing = androidx.compose.animation.core.FastOutSlowInEasing)) // 5-11 s pass
+            shimmer.snapTo(-1f)
+        }
+    }
+    val padTop = if (compact) 18.dp else 30.dp; val padBottom = if (compact) 18.dp else 34.dp
+    Box(Modifier.fillMaxWidth().height(h).semantics { contentDescription = "Living Spine: 33 stages, seven centre waypoints. Practice stage $level of 33. A study map, not anatomy or an energy reading." }) {
         Canvas(Modifier.matchParentSize()) {
             val cx = size.width / 2
-            drawOval(Brush.radialGradient(listOf(Color(0x12C99B62), Color(0x08A4773B), Color.Transparent), Offset(cx, size.height / 2), size.width * 0.3f),
-                Offset(size.width * 0.2f, size.height * 0.04f), Size(size.width * 0.6f, size.height * 0.92f))
-            val w = 36.dp.toPx(); val top = size.height * 0.05f; val bottom = size.height * 0.95f
-            drawOval(Color(0x38C99B62), Offset(cx - w / 2, top), Size(w, bottom - top), style = Stroke(1.dp.toPx()))
-            val lt = top + (bottom - top) * 0.03f; val lb = bottom - (bottom - top) * 0.03f
-            drawRect(Brush.verticalGradient(listOf(Color(0xFFD7CCFF), Color(0xFF76B5CF), Color(0xFF83B884), Color(0xFFD8B66D), Color(0xFFD88A58), Color(0xFFB85F54)), lt, lb),
-                Offset(cx - 1.dp.toPx(), lt), Size(2.dp.toPx(), lb - lt))
+            val top = padTop.toPx(); val bottom = size.height - padBottom.toPx()
+            fun yOf(stage: Int) = bottom - (stage - 1) / 32f * (bottom - top)
+            drawOval(Brush.radialGradient(listOf(Color(0x16D6A766), Color(0x08A4773B), Color.Transparent), Offset(cx, size.height / 2), size.width * 0.32f),
+                Offset(size.width * 0.18f, size.height * 0.02f), Size(size.width * 0.64f, size.height * 0.96f))
+            val scale = if (compact) 0.7f else 1f
+            for (s in 1..SadhanaSpine.STAGES) {
+                val w = when (SadhanaSpine.region(s)) {
+                    SadhanaSpine.Region.COCCYGEAL -> 16f; SadhanaSpine.Region.SACRAL -> 25f; SadhanaSpine.Region.LUMBAR -> 29f
+                    SadhanaSpine.Region.THORACIC -> 23f; SadhanaSpine.Region.CERVICAL -> 19f
+                }.dp.toPx() * scale
+                val y = yOf(s); val hgt = (if (compact) 3.5f else 6f).dp.toPx()
+                val lit = s <= level
+                if (lit) drawRoundRect(Color(0x33C99B62), Offset(cx - w / 2 - 3, y - hgt / 2 - 3), Size(w + 6, hgt + 6), androidx.compose.ui.geometry.CornerRadius(hgt))
+                drawRoundRect(if (lit) Color(0xCCD9AE72) else Color(0x40C99B62), Offset(cx - w / 2, y - hgt / 2), Size(w, hgt),
+                    androidx.compose.ui.geometry.CornerRadius(hgt / 2), style = Stroke(1.dp.toPx()))
+            }
+            // Practice trace: thin line from base to the current stage.
+            val yl = yOf(level)
+            drawLine(Brush.verticalGradient(listOf(Color(0xFFFFF4C1), Color(0xFFEFBB67), Color(0xFFD15F45)), yl, bottom), Offset(cx, bottom), Offset(cx, yl), 1.5.dp.toPx())
+            drawLine(Color(0x22C99B62), Offset(cx, yl), Offset(cx, top), 1.dp.toPx())
+            val p = shimmer.value
+            if (p in 0f..1f) {
+                val ys = bottom - p * (bottom - yl)
+                drawCircle(Brush.radialGradient(listOf(Color(0x99FFF2B2), Color.Transparent), Offset(cx, ys), 14.dp.toPx()), 14.dp.toPx(), Offset(cx, ys))
+            }
         }
-        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceAround, horizontalAlignment = Alignment.CenterHorizontally) {
+        // Centre waypoints at their stages.
+        BoxWithConstraints(Modifier.matchParentSize()) {
+            val topPx = padTop; val usable = maxHeight - padTop - padBottom
             SadhanaSpine.centres.forEach { c ->
-                val sel = c.id == selected; val tone = Color(c.toneArgb)
-                Box(Modifier.width(170.dp).height(if (compact) 28.dp else 44.dp)
-                    .semantics { this.selected = sel }
+                val stage = SadhanaSpine.threshold(c.id)
+                val y = topPx + usable * ((33 - stage) / 32f)
+                val sel = c.id == selected; val tone = Color(c.toneArgb); val reached = stage <= level
+                val rowH = if (compact) 24.dp else 40.dp
+                Box(Modifier.align(Alignment.TopCenter).offset(y = y - rowH / 2).width(190.dp).height(rowH)
+                    .semantics { this.selected = sel; stateDescription = "stage $stage" }
                     .clickable(role = Role.Button, onClickLabel = "Open ${c.plainLabel}") { onSelect(c.id) }) {
-                    Canvas(Modifier.size(13.dp).offset(x = 66.dp - 6.5.dp + if (compact) 10.dp else 0.dp).align(Alignment.CenterStart)) {
-                        rotate(45f) {
-                            if (sel) drawCircle(tone.copy(alpha = 0.35f), size.width * 1.4f)
-                            drawRect(if (sel) tone else Sad.Void); drawRect(tone, style = Stroke(1.dp.toPx()))
-                        }
+                    Canvas(Modifier.size(if (compact) 12.dp else 16.dp).align(Alignment.Center)) {
+                        val r = size.minDimension / 2
+                        if (sel || reached) drawCircle(tone.copy(alpha = if (sel) 0.45f else 0.25f), r * 2.2f)
+                        drawCircle(if (reached) tone else Sad.Void, r)
+                        drawCircle(tone, r, style = Stroke(1.dp.toPx()))
                     }
                     if (!compact) Text(c.plainLabel.uppercase(), fontSize = 9.sp, letterSpacing = 1.5.sp, color = if (sel) Sad.Ivory else Sad.Ash,
-                        modifier = Modifier.align(Alignment.CenterStart).padding(start = 84.dp))
+                        modifier = Modifier.align(Alignment.CenterEnd).width(70.dp))
                 }
             }
         }
