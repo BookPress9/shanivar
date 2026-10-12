@@ -5,7 +5,7 @@ Status: baseline, written 2026-10-11 from existing repo files. Where a fact is n
 ## 1. Product Overview
 - **Product name:** Shanivar, by The Hybrid Monk (`ai_org/agents/instagram_keeper.md:58`).
 - **Tagline:** "Discipline is freedom." Founder-given 2026-10-11; not yet an accepted stance entry (`marketing/shanivar/brand/tagline.md:1-5`). Record only; do not cite as doctrine.
-- **One-line description:** An Android app with two places: **Routine** (shape the day, set a wake alarm, protect chosen time from selected apps) and **Sadhana** (practise until the skill survives without the app) — `docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md:13-18`.
+- **One-line description:** An Android app with two places: **Routine** (shape the day, set a wake alarm, protect chosen time from selected apps) and **Sadhana** (practise until the skill survives without the app) — `docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md:13-18`. Core ideology: live as a Hybrid Monk (connected with everything, attached to nothing) and walk the Sadhak path (the right stance to face suffering and grow through it) — `SHANIVAR_STANCE.md` ST-010, decision 0015.
 - **Product type:** Mobile app, with a pre-launch marketing website and an internal-test static web version of Sadhana.
 - **Primary platform:** Android, minSdk 26, targetSdk 35 (`android-app/app/build.gradle.kts:11-12`). No iOS in the repo.
 - **Surfaces:** (1) `android-app/`; (2) `backend/` Node API; (3) website `marketing/shanivar/routine-v3-onboarding/website/` (shanivar.com); (4) `web-app/` (planned app.shanivar.com, not deployed, `web-app/README.md`); (5) Instagram `@app.shanivar` (marketing, paused).
@@ -44,6 +44,7 @@ Status: baseline, written 2026-10-11 from existing repo files. Where a fact is n
 ### Feature 3 — App protection
 - Overlay + usage polling; no Device Admin/Accessibility (0002). Honest ceiling: a determined person can bypass (`ENFORCEMENT_STANCE_2026-09-12.md:19-29`). A brief flash of the blocked app is a known cost (0002).
 ### Feature 4 — Sadhana (Steady practices + first sitting)
+- **Ideology:** Sadhana is the Sadhak path (ST-010, 0015): uncomfortable by nature; if you cannot cope, accept it and stop. A contemplative aim, never a treatment claim.
 - 8 unpaced practices (0011), body-scan "first sitting" with Sankalp (internal test only, **not reviewed**, `research/deep-foundation/PRACTICE_SAFETY.md:55`). Numbers: `docs/sources/SADHANA_CALCULATIONS.md`. Progression is PROPOSED only (0013).
 ### Feature 5 — Waitlist website
 - Netlify Forms early-access list; draft privacy notice pending legal review (`website/README.md:3`).

@@ -9,6 +9,10 @@ Use intimate UGC-style scenes with believable pauses and useful meaning. Synthet
 
 **Latest scope (2026-09-25):** add the upcoming breathing/attention pillar using the [marketing update](breathing-feature-marketing-update-2026-09-25.md). Describe recommendations from chosen feelings and wake/sleep schedules without claiming mood detection, circadian measurement or medical outcomes.
 
+## Core ideology (12 October 2026)
+
+All copy carries the founder's Sadhak and Hybrid Monk definitions (`SHANIVAR_STANCE.md` ST-010, `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`). Short lines, quiet tone. "Free of suffering" is an aim, not a promise; "living dangerously" is living fully, never physical risk; discomfort is accepted and stopping is valid. Do not quote Osho.
+
 ## Current application voice
 
 V1 includes alarms and focus modes. Apply the [marketing-to-product handoff](v1-product-direction-handoff.md) for concise alarm, focus, helper and optional Shani copy. The home offers Set an alarm / Start focus independently; older focus-only phrasing is superseded.

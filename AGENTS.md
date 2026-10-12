@@ -56,6 +56,10 @@ Added by founder instruction, 11 October 2026. Applies to every agent (Codex, `a
 
 Honest limit: this is a written working agreement. Agents follow it only when they read it. It is not an automatic technical block.
 
+## Core ideology
+
+Added 12 October 2026. The founder's Sadhak and Hybrid Monk definitions are core product ideology for every feature, copy and practice: `SHANIVAR_STANCE.md` ST-010 and `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`. Safety and claims rules still bind.
+
 ## Documentation map
 
 Added 11 October 2026. Baseline documentation system following "The Vibe Coding Blueprint"; it extends, and does not replace or weaken, any rule above. Index and "which doc answers which question": [`docs/README.md`](docs/README.md).

@@ -308,3 +308,31 @@ Those instructions supersede the authority claim and six-level ranking in [the h
 **Founder decision:** Given and accepted by the founder on 2026-10-06 (voice call). Wording kept verbatim.
 
 **Date accepted:** 2026-10-06
+
+## ST-010 — Sadhak and Hybrid Monk: core ideology
+
+**Topic:** What becoming a Sadhak means and what a Hybrid Monk is. Core product ideology (decision 0015).
+
+**Status:** ACCEPTED as founder wording — given by the founder, Shubham Kumar, in chat on 12 October 2026. Wording verbatim (typos only fixed).
+
+**Traditional source:** None claimed. The founder names Osho as an influence on the Hybrid Monk line; no Osho text is quoted or relied on here.
+
+**What the sources actually say:** the founder's words:
+
+> **Sadhak:** "Becoming a Sadhak is to understand the true nature, a path to becoming free of suffering, by having the right stance to face suffering and grow through it. Sadhana is uncomfortable, and if you cannot cope, you simply cannot; just accept it."
+
+> **Hybrid Monk:** "A Hybrid Monk is someone living in the most materialistic setting, connected with everything but attached to nothing, living their best life, living dangerously in bliss and ecstasy (most of the teachings of Osho can be derived here). Becoming headless, just the body."
+
+**Shanivar interpretation (safety reading, see Claim limitations):**
+- "Free of suffering" is a contemplative aim, not a promise of treatment or a health outcome.
+- "Sadhana is uncomfortable … just accept it": discomfort is expected. If you cannot cope, accepting that includes stopping. End stays available, and no one is asked to endure an unsafe practice (`research/deep-foundation/PRACTICE_SAFETY.md:47`).
+- "Living dangerously" means living fully. It never means physical risk. Practices stay safe and stationary where required (`PRACTICE_SAFETY.md:32`).
+- "Headless, just the body" means presence: attention resting in the body rather than in thinking. It is not an anatomical or clinical claim.
+
+**Product implication:** see `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`.
+
+**Claim limitations:** Founder philosophy, not empirical, medical or therapeutic findings. No health, healing or "freedom from suffering" outcome is promised (`PRACTICE_SAFETY.md:49-51`). Osho's texts are not quoted.
+
+**Founder decision:** Given 2026-10-12 in chat. UNRESOLVED: founder sign-off on the safety reading above.
+
+**Date accepted:** 2026-10-12 (wording)
