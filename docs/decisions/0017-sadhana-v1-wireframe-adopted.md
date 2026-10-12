@@ -27,8 +27,8 @@
 - `TANTRA_PRACTICE_MAP.md` exclusions; protection honesty rules; no streaks, scores or health claims.
 - ST-010 and ST-011 naming rules (see question 1).
 
-## Founder questions (not decided here)
-1. **ST-011 vs named maps:** chakra names are tradition-specific, and the prototype names "Vijñāna-bhairava-tantra 24", "Yoga / Buddhist / Vedānta" lanes, and tantric sources. HANDOFF requires every centre to cite a named system and passage. ST-011 forbids naming a teacher, lineage or tradition in public or app copy. Does citing a source text or tradition's map count as naming a tradition? Options: (a) sources inside the in-app study and citation layer only; (b) generic labels ("a seven-centre teaching map"); (c) an ST-011 amendment.
+## Founder questions
+1. **RESOLVED (founder, 12 Oct 2026): show tradition sources only inside deep study.** ST-010, ST-011, SOP-05, voice-direction and AGENTS are amended. The main app, website and marketing name no teacher or tradition. Deep study may name traditions, texts and passages. Spine waypoints outside deep study use plain labels (Base, Lower abdomen, Mid torso, Chest, Throat, Brow, Crown), and Sanskrit names and attribution appear only in deep study. Private influences stay internal. Original question: **ST-011 vs named maps:** chakra names are tradition-specific, and the prototype names "Vijñāna-bhairava-tantra 24", "Yoga / Buddhist / Vedānta" lanes, and tantric sources. HANDOFF requires every centre to cite a named system and passage. ST-011 forbids naming a teacher, lineage or tradition in public or app copy. Does citing a source text or tradition's map count as naming a tradition? Options: (a) sources inside the in-app study and citation layer only; (b) generic labels ("a seven-centre teaching map"); (c) an ST-011 amendment.
 2. **Progression meaning:** HANDOFF acceptance gate 8 says the founder signs off on capability meaning and visual language.
 3. **Centre-specific practice:** none until passages are verified. Who verifies, and is study-only acceptable for the pilot?
 4. **Durations beyond 60 seconds** need a practice review before release.

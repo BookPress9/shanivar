@@ -11,7 +11,7 @@ Use intimate UGC-style scenes with believable pauses and useful meaning. Synthet
 
 ## Core ideology (12 October 2026)
 
-All copy carries the founder's Sadhak and Hybrid Monk definitions (`SHANIVAR_STANCE.md` ST-010, `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`). Short lines, quiet tone. "Free of suffering" is an aim, not a promise; "living dangerously" is living fully, never physical risk; discomfort is accepted and stopping is valid. Do not quote Osho. No teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other) is named in any public or app copy. All public and app copy speaks only as Shanivar. Influences stay internal (founder, 12 Oct 2026; ST-011).
+All copy carries the founder's Sadhak and Hybrid Monk definitions (`SHANIVAR_STANCE.md` ST-010, `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`). Short lines, quiet tone. "Free of suffering" is an aim, not a promise; "living dangerously" is living fully, never physical risk; discomfort is accepted and stopping is valid. Do not quote Osho. The main app, the website and all marketing speak only as Shanivar and name no teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other). Single exception (founder, 12 Oct 2026, decision 0017): the in-app deep-study section MAY name traditions, texts and passages as sources. Chakra waypoints outside deep study use plain labels (for example "Base", "Crown"); tradition attribution and names appear only in deep study. Private founder influences (ST-011) stay internal and are never named anywhere, including deep study (founder, 12 Oct 2026; ST-011).
 
 ## Current application voice
 

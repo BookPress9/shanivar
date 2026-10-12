@@ -58,7 +58,7 @@ Honest limit: this is a written working agreement. Agents follow it only when th
 
 ## Core ideology
 
-Added 12 October 2026. The founder's Sadhak and Hybrid Monk definitions are core product ideology for every feature, copy and practice: `SHANIVAR_STANCE.md` ST-010 and `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`. Safety and claims rules still bind. No teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other) is named in any public or app copy. All public and app copy speaks only as Shanivar. Influences stay internal (founder, 12 Oct 2026; ST-011). ST-011 is internal and never public copy.
+Added 12 October 2026. The founder's Sadhak and Hybrid Monk definitions are core product ideology for every feature, copy and practice: `SHANIVAR_STANCE.md` ST-010 and `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`. Safety and claims rules still bind. The main app, the website and all marketing speak only as Shanivar and name no teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other). Single exception (founder, 12 Oct 2026, decision 0017): the in-app deep-study section MAY name traditions, texts and passages as sources. Chakra waypoints outside deep study use plain labels (for example "Base", "Crown"); tradition attribution and names appear only in deep study. Private founder influences (ST-011) stay internal and are never named anywhere, including deep study (founder, 12 Oct 2026; ST-011). ST-011 is internal and never public copy.
 
 ## Documentation map
 

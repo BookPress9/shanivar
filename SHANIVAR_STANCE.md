@@ -333,7 +333,7 @@ Those instructions supersede the authority claim and six-level ranking in [the h
 
 **Claim limitations:** Founder philosophy, not empirical, medical or therapeutic findings. No health, healing or "freedom from suffering" outcome is promised (`PRACTICE_SAFETY.md:49-51`). Osho's texts are not quoted.
 
-**Naming rule:** No teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other) is named in any public or app copy. All public and app copy speaks only as Shanivar. Influences stay internal (founder, 12 Oct 2026; ST-011). The Osho reference in the founder's line above is internal context only. (Closes the earlier open question on naming Osho.)
+**Naming rule:** The main app, the website and all marketing speak only as Shanivar and name no teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other). Single exception (founder, 12 Oct 2026, decision 0017): the in-app deep-study section MAY name traditions, texts and passages as sources. Chakra waypoints outside deep study use plain labels (for example "Base", "Crown"); tradition attribution and names appear only in deep study. Private founder influences (ST-011) stay internal and are never named anywhere, including deep study (founder, 12 Oct 2026; ST-011). The Osho reference in the founder's line above is internal context only. (Closes the earlier open question on naming Osho.)
 
 **Founder decision:** Given 2026-10-12 in chat. UNRESOLVED: founder sign-off on the safety reading above.
 
@@ -347,7 +347,7 @@ Those instructions supersede the authority claim and six-level ranking in [the h
 
 > "Osho should just be internal. Everything the app delivers should be internal and should only be tied to Shanivar. As a founder, something to keep personal is my stance that I believe the ultimate consciousness is one. Everything is one: Osho, Paramahansa Yogananda, everyone who has contributed to the ultimate consciousness through their practices, Kriya Yoga, everything is already there. Shanivar is also already there and is just letting people touch that consciousness, which is ultimately the ultimate truth."
 
-**Product implication:** No teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other) is named in any public or app copy. All public and app copy speaks only as Shanivar. Influences stay internal (founder, 12 Oct 2026; ST-011).
+**Product implication:** The main app, the website and all marketing speak only as Shanivar and name no teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other). Single exception (founder, 12 Oct 2026, decision 0017): the in-app deep-study section MAY name traditions, texts and passages as sources. Chakra waypoints outside deep study use plain labels (for example "Base", "Crown"); tradition attribution and names appear only in deep study. Private founder influences (ST-011) stay internal and are never named anywhere, including deep study (founder, 12 Oct 2026; ST-011).
 
 **Claim limitations:** Personal founder belief, not an empirical or metaphysical finding, and not a product claim.
 
