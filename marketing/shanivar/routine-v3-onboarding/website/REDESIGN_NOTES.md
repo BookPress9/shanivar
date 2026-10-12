@@ -44,3 +44,26 @@ Home visible words: 638.
 3. Name Osho publicly as an influence, or keep it internal?
 4. Sign-off on the public lines above, especially "There is suffering" and "a path to becoming free of it".
 5. Still open from before: privacy-page tightening (SOP-02:21), marketing pause (SOP-05:7), Steady review before a public presence invitation.
+
+# Update 2026-10-12 (night): V5 single home page (founder feedback on 27957cb)
+
+Structure: status ribbon, then the stanza (ST-010 lines in one block + inline "Drop into the body" + "Discipline is freedom." + two doors), then "One app. Two places." (Routine, Sadhana), then the annotated day "Two fixed points. Two guardrails.", then "Six founder principles", then the FAQ (4), then the form. The is/isn't section and the scroll reveal were removed. About is now minimal (status table kept). Privacy and Thanks are unchanged.
+Home visible words: 593.
+
+## Callouts and sources (all Routine, marked "in development")
+1. Wake alarm
+- "Rings louder in steps, through Do Not Disturb.": `android-app/ENFORCEMENT_STANCE_2026-09-12.md:54-58`
+- "Dismiss by walking. QR code or photo also possible.": `docs/decisions/0003-*.md:13-15,24-25`
+- "An accessible way out, with no physical task, is always on screen.": `0003:27-28`, `android-app/ENFORCEMENT_STANCE_2026-09-12.md:51,73-75`
+- "Stops by itself after 15 minutes at most.": `android-app/ENFORCEMENT_STANCE_2026-09-12.md:70-72`
+2. Protection window
+- "Choose distracting apps once. Calls and system apps can't be chosen.": `docs/decisions/0014-*.md:27`, `android-app/ROUTINE_V3_TEST_GUIDE_2026-09-30.md:58`
+- "Up to eight windows: every day, weekdays, weekends or custom, overnight too.": `0014:28-30`, `android-app/ROUTINE_V3_TEST_GUIDE_2026-09-30.md:43`
+- "Open a chosen app and Shanivar's screen appears. A brief flash is possible.": `android-app/ENFORCEMENT_STANCE_2026-09-12.md:99-108`
+- "Needs Usage access and Display over other apps.": `android-app/ENFORCEMENT_STANCE_2026-09-12.md:99-100`, `website/privacy.html:78-79`
+- "Stop protection anytime: no network, payment, timer or practice.": `android-app/ROUTINE_V3_TEST_GUIDE_2026-09-30.md:67`
+- "Hard to undo from bed. Not impossible.": `android-app/ENFORCEMENT_STANCE_2026-09-12.md:26-27`
+- Footnote "Shanivar says Active only when the phone confirms it.": `0014:43`
+
+Stanza: ST-010 (`SHANIVAR_STANCE.md:312+`). Sadhana card: `0014:14,18`, `docs/blueprint/PRD.md:53`.
+UNRESOLVED (new): the multi-window FocusScheduler is still being generalised (`0014:68`) and real-phone QA (DEV-7) hasn't run, so every callout is "in development", not "tested". Should the block-screen "short practice" redirect (`android-app/ENFORCEMENT_STANCE_2026-09-12.md:117-121`, planned) appear? It is left out for now. Is a minimal About page OK, or should about.html redirect to the home page?

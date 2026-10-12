@@ -58,29 +58,18 @@
   // 4. Interactive elements (2026-10-12). Pure DOM changes in this page: no storage, no timers, no network.
   document.documentElement.classList.add('js');
 
-  // 4a. "Your day" illustration: places sample activities relative to the chosen wake and sleep times.
+  // 4a. "Your day" diagram: moves example times with the chosen wake and sleep times.
   var wake = document.getElementById('wake');
   var sleep = document.getElementById('sleep');
-  var list = document.getElementById('day-list');
   function mins(t) { var p = t.split(':'); return (+p[0]) * 60 + (+p[1]); }
   function fmt(m) { m = ((m % 1440) + 1440) % 1440; var h = Math.floor(m / 60), n = m % 60; return (h < 10 ? '0' : '') + h + ':' + (n < 10 ? '0' : '') + n; }
-  function row(time, name, chip, chipClass) {
-    var li = document.createElement('li'); li.className = 'event';
-    var t = document.createElement('time'); t.textContent = time; li.appendChild(t);
-    var s = document.createElement('strong'); s.textContent = name; li.appendChild(s);
-    if (chip) { var c = document.createElement('span'); c.className = 'chip ' + chipClass; c.textContent = chip; li.appendChild(c); }
-    return li;
-  }
+  function put(id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; }
   function drawDay() {
     var w = mins(wake.value), s = mins(sleep.value);
-    list.textContent = '';
-    list.appendChild(row(fmt(w), 'Wake', 'Wake alarm · saved', 'saved'));
-    list.appendChild(row(fmt(w + 30) + ' · 45 min', 'Gym'));
-    list.appendChild(row(fmt(w + 150) + ' – ' + fmt(w + 330), 'Protection window', 'Needs device access', 'needs'));
-    list.appendChild(row(fmt(s - 90) + ' · 30 min', 'Read a book'));
-    list.appendChild(row(fmt(s), 'Make room for sleep'));
+    put('t-wake', fmt(w)); put('t-gym', fmt(w + 30)); put('t-win', fmt(w + 150) + ' – ' + fmt(w + 330));
+    put('t-read', fmt(s - 90)); put('t-sleep', fmt(s));
   }
-  if (wake && sleep && list) { wake.addEventListener('change', drawDay); sleep.addEventListener('change', drawDay); drawDay(); }
+  if (wake && sleep) { wake.addEventListener('change', drawDay); sleep.addEventListener('change', drawDay); drawDay(); }
 
   // 4b. Stillness moment: text only. Begin and End just switch which sentence shows. Nothing counts or is kept.
   var box = document.getElementById('still-box');
@@ -92,24 +81,6 @@
     box.setAttribute('data-state', 'intro');
     begin.addEventListener('click', function () { box.setAttribute('data-state', 'on'); begin.hidden = true; end.hidden = false; end.focus(); });
     end.addEventListener('click', function () { box.setAttribute('data-state', 'end'); end.hidden = true; begin.hidden = false; begin.textContent = 'Again'; begin.focus(); });
-  }
-
-  // 4c. Is / isn't toggles: answers start hidden with JS on, visible with JS off.
-  Array.prototype.forEach.call(document.querySelectorAll('.tog'), function (b) {
-    var p = document.getElementById(b.getAttribute('aria-controls'));
-    if (!p) return;
-    b.setAttribute('aria-expanded', 'false'); p.hidden = true;
-    b.addEventListener('click', function () { var open = b.getAttribute('aria-expanded') === 'true'; b.setAttribute('aria-expanded', String(!open)); p.hidden = open; });
-  });
-
-  // 4d. Quiet scroll reveal of narrative beats. Off for reduced motion and when IntersectionObserver is missing.
-  var beats = document.querySelectorAll('.reveal');
-  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (still || !('IntersectionObserver' in window)) {
-    Array.prototype.forEach.call(beats, function (b) { b.classList.add('seen'); });
-  } else {
-    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); } }); }, { threshold: 0.25 });
-    Array.prototype.forEach.call(beats, function (b) { io.observe(b); });
   }
 
 })();
