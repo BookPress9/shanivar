@@ -123,3 +123,6 @@ tmp/
 marketing/shanivar/ugc-pilot-2026-09-30/assets/
 !marketing/shanivar/research-led-pilot/
 marketing/shanivar/research-led-pilot/assets/
+
+# Netlify local state (never commit)
+.netlify/
