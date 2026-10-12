@@ -104,7 +104,8 @@ private fun saveAlarmPlan(context: Context, plan: AlarmPlan) {
 }
 
 @Composable
-fun ShanivarApp(openBreathing: Boolean = false) {
+fun ShanivarApp(openBreathing: Boolean = false, initiation: Boolean = BuildConfig.INITIATION_V1) {
+    if (initiation) { InitiationApp(); return }
     val context = LocalContext.current
     var rhythm by remember { mutableStateOf(loadRhythm(context)) }
     var alarmPlan by remember { mutableStateOf(loadAlarmPlan(context)) }

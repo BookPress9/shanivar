@@ -33,14 +33,14 @@ class NativeUiTest {
     }
 
     private fun completeGuestOnboarding() {
-        compose.setContent { ShanivarApp() }
+        compose.setContent { ShanivarApp(initiation = false) }
         compose.onNodeWithText("English").performClick()
         compose.onNodeWithText("This is for me").performClick()
     }
 
     private fun openReturningUser() {
         context.getSharedPreferences("rhythm", 0).edit().putBoolean("introduced", true).commit()
-        compose.setContent { ShanivarApp() }
+        compose.setContent { ShanivarApp(initiation = false) }
     }
 
     @Test fun onboardingReachesHomeWithBothToolsAndNoPermissionWall() {

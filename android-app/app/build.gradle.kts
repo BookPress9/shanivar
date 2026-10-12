@@ -31,9 +31,13 @@ android {
         // remains the launch path until the Routine timeline / multi-window UI is device-gated.
         // Flipping this only switches presentation: same engines, same Steady, same storage.
         buildConfigField("boolean", "ROUTINE_V3", "false")
+        // Initiation V1 (decision 0016, DEV-26). Off for release so the current app is unchanged;
+        // on for debug builds so the new flow can be reviewed.
+        buildConfigField("boolean", "INITIATION_V1", "false")
     }
     buildTypes {
         debug {
+            buildConfigField("boolean", "INITIATION_V1", "true")
             applicationIdSuffix = ".dev"
             val debugApi = providers.gradleProperty("shanivarApiUrl").getOrElse("http://10.0.2.2:5000/api")
             require(debugApi.matches(Regex("https?://[a-zA-Z0-9.\\-:/]+"))) { "Invalid shanivarApiUrl" }
@@ -45,6 +49,8 @@ android {
     buildFeatures { compose = true; buildConfig = true }
     testOptions {
         unitTests.isIncludeAndroidResources = true
+        // Optional Initiation review screenshots: ./gradlew testDebugUnitTest -PinitiationShots=/path
+        unitTests.all { test -> providers.gradleProperty("initiationShots").orNull?.let { test.systemProperty("initiation.shots", it) } }
         managedDevices.devices.create<com.android.build.api.dsl.ManagedVirtualDevice>("pixel2Api34") {
             device = "Pixel 2"
             apiLevel = 34
