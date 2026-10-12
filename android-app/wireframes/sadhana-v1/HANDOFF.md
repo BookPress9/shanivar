@@ -28,6 +28,10 @@ Each centre drawer needs: display name and transliteration; map/tradition ID; sy
 
 The current repository supports the boundary more strongly than the detailed map: `TANTRA_PRACTICE_MAP.md` allows subtle-body visualization as scholarly/lineage context while excluding chakra diagnosis, energy-ascent coaching and kuṇḍalinī induction. `research/sadhak-inquiry/` records that the commercial seven-colour model is not a validated diagnostic method or universal historical canon, and that exact source passages still need verification. Product implementation must preserve that state rather than silently filling gaps.
 
+The vagal rendering is a separate modern learning layer. Its glowing/dimming rhythm may respond only to explicit interface state such as the user choosing `activated`, `mixed`, `steady`, or `low energy`. Store this as `self_reported_check_in`; do not label it vagal tone, autonomic measurement, dysregulation diagnosis or achieved regulation. The visual target “steadier” expresses intention. Practice completion cannot change it automatically. Any future sensor integration needs its own evidence, consent, device validation and product decision.
+
+Knowledge chambers can visually reveal with practice history to create discovery, but passage/source access remains available by choice. A reveal means “context presented,” not “energy unlocked.” Never make activity the gate for health information, exact source notes, stop guidance or research-only status.
+
 ## Capability and progression rules
 
 `Arrive`, `Return`, `See`, `Choose`, and `Carry` are stable capabilities, not levels. UI may show a current invitation based on explicit varied evidence, but must label what produced it and allow any earlier practice. Long practice, streaks, unusual experiences or strong feelings never establish capability or readiness.
@@ -43,6 +47,25 @@ Carry: voluntary independent-practice report or decision to reduce prompts.
 ```
 
 These are product interactions, not proof of inner ability. Missing evidence stays missing. Provide a manual “use fewer prompts” control at any time; an experienced practitioner must not grind earlier content. Return to earlier guidance carries no loss.
+
+## 33-segment practice-current logic
+
+The Living Spine uses 33 visible segments grouped as C7, T12, L5, S5 and Co4. This is a Shanivar interaction model based on common vertebral segmentation; it is not the chakra count, not a claim from *Kundalini Tantra*, and not a medical model of energy flow.
+
+```text
+segment = min(33, 1 + completedReviewedAttempts + explicitIndependentReports)
+```
+
+- `completedReviewedAttempts` includes only attempts reaching their intended active duration with an exact released content version.
+- `explicitIndependentReports` includes user-created records marked self-reported. Users can edit/delete them; recalculation must follow.
+- Paused, ended, interrupted, browsed or source-open events do not advance a segment.
+- Missed days never subtract segments. There is no streak.
+- Duplicate/offline events use UUID/idempotency reconciliation before advancing.
+- The base begins at segment 1 so the map is visible before any completion.
+
+Current proposed context thresholds are Mūlādhāra 1, Svādhiṣṭhāna 5, Maṇipūra 11, Anāhata 17, Viśuddha 24, Ājñā 29 and Sahasrāra 33. These are visual pacing choices for the prototype, not historical vertebral correspondences. Brahma, Vishnu and Rudra granthi may be shown as source-labelled study gates near the base, chest and brow respectively, but may not become psychological diagnoses or automated readiness tests.
+
+Crossing a threshold changes presentation only: a chakra context drawer opens automatically and the prior drawers stay available. It never releases higher-risk practice. Direct source access remains open at every segment.
 
 ## Domain model
 
@@ -103,6 +126,14 @@ Reconcile with existing authenticated practice routes before implementation; the
 - `GET /v1/sadhana/path` → transparent criteria version and evidence links; no opaque score.
 
 Offline attempts use client-generated UUIDs, queue locally and synchronize idempotently. The server validates practice/content versions and rejects unreleased content. User may edit/delete self-reports and reflections. Practice facts should not be emitted as generic engagement telemetry. Use active practice minutes as the product metric; never total Sadhana screen time.
+
+## Loading state contract
+
+Use the full-phone kaleidoscope surface for genuine waits only: initial state hydration, network-backed source retrieval and comparable blocking work. Instant local navigation remains instant. The image breathes from 1.015× to 1.065× over 5.5 seconds without rotation, progress theatre or a spinner; reduced-motion mode holds a static 1.03× crop. Set the application region to `aria-busy="true"` while visible and provide a short live status label describing the work.
+
+Production should expose one shared loading controller with explicit begin, end and error paths, a timeout that resolves to a recoverable error state, and asset preloading or bundling so the loading image itself never depends on the request it represents. The prototype demonstrates boot hydration and source retrieval. The inspector preview is review tooling only.
+
+`assets/shanivar-loading-kaleidoscope.jpg` is copied from the founder-supplied fourth reference image. Ownership and production-use rights have not been verified in the repository; confirm them before public release or replace it with an owned asset preserving the approved composition.
 
 ## Acceptance gates
 
