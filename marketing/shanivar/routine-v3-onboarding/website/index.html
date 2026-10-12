@@ -48,10 +48,45 @@
   </header>
 
   <main id="main">
-    <section class="hero dark" aria-labelledby="hero-title">
+    <!-- NARRATIVE (ST-010, decision 0015) -->
+    <div class="story dark" aria-label="The Sadhak and the Hybrid Monk">
+      <section class="beat reveal" aria-labelledby="b1"><div class="wrap">
+        <p class="eyebrow">Shanivar · Android app in development</p>
+        <h2 id="b1">There is suffering.</h2>
+        <p>Becoming a Sadhak is a path to becoming free of it.</p>
+        <p class="small">A contemplative aim, not a treatment.</p>
+      </div></section>
+      <section class="beat reveal" aria-labelledby="b2"><div class="wrap">
+        <h2 id="b2">The right stance.</h2>
+        <p>Face it. Grow through it.</p>
+      </div></section>
+      <section class="beat reveal" aria-labelledby="b3"><div class="wrap">
+        <h2 id="b3">Sadhana is uncomfortable.</h2>
+        <p>If you cannot cope, you simply cannot. Just accept it.</p>
+        <p class="small">Stopping is always allowed.</p>
+      </div></section>
+      <section class="beat reveal" aria-labelledby="b4"><div class="wrap">
+        <h2 id="b4">The Hybrid Monk.</h2>
+        <p>Connected with everything.<br>Attached to nothing.</p>
+      </div></section>
+      <section class="beat reveal" id="still" aria-labelledby="still-title"><div class="wrap still">
+        <h2 id="still-title">Headless. Just the body.</h2>
+        <div class="still-box" id="still-box">
+          <p class="still-step" data-step="intro">Let attention drop from the head into the body.</p>
+          <p class="still-step" data-step="on">Feet. Hands. Weight. No pace, no count. Stay as long as you like.</p>
+          <p class="still-step" data-step="end">However that felt, it's information. Nothing to fix.</p>
+          <div class="actions" hidden id="still-controls">
+            <button class="btn btn-primary" type="button" id="still-begin">Drop into the body</button>
+            <button class="btn btn-secondary" type="button" id="still-end" hidden>End</button>
+          </div>
+        </div>
+        <p class="small">Only where you are still. Nothing is recorded.</p>
+      </div></section>
+    </div>
+
+    <section class="hero dark beat" aria-labelledby="hero-title">
       <div class="wrap hero-grid">
         <div>
-          <p class="eyebrow">Shanivar · Android app in development</p>
           <h1 id="hero-title">Discipline is freedom.</h1>
           <p class="lede">Shape the day with <strong>Routine</strong>. Practise with <strong>Sadhana</strong> until the skill survives without the app.</p>
           <div class="actions doors">
@@ -81,7 +116,7 @@
           <ul class="facts">
             <li><strong>Wake alarm.</strong> An accessible way out is always there.</li>
             <li><strong>App protection.</strong> Voluntary. Stop it anytime. Never unbreakable.</li>
-            <li><strong>Saved is not Active.</strong> The app says only what the phone confirms.</li>
+            <li><strong>Saved is not Active.</strong></li>
           </ul>
         </div>
         <figure class="timeline day" aria-live="polite">
@@ -97,39 +132,21 @@
       </div>
     </section>
 
-    <!-- 2. STILLNESS -->
-    <section class="section dark" id="still" aria-labelledby="still-title">
-      <div class="wrap still">
-        <p class="eyebrow">Try 30 seconds · nothing is recorded</p>
-        <h2 id="still-title">Natural breath. Nothing else.</h2>
-        <p class="safe">Only where you are still and somewhere suitable. Not while driving, cycling or operating anything.</p>
-        <div class="still-box" id="still-box">
-          <p class="still-step" data-step="intro">When you are ready, begin. There is no timer.</p>
-          <p class="still-step" data-step="on">Do not make it deeper. Do not slow it down. Do not count it. When attention moves, return to the next breath. End whenever you like.</p>
-          <p class="still-step" data-step="end">However that felt, it's information. Nothing to fix.</p>
-          <div class="actions" hidden id="still-controls">
-            <button class="btn btn-primary" type="button" id="still-begin">Begin</button>
-            <button class="btn btn-secondary" type="button" id="still-end" hidden>End</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- 3. SADHAK PATH -->
     <section class="section paper" id="sadhak" aria-labelledby="sadhak-title">
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow">Sadhana · in development</p>
           <h2 id="sadhak-title">The Sadhak path.</h2>
-          <p class="lede">Six founder principles. His words, his order.</p>
+          <p class="lede">Face discomfort with the right stance. Six founder principles:</p>
         </div>
         <ol class="path">
-          <li><details><summary><span>1</span>Discipline</summary><p>Founder principle 1 of 6. No interpretation added.</p></details></li>
-          <li><details><summary><span>2</span>Keep moving forward</summary><p>Founder principle 2 of 6. No interpretation added.</p></details></li>
-          <li><details><summary><span>3</span>Learning</summary><p>Founder principle 3 of 6. No interpretation added.</p></details></li>
-          <li><details><summary><span>4</span>Curiosity</summary><p>Founder principle 4 of 6. No interpretation added.</p></details></li>
-          <li><details><summary><span>5</span>Be more present, be more in your body</summary><p>Founder principle 5 of 6. No interpretation added.</p></details></li>
-          <li><details><summary><span>6</span>Walk towards your purpose</summary><p>Founder principle 6 of 6. No interpretation added.</p></details></li>
+          <li><details><summary><span>1</span>Discipline</summary><p>Founder principle, in his words.</p></details></li>
+          <li><details><summary><span>2</span>Keep moving forward</summary><p>Founder principle, in his words.</p></details></li>
+          <li><details><summary><span>3</span>Learning</summary><p>Founder principle, in his words.</p></details></li>
+          <li><details><summary><span>4</span>Curiosity</summary><p>Founder principle, in his words.</p></details></li>
+          <li><details><summary><span>5</span>Be more present, be more in your body</summary><p>Founder principle, in his words.</p></details></li>
+          <li><details><summary><span>6</span>Walk towards your purpose</summary><p>Founder principle, in his words.</p></details></li>
         </ol>
         <p class="path-note">Steady, one minute with your natural breath, is the only Sadhana practice in internal builds. No streaks, points or ranks.</p>
       </div>
@@ -146,7 +163,6 @@
           <li><button type="button" class="tog" aria-expanded="true" aria-controls="t3">A horoscope?</button><p id="t3">No. No astrology in what is being built.</p></li>
           <li><button type="button" class="tog" aria-expanded="true" aria-controls="t4">Social?</button><p id="t4">No feed, no followers, no leaderboards.</p></li>
           <li><button type="button" class="tog" aria-expanded="true" aria-controls="t5">A trap?</button><p id="t5">No. No lock you cannot leave, no fee to unlock early.</p></li>
-          <li><button type="button" class="tog" aria-expanded="true" aria-controls="t6">The goal?</button><p id="t6">Needing Shanivar less can be a good outcome.</p></li>
         </ul>
       </div>
     </section>

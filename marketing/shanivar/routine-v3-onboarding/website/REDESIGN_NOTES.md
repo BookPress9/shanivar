@@ -30,3 +30,17 @@ Privacy page: wording NOT changed. SOP-02:21 makes privacy-notice changes a foun
 4. "Try 30 seconds": the docs describe Steady as one minute after a stillness check. Is a public, untimed text-only invitation acceptable before the content review (`docs/decisions/0014...:18`, Steady "still needs review")? Nothing is timed or counted.
 5. May the privacy page be tightened (SOP-02:21 approval gate)?
 6. Marketing is paused (SOP-05:7): this is a local commit only, not published.
+
+# Update 2026-10-12 (evening): immersive narrative from ST-010
+
+Questions 1 and 2 above are answered by the founder: `SHANIVAR_STANCE.md` ST-010 (line 312 onward), `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`.
+Narrative beats (each from ST-010 founder wording): "There is suffering." / "Becoming a Sadhak is a path to becoming free of it." (+ "A contemplative aim, not a treatment.", PRACTICE_SAFETY.md:49-51) · "The right stance." / "Face it. Grow through it." · "Sadhana is uncomfortable." / "If you cannot cope, you simply cannot. Just accept it." (+ "Stopping is always allowed.", PRACTICE_SAFETY.md:47) · "The Hybrid Monk." / "Connected with everything. Attached to nothing." · "Headless. Just the body." (interactive, replaces the earlier stillness moment; unpaced, nothing recorded, stationary note PRACTICE_SAFETY.md:32) · "Discipline is freedom." + two doors.
+Not used on the site: "living dangerously", "bliss and ecstasy", Osho's name (needs founder sign-off, see below).
+Home visible words: 638.
+
+## UNRESOLVED (ST-010)
+1. Sign-off on the safety reading in ST-010: "just accept it" read as "accepting includes stopping", never "endure".
+2. May the site use "living dangerously in bliss and ecstasy"? Withheld: risk of being read as physical risk or a promised state.
+3. Name Osho publicly as an influence, or keep it internal?
+4. Sign-off on the public lines above, especially "There is suffering" and "a path to becoming free of it".
+5. Still open from before: privacy-page tightening (SOP-02:21), marketing pause (SOP-05:7), Steady review before a public presence invitation.

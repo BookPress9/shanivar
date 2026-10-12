@@ -249,3 +249,11 @@ h1,h2,.cta-title{text-wrap:balance}
 .tog[aria-expanded=true]{border-color:var(--sage)}
 .toggles p{padding:.5rem 1rem 0;color:var(--muted)}
 [hidden]{display:none!important}
+/* Narrative beats (ST-010) */
+.beat{min-height:min(100vh,52rem);min-height:min(100svh,52rem);display:flex;align-items:center;border-bottom:1px solid #1c201c}
+.beat h2{font-size:clamp(2.2rem,7vw,4.2rem);margin:.6rem 0 1rem}
+.beat p{font-size:clamp(1.15rem,2.6vw,1.5rem);color:var(--muted);max-width:32ch}
+.beat .small{font-size:.9rem;margin-top:1.2rem}
+.js .reveal .wrap{opacity:0;transform:translateY(1.2rem);transition:opacity 1.2s ease,transform 1.2s ease}
+.js .reveal.seen .wrap{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.js .reveal .wrap{opacity:1;transform:none;transition:none}}

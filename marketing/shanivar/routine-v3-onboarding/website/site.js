@@ -91,7 +91,7 @@
     controls.hidden = false;
     box.setAttribute('data-state', 'intro');
     begin.addEventListener('click', function () { box.setAttribute('data-state', 'on'); begin.hidden = true; end.hidden = false; end.focus(); });
-    end.addEventListener('click', function () { box.setAttribute('data-state', 'end'); end.hidden = true; begin.hidden = false; begin.textContent = 'Begin again'; begin.focus(); });
+    end.addEventListener('click', function () { box.setAttribute('data-state', 'end'); end.hidden = true; begin.hidden = false; begin.textContent = 'Again'; begin.focus(); });
   }
 
   // 4c. Is / isn't toggles: answers start hidden with JS on, visible with JS off.
@@ -101,5 +101,15 @@
     b.setAttribute('aria-expanded', 'false'); p.hidden = true;
     b.addEventListener('click', function () { var open = b.getAttribute('aria-expanded') === 'true'; b.setAttribute('aria-expanded', String(!open)); p.hidden = open; });
   });
+
+  // 4d. Quiet scroll reveal of narrative beats. Off for reduced motion and when IntersectionObserver is missing.
+  var beats = document.querySelectorAll('.reveal');
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still || !('IntersectionObserver' in window)) {
+    Array.prototype.forEach.call(beats, function (b) { b.classList.add('seen'); });
+  } else {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); } }); }, { threshold: 0.25 });
+    Array.prototype.forEach.call(beats, function (b) { io.observe(b); });
+  }
 
 })();
