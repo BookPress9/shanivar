@@ -24,6 +24,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import java.io.File
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.ZoneId
 
 object SystemSadhanaClock : SadhanaClock {
@@ -39,10 +46,34 @@ object SystemSadhanaClock : SadhanaClock {
     },
     reduceMotionOverride: Boolean? = null,
     onRoutine: (() -> Unit)? = null,
+    /** Source retrieval boundary. Null result = reader not available yet (no backend). */
+    sourcePort: suspend (lane: String) -> String? = { null },
+    hydrateDispatcher: kotlinx.coroutines.CoroutineDispatcher = Dispatchers.IO,
+    gateFactory: (() -> Boolean) -> SadhanaLoadingGate = { active -> SadhanaLoadingGate(practiceActive = active) },
 ) {
     val context = LocalContext.current
-    val c = remember { controllerFactory(context) }
     val reduceMotion = reduceMotionOverride ?: remember { initiationReduceMotion(context) }
+    var controller by remember { mutableStateOf<SadhanaController?>(null) }
+    val gate = remember { gateFactory { controller?.practiceInProgress == true } }
+    val scope = rememberCoroutineScope()
+    // Initial hydration: real file read off the main thread; the surface appears only if it is slow.
+    var hydrateAttempt by remember { mutableStateOf(0) }
+    LaunchedEffect(hydrateAttempt) {
+        gate.run("Preparing Sadhana") { withContext(hydrateDispatcher) { controllerFactory(context) } }.onSuccess { controller = it }
+    }
+    Box(Modifier.fillMaxSize().background(Sad.Void)) {
+        controller?.let { c ->
+            SadhanaContent(c, reduceMotion, onRoutine) { lane ->
+                scope.launch { gate.run("Opening source context") { sourcePort(lane) }.onSuccess { c.inspectSource(it) } }
+            }
+        }
+        SadhanaLoadingSurface(gate.state, reduceMotion,
+            onRetry = { if (controller == null) hydrateAttempt++ else scope.launch { gate.retry() } },
+            onDismiss = { gate.dismiss(); if (controller == null) hydrateAttempt++ })
+    }
+}
+
+@Composable private fun SadhanaContent(c: SadhanaController, reduceMotion: Boolean, onRoutine: (() -> Unit)?, onInspect: (String) -> Unit) {
     val owner = LocalLifecycleOwner.current
     DisposableEffect(owner) {
         val obs = LifecycleEventObserver { _, e -> if (e == Lifecycle.Event.ON_STOP) c.background() }
@@ -63,7 +94,7 @@ object SystemSadhanaClock : SadhanaClock {
                 SadhanaView.COMPLETE -> ReturnScreen(c, reduceMotion)
                 SadhanaView.RECORD -> RecordScreen(c, c.today())
                 SadhanaView.INDEPENDENT -> IndependentScreen(c, reduceMotion)
-                SadhanaView.STUDY -> StudyScreen(c)
+                SadhanaView.STUDY -> StudyScreen(c, onInspect)
             }
             c.ui.message?.let { Box(Modifier.semantics { liveRegion = LiveRegionMode.Assertive }) { SNotice(it) } }
         }

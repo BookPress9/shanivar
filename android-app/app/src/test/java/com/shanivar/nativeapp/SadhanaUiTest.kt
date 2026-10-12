@@ -23,7 +23,7 @@ class SadhanaUiTest {
     private val c = SadhanaController(MemDraftStore(), clock, allowUnreviewed = true)
     private val sanskrit = SadhanaSpine.centres.map { it.deepStudyName }
 
-    private fun launch() = compose.setContent { SadhanaApp(controllerFactory = { c }, reduceMotionOverride = true) }
+    private fun launch() = compose.setContent { SadhanaApp(controllerFactory = { c }, reduceMotionOverride = true, hydrateDispatcher = kotlinx.coroutines.Dispatchers.Unconfined) }
     private fun click(t: String) = compose.onNodeWithText(t).performScrollTo().performClick()
     private fun noSanskritShown() = sanskrit.forEach { compose.onAllNodesWithText(it, substring = true).assertCountEquals(0) }
     private fun shot(name: String) {
@@ -98,5 +98,29 @@ class SadhanaUiTest {
         assertEquals(0, c.record.independentCount)
         compose.onNodeWithText("GUIDANCE: MINIMAL").assertExists()
         shot("11-home-minimal-guidance")
+    }
+
+    @Test fun loadingSurfaceIsBusyForTalkBackAndStaticUnderReducedMotion() {
+        compose.setContent { SadhanaLoadingSurface(LoadState.Visible("Preparing Sadhana"), reduceMotion = true, onRetry = {}, onDismiss = {}) }
+        compose.onNodeWithContentDescription("Shanivar is loading. Preparing Sadhana")
+            .assert(SemanticsMatcher.expectValue(androidx.compose.ui.semantics.SemanticsProperties.ProgressBarRangeInfo,
+                androidx.compose.ui.semantics.ProgressBarRangeInfo.Indeterminate))
+        compose.onNodeWithText("PREPARING SADHANA").assertExists()
+        shot("12-loading")
+    }
+
+    @Test fun loadingErrorOffersRetryAndContinue() {
+        var retried = false
+        compose.setContent { SadhanaLoadingSurface(LoadState.Failed("Opening source context", "This is taking longer than expected. Try again, or continue without it."), true, { retried = true }, {}) }
+        compose.onNodeWithText("Continue without it").assertExists()
+        compose.onNodeWithText("Try again").performClick(); assertTrue(retried)
+    }
+
+    @Test fun instantSourceRetrievalShowsNoLoader() {
+        compose.setContent { SadhanaApp(controllerFactory = { c }, reduceMotionOverride = true, hydrateDispatcher = kotlinx.coroutines.Dispatchers.Unconfined, sourcePort = { null }) }
+        compose.onNodeWithText("◇ Study").performClick()
+        compose.onAllNodesWithText("Inspect lane →")[0].performScrollTo().performClick()
+        compose.onNodeWithText("The source reader is not available yet. No unreviewed text is shown.").assertExists()
+        compose.onAllNodesWithContentDescription("Shanivar is loading", substring = true).assertCountEquals(0)
     }
 }

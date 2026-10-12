@@ -53,6 +53,7 @@ class SadhanaController(
     val record: SadhanaRecord get() = recordState
     val remainingMillis: Long get() = remainingState
     private val tracker = SadhanaAttemptTracker { saveCurrent(it) }
+    val practiceInProgress: Boolean get() { uiState; return tracker.inProgress }
     val running: Boolean get() { uiState; remainingState; return tracker.isRunning }
 
     init {
@@ -138,7 +139,7 @@ class SadhanaController(
     fun recordOwn() { recordState = record.addIndependent(clock.today(), ui.ownMinutes); set(ui.copy(view = SadhanaView.RECORD, message = null)) }
     fun deleteOwn(id: String) { recordState = record.deleteIndependent(id); set(ui) }
     fun fewerPrompts(on: Boolean) { recordState = record.setGuidance(if (on) GuidanceDetail.MINIMAL else GuidanceDetail.FULL); set(ui) }
-    fun inspectSource() = set(ui.copy(message = "The source reader is not available yet. No unreviewed text is shown."))
+    fun inspectSource(text: String? = null) = set(ui.copy(message = text ?: "The source reader is not available yet. No unreviewed text is shown."))
 
     fun guidanceLine(): String {
         val total = ui.duration * 60L

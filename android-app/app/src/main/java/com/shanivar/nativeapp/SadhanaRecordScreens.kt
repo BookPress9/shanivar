@@ -65,14 +65,14 @@ import androidx.compose.ui.unit.sp
     SFine("You may leave without recording anything. Missing data remains missing.")
 }
 
-@Composable fun StudyScreen(c: SadhanaController) {
+@Composable fun StudyScreen(c: SadhanaController, onInspect: (String) -> Unit = { c.inspectSource() }) {
     STop("←", "DEEP STUDY", "OPEN BY CHOICE", onLeft = { c.go(SadhanaView.HOME) })
     SHead("SOURCES, NOT STATUS", "Depth was never\nsomething to earn.", "Read across named traditions without turning them into one ladder.")
     listOf(
         Triple("VBT FOUNDATIONS", "Breath awareness adaptations", "Named passages · adaptation notes · open now"),
         Triple("MANOVIGYANA", "Models of mind kept distinct", "Inquiry · comparison · no diagnosis"),
         Triple("YOGA / BUDDHIST / VEDĀNTA", "Separate study lanes", "Different aims · terms · disagreements"),
-    ).forEach { (m, t, b) -> SCard { SMeta(m); SCardTitle(t); SCardBody(b); SSecondary("Inspect lane →", { c.inspectSource() }) } }
+    ).forEach { (m, t, b) -> SCard { SMeta(m); SCardTitle(t); SCardBody(b); SSecondary("Inspect lane →", { onInspect(m) }) } }
     // Naming rule (0017 as amended): centre names and attribution appear only here, in deep study.
     SCard {
         SMeta("SEVEN-CENTRE MAP · SOURCES PENDING VERIFICATION")
