@@ -106,7 +106,7 @@ class OnboardingDraftRepository(private val store: DraftStore) {
 
     fun signedIn(mode: IdentityMode, accountId: String?): DraftResult {
         if (mode == IdentityMode.NONE) return DraftResult.Blocked(draft, "Choose a way in.")
-        if (draft.displayName.isEmpty()) return DraftResult.Blocked(draft.copy(), "Enter your name first.")
+        if (mode != IdentityMode.GUEST && draft.displayName.isEmpty()) return DraftResult.Blocked(draft, "Enter your name first.")
         return commit(draft.copy(identityMode = mode, accountId = accountId, checkpoint = maxOf(draft.checkpoint, InitiationCheckpoint.PROPOSITION)))
     }
 
@@ -117,6 +117,14 @@ class OnboardingDraftRepository(private val store: DraftStore) {
         if (current == InitiationCheckpoint.COMPLETE) return DraftResult.Ok(draft)
         val next = InitiationCheckpoint.entries[current.ordinal + 1]
         return commit(draft.copy(checkpoint = maxOf(draft.checkpoint, next)))
+    }
+
+    /** Forward jump allowed by the wireframe (e.g. "Not now" skips to Foundation). Never moves backwards. */
+    fun reach(target: InitiationCheckpoint): DraftResult {
+        if (target >= InitiationCheckpoint.PROPOSITION && draft.identityMode == IdentityMode.NONE)
+            return DraftResult.Blocked(draft, "Finish identity first.")
+        if (target <= draft.checkpoint) return DraftResult.Ok(draft)
+        return commit(draft.copy(checkpoint = target))
     }
 
     fun complete(nowMillis: Long): DraftResult =

@@ -47,6 +47,12 @@ class OrbitLog(initial: List<OrbitEvent> = emptyList()) {
         return true
     }
 
+    /** Wireframe "Enter Shanivar": the day you finish the initiation counts as your first visit day. */
+    fun recordEntry(today: LocalDate): Boolean {
+        if (events.any { it.type == OrbitEventType.RETURN_DAY && it.occurrenceDate == today }) return false
+        return append(OrbitEvent("return-$today", OrbitEventType.RETURN_DAY, today, OrbitSource.DEVICE_OBSERVED))
+    }
+
     /** A real visit on a distinct local day. Silence is not evidence; only call from an actual app open. */
     fun recordVisit(today: LocalDate): Boolean {
         val firstDay = events.minOfOrNull { it.occurrenceDate } ?: return false
