@@ -24,7 +24,7 @@ class InitiationUiTest {
 
     private fun launch() {
         c = InitiationController(OnboardingDraftRepository(MemDraftStore()), MemDraftStore(), ports)
-        compose.setContent { InitiationApp(controllerFactory = { c }, reduceMotionOverride = true) }
+        compose.setContent { InitiationApp(controllerFactory = { c }, reduceMotionOverride = true, sadhanaV1 = false) }
     }
 
     /** Optional review screenshots: set -Dinitiation.shots=<dir>. */

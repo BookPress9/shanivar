@@ -34,10 +34,13 @@ android {
         // Initiation V1 (decision 0016, DEV-26). Off for release so the current app is unchanged;
         // on for debug builds so the new flow can be reviewed.
         buildConfigField("boolean", "INITIATION_V1", "false")
+        // Sadhana V1 (decision 0017, DEV-31..33). Debug only.
+        buildConfigField("boolean", "SADHANA_V1", "false")
     }
     buildTypes {
         debug {
             buildConfigField("boolean", "INITIATION_V1", "true")
+            buildConfigField("boolean", "SADHANA_V1", "true")
             applicationIdSuffix = ".dev"
             val debugApi = providers.gradleProperty("shanivarApiUrl").getOrElse("http://10.0.2.2:5000/api")
             require(debugApi.matches(Regex("https?://[a-zA-Z0-9.\\-:/]+"))) { "Invalid shanivarApiUrl" }
@@ -50,7 +53,8 @@ android {
     testOptions {
         unitTests.isIncludeAndroidResources = true
         // Optional Initiation review screenshots: ./gradlew testDebugUnitTest -PinitiationShots=/path
-        unitTests.all { test -> providers.gradleProperty("initiationShots").orNull?.let { test.systemProperty("initiation.shots", it) } }
+        unitTests.all { test -> providers.gradleProperty("initiationShots").orNull?.let { test.systemProperty("initiation.shots", it) }
+            providers.gradleProperty("sadhanaShots").orNull?.let { test.systemProperty("sadhana.shots", it) } }
         managedDevices.devices.create<com.android.build.api.dsl.ManagedVirtualDevice>("pixel2Api34") {
             device = "Pixel 2"
             apiLevel = 34

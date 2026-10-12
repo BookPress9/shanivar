@@ -43,3 +43,11 @@ Another design source to keep in sync. Build waits on the founder questions abov
 
 ## Revisit when
 The founder answers the questions, or a qualified reviewer rejects the centre model.
+
+## Build notes (DEV-31 to DEV-33): edits made to the wireframe for honesty and the naming rule
+- Spine waypoints, the readout and the practice source line outside deep study use plain labels and notes. Sanskrit names and named sources are listed only in Deep study. Two plain notes drop tradition words ("tantric and later yoga", "kuṇḍalinī").
+- Player: the planet stays still, so "The orbit moves. Your breath does not follow it." becomes "The orbit stays still. Your breath does not follow anything."
+- "I'll practise now · hide guidance" switches to minimal guidance and records nothing. The wireframe counted a practice that had not happened yet.
+- Source "Inspect lane": the prototype boundary text becomes "The source reader is not available yet. No unreviewed text is shown."
+- Home clock shows the real local time. Demo history fixtures are removed; the path comes from capability-criteria-v1.
+- Additions: "Use fewer prompts" control on Path (HANDOFF requires it); a "Produced by" criteria label on the invitation; delete for self-reports; tabs hidden during an active practice (End is the exit); a Routine tab when hosted in the initiation shell; an optional reflection that can be cleared.

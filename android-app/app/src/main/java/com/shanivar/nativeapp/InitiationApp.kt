@@ -85,6 +85,7 @@ fun InitiationApp(
         InitiationController(OnboardingDraftRepository(FileDraftStore(File(dir, "draft.properties"))), FileDraftStore(File(dir, "ui.properties")), AndroidInitiationPorts(ctx))
     },
     reduceMotionOverride: Boolean? = null,
+    sadhanaV1: Boolean = BuildConfig.SADHANA_V1,
 ) {
     val context = LocalContext.current
     val c = remember { controllerFactory(context) }
@@ -110,6 +111,11 @@ fun InitiationApp(
     }
 
     val screen = c.ui.screen
+    // Sadhana V1 (0017): after the first-challenge practice, the Sadhana destination is the sadhana-v1 experience.
+    if (sadhanaV1 && screen == InitiationScreen.SADHANA && c.orbitView().practicePoint) {
+        SadhanaApp(reduceMotionOverride = reduceMotionOverride, onRoutine = { run { c.go(InitiationScreen.ROUTINE) } })
+        return
+    }
     Column(Modifier.fillMaxSize().background(Ini.Ink).systemBarsPadding()) {
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 28.dp, vertical = 25.dp)) {
             if (screen.inOnboarding) IniProgress(screen.ordinal) { run { c.back() } }
