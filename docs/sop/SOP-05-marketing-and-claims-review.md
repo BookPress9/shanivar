@@ -13,6 +13,7 @@
 1. Draft copy; list each claim and its source file:line.
 2. Apply banned claims (Phase 0): available, download, live, launch date, Active, tested, works, reliable, "blocks", Play Store, iOS, user counts or outcomes, "impossible to bypass", streaks/levels, detox, circadian/cortisol/dosha (`routine-onboarding-marketing-plan.md:171`). Add: no health, therapeutic or nervous-system claims (`PRACTICE_SAFETY.md:49-51`).
 3. Voice: direct for Routine, patient for Sadhana/editorial (working split, D1 open). "Strict" means high standards, never lock-in (`routine-v3-onboarding/README.md:37`). No shame, no productivity-bro framing, no fake guru persona (`SHANIVAR_STANCE.md:13`). See `voice-direction.md`.
+3a. Speak only as Shanivar: No teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other) is named in any public or app copy. All public and app copy speaks only as Shanivar. Influences stay internal (founder, 12 Oct 2026; ST-011).
 4. Status words: "in development" only (`social-presence-from-scratch.md:81`). Nothing from `marketing/shanivar/wish-list.md` appears as a feature.
 5. AI footage or presenters disclosed on screen and by the platform label; never testimony (`instagram_keeper.md:42`). Keep Shanivar separate from the Hybrid Monk clothing business.
 6. Social Media Manager's claim check, then founder approval per item.

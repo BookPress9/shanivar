@@ -41,7 +41,7 @@ Home visible words: 638.
 ## UNRESOLVED (ST-010)
 1. Sign-off on the safety reading in ST-010: "just accept it" read as "accepting includes stopping", never "endure".
 2. May the site use "living dangerously in bliss and ecstasy"? Withheld: risk of being read as physical risk or a promised state.
-3. Name Osho publicly as an influence, or keep it internal?
+3. ~~Name Osho publicly?~~ CLOSED 2026-10-12: internal only (ST-010 naming rule, ST-011).
 4. Sign-off on the public lines above, especially "There is suffering" and "a path to becoming free of it".
 5. Still open from before: privacy-page tightening (SOP-02:21), marketing pause (SOP-05:7), Steady review before a public presence invitation.
 

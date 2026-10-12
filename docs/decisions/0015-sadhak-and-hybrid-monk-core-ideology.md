@@ -15,5 +15,8 @@ The founder's definitions of becoming a **Sadhak** and of a **Hybrid Monk** (ST-
 ## Guardrails (unchanged, still binding)
 No health, therapy or healing claims; "free of suffering" is a contemplative aim (`research/deep-foundation/PRACTICE_SAFETY.md:49-51`). "Living dangerously" never implies physical risk; stationary-setting rules hold (`PRACTICE_SAFETY.md:32`). No one is asked to endure an unsafe practice (`PRACTICE_SAFETY.md:47`). No Osho quotations. SOP-05 banned claims apply. No streaks, scores or ranks (0009, 0013).
 
+## Naming rule
+No teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other) is named in any public or app copy. All public and app copy speaks only as Shanivar. Influences stay internal (founder, 12 Oct 2026; ST-011).
+
 ## Open
 UNRESOLVED: founder sign-off on the safety reading in ST-010 and on the public website lines derived from it.

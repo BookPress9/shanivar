@@ -333,6 +333,22 @@ Those instructions supersede the authority claim and six-level ranking in [the h
 
 **Claim limitations:** Founder philosophy, not empirical, medical or therapeutic findings. No health, healing or "freedom from suffering" outcome is promised (`PRACTICE_SAFETY.md:49-51`). Osho's texts are not quoted.
 
+**Naming rule:** No teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other) is named in any public or app copy. All public and app copy speaks only as Shanivar. Influences stay internal (founder, 12 Oct 2026; ST-011). The Osho reference in the founder's line above is internal context only. (Closes the earlier open question on naming Osho.)
+
 **Founder decision:** Given 2026-10-12 in chat. UNRESOLVED: founder sign-off on the safety reading above.
 
 **Date accepted:** 2026-10-12 (wording)
+
+## ST-011 — Founder's private stance: one consciousness (INTERNAL, never public copy)
+
+**Status:** INTERNAL. Given by the founder, Shubham Kumar, in chat on 12 October 2026, to be kept personal. Must never appear in website, app, store, social or other public copy. Wording verbatim (typos only fixed).
+
+**What the founder said:**
+
+> "Osho should just be internal. Everything the app delivers should be internal and should only be tied to Shanivar. As a founder, something to keep personal is my stance that I believe the ultimate consciousness is one. Everything is one: Osho, Paramahansa Yogananda, everyone who has contributed to the ultimate consciousness through their practices, Kriya Yoga, everything is already there. Shanivar is also already there and is just letting people touch that consciousness, which is ultimately the ultimate truth."
+
+**Product implication:** No teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other) is named in any public or app copy. All public and app copy speaks only as Shanivar. Influences stay internal (founder, 12 Oct 2026; ST-011).
+
+**Claim limitations:** Personal founder belief, not an empirical or metaphysical finding, and not a product claim.
+
+**Date given:** 2026-10-12
