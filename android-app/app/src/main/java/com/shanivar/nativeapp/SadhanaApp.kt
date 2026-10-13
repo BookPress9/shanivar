@@ -42,7 +42,9 @@ object SystemSadhanaClock : SadhanaClock {
 /** Sadhana V1 host (decision 0017). Debug builds only via BuildConfig.SADHANA_V1. */
 @Composable fun SadhanaApp(
     controllerFactory: (Context) -> SadhanaController = { ctx ->
-        SadhanaController(FileDraftStore(File(ctx.filesDir, "sadhana/state.properties")), SystemSadhanaClock, allowUnreviewed = BuildConfig.DEBUG)
+        val plans = SharedPrefsRoutinePlanRepository(ctx)
+        SadhanaController(FileDraftStore(File(ctx.filesDir, "sadhana/state.properties")), SystemSadhanaClock, allowUnreviewed = BuildConfig.DEBUG,
+            routineBoundaryLinked = { RoutineBoundaryLink.linked(plans.current()) })
     },
     reduceMotionOverride: Boolean? = null,
     onRoutine: (() -> Unit)? = null,

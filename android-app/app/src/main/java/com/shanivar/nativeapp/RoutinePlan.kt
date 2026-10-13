@@ -283,3 +283,8 @@ enum class WindowRepeat(val label: String) {
         }
     }
 }
+
+/** B5: Choose counts as linked to the Routine only when a saved, enabled window with at least one day exists. */
+object RoutineBoundaryLink {
+    fun linked(plan: RoutinePlanV1): Boolean = plan.windows.any { it.enabled && it.startDays.isNotEmpty() && it.startTime != it.endTime }
+}
