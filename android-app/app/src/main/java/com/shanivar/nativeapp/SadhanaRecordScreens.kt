@@ -37,7 +37,9 @@ import androidx.compose.ui.unit.sp
     RecordRow("OWN", "Practised without Shanivar", "${r.independentCount} self-reported · private by choice")
     r.independent.reversed().forEach { o ->
         Row(Modifier.fillMaxWidth()) {
-            Text("${o.localDate} · ${o.intendedMinutes ?: "—"} min intended · self-reported", fontSize = 10.sp, color = Sad.Ash, modifier = Modifier.weight(1f).padding(top = 14.dp))
+            Text("${o.localDate} · ${o.actualMinutes?.let { "$it min actual" } ?: "${o.intendedMinutes ?: "—"} min intended"} · self-reported", fontSize = 10.sp, color = Sad.Ash, modifier = Modifier.weight(1f).padding(top = 14.dp))
+            androidx.compose.material3.TextButton(onClick = { c.adjustOwnActual(o.id, -1) }, modifier = Modifier.heightIn(min = 48.dp)) { Text("−1", fontSize = 11.sp, color = Sad.Ash) }
+            androidx.compose.material3.TextButton(onClick = { c.adjustOwnActual(o.id, 1) }, modifier = Modifier.heightIn(min = 48.dp)) { Text("+1", fontSize = 11.sp, color = Sad.Ash) }
             androidx.compose.material3.TextButton(onClick = { c.deleteOwn(o.id) }, modifier = Modifier.heightIn(min = 48.dp)) { Text("Delete", fontSize = 11.sp, color = Sad.Ash) }
         }
     }

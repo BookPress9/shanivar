@@ -145,6 +145,12 @@ class SadhanaController(
     /** "I'll practise now · hide guidance": chooses minimal guidance; records nothing (nothing happened yet). */
     fun leaveToPractise() { recordState = record.setGuidance(GuidanceDetail.MINIMAL); set(ui.copy(view = SadhanaView.HOME, message = null)) }
     fun recordOwn() { recordState = record.addIndependent(clock.today(), ui.ownMinutes); set(ui.copy(view = SadhanaView.RECORD, message = null)) }
+    /** B7: edit actual minutes of a self-report (1..180). Stays a self-report, never app-observed. */
+    fun adjustOwnActual(id: String, delta: Int) {
+        val o = record.independent.firstOrNull { it.id == id } ?: return
+        val now = (o.actualMinutes ?: o.intendedMinutes ?: 0) + delta
+        recordState = record.editIndependent(id, now.coerceIn(1, 180)); set(ui)
+    }
     fun deleteOwn(id: String) { recordState = record.deleteIndependent(id); set(ui) }
     fun fewerPrompts(on: Boolean) { recordState = record.setGuidance(if (on) GuidanceDetail.MINIMAL else GuidanceDetail.FULL); set(ui) }
     fun inspectSource(text: String? = null) = set(ui.copy(message = text ?: "The source reader is not available yet. No unreviewed text is shown."))

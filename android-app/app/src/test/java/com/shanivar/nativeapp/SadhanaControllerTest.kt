@@ -78,4 +78,15 @@ class SadhanaControllerTest {
         org.junit.Assert.assertEquals(1, c2.record.attempts.size)
         org.junit.Assert.assertNull(InitiationImport.toSadhana(done.copy(outcome = AttemptOutcome.IN_PROGRESS), clock.zone()))
     }
+
+    @org.junit.Test
+    fun selfReportActualMinutesEditableAndPersisted() {
+        val c = c(); c.setOwnMinutes(3); c.recordOwn()
+        val id = c.record.independent.single().id
+        c.adjustOwnActual(id, 2); c.adjustOwnActual(id, -10)
+        org.junit.Assert.assertEquals(1, c.record.independent.single().actualMinutes)
+        c.adjustOwnActual(id, 4)
+        org.junit.Assert.assertEquals(5, c().record.independent.single().actualMinutes)
+        org.junit.Assert.assertEquals(0, c().record.attemptCount)
+    }
 }
