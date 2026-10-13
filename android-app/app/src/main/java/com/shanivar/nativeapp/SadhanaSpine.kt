@@ -89,4 +89,28 @@ object SadhanaSpine {
 
     /** Practice-trace layer: wireframe meter min(100, 20 + attempts*12 + independent*8), from the record only. */
     fun tracePercent(r: SadhanaRecord): Int = minOf(100, 20 + r.attemptCount * 12 + r.independentCount * 8)
+
+    /** One root-branch line in dp, relative to its origin on the trace. [order] 0..1 = when it grows within a pass. */
+    data class RootSegment(val x0: Float, val y0: Float, val x1: Float, val y1: Float, val depth: Int, val order: Float)
+
+    /**
+     * Procedural root/nerve branches (founder reference wireframes/sadhana-v1/reference/spine-roots-reference.jpg).
+     * Deterministic for a seed; recursive forks fanning left and right, thinning with depth.
+     */
+    fun roots(seed: Long, length: Float = 34f, maxDepth: Int = 3): List<RootSegment> {
+        val r = java.util.Random(seed)
+        val out = mutableListOf<RootSegment>()
+        fun grow(x: Float, y: Float, angle: Double, len: Float, depth: Int, start: Float) {
+            if (depth > maxDepth || len < 4f) return
+            val x1 = x + (kotlin.math.cos(angle) * len).toFloat(); val y1 = y + (kotlin.math.sin(angle) * len).toFloat()
+            out += RootSegment(x, y, x1, y1, depth, start)
+            val forks = 1 + r.nextInt(2)
+            repeat(forks) { grow(x1, y1, angle + (r.nextDouble() - 0.5) * 1.1, len * (0.55f + r.nextFloat() * 0.2f), depth + 1, start + 0.25f) }
+        }
+        listOf(-1, 1).forEach { side ->
+            val base = if (side < 0) Math.PI else 0.0
+            repeat(1 + r.nextInt(2)) { grow(0f, 0f, base + side * (r.nextDouble() * 0.9 - 0.2), length * (0.7f + r.nextFloat() * 0.5f), 0, 0f) }
+        }
+        return out
+    }
 }

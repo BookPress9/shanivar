@@ -63,3 +63,10 @@ The founder answers the questions, or a qualified reviewer rejects the centre mo
 3. **Living Spine = 33 stages** with the seven centres at the stages from the founder's app.js thresholds: Base 1, Lower abdomen 5, Mid torso 11, Chest 17, Throat 24, Brow 29, Crown 33. Regions from the base: Co4, S5, L5, T12, C7. The stage is 1 + completed attempts + self-reports, capped at 33 (as in app.js `spineLevel`). Ended or interrupted attempts do not advance it; it is visual only and unlocks nothing. The existing SpineMap was modified, not rebuilt. Shimmer: a soft glow travels up the lit trace with random gaps (4 to 13 s) and random durations (5 to 11 s). It is never periodic and is off under reduced motion.
    - **Flagged:** app.js lights vertebrae from the top (n=1 is the cervical top) while thresholds count from the base. Built base-up, consistently. app.js also spaces the chakra buttons evenly instead of at their thresholds; the Compose build places them at their thresholds. The founder's 2.8 s infinite `currentPulse` on the trace tip is rhythmic, so it was not built; the shimmer replaces it.
 4. **Not built (pending the founder):** vagal firefly layer, self-check, voice copy.
+
+## Founder decision, 13 Oct 2026 (morning): tip pulse kept, in root form
+The founder approved keeping the tip pulse, drawn as tree roots (reference: `android-app/wireframes/sadhana-v1/reference/spine-roots-reference.jpg`). Built without a fixed period:
+- Thin procedural branches (recursive forks to depth 3, fanning left and right) grow out from the trace tip and fade. Colour shifts from bronze/amber (#E2B377) to pink (#E58AA8) with depth, and lines thin with depth.
+- Two subtler branches (35% strength) appear at random lit stages.
+- Each pass gets a new random shape. Gaps are random (3 to 9 s), growth lasts 1.4 to 4 s, and the fade lasts 1.8 to 5 s. There is no fixed period, so it is non-rhythmic and never breath-paced.
+- Under reduced motion the branches are static at 45% opacity. The spine never appears during practice. This replaces the rejected rhythmic 2.8 s `currentPulse`.

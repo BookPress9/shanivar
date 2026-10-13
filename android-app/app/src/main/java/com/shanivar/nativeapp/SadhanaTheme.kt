@@ -15,6 +15,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -150,6 +152,26 @@ object Sad {
             shimmer.snapTo(-1f)
         }
     }
+    // Root-branch tip pulse (founder 13 Oct): grows out and fades at random intervals 3-9 s, random durations.
+    // Never periodic, never breath-paced. Under reduced motion the branches are static.
+    val rootGrow = remember { androidx.compose.animation.core.Animatable(if (reduceMotion) 1f else 0f) }
+    val rootAlpha = remember { androidx.compose.animation.core.Animatable(if (reduceMotion) 0.45f else 0f) }
+    var rootSeed by remember { androidx.compose.runtime.mutableLongStateOf(7L) }
+    if (!reduceMotion) LaunchedEffect(Unit) {
+        val rnd = java.util.Random()
+        while (true) {
+            kotlinx.coroutines.delay(3_000L + rnd.nextInt(6_000))          // irregular gap 3-9 s
+            rootSeed = rnd.nextLong()
+            rootGrow.snapTo(0f); rootAlpha.snapTo(0.85f)
+            rootGrow.animateTo(1f, androidx.compose.animation.core.tween(1_400 + rnd.nextInt(2_600)))   // grow 1.4-4 s
+            rootAlpha.animateTo(0f, androidx.compose.animation.core.tween(1_800 + rnd.nextInt(3_200)))  // fade 1.8-5 s
+        }
+    }
+    val tipRoots = remember(rootSeed) { SadhanaSpine.roots(rootSeed, if (compact) 22f else 34f) }
+    val stageRoots = remember(rootSeed, level) {
+        val rr = java.util.Random(rootSeed xor 0x5EED)
+        if (level < 4) emptyList() else List(2) { val st = 2 + rr.nextInt(level - 2); st to SadhanaSpine.roots(rootSeed + st, if (compact) 12f else 20f, 2) }
+    }
     val padTop = if (compact) 18.dp else 30.dp; val padBottom = if (compact) 18.dp else 34.dp
     Box(Modifier.fillMaxWidth().height(h).semantics { contentDescription = "Living Spine: 33 stages, seven centre waypoints. Practice stage $level of 33. A study map, not anatomy or an energy reading." }) {
         Canvas(Modifier.matchParentSize()) {
@@ -174,6 +196,21 @@ object Sad {
             val yl = yOf(level)
             drawLine(Brush.verticalGradient(listOf(Color(0xFFFFF4C1), Color(0xFFEFBB67), Color(0xFFD15F45)), yl, bottom), Offset(cx, bottom), Offset(cx, yl), 1.5.dp.toPx())
             drawLine(Color(0x22C99B62), Offset(cx, yl), Offset(cx, top), 1.dp.toPx())
+            // Root branches: bronze/amber to pink, thin, fading with depth.
+            fun drawRoots(segs: List<SadhanaSpine.RootSegment>, ox: Float, oy: Float, strength: Float) {
+                val g = rootGrow.value; val a = rootAlpha.value * strength
+                if (a <= 0.01f) return
+                segs.forEach { sg ->
+                    val local = ((g - sg.order) / 0.25f).coerceIn(0f, 1f)
+                    if (local <= 0f) return@forEach
+                    val col = androidx.compose.ui.graphics.lerp(Color(0xFFE2B377), Color(0xFFE58AA8), (sg.depth / 3f).coerceAtMost(1f))
+                    val x0 = ox + sg.x0.dp.toPx(); val y0 = oy + sg.y0.dp.toPx()
+                    val x1 = x0 + (sg.x1 - sg.x0).dp.toPx() * local; val y1 = y0 + (sg.y1 - sg.y0).dp.toPx() * local
+                    drawLine(col.copy(alpha = a * (1f - sg.depth * 0.2f)), Offset(x0, y0), Offset(x1, y1), (1.1f - sg.depth * 0.22f).dp.toPx().coerceAtLeast(0.4f))
+                }
+            }
+            drawRoots(tipRoots, cx, yl, 1f)
+            stageRoots.forEach { (st, segs) -> drawRoots(segs, cx, yOf(st), 0.35f) }
             val p = shimmer.value
             if (p in 0f..1f) {
                 val ys = bottom - p * (bottom - yl)

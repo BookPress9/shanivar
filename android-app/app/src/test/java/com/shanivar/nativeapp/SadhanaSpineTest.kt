@@ -51,4 +51,19 @@ class SadhanaSpineTest {
         assertTrue(spine.contains("rnd.nextInt") && spine.contains("if (!reduceMotion)"))
         assertFalse(spine.contains("infiniteRepeatable") || spine.contains("RepeatMode"))
     }
+
+    @Test fun rootBranchesAreDeterministicFanBothWaysAndThin() {
+        val a = SadhanaSpine.roots(42); assertEquals(a, SadhanaSpine.roots(42))
+        assertTrue(a.isNotEmpty() && a.all { it.depth <= 3 })
+        assertTrue(a.any { it.x1 < 0 } && a.any { it.x1 > 0 })
+        assertTrue(a.filter { it.depth > 0 }.all { s -> a.any { p -> p.depth == s.depth - 1 } })
+    }
+    @Test fun rootPulseIsRandomisedNotPeriodicAndStaticUnderReducedMotion() {
+        val src = java.io.File("src/main/java/com/shanivar/nativeapp/SadhanaTheme.kt").readText()
+        val spine = src.substring(src.indexOf("fun SpineMap"), src.indexOf("fun SMeter"))
+        assertTrue(spine.contains("3_000L + rnd.nextInt(6_000)"))
+        assertTrue(spine.contains("Animatable(if (reduceMotion) 1f else 0f)"))
+        val player = java.io.File("src/main/java/com/shanivar/nativeapp/SadhanaPracticeScreens.kt").readText()
+        assertFalse("never during practice", player.contains("SpineMap"))
+    }
 }

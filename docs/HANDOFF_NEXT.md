@@ -4,7 +4,8 @@
 - **Android app** (`android-app/`, Kotlin and Compose). Debug builds turn on two flags (release is unchanged):
   - `INITIATION_V1`: the initiation onboarding flow (guest works end to end; Google and email show "not available yet").
   - `SADHANA_V1`: the Sadhana experience. Living Spine with 33 stages and 7 waypoints, Path (Arrive → Return → See → Choose → Carry), practice detail, prepare, a still-planet player, return, record, practice without the app, deep study, and a NASA Saturn loading surface.
-- 479 unit tests pass (`testDebugUnitTest`). Review screenshots are on the agent box at `/workspace/sadhana-shots/` (not in the repo).
+- Living Spine tip pulse kept as non-rhythmic root branches (founder, 13 Oct; 0017).
+- 482 unit tests pass (`testDebugUnitTest`). Review screenshots are on the agent box at `/workspace/sadhana-shots/` (not in the repo).
 - Research-only practices can never launch. Release builds refuse practices without a content review manifest.
 
 ## Decisions (`docs/decisions/`)
@@ -14,7 +15,7 @@
 
 ## Open founder questions
 1. Vagal firefly layer, self-check and new voice copy: not built; waiting on the founder plus an SOP-05 claims review.
-2. Spine orientation: app.js lights stages from the top while thresholds count from the base. The build counts from the base; confirm.
+2. (Tip pulse resolved: root form, non-rhythmic.) Spine orientation: app.js lights stages from the top while thresholds count from the base. The build counts from the base; confirm.
 3. Progression meaning and visual language sign-off (HANDOFF gate 8).
 4. Practices longer than 60 s need a practice review; who verifies chakra source passages?
 5. The "Choose" capability needs a Routine-boundary link (not wired yet).

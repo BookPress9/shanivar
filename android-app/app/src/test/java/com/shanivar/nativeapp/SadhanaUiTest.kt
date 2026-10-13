@@ -128,6 +128,17 @@ class SadhanaUiTest {
         shot("14-spine-33")
     }
 
+    @Test fun spineRootsScreenshot() {
+        repeat(9) { c.recordOwn() }
+        c.go(SadhanaView.SPINE)
+        compose.mainClock.autoAdvance = false
+        compose.setContent { SadhanaApp(controllerFactory = { c }, reduceMotionOverride = true, hydrateDispatcher = kotlinx.coroutines.Dispatchers.Unconfined) }
+        compose.mainClock.advanceTimeBy(500)
+        compose.onNodeWithContentDescription("Living Spine: 33", substring = true).performScrollTo()
+        compose.mainClock.advanceTimeBy(500)
+        shot("15-spine-roots")
+    }
+
     @Test fun loadingErrorOffersRetryAndContinue() {
         var retried = false
         compose.setContent { SadhanaLoadingSurface(LoadState.Failed("Opening source context", "This is taking longer than expected. Try again, or continue without it."), true, { retried = true }, {}) }
