@@ -37,24 +37,24 @@ class SadhanaUiTest {
 
     @Test fun fullJourneyHomeToRecord() {
         launch()
-        compose.onNodeWithText("The path lives\nwithin you.").assertExists()
+        compose.onNodeWithText("Give this\n1 honest minute.").assertExists()
         noSanskritShown(); shot("01-sadhana-home")
-        click("Enter the Living Spine")
-        compose.onNodeWithText("One axis.\nSeven doorways.").assertExists()
+        click("Open the Living Spine")
+        compose.onNodeWithText("See the map.\nTest the practice.").assertExists()
         compose.onNodeWithContentDescription("Living Spine: 33", substring = true).performScrollTo()
         compose.onNode(SemanticsMatcher("click label") { it.config.getOrElseNullable(androidx.compose.ui.semantics.SemanticsActions.OnClick) { null }?.label == "Open Crown" }).performClick()
-        compose.onNodeWithText("SELECTED WAYPOINT · CROWN").assertExists()
+        compose.onNodeWithText("CROWN · THRESHOLD 33").assertExists()
         noSanskritShown(); shot("02-living-spine")
-        compose.onNodeWithText("SELECTED WAYPOINT · CROWN").performScrollTo(); shot("02b-living-spine-readout")
-        click("Practise from this foundation →")
+        compose.onNodeWithText("CROWN · THRESHOLD 33").performScrollTo(); shot("02b-living-spine-readout")
+        click("Choose a practice →")
         compose.onNodeWithText("Return to one ordinary breath").assertExists()
         noSanskritShown(); shot("03-practice-detail")
         click("Prepare · 1 min →")
-        click("Begin Sadhana →")
+        click("Begin →")
         compose.onNodeWithText("Confirm you are stationary, or return without beginning.").assertExists()
         click("I am stationary and in a suitable place.")
         shot("04-prepare")
-        click("Begin Sadhana →")
+        click("Begin →")
         compose.onNodeWithText("ACTIVE PRACTICE").assertExists()
         compose.onNodeWithText("◌ Sadhana").assertDoesNotExist()
         compose.onNodeWithContentDescription("End practice").assertExists()
@@ -63,20 +63,20 @@ class SadhanaUiTest {
         compose.onNodeWithText("Anchor changed to the room. Resume when ready.").assertExists()
         click("Resume")
         compose.runOnIdle { clock.advance(60_000); c.tick() }
-        compose.onNodeWithText("You stayed.\nNow leave it here.").assertExists()
+        compose.onNodeWithText("1 active minute.").assertExists()
         click("Uncomfortable")
         shot("06-return")
-        click("View practice record")
+        click("View the record")
         compose.onNodeWithText("Return to one ordinary breath").assertExists()
         shot("07-record")
         click("Practise without the player")
-        click("I already practised · record it")
+        click("Record an earlier practice")
         assertEquals(1, c.record.independentCount)
         click("See capability path")
         compose.onNodeWithText("What can you do\nwith less prompting?").assertExists()
         shot("08-path")
         compose.onNodeWithText("◇ Study").performClick()
-        compose.onNodeWithText("Depth was never\nsomething to earn.").assertExists()
+        compose.onNodeWithText("Read the source.\nKeep the differences.").assertExists()
         compose.onNodeWithText("Crown · Sahasrāra").assertExists() // names live only in deep study
         shot("09-deep-study")
         compose.onNodeWithText("Intensive methods").performScrollTo(); shot("09b-deep-study-research-boundary")
@@ -84,17 +84,17 @@ class SadhanaUiTest {
 
     @Test fun endImmediatelyRecordsEndedAndWithoutApp() {
         launch()
-        click("Enter practice →"); click("Prepare · 1 min →")
-        click("I am stationary and in a suitable place."); click("Begin Sadhana →")
+        click("Start →"); click("Prepare · 1 min →")
+        click("I am stationary and in a suitable place."); click("Begin →")
         compose.runOnIdle { clock.advance(5_000); c.tick() }
         compose.onNodeWithContentDescription("End practice").performClick()
-        compose.onNodeWithText("You chose\nwhen to end.").assertExists()
+        compose.onNodeWithText("You ended the practice.").assertExists()
         assertEquals(SadhanaOutcome.ENDED, c.record.attempts.single().outcome)
         click("Return to my day →")
         compose.onNodeWithText("⌁ Path").performClick()
         click("Record practice without Shanivar")
         shot("10-without-app")
-        click("I’ll practise now · hide guidance")
+        click("Hide guidance")
         assertEquals(0, c.record.independentCount)
         compose.onNodeWithText("GUIDANCE: MINIMAL").assertExists()
         shot("11-home-minimal-guidance")
@@ -122,7 +122,7 @@ class SadhanaUiTest {
         c.go(SadhanaView.SPINE)
         launch()
         compose.onNodeWithText("07 / 33").performScrollTo()
-        compose.onNodeWithText("4 stages to Mid torso").assertExists()
+        compose.onNodeWithText("4 segments to Mid torso context").assertExists()
         noSanskritShown()
         compose.onNodeWithContentDescription("Living Spine", substring = true).performScrollTo()
         shot("14-spine-33")
@@ -131,11 +131,8 @@ class SadhanaUiTest {
     @Test fun spineRootsScreenshot() {
         repeat(9) { c.recordOwn() }
         c.go(SadhanaView.SPINE)
-        compose.mainClock.autoAdvance = false
         compose.setContent { SadhanaApp(controllerFactory = { c }, reduceMotionOverride = true, hydrateDispatcher = kotlinx.coroutines.Dispatchers.Unconfined) }
-        compose.mainClock.advanceTimeBy(500)
         compose.onNodeWithContentDescription("Living Spine: 33", substring = true).performScrollTo()
-        compose.mainClock.advanceTimeBy(500)
         shot("15-spine-roots")
     }
 
@@ -149,8 +146,32 @@ class SadhanaUiTest {
     @Test fun instantSourceRetrievalShowsNoLoader() {
         compose.setContent { SadhanaApp(controllerFactory = { c }, reduceMotionOverride = true, hydrateDispatcher = kotlinx.coroutines.Dispatchers.Unconfined, sourcePort = { null }) }
         compose.onNodeWithText("◇ Study").performClick()
-        compose.onAllNodesWithText("Inspect lane →")[0].performScrollTo().performClick()
+        compose.onAllNodesWithText("Open →")[0].performScrollTo().performClick()
         compose.onNodeWithText("The source reader is not available yet. No unreviewed text is shown.").assertExists()
         compose.onAllNodesWithContentDescription("Shanivar is loading", substring = true).assertCountEquals(0)
+    }
+
+    @Test fun selfCheckIsLocalReflectiveAndVagalLayerIsLabelledIllustration() {
+        c.go(SadhanaView.SPINE); launch()
+        compose.onNodeWithText("What is true right now?").assertExists()
+        compose.onNodeWithText("The lights follow your selection. Shanivar is not measuring your nervous system.").assertExists()
+        compose.onNodeWithText("NOW · NOT ANSWERED").assertExists()
+        click("On edge")
+        compose.onNodeWithText("NOW · ON EDGE").assertExists()
+        assertEquals(SelfCheck.ACTIVATED, c.ui.selfCheck)
+        assertEquals("self-check is not evidence", 0, CapabilityCriteria.evidence(c.record, true).size)
+        compose.onNodeWithContentDescription("symbolic vagal illustration", substring = true).assertExists()
+        noSanskritShown()
+        shot("16-self-check-vagal")
+        compose.onNodeWithContentDescription("Living Spine: 33", substring = true).performScrollTo()
+        shot("16b-spine-vagal-fireflies")
+        compose.onNodeWithText("CONTEXT REVEALED").performScrollTo(); shot("16c-spine-context")
+    }
+
+    @Test fun revisedVoiceCopyHome() {
+        launch()
+        compose.onNodeWithText("Notice what happens. Then return to your day.").assertExists()
+        compose.onNodeWithText("End anytime").assertExists()
+        shot("16d-home-voice")
     }
 }

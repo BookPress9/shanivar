@@ -73,3 +73,17 @@ The founder approved keeping the tip pulse, drawn as tree roots (reference: `and
 
 ## Founder approval, 13 Oct 2026
 **Sadhana visual v1 approved** ("approved as v1"): the 33-stage Living Spine with the non-rhythmic root pulse, and the NASA Saturn loading surface with the steady ring spin. Still pending: the vagal layer, self-check, voice copy, practice reviews (DEV-34) and device QA.
+
+## Amendment — 13 Oct 2026: vagal layer, self-check, voice copy approved
+
+The founder approved ("all approved") the vagal firefly layer, the reflective self-check and the revised voice copy. Built from his files, with these honesty/safety edits (SOP-05, PRACTICE_SAFETY):
+
+- The vagal layer is a labelled symbolic orientation illustration, not anatomy, a detector or a measurement.
+- Self-check ("On edge / Mixed / Steady / Low energy") is reflective, local-only (stored on device), not diagnostic and not evidence; defaults to unanswered (founder file defaulted to "mixed").
+- Fireflies: founder's 3.8 s ease-in-out infinite flicker (1.5 s "on edge") replaced by independent random flicker (gap 1.5–7 s, glow 1.2–3.5 s); not rhythmic.
+- Self-check changes brightness and dash pattern only, never tempo. Nerve flow is a constant one-way 10 s drift.
+- The 6 s rhythmic halo scale pulse is not built.
+- Spine layer is hidden during practice (planet stays still); static under reduced motion.
+- Chakra names, granthi and book wording appear only in Deep study; plain labels elsewhere.
+- Player keeps "The orbit stays still…" instead of "The orbit moves".
+- "Hide guidance" records nothing.

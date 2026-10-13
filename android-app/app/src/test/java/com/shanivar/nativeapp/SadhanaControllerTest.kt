@@ -62,4 +62,10 @@ class SadhanaControllerTest {
         val c = c(); c.setStationary(true); c.begin(); c.changeAnchor()
         assertFalse(c.running); assertEquals("Anchor changed to the room. Resume when ready.", c.ui.message)
     }
+
+    @Test fun selfCheckPersistsLocallyAndClears() {
+        val c = c(); c.setSelfCheck(SelfCheck.LOW)
+        assertEquals(SelfCheck.LOW, c().ui.selfCheck)
+        c.setSelfCheck(SelfCheck.LOW); assertNull(c().ui.selfCheck)
+    }
 }

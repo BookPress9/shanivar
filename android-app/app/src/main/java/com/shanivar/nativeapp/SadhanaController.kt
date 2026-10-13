@@ -37,6 +37,8 @@ data class SadhanaUi(
     val lastSeconds: Long = 0,
     val lastAttemptId: String? = null,
     val ownMinutes: Int = 3,
+    /** Local-only reflective self-check; never sent, never evidence. Null = not answered. */
+    val selfCheck: SelfCheck? = null,
     val message: String? = null,
 )
 
@@ -133,6 +135,7 @@ class SadhanaController(
     }
     fun reflection(): Usefulness? = ui.lastAttemptId?.let { record.reflections[it]?.usefulness }
 
+    fun setSelfCheck(v: SelfCheck) = set(ui.copy(selfCheck = if (ui.selfCheck == v) null else v))
     fun setOwnMinutes(m: Int) = set(ui.copy(ownMinutes = m))
     /** "I'll practise now · hide guidance": chooses minimal guidance; records nothing (nothing happened yet). */
     fun leaveToPractise() { recordState = record.setGuidance(GuidanceDetail.MINIMAL); set(ui.copy(view = SadhanaView.HOME, message = null)) }
@@ -157,7 +160,7 @@ class SadhanaController(
 object SadhanaCodec {
     fun encode(ui: SadhanaUi, r: SadhanaRecord, current: SadhanaAttempt?): Properties = Properties().apply {
         setProperty("view", ui.view.name); setProperty("selected", ui.selected); setProperty("centre", ui.centre)
-        setProperty("duration", ui.duration.toString()); setProperty("anchor", ui.anchor.name); setProperty("ownMinutes", ui.ownMinutes.toString())
+        setProperty("duration", ui.duration.toString()); setProperty("anchor", ui.anchor.name); setProperty("ownMinutes", ui.ownMinutes.toString()); ui.selfCheck?.let { setProperty("selfCheck", it.name) }
         ui.lastOutcome?.let { setProperty("lastOutcome", it.name) }; setProperty("lastSeconds", ui.lastSeconds.toString())
         ui.lastAttemptId?.let { setProperty("lastAttemptId", it) }
         setProperty("guidance", r.guidance.detail.name); setProperty("guidanceBy", r.guidance.changedBy.name)
@@ -195,6 +198,7 @@ object SadhanaCodec {
         duration = p.getProperty("duration")?.toIntOrNull() ?: 1,
         anchor = runCatching { SadhanaAnchor.valueOf(p.getProperty("anchor")) }.getOrDefault(SadhanaAnchor.BREATH),
         ownMinutes = p.getProperty("ownMinutes")?.toIntOrNull() ?: 3,
+        selfCheck = runCatching { SelfCheck.valueOf(p.getProperty("selfCheck")) }.getOrNull(),
         lastOutcome = runCatching { SadhanaOutcome.valueOf(p.getProperty("lastOutcome")) }.getOrNull(),
         lastSeconds = p.getProperty("lastSeconds")?.toLongOrNull() ?: 0, lastAttemptId = p.getProperty("lastAttemptId"),
     )

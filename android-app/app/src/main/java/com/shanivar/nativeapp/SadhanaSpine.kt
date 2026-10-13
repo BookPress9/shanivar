@@ -10,6 +10,11 @@ package com.shanivar.nativeapp
  * Every centre is STUDY_ONLY until source passages are verified, so none can launch a practice.
  */
 
+/** Self-check (founder approved 13 Oct). The user's own report; reflective, never diagnostic; stored locally only. */
+enum class SelfCheck(val label: String, val glow: Float) {
+    ACTIVATED("On edge", 0.95f), MIXED("Mixed", 0.75f), STEADY("Steady", 0.8f), LOW("Low energy", 0.45f)
+}
+
 enum class SpineLayer { ANATOMICAL_ORIENTATION, TRADITION_MAP, PRACTICE_TRACE }
 enum class SourceRelationship { DIRECT, ADAPTATION, MODERN }
 
@@ -28,7 +33,7 @@ data class SpineCentre(
     val mapId: String,
     /** Deep study only. */
     val deepStudyName: String,
-    /** Deep study only (verbatim wireframe text). */
+    /** Deep study only (verbatim wireframe text, founder update 13 Oct). */
     val deepStudyText: String,
     val source: SourceRecord,
     val status: PracticeStatus = PracticeStatus.STUDY_ONLY,
@@ -46,19 +51,19 @@ object SadhanaSpine {
     /** Top to bottom, as drawn. Deep-study text verbatim from app.js CHAKRAS. */
     val centres: List<SpineCentre> = listOf(
         SpineCentre("sahasrara", "Crown", "Often presented above the crown in modern seven-centre maps. Meanings and status vary by system.", 0xFFD7CCFF, MAP_ID,
-            "Sahasrāra", "Often presented above the crown in modern seven-centre maps. Meanings and status vary by system.", pending),
+            "Sahasrāra", "Presented above the crown in many modern maps. The attached book treats it as culmination rather than an ordinary chakra.", pending),
         SpineCentre("ajna", "Brow", "A subtle centre described differently across sources; not a neurological structure.", 0xFF9F96DF, MAP_ID,
-            "Ājñā", "A subtle centre described differently across tantric and later yoga sources; not a neurological structure.", pending),
+            "Ājñā", "A subtle centre described differently across tantric and later yoga sources. Rudra granthi is placed near this threshold in the attached book.", pending),
         SpineCentre("vishuddha", "Throat", "A study waypoint in this interface. Voice, thyroid or health claims require separate evidence and are not inferred.", 0xFF76B5CF, MAP_ID,
-            "Viśuddha", "A study waypoint in this interface. Voice, thyroid or health claims require separate evidence and are not inferred.", pending),
+            "Viśuddha", "A study waypoint associated with the throat region in this teaching map. No thyroid, voice or health state is inferred.", pending),
         SpineCentre("anahata", "Chest", "Traditional associations differ across texts. The app does not read emotion, virtue or blockage from this point.", 0xFF83B884, MAP_ID,
-            "Anāhata", "Traditional associations differ across texts. The app does not read emotion, virtue or blockage from this point.", pending),
+            "Anāhata", "A chest-region centre in this map. Vishnu granthi is placed near this threshold. The app does not infer emotion or blockage.", pending),
         SpineCentre("manipura", "Mid torso", "Shown as a symbolic centre in one common contemporary map, not as a measured organ or energy reading.", 0xFFD8B66D, MAP_ID,
-            "Maṇipūra", "Shown as a symbolic centre in one common contemporary map, not as a measured organ or energy reading.", pending),
+            "Maṇipūra", "A mid-torso centre in this teaching map, not a measured organ, plexus or energy reading.", pending),
         SpineCentre("svadhisthana", "Lower abdomen", "Historical placement and interpretation are system-specific. No sexuality, fertility or personality diagnosis is made.", 0xFFD88A58, MAP_ID,
-            "Svādhiṣṭhāna", "Historical placement and interpretation are system-specific. No sexuality, fertility or personality diagnosis is made.", pending),
+            "Svādhiṣṭhāna", "A lower-centre waypoint whose placement and meaning vary by system. No sexuality, fertility or personality diagnosis is made.", pending),
         SpineCentre("muladhara", "Base", "The lower waypoint of this teaching map. It does not establish safety, grounding or readiness.", 0xFFB85F54, MAP_ID,
-            "Mūlādhāra", "The lower waypoint of this teaching map. It does not establish safety, grounding or kuṇḍalinī readiness.", pending),
+            "Mūlādhāra", "The base of this teaching map. Brahma granthi is associated with this region in the attached book. This does not establish kuṇḍalinī readiness.", pending),
     )
 
     fun byId(id: String) = centres.firstOrNull { it.id == id } ?: centres.last()
@@ -113,4 +118,28 @@ object SadhanaSpine {
         }
         return out
     }
+
+    /**
+     * Symbolic vagal layer (founder app.js anatomy()): an orientation illustration in the founder's 260x430 viewBox.
+     * Not anatomy-accurate, not a detector, not a measurement, no stimulation claim.
+     */
+    val bodyLines = listOf(
+        listOf(112f to 25f, 82f to 49f, 84f to 86f, 44f to 129f, 54f to 198f, 66f to 260f, 82f to 309f, 91f to 350f, 81f to 413f),
+        listOf(148f to 25f, 178f to 49f, 176f to 86f, 216f to 129f, 206f to 198f, 194f to 260f, 178f to 309f, 169f to 350f, 179f to 413f),
+    )
+    /** Cubic paths: start, then (c1, c2, end) triples, as in app.js. */
+    val vagusPaths: List<List<Pair<Float, Float>>> = listOf(
+        listOf(111f to 48f, 86f to 78f, 91f to 111f, 74f to 139f, 57f to 170f, 73f to 197f, 62f to 224f, 53f to 248f, 69f to 278f, 58f to 307f),
+        listOf(149f to 48f, 174f to 78f, 169f to 111f, 186f to 139f, 203f to 170f, 187f to 197f, 198f to 224f, 207f to 248f, 191f to 278f, 202f to 307f),
+        listOf(78f to 139f, 99f to 148f, 100f to 166f, 110f to 177f), listOf(182f to 139f, 161f to 148f, 160f to 166f, 150f to 177f),
+        listOf(65f to 225f, 89f to 218f, 98f to 230f, 109f to 241f), listOf(195f to 225f, 171f to 218f, 162f to 230f, 151f to 241f),
+        listOf(61f to 306f, 87f to 295f, 98f to 309f, 113f to 326f), listOf(199f to 306f, 173f to 295f, 162f to 309f, 147f to 326f),
+    )
+    /** Seven firefly points (x, y, radius) from app.js. */
+    val fireflies = listOf(Triple(111f, 48f, 4f), Triple(80f, 134f, 3f), Triple(187f, 160f, 3.5f), Triple(65f, 226f, 3f),
+        Triple(194f, 253f, 4f), Triple(66f, 306f, 3.5f), Triple(160f, 319f, 3f))
+
+    /** Non-rhythmic flicker schedule: each firefly waits a random 1.5-7 s, then glows for a random 1.2-3.5 s. */
+    fun fireflyGapMs(r: java.util.Random) = 1_500L + r.nextInt(5_500)
+    fun fireflyGlowMs(r: java.util.Random) = 1_200 + r.nextInt(2_300)
 }

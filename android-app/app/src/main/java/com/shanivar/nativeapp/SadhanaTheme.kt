@@ -8,11 +8,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -140,7 +142,25 @@ object Sad {
  * randomised intervals and speeds (never periodic, never breath-paced). Off under reduced motion.
  * Selection is navigation; nothing here is an energy reading.
  */
-@Composable fun SpineMap(selected: String, compact: Boolean, level: Int = 1, reduceMotion: Boolean = true, onSelect: (String) -> Unit) {
+@Composable fun SpineMap(selected: String, compact: Boolean, level: Int = 1, reduceMotion: Boolean = true, selfCheck: SelfCheck? = null, onSelect: (String) -> Unit) {
+    // Vagal layer (founder approved 13 Oct): fireflies flicker independently at random times; never periodic,
+    // never paced to breath, still under reduced motion. The nerve dash drifts one way at constant speed.
+    val flies = remember { List(SadhanaSpine.fireflies.size) { androidx.compose.animation.core.Animatable(if (reduceMotion) 0.75f else 0.18f) } }
+    if (!reduceMotion) flies.forEachIndexed { i, a ->
+        LaunchedEffect(i) {
+            val rnd = java.util.Random()
+            while (true) {
+                kotlinx.coroutines.delay(SadhanaSpine.fireflyGapMs(rnd))
+                val glow = SadhanaSpine.fireflyGlowMs(rnd)
+                a.animateTo(1f, androidx.compose.animation.core.tween(glow / 2)); a.animateTo(0.18f, androidx.compose.animation.core.tween(glow / 2))
+            }
+        }
+    }
+    val dash = if (reduceMotion) 0f else {
+        val t = androidx.compose.animation.core.rememberInfiniteTransition(label = "nerve")
+        val v by t.animateFloat(0f, -120f, androidx.compose.animation.core.infiniteRepeatable(androidx.compose.animation.core.tween(10_000, easing = androidx.compose.animation.core.LinearEasing)), label = "dash")
+        v
+    }
     val h = if (compact) 255.dp else 430.dp
     val shimmer = remember { androidx.compose.animation.core.Animatable(-1f) }
     if (!reduceMotion) LaunchedEffect(Unit) {
@@ -173,13 +193,34 @@ object Sad {
         if (level < 4) emptyList() else List(2) { val st = 2 + rr.nextInt(level - 2); st to SadhanaSpine.roots(rootSeed + st, if (compact) 12f else 20f, 2) }
     }
     val padTop = if (compact) 18.dp else 30.dp; val padBottom = if (compact) 18.dp else 34.dp
-    Box(Modifier.fillMaxWidth().height(h).semantics { contentDescription = "Living Spine: 33 stages, seven centre waypoints. Practice stage $level of 33. A study map, not anatomy or an energy reading." }) {
+    Box(Modifier.fillMaxWidth().height(h).semantics { contentDescription = "Living Spine: 33 stages, seven centre waypoints and a symbolic vagal illustration. Practice stage $level of 33. A study map, not anatomy, not a measurement or energy reading." }) {
         Canvas(Modifier.matchParentSize()) {
             val cx = size.width / 2
             val top = padTop.toPx(); val bottom = size.height - padBottom.toPx()
             fun yOf(stage: Int) = bottom - (stage - 1) / 32f * (bottom - top)
             drawOval(Brush.radialGradient(listOf(Color(0x16D6A766), Color(0x08A4773B), Color.Transparent), Offset(cx, size.height / 2), size.width * 0.32f),
                 Offset(size.width * 0.18f, size.height * 0.02f), Size(size.width * 0.64f, size.height * 0.96f))
+            // Vagal orientation layer in the founder's 260x430 viewBox, centred on the trace.
+            val vb = (bottom - top + 40.dp.toPx()) / 430f; val ox = cx - 130f * vb; val oy = top - 20.dp.toPx()
+            fun P(p: Pair<Float, Float>) = Offset(ox + p.first * vb, oy + p.second * vb)
+            val layerAlpha = if (compact) 0.55f else 1f
+            SadhanaSpine.bodyLines.forEach { pts ->
+                val path = androidx.compose.ui.graphics.Path().apply { moveTo(P(pts[0]).x, P(pts[0]).y); for (k in 1 until pts.size step 2) quadraticTo(P(pts[k]).x, P(pts[k]).y, P(pts[minOf(k + 1, pts.size - 1)]).x, P(pts[minOf(k + 1, pts.size - 1)]).y) }
+                drawPath(path, Color(0x25D3B17E), style = Stroke(1.dp.toPx()))
+            }
+            val glow = selfCheck?.glow ?: 0.68f
+            val dashOn = if (selfCheck == SelfCheck.STEADY) 2f else 5f; val dashOff = if (selfCheck == SelfCheck.STEADY) 3f else 7f
+            SadhanaSpine.vagusPaths.forEach { pts ->
+                val path = androidx.compose.ui.graphics.Path().apply { moveTo(P(pts[0]).x, P(pts[0]).y); var k = 1; while (k + 2 < pts.size + 0 && k + 2 <= pts.size - 1) { cubicTo(P(pts[k]).x, P(pts[k]).y, P(pts[k + 1]).x, P(pts[k + 1]).y, P(pts[k + 2]).x, P(pts[k + 2]).y); k += 3 } }
+                drawPath(path, Color(0xFF9FD1A1).copy(alpha = glow * 0.25f * layerAlpha), style = Stroke(3.5.dp.toPx() * vb))
+                drawPath(path, Color(0xFF9FD1A1).copy(alpha = glow * layerAlpha), style = Stroke(1.25f * vb, cap = androidx.compose.ui.graphics.StrokeCap.Round,
+                    pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(dashOn * vb, dashOff * vb), dash * vb)))
+            }
+            SadhanaSpine.fireflies.forEachIndexed { i, (fx, fy, fr) ->
+                val a = flies[i].value * (selfCheck?.glow ?: 0.8f) * layerAlpha
+                drawCircle(Color(0xFFF5D778).copy(alpha = a * 0.35f), fr * vb * 2.6f, P(fx to fy))
+                drawCircle(Color(0xFFF5D778).copy(alpha = a), fr * vb, P(fx to fy))
+            }
             val scale = if (compact) 0.7f else 1f
             for (s in 1..SadhanaSpine.STAGES) {
                 val w = when (SadhanaSpine.region(s)) {
@@ -238,6 +279,26 @@ object Sad {
                         modifier = Modifier.align(Alignment.CenterEnd).width(70.dp))
                 }
             }
+        }
+    }
+}
+
+/** Founder selfCheck(): the user's report only. Reflective, not diagnostic; stored locally. */
+@Composable fun SelfCheckCard(current: SelfCheck?, onPick: (SelfCheck) -> Unit) {
+    Column(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 6.dp).border(1.dp, Sad.Line).background(Color(0xFF0E100E)).padding(15.dp)) {
+        SMeta("CHECK IN · YOUR REPORT")
+        Text("What is true right now?", style = Sad.H3, modifier = Modifier.padding(bottom = 12.dp))
+        SelfCheck.entries.chunked(2).forEach { row ->
+            Row(Modifier.fillMaxWidth().padding(bottom = 6.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                row.forEach { st -> SSecondary(st.label, { onPick(st) }, Modifier.weight(1f).padding(0.dp), selectedState = current == st) }
+            }
+        }
+        Text("The lights follow your selection. Shanivar is not measuring your nervous system.", fontSize = 10.sp, color = Sad.Ash, modifier = Modifier.padding(top = 4.dp))
+        HorizontalDivider(color = Sad.Line, modifier = Modifier.padding(vertical = 11.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("NOW · ${current?.label?.uppercase() ?: "NOT ANSWERED"}", fontSize = 8.sp, letterSpacing = 1.2.sp, color = Sad.Bronze)
+            Text("→", fontFamily = Sad.Serif, fontSize = 18.sp, color = Sad.Bronze)
+            Text("CHOSEN DIRECTION · STEADIER", fontSize = 8.sp, letterSpacing = 1.2.sp, color = Sad.Bronze)
         }
     }
 }

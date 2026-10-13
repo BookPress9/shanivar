@@ -43,24 +43,24 @@ import kotlinx.coroutines.delay
 
 @Composable fun PrepareScreen(c: SadhanaController) {
     STop("←", "BEFORE YOU BEGIN", "", onLeft = { c.go(SadhanaView.PRACTICE) })
-    SHead("YOUR CHOICE", "Set the conditions.\nKeep authority.", "Practise only while stationary and somewhere suitable. There is nothing to endure.")
+    SHead("SET THE CONDITIONS", "Choose your anchor.\nKeep the exit clear.", "Begin only while stationary and somewhere suitable.")
     Row(Modifier.fillMaxWidth().toggleable(c.ui.stationary, role = Role.Checkbox) { c.setStationary(it) }.padding(vertical = 13.dp),
         verticalAlignment = Alignment.Top) {
         Checkbox(c.ui.stationary, null, colors = CheckboxDefaults.colors(checkedColor = Sad.Bronze, uncheckedColor = Sad.Ash, checkmarkColor = Sad.OnBronze))
         Column(Modifier.padding(start = 10.dp)) {
             Text("I am stationary and in a suitable place.", fontWeight = FontWeight.SemiBold, color = Sad.Ivory, fontSize = 14.sp)
-            SFine("This is your confirmation; Shanivar does not infer safety.")
+            SFine("Only you can confirm this.")
         }
     }
     HorizontalDivider(color = Sad.Line)
-    Text("CHOOSE AN ANCHOR", style = Sad.Eyebrow, modifier = Modifier.padding(top = 18.dp, bottom = 10.dp))
+    Text("ANCHOR", style = Sad.Eyebrow, modifier = Modifier.padding(top = 18.dp, bottom = 10.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
         SChoice("Natural breath", c.ui.anchor == SadhanaAnchor.BREATH, { c.setAnchor(SadhanaAnchor.BREATH) }, Modifier.weight(1f))
         SChoice("The room", c.ui.anchor == SadhanaAnchor.ROOM, { c.setAnchor(SadhanaAnchor.ROOM) }, Modifier.weight(1f))
     }
-    SNotice("If discomfort appears: stop, look around, change position or choose the room. End is always available.")
+    SNotice("If this feels uncomfortable, stop, look around or change to the room. End remains available.")
     SSpacer()
-    SPrimary("Begin Sadhana →", { c.begin() })
+    SPrimary("Begin →", { c.begin() })
 }
 
 /** Player: the planet stays still (PRACTICE_SAFETY); guidance is text only, never breath-timed; End top-right. */
@@ -84,15 +84,16 @@ import kotlinx.coroutines.delay
     val completed = c.ui.lastOutcome == SadhanaOutcome.COMPLETED
     STop("SADHANA", if (completed) "COMPLETE" else "ENDED", "")
     SRitual(c.orbitView(), still = false, reduceMotion = reduceMotion)
-    SHead("RETURN", if (completed) "You stayed.\nNow leave it here." else "You chose\nwhen to end.",
-        if (completed) "${Math.round(c.ui.lastSeconds / 60.0)} active minutes. No score. No claim about what happened inside."
-        else "The attempt remains true. Ending carries no penalty.")
-    Text("WHAT WAS TRUE?", style = Sad.Eyebrow, modifier = Modifier.padding(top = 8.dp, bottom = 10.dp))
+    val mins = Math.round(c.ui.lastSeconds / 60.0)
+    SHead("SESSION RECORD", if (completed) "$mins active minute${if (mins == 1L) "" else "s"}." else "You ended the practice.",
+        if (completed) "That is what Shanivar recorded. Decide what you do next."
+        else "Ending was available. The time you practised remains in your record.")
+    Text("HOW DID IT FEEL?", style = Sad.Eyebrow, modifier = Modifier.padding(top = 8.dp, bottom = 10.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
         Usefulness.entries.forEach { u -> SSecondary(u.label, { c.reflect(u) }, Modifier.weight(1f), selectedState = c.reflection() == u) }
     }
-    SNotice("No response is also valid. This reflection does not decide what you are ready for.")
+    SNotice("Answer only if it helps. This response does not determine your next practice.")
     SSpacer()
     SPrimary("Return to my day →", { c.go(SadhanaView.HOME) })
-    SText("View practice record") { c.go(SadhanaView.RECORD) }
+    SText("View the record") { c.go(SadhanaView.RECORD) }
 }

@@ -49,7 +49,7 @@ class SadhanaSpineTest {
         val src = java.io.File("src/main/java/com/shanivar/nativeapp/SadhanaTheme.kt").readText()
         val spine = src.substring(src.indexOf("fun SpineMap"), src.indexOf("fun SMeter"))
         assertTrue(spine.contains("rnd.nextInt") && spine.contains("if (!reduceMotion)"))
-        assertFalse(spine.contains("infiniteRepeatable") || spine.contains("RepeatMode"))
+        assertFalse(spine.contains("RepeatMode.Reverse"))
     }
 
     @Test fun rootBranchesAreDeterministicFanBothWaysAndThin() {
@@ -65,5 +65,20 @@ class SadhanaSpineTest {
         assertTrue(spine.contains("Animatable(if (reduceMotion) 1f else 0f)"))
         val player = java.io.File("src/main/java/com/shanivar/nativeapp/SadhanaPracticeScreens.kt").readText()
         assertFalse("never during practice", player.contains("SpineMap"))
+    }
+
+    @Test fun vagalLayerMatchesFounderGeometryAndIsNonRhythmic() {
+        assertEquals(7, SadhanaSpine.fireflies.size); assertEquals(8, SadhanaSpine.vagusPaths.size)
+        val r = java.util.Random(1)
+        val gaps = List(50) { SadhanaSpine.fireflyGapMs(r) }
+        assertTrue(gaps.all { it in 1_500L..7_000L } && gaps.toSet().size > 10)
+        val src = java.io.File("src/main/java/com/shanivar/nativeapp/SadhanaTheme.kt").readText()
+        val spine = src.substring(src.indexOf("fun SpineMap"), src.indexOf("fun SelfCheckCard"))
+        assertTrue(spine.contains("if (!reduceMotion) flies.forEachIndexed"))
+        assertFalse("no reversing pulse", spine.contains("RepeatMode.Reverse"))
+    }
+    @Test fun selfCheckCopyMakesNoHealthClaim() {
+        val banned = listOf("vagal tone", "regulat", "stimulat", "heal", "measure your", "diagnos")
+        SelfCheck.entries.forEach { st -> banned.forEach { assertFalse(st.label.lowercase().contains(it)) } }
     }
 }
