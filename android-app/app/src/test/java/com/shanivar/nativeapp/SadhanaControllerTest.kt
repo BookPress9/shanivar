@@ -68,4 +68,14 @@ class SadhanaControllerTest {
         assertEquals(SelfCheck.LOW, c().ui.selfCheck)
         c.setSelfCheck(SelfCheck.LOW); assertNull(c().ui.selfCheck)
     }
+
+    @org.junit.Test
+    fun initiationAttemptImportedOnceAndUnfinishedIgnored() {
+        val done = PracticeAttempt("a1", "v1", 1000, 60_000, AttemptOutcome.COMPLETED, 61_000)
+        val c1 = SadhanaController(store, clock, true, initiationAttempt = { done })
+        org.junit.Assert.assertEquals(1, c1.record.attempts.count { it.id == "initiation-a1" && it.outcome == SadhanaOutcome.COMPLETED })
+        val c2 = SadhanaController(store, clock, true, initiationAttempt = { done })
+        org.junit.Assert.assertEquals(1, c2.record.attempts.size)
+        org.junit.Assert.assertNull(InitiationImport.toSadhana(done.copy(outcome = AttemptOutcome.IN_PROGRESS), clock.zone()))
+    }
 }

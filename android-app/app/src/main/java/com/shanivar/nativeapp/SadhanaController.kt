@@ -47,6 +47,8 @@ class SadhanaController(
     private val clock: SadhanaClock,
     val allowUnreviewed: Boolean,
     private val routineBoundaryLinked: () -> Boolean = { false },
+    /** B6: the finished onboarding 60 s attempt, imported once into the record as app-observed. */
+    private val initiationAttempt: () -> PracticeAttempt? = { null },
 ) {
     private var uiState by mutableStateOf(SadhanaUi(), neverEqualPolicy())
     private var recordState by mutableStateOf(SadhanaRecord(), neverEqualPolicy())
@@ -68,6 +70,9 @@ class SadhanaController(
             recordState = recordState.withAttempt(tracker.attempt!!)
             tracker.clear()
         }
+        runCatching { initiationAttempt() }.getOrNull()?.let { InitiationImport.toSadhana(it, clock.zone()) }
+            ?.takeIf { a -> recordState.attempts.none { it.id == a.id } }
+            ?.let { recordState = recordState.withAttempt(it) }
         uiState = ui0.copy(view = if (ui0.view == SadhanaView.PLAYER) SadhanaView.HOME else ui0.view, message = null, stationary = false)
         persist(null)
     }
@@ -204,4 +209,20 @@ object SadhanaCodec {
     )
 
     fun current(p: Properties): SadhanaAttempt? = p.getProperty("current")?.let(::parseAtt)
+}
+
+/** B6: maps the onboarding attempt to a Sadhana attempt of the "natural" practice. Unfinished attempts are not imported. */
+object InitiationImport {
+    fun toSadhana(a: PracticeAttempt, zone: ZoneId): SadhanaAttempt? {
+        val outcome = when (a.outcome) {
+            AttemptOutcome.COMPLETED -> SadhanaOutcome.COMPLETED
+            AttemptOutcome.ENDED -> SadhanaOutcome.ENDED
+            AttemptOutcome.IN_PROGRESS -> return null
+        }
+        return SadhanaAttempt(
+            id = "initiation-" + a.attemptId, practiceId = "natural", contentVersion = a.contentVersion,
+            startedAtUtc = a.startedAtMillis, zoneId = zone.id, intendedSeconds = 60,
+            activeMillis = a.activeMillis, outcome = outcome, endedAtUtc = a.endedAtMillis,
+        )
+    }
 }
