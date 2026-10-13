@@ -37,6 +37,7 @@ import kotlinx.coroutines.delay
     HorizontalDivider(color = Sad.Line, modifier = Modifier.padding(top = 6.dp))
     Text("${p.sourcePlain}\n\n${p.boundary}", fontSize = 11.sp, lineHeight = 17.sp, color = Sad.Ash, modifier = Modifier.padding(top = 12.dp))
     SSpacer()
+    SFine(SadhanaPosture.BRIEF)
     SPrimary("Prepare · ${c.ui.duration} min →", { c.go(SadhanaView.PREPARE) })
     SText("Choose another practice") { c.anotherPractice() }
 }
@@ -53,6 +54,10 @@ import kotlinx.coroutines.delay
         }
     }
     HorizontalDivider(color = Sad.Line)
+    Text("POSTURE", style = Sad.Eyebrow, modifier = Modifier.padding(top = 18.dp, bottom = 6.dp))
+    Text(SadhanaPosture.PREPARE, color = Sad.Ivory, fontSize = 14.sp)
+    SFine(SadhanaPosture.SAFETY)
+    HorizontalDivider(color = Sad.Line, modifier = Modifier.padding(top = 12.dp))
     Text("ANCHOR", style = Sad.Eyebrow, modifier = Modifier.padding(top = 18.dp, bottom = 10.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
         SChoice("Natural breath", c.ui.anchor == SadhanaAnchor.BREATH, { c.setAnchor(SadhanaAnchor.BREATH) }, Modifier.weight(1f))
@@ -96,4 +101,11 @@ import kotlinx.coroutines.delay
     SSpacer()
     SPrimary("Return to my day →", { c.go(SadhanaView.HOME) })
     SText("View the record") { c.go(SadhanaView.RECORD) }
+}
+
+/** Founder posture guidance (13 Oct 2026, decision 0017). Advice only; never checked or measured. */
+object SadhanaPosture {
+    const val PREPARE = "Set the phone straight in front of you, at eye level. Any support works: a tripod, a stand, even a hanger. Your spine stays straight and you can look straight ahead. Closing your eyes is also fine, even better."
+    const val SAFETY = "Use a stable support. Nothing that could fall on you."
+    const val BRIEF = "Phone at eye level on a stable support, or eyes closed."
 }

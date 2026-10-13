@@ -87,3 +87,7 @@ The founder approved ("all approved") the vagal firefly layer, the reflective se
 - Chakra names, granthi and book wording appear only in Deep study; plain labels elsewhere.
 - Player keeps "The orbit stays still…" instead of "The orbit moves".
 - "Hide guidance" records nothing.
+
+## Amendment — 13 Oct 2026: posture guidance
+
+Founder: place the phone straight in front of the head at eye level on any support (tripod, stand, even a hanger) so the spine stays straight and you look straight at it; eyes closed is fine, even better. Shown in Prepare (full) and practice detail (one line). Safety line added: use a stable support, nothing that could fall on you. Guidance only; posture is never checked or measured.

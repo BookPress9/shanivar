@@ -174,4 +174,14 @@ class SadhanaUiTest {
         compose.onNodeWithText("End anytime").assertExists()
         shot("16d-home-voice")
     }
+
+    @Test fun postureGuidanceInDetailAndPrepare() {
+        launch()
+        click("Start →")
+        compose.onNodeWithText(SadhanaPosture.BRIEF).performScrollTo().assertExists()
+        click("Prepare · 1 min →")
+        compose.onNodeWithText(SadhanaPosture.PREPARE).performScrollTo().assertExists()
+        compose.onNodeWithText(SadhanaPosture.SAFETY).assertExists()
+        shot("17-prepare-posture")
+    }
 }
