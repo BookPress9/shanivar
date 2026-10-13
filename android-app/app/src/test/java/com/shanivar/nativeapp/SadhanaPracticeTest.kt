@@ -19,7 +19,7 @@ class SadhanaPracticeTest {
         val p = SadhanaCatalog.practices.first()
         assertFalse(SadhanaCatalog.canLaunch(p, allowUnreviewed = false))
         assertTrue(SadhanaCatalog.canLaunch(p, allowUnreviewed = true))
-        assertTrue(SadhanaCatalog.canLaunch(p.copy(reviewManifestId = "m"), allowUnreviewed = false))
+        assertFalse("a manifest id alone is not a review", SadhanaCatalog.canLaunch(p.copy(reviewManifestId = "m"), allowUnreviewed = false))
     }
     @Test fun studyOnlyAndQualifiedContextNeverLaunch() {
         val p = SadhanaCatalog.practices.first()

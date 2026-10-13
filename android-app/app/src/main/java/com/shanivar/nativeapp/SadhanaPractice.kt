@@ -89,7 +89,7 @@ object SadhanaCatalog {
         def.status == PracticeStatus.RELEASED &&
             def.risk != RiskClass.INTENSIVE &&
             def.minutes.isNotEmpty() &&
-            (def.reviewManifestId != null || allowUnreviewed)
+            (allowUnreviewed || ContentReviews.approves(def))
 
     fun validDuration(def: SadhanaPracticeDefinition, minutes: Int): Boolean = minutes in def.minutes
 
