@@ -1,5 +1,8 @@
 # HANDOFF_NEXT: continue from a phone session (13 Oct 2026)
 
+> 13 Oct: Sadhana vagal layer/self-check/voice copy shipped (18437eb). B1, B2 shipped. Full status: docs/FINALIZATION_CHECKLIST.md. Next: B3–B8.
+
+
 ## Current state
 - **Android app** (`android-app/`, Kotlin and Compose). Debug builds turn on two flags (release is unchanged):
   - `INITIATION_V1`: the initiation onboarding flow (guest works end to end; Google and email show "not available yet").
