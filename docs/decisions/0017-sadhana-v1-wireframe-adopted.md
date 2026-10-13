@@ -70,3 +70,6 @@ The founder approved keeping the tip pulse, drawn as tree roots (reference: `and
 - Two subtler branches (35% strength) appear at random lit stages.
 - Each pass gets a new random shape. Gaps are random (3 to 9 s), growth lasts 1.4 to 4 s, and the fade lasts 1.8 to 5 s. There is no fixed period, so it is non-rhythmic and never breath-paced.
 - Under reduced motion the branches are static at 45% opacity. The spine never appears during practice. This replaces the rejected rhythmic 2.8 s `currentPulse`.
+
+## Founder approval, 13 Oct 2026
+**Sadhana visual v1 approved** ("approved as v1"): the 33-stage Living Spine with the non-rhythmic root pulse, and the NASA Saturn loading surface with the steady ring spin. Still pending: the vagal layer, self-check, voice copy, practice reviews (DEV-34) and device QA.

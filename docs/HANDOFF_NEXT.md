@@ -4,6 +4,7 @@
 - **Android app** (`android-app/`, Kotlin and Compose). Debug builds turn on two flags (release is unchanged):
   - `INITIATION_V1`: the initiation onboarding flow (guest works end to end; Google and email show "not available yet").
   - `SADHANA_V1`: the Sadhana experience. Living Spine with 33 stages and 7 waypoints, Path (Arrive → Return → See → Choose → Carry), practice detail, prepare, a still-planet player, return, record, practice without the app, deep study, and a NASA Saturn loading surface.
+- **Sadhana visual v1 approved by the founder (13 Oct; tag `sadhana-visual-v1`):** 33-stage Living Spine with root pulse, Saturn loading surface. Still pending: vagal layer, self-check, voice copy, practice reviews, device QA.
 - Living Spine tip pulse kept as non-rhythmic root branches (founder, 13 Oct; 0017).
 - 482 unit tests pass (`testDebugUnitTest`). Review screenshots are on the agent box at `/workspace/sadhana-shots/` (not in the repo).
 - Research-only practices can never launch. Release builds refuse practices without a content review manifest.
