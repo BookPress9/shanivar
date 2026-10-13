@@ -37,8 +37,16 @@ import java.time.ZonedDateTime
  * Same order as [FocusScheduleReceiver]. A missing session is not a reason to stay unprotected.
  */
 class BootRescheduleReceiver : BroadcastReceiver() {
+    companion object {
+        /** App updates also wipe AlarmManager entries, so MY_PACKAGE_REPLACED reconciles too. */
+        val RECONCILE_ACTIONS = setOf(
+            Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED,
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+        )
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action !in setOf(Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED)) return
+        if (intent.action !in RECONCILE_ACTIONS) return
 
         val alarmScheduler = AlarmScheduler(context)
         alarmScheduler.pendingRule()?.let { rule ->
