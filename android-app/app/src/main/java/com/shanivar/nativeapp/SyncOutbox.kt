@@ -1,0 +1,51 @@
+package com.shanivar.nativeapp
+
+import java.util.Properties
+
+/**
+ * B3: local-first sync outbox. Attempts, self-reports and routine changes are queued on device with an
+ * idempotency key (kind:id); re-enqueueing the same key replaces the payload. Nothing is sent until a
+ * real [SyncSender] exists (DEV-25: backend not built yet). No network here.
+ */
+data class OutboxItem(val kind: String, val id: String, val payload: String) { val key get() = "$kind:$id" }
+
+fun interface SyncSender { /** Return true only when the server acknowledged the key. */ fun send(item: OutboxItem): Boolean }
+
+class SyncOutbox(private val store: DraftStore) {
+    private val items = LinkedHashMap<String, OutboxItem>()
+
+    init {
+        val p = Properties().apply { store.read()?.let { load(it.reader()) } }
+        p.getProperty("n")?.toIntOrNull()?.let { n ->
+            for (i in 0 until n) {
+                val k = p.getProperty("k$i") ?: continue
+                val (kind, id) = k.split(":", limit = 2)
+                items[k] = OutboxItem(kind, id, p.getProperty("p$i", ""))
+            }
+        }
+    }
+
+    val pending: List<OutboxItem> get() = items.values.toList()
+
+    fun enqueue(kind: String, id: String, payload: String) {
+        val item = OutboxItem(kind, id, payload)
+        items.remove(item.key); items[item.key] = item; save()
+    }
+
+    /** Sends in order; stops at the first failure so ordering is kept. Returns the count acknowledged. */
+    fun drain(sender: SyncSender): Int {
+        var sent = 0
+        for (item in pending) {
+            if (!runCatching { sender.send(item) }.getOrDefault(false)) break
+            items.remove(item.key); sent++
+        }
+        save(); return sent
+    }
+
+    private fun save() {
+        val p = Properties()
+        p["n"] = items.size.toString()
+        items.values.forEachIndexed { i, it -> p["k$i"] = it.key; p["p$i"] = it.payload }
+        val w = java.io.StringWriter(); p.store(w, null); store.write(w.toString())
+    }
+}
