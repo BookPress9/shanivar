@@ -63,6 +63,15 @@ import kotlinx.coroutines.delay
         SChoice("Natural breath", c.ui.anchor == SadhanaAnchor.BREATH, { c.setAnchor(SadhanaAnchor.BREATH) }, Modifier.weight(1f))
         SChoice("The room", c.ui.anchor == SadhanaAnchor.ROOM, { c.setAnchor(SadhanaAnchor.ROOM) }, Modifier.weight(1f))
     }
+    HorizontalDivider(color = Sad.Line, modifier = Modifier.padding(top = 12.dp))
+    Row(Modifier.fillMaxWidth().toggleable(c.ui.focusLockDefault, role = Role.Checkbox) { c.setFocusLockDefault(it) }.padding(vertical = 13.dp),
+        verticalAlignment = Alignment.Top) {
+        Checkbox(c.ui.focusLockDefault, null, colors = CheckboxDefaults.colors(checkedColor = Sad.Bronze, uncheckedColor = Sad.Ash, checkmarkColor = Sad.OnBronze))
+        Column(Modifier.padding(start = 10.dp)) {
+            Text("Block other apps and pop-ups while I practise", fontWeight = FontWeight.SemiBold, color = Sad.Ivory, fontSize = 14.sp)
+            SFine("On by default. Only during the practice; End releases it at once. Calls and emergency stay reachable. Needs Usage access, overlay and Do Not Disturb access.")
+        }
+    }
     SNotice("If this feels uncomfortable, stop, look around or change to the room. End remains available.")
     SSpacer()
     SPrimary("Begin →", { c.begin() })
@@ -80,6 +89,7 @@ import kotlinx.coroutines.delay
     Text(c.guidanceLine(), fontFamily = Sad.Serif, fontSize = 19.sp, lineHeight = 26.sp, color = Sad.Ivory, textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth().heightIn(min = 55.dp).padding(vertical = 12.dp).semantics { liveRegion = LiveRegionMode.Polite })
     SBreathNote("The orbit stays still. Your breath does not follow anything.")
+    c.focusStatus?.let { SFine(it.line) }
     SSpacer()
     SPrimary(if (c.running) "Pause" else "Resume", { c.togglePause() })
     SText("Change anchor") { c.changeAnchor() }

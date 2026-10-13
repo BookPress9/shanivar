@@ -7,6 +7,7 @@ object ForegroundAppBlocker {
     fun shouldBlock(foregroundPackage: String?, blockedPackages: Set<String>, sessionEndsAtEpochMillis: Long, nowEpochMillis: Long): Boolean {
         if (sessionEndsAtEpochMillis in 1 until nowEpochMillis) return false // session window has elapsed
         if (foregroundPackage.isNullOrBlank()) return false
+        if (FocusLockRules.ALL in blockedPackages) return (FocusLockRules.ALLOW + foregroundPackage) !in blockedPackages
         return foregroundPackage in blockedPackages
     }
 }

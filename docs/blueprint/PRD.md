@@ -79,3 +79,7 @@ See the top-10 list in the delivery report; also UNRESOLVED markers above and in
 - [ ] `testDebugUnitTest`, `lintDebug`, `assembleDebug` pass; hardware checks run or recorded as NOT RUN
 - [ ] Security (`SECURITY.md`) and practice-safety gates satisfied
 - [ ] Docs updated in the same change
+
+## Sadhana focus lock (13 Oct 2026, decision 0017)
+
+During an active Sadhana practice, other apps are blocked and notification pop-ups silenced by default, using existing usage-access/overlay protection and DND access if granted. Calls, emergency and End are always available; End releases the lock instantly. Missing permissions are shown honestly. Users can turn the default off in Prepare.

@@ -45,7 +45,8 @@ object SystemSadhanaClock : SadhanaClock {
         val plans = SharedPrefsRoutinePlanRepository(ctx)
         SadhanaController(FileDraftStore(File(ctx.filesDir, "sadhana/state.properties")), SystemSadhanaClock, allowUnreviewed = BuildConfig.DEBUG,
             routineBoundaryLinked = { RoutineBoundaryLink.linked(plans.current()) },
-            initiationAttempt = { InitiationUiCodec.decode(FileDraftStore(File(ctx.filesDir, "initiation/ui.properties")).read())?.attempt })
+            initiationAttempt = { InitiationUiCodec.decode(FileDraftStore(File(ctx.filesDir, "initiation/ui.properties")).read())?.attempt },
+            focusLock = AndroidSadhanaFocusLock(ctx))
     },
     reduceMotionOverride: Boolean? = null,
     onRoutine: (() -> Unit)? = null,

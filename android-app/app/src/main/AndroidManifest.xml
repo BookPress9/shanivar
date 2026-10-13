@@ -17,6 +17,8 @@
          starting Activities from the background - without it, startActivity() from the service
          would silently fail on many OS versions. -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- Sadhana focus lock: silence pop-ups via DND only if the user grants access. -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <!-- Normal manifest permission (no dialog, no Settings step); required by the OS to run any
          foreground service at all on API 28+. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />

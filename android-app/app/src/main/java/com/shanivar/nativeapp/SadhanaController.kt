@@ -39,6 +39,8 @@ data class SadhanaUi(
     val ownMinutes: Int = 3,
     /** Local-only reflective self-check; never sent, never evidence. Null = not answered. */
     val selfCheck: SelfCheck? = null,
+    /** Default focus lock during practice; voluntary, can be turned off. */
+    val focusLockDefault: Boolean = true,
     val message: String? = null,
 )
 
@@ -49,7 +51,10 @@ class SadhanaController(
     private val routineBoundaryLinked: () -> Boolean = { false },
     /** B6: the finished onboarding 60 s attempt, imported once into the record as app-observed. */
     private val initiationAttempt: () -> PracticeAttempt? = { null },
+    private val focusLock: SadhanaFocusLockPort? = null,
 ) {
+    var focusStatus: FocusLockStatus? by mutableStateOf(null)
+        private set
     private var uiState by mutableStateOf(SadhanaUi(), neverEqualPolicy())
     private var recordState by mutableStateOf(SadhanaRecord(), neverEqualPolicy())
     private var remainingState by mutableStateOf(0L)
@@ -73,6 +78,7 @@ class SadhanaController(
         runCatching { initiationAttempt() }.getOrNull()?.let { InitiationImport.toSadhana(it, clock.zone()) }
             ?.takeIf { a -> recordState.attempts.none { it.id == a.id } }
             ?.let { recordState = recordState.withAttempt(it) }
+        runCatching { focusLock?.release() } // never left on after process death
         uiState = ui0.copy(view = if (ui0.view == SadhanaView.PLAYER) SadhanaView.HOME else ui0.view, message = null, stationary = false)
         persist(null)
     }
@@ -100,6 +106,7 @@ class SadhanaController(
         val ok = tracker.start(practice, ui.duration, ui.anchor, true, allowUnreviewed, clock.wall(), clock.mono(), clock.zone().id)
         if (!ok) return set(ui.copy(message = "This practice is not available in this build."))
         remainingState = ui.duration * 60_000L
+        focusStatus = if (ui.focusLockDefault) runCatching { focusLock?.engage(clock.wall() + remainingState + 60_000L) }.getOrNull() else null
         set(ui.copy(view = SadhanaView.PLAYER, message = null))
     }
 
@@ -126,6 +133,7 @@ class SadhanaController(
     fun end() { tracker.end(clock.mono(), clock.wall()); finish() }
 
     private fun finish() {
+        runCatching { focusLock?.release() }; focusStatus = null
         val a = tracker.attempt ?: return
         recordState = record.withAttempt(a)
         tracker.clear()
@@ -140,6 +148,7 @@ class SadhanaController(
     }
     fun reflection(): Usefulness? = ui.lastAttemptId?.let { record.reflections[it]?.usefulness }
 
+    fun setFocusLockDefault(on: Boolean) = set(ui.copy(focusLockDefault = on))
     fun setSelfCheck(v: SelfCheck) = set(ui.copy(selfCheck = if (ui.selfCheck == v) null else v))
     fun setOwnMinutes(m: Int) = set(ui.copy(ownMinutes = m))
     /** "I'll practise now · hide guidance": chooses minimal guidance; records nothing (nothing happened yet). */
@@ -171,7 +180,7 @@ class SadhanaController(
 object SadhanaCodec {
     fun encode(ui: SadhanaUi, r: SadhanaRecord, current: SadhanaAttempt?): Properties = Properties().apply {
         setProperty("view", ui.view.name); setProperty("selected", ui.selected); setProperty("centre", ui.centre)
-        setProperty("duration", ui.duration.toString()); setProperty("anchor", ui.anchor.name); setProperty("ownMinutes", ui.ownMinutes.toString()); ui.selfCheck?.let { setProperty("selfCheck", it.name) }
+        setProperty("duration", ui.duration.toString()); setProperty("anchor", ui.anchor.name); setProperty("ownMinutes", ui.ownMinutes.toString()); ui.selfCheck?.let { setProperty("selfCheck", it.name) }; setProperty("focusLock", ui.focusLockDefault.toString())
         ui.lastOutcome?.let { setProperty("lastOutcome", it.name) }; setProperty("lastSeconds", ui.lastSeconds.toString())
         ui.lastAttemptId?.let { setProperty("lastAttemptId", it) }
         setProperty("guidance", r.guidance.detail.name); setProperty("guidanceBy", r.guidance.changedBy.name)
@@ -210,6 +219,7 @@ object SadhanaCodec {
         anchor = runCatching { SadhanaAnchor.valueOf(p.getProperty("anchor")) }.getOrDefault(SadhanaAnchor.BREATH),
         ownMinutes = p.getProperty("ownMinutes")?.toIntOrNull() ?: 3,
         selfCheck = runCatching { SelfCheck.valueOf(p.getProperty("selfCheck")) }.getOrNull(),
+        focusLockDefault = p.getProperty("focusLock")?.toBoolean() ?: true,
         lastOutcome = runCatching { SadhanaOutcome.valueOf(p.getProperty("lastOutcome")) }.getOrNull(),
         lastSeconds = p.getProperty("lastSeconds")?.toLongOrNull() ?: 0, lastAttemptId = p.getProperty("lastAttemptId"),
     )

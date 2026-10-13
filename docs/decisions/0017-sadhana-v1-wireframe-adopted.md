@@ -91,3 +91,13 @@ The founder approved ("all approved") the vagal firefly layer, the reflective se
 ## Amendment — 13 Oct 2026: posture guidance
 
 Founder: place the phone straight in front of the head at eye level on any support (tripod, stand, even a hanger) so the spine stays straight and you look straight at it; eyes closed is fine, even better. Shown in Prepare (full) and practice detail (one line). Safety line added: use a stable support, nothing that could fall on you. Guidance only; posture is never checked or measured.
+
+## Amendment — 13 Oct 2026: default focus lock during Sadhana
+
+Founder: while a practice runs, all other apps are blocked by default (even outside Routine windows) and no pop-ups are shown. Built as:
+- Reuses the protection engine (Usage access + overlay) in an "all except essential" mode: Shanivar, dialer/in-call, emergency, system UI, settings and the home screen stay reachable.
+- Pop-ups are silenced with Do Not Disturb (priority) only if the user granted DND access; the previous filter is restored. Calls follow the user's DND settings; emergency calls always work.
+- Exists only during an active practice (expires at the planned end + 1 min as a backstop). End releases it immediately, locally. Released on restart after process death.
+- Missing permissions are stated in the player; never claimed as protected.
+- Voluntary: a Prepare checkbox "Block other apps and pop-ups while I practise", on by default, persisted.
+- Known limit: a long pause can outlast the backstop expiry; the lock then lapses early (fails open, never traps).
