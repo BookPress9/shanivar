@@ -14,6 +14,9 @@ android {
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_URL", "\"https://api.thehybridmonk.com/api\"")
+        // Supabase sync flag: empty URL = sync off (default). Set -PsupabaseUrl / -PsupabaseAnonKey for local E2E only.
+        buildConfigField("String", "SUPABASE_URL", "\"${(project.findProperty("supabaseUrl") as String?) ?: ""}\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"${(project.findProperty("supabaseAnonKey") as String?) ?: ""}\"")
         // MVP streamline task (package 1, 2026-09-18): the one explicit switch between the
         // simplified single-Home launch surface (ShanivarApp's `HomeScreen`) and the earlier
         // four-tab shell (`LegacyTabShell`, kept intact rather than deleted - see CLAUDE.md
@@ -86,4 +89,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+tasks.withType<Test>().configureEach {
+    (project.findProperty("supabaseE2eUrl") as String?)?.let { systemProperty("supabase.e2e.url", it) }
+    (project.findProperty("supabaseE2eAnonKey") as String?)?.let { systemProperty("supabase.e2e.anon", it) }
 }
