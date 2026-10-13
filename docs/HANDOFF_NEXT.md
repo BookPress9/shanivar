@@ -1,6 +1,6 @@
 # HANDOFF_NEXT: continue from a phone session (13 Oct 2026)
 
-> 13 Oct: Sadhana vagal layer/self-check/voice copy shipped (18437eb). B1, B2 shipped. Full status: docs/FINALIZATION_CHECKLIST.md. Next: B3–B8.
+> 13 Oct: Sadhana vagal layer/self-check/voice copy shipped (18437eb). B1–B8 done (ad984d0, bbd2042, ba56e76, 2828ccd, 5048af5, 1e4879c, a024596, f6ec0b7; DEV-35). Full suite 496/0 failures. Phone-test debug APK (draft release): https://github.com/BookPress9/shanivar/releases/tag/untagged-620bd070cac9d2285653. Note: release builds launch no practice until founder review manifests are recorded. Full status: docs/FINALIZATION_CHECKLIST.md. Remaining: founder / services / device items only.
 
 
 ## Current state

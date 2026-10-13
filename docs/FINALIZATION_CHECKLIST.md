@@ -9,13 +9,19 @@ Audited line by line: android-app/wireframes/initiation-v1/HANDOFF.md and sadhan
 - Routine: reconcile on app update, MY_PACKAGE_REPLACED (B2, bbd2042).
 - Sadhana: catalogue + launch gate (research-only locked), attempts, record, capability criteria v1, 33-stage spine, Saturn loader, root pulse, vagal layer, self-check, voice copy (18437eb).
 
-## Can build now (no founder input)
-- B3: local sync outbox (idempotent persisted queue; sender interface; no network).
-- B4: ContentReviewManifest + release launch gate requiring a complete manifest.
-- B5: Choose capability linked to a saved Routine boundary.
-- B6: import the initiation 60 s attempt into the Sadhana record.
-- B7: edit actual minutes of a self-report on Record.
-- B8: accessibility tests (200% font, landscape: End reachable, tabs present).
+## Built 13 Oct (DEV-35, done)
+- B1 ad984d0: selected-but-uninstalled apps kept as unavailable.
+- B2 bbd2042: reconcile on MY_PACKAGE_REPLACED.
+- B3 ba56e76: local idempotent sync outbox (no network until DEV-25).
+- B4 2828ccd: content review manifest; release launch needs a complete matching manifest (registry empty until founder reviews, so release launches nothing yet).
+- B5 5048af5: Choose linked to a saved enabled Routine window.
+- B6 1e4879c: onboarding 60 s attempt imported once into the Sadhana record.
+- B7 a024596: edit actual minutes of a self-report.
+- B8 f6ec0b7: accessibility tests (200% font, landscape).
+- Full suite: 496 tests, 0 failures. Debug APK draft release: https://github.com/BookPress9/shanivar/releases/tag/untagged-620bd070cac9d2285653
+
+## Can build now
+- None outstanding.
 
 ## Needs the founder
 - Progression and visual sign-off; spine counting direction; practice content reviews; source passage verification; NASA image commercial comfort.
