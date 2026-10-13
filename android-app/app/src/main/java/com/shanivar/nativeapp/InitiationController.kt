@@ -335,7 +335,14 @@ class InitiationController(
         }
     }
 
-    fun installedApps(): List<ProtectionAppOption> = runCatching { ports.installedApps() }.getOrDefault(emptyList())
+    /** Installed apps plus any selected package that is no longer installed (shown as unavailable, never silently dropped). */
+    fun installedApps(): List<ProtectionAppOption> {
+        val found = runCatching { ports.installedApps() }.getOrDefault(emptyList())
+        val known = found.map { it.packageName }.toSet()
+        val missing = ui.selected.filter { it !in known }.sorted()
+            .map { ProtectionAppOption(it, it.substringAfterLast('.'), "Unavailable", installed = false) }
+        return found + missing
+    }
     /** Read on every resume; tapping "Open settings" never grants anything by itself. */
     fun readAccess(): AccessResume.Access = ports.access()
 

@@ -175,4 +175,13 @@ class InitiationControllerTest {
         assertEquals("Notice the breath already happening.", InitiationController.guidance(60))
         assertEquals("One more return.", InitiationController.guidance(10))
     }
+
+    @org.junit.Test
+    fun selectedButUninstalledAppIsKeptAsUnavailable() {
+        val c = controller()
+        c.toggleApp("com.gone.app")
+        val apps = c.installedApps()
+        org.junit.Assert.assertTrue(apps.any { it.packageName == "com.instagram.android" && it.installed })
+        org.junit.Assert.assertTrue(apps.any { it.packageName == "com.gone.app" && !it.installed })
+    }
 }
