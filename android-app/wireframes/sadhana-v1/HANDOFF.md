@@ -145,3 +145,6 @@ Production should expose one shared loading controller with explicit begin, end 
 6. Missed days cause no loss state; browsing does not count; source reading creates no readiness signal.
 7. Physical-device review covers process death, screen lock, call interruption, audio focus if later added and reduced motion.
 8. Founder reviews progression meaning and exact visual language before implementation is accepted; public release remains a separate decision.
+
+## Note — 14 Oct 2026: Stage 1, the base (decision 0018)
+Founder: "the Stage 1 meditation brings attention down to the bottom of the spine and the question is how long you can keep it there", followed by a self-check: (a) were you able to get attention down to the spine; (b) how many times was it carried away; (c) what pulled you away. Core principle (internal): "energy flows where attention goes"; proposed public wording "Where attention goes, you go." Drift count is within the sitting by default. See docs/decisions/0018-sadhana-stage1-base.md.

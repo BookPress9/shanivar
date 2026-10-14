@@ -52,7 +52,23 @@ class SadhanaController(
     /** B6: the finished onboarding 60 s attempt, imported once into the record as app-observed. */
     private val initiationAttempt: () -> PracticeAttempt? = { null },
     private val focusLock: SadhanaFocusLockPort? = null,
+    private val outbox: SyncOutbox? = null,
 ) {
+    /** Draft of the Stage 1 self-check for the last attempt (null when the last attempt was not Stage 1). */
+    var stage1Check: Stage1Check? by mutableStateOf(null)
+        private set
+    val stage1Saved: Boolean get() = stage1Check?.let { d -> record.stage1Checks.any { it == d } } ?: false
+    private fun editStage1(f: (Stage1Check) -> Stage1Check) { stage1Check = stage1Check?.let(f) }
+    fun stage1Reach(r: Stage1Reach) = editStage1 { it.copy(reach = if (it.reach == r) null else r) }
+    fun stage1Drifts(delta: Int) = editStage1 { it.copy(drifts = ((it.drifts ?: 0) + delta).coerceIn(0, Stage1.MAX_DRIFTS)) }
+    fun stage1Reason(r: DriftReason) = editStage1 { it.copy(reasons = if (r in it.reasons) it.reasons - r else it.reasons + r) }
+    fun stage1Note(t: String) = editStage1 { it.copy(note = t.take(500).ifBlank { null }) }
+    fun saveStage1Check() {
+        val chk = stage1Check?.takeIf { it.answered } ?: return
+        recordState = record.withStage1Check(chk)
+        outbox?.enqueue("self_report", chk.id, Stage1.payload(chk))
+        set(ui)
+    }
     var focusStatus: FocusLockStatus? by mutableStateOf(null)
         private set
     private var uiState by mutableStateOf(SadhanaUi(), neverEqualPolicy())
@@ -98,6 +114,7 @@ class SadhanaController(
     fun selectCentre(id: String) = set(ui.copy(centre = id))
     fun setDuration(m: Int) { if (SadhanaCatalog.validDuration(practice, m)) set(ui.copy(duration = m)) }
     fun anotherPractice() { val n = SadhanaCatalog.next(ui.selected); set(ui.copy(selected = n.id, duration = n.minutes.first(), message = null)) }
+    fun chooseStage1() = set(ui.copy(selected = Stage1.ID, duration = 1, view = SadhanaView.PRACTICE, message = null))
     fun setAnchor(a: SadhanaAnchor) = set(ui.copy(anchor = a))
     fun setStationary(v: Boolean) = set(ui.copy(stationary = v))
 
@@ -137,6 +154,8 @@ class SadhanaController(
         val a = tracker.attempt ?: return
         recordState = record.withAttempt(a)
         tracker.clear()
+        stage1Check = if (a.practiceId == Stage1.ID) Stage1Check("s1-" + a.id, a.id, clock.today()) else null
+        outbox?.enqueue("attempt", a.id, SyncPayloads.attempt(a))
         set(ui.copy(view = SadhanaView.COMPLETE, lastOutcome = a.outcome, lastSeconds = a.activeSeconds, lastAttemptId = a.id, message = null))
     }
 
@@ -188,6 +207,7 @@ object SadhanaCodec {
         setProperty("own", r.independent.joinToString("\n") { "${it.id}|${it.localDate}|${it.intendedMinutes ?: ""}|${it.actualMinutes ?: ""}" })
         setProperty("reflections", r.reflections.values.joinToString("\n") { "${it.attemptId}|${it.usefulness?.name ?: ""}|${it.createdAtUtc}" })
         current?.let { setProperty("current", att(it)) }
+        setProperty("stage1", r.stage1Checks.joinToString("\n") { Stage1.encode(it) })
     }
 
     private fun att(a: SadhanaAttempt) = listOf(a.id, a.practiceId, a.contentVersion, a.startedAtUtc, a.zoneId, a.intendedSeconds, a.activeMillis,
@@ -204,6 +224,7 @@ object SadhanaCodec {
     private fun lines(p: Properties, k: String) = p.getProperty(k).orEmpty().split("\n").filter { it.isNotBlank() }
 
     fun record(p: Properties) = SadhanaRecord(
+        stage1Checks = lines(p, "stage1").mapNotNull(Stage1::decode),
         attempts = lines(p, "attempts").mapNotNull(::parseAtt),
         reflections = lines(p, "reflections").mapNotNull { l -> l.split("|").let { f ->
             f[1].ifBlank { null }?.let { PracticeReflectionRecord(f[0], Usefulness.valueOf(it), null, f[2].toLong()) } } }.associateBy { it.attemptId },

@@ -108,6 +108,7 @@ import kotlinx.coroutines.delay
         Usefulness.entries.forEach { u -> SSecondary(u.label, { c.reflect(u) }, Modifier.weight(1f), selectedState = c.reflection() == u) }
     }
     SNotice("Answer only if it helps. This response does not determine your next practice.")
+    Stage1CheckCard(c)
     SSpacer()
     SPrimary("Return to my day →", { c.go(SadhanaView.HOME) })
     SText("View the record") { c.go(SadhanaView.RECORD) }

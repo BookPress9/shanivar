@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
     }
     SStats(r.attemptCount, r.activeMinutes, r.independentCount, listOf("ATTEMPTS", "ACTIVE MIN", "WITHOUT APP"))
     SText("Open the Living Spine") { c.go(SadhanaView.SPINE) }
+    SText("Stage 1 · The base →") { c.chooseStage1() }
 }
 
 @Composable fun SpineScreen(c: SadhanaController, reduceMotion: Boolean = true) {

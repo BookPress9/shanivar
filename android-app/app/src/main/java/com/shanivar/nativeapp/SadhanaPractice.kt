@@ -43,6 +43,12 @@ object SadhanaCatalog {
 
     /** Copy is verbatim from wireframes/sadhana-v1/app.js PRACTICES, except sourcePlain (naming rule). */
     val practices: List<SadhanaPracticeDefinition> = listOf(
+        // Stage 1 (founder 14 Oct 2026, decision 0018). Fixed 60 s; no breath pacing.
+        SadhanaPracticeDefinition(Stage1.ID, VERSION, PracticeStatus.RELEASED, RiskClass.FOUNDATION, SadhanaCapability.ARRIVE,
+            "Stage 1 · The base", listOf(1), "Attention to one place",
+            Stage1.PROMPT,
+            "Shanivar Sadhana stage 1", "Shanivar Sadhana stage 1",
+            "No breath pacing, no target sensation. How long attention stays is not a score."),
         SadhanaPracticeDefinition("natural", VERSION, PracticeStatus.RELEASED, RiskClass.FOUNDATION, SadhanaCapability.ARRIVE,
             "Return to one ordinary breath", listOf(1, 3, 5), "Gentle attention",
             "Notice the breath already happening. Leave its size and speed alone.",

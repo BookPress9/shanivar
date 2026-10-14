@@ -184,4 +184,24 @@ class SadhanaUiTest {
         compose.onNodeWithText(SadhanaPosture.SAFETY).assertExists()
         shot("17-prepare-posture")
     }
+
+    @Test fun stage1PracticeAndSelfCheck() {
+        launch()
+        click("Stage 1 · The base →")
+        compose.onNodeWithText(Stage1.PROMPT).assertExists()
+        shot("18-stage1-detail")
+        click("Prepare · 1 min →")
+        click("I am stationary and in a suitable place.")
+        click("Begin →")
+        compose.onNodeWithContentDescription("End practice").assertExists()
+        clock.monoMs += 61_000; clock.wallMs += 61_000
+        compose.runOnIdle { c.tick() }
+        compose.onNodeWithText("Where did your attention go?").performScrollTo().assertExists()
+        click("Partly"); click("+"); click("+"); click("Thoughts")
+        compose.onNodeWithText("Where did your attention go?").performScrollTo()
+        shot("18b-stage1-self-check")
+        click("Save my report")
+        compose.onNodeWithText("Saved").assertExists()
+        assertEquals(2, c.record.stage1Checks.single().drifts)
+    }
 }

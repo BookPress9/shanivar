@@ -29,7 +29,9 @@ data class SadhanaRecord(
     val reflections: Map<String, PracticeReflectionRecord> = emptyMap(),
     val independent: List<IndependentPracticeRecord> = emptyList(),
     val guidance: GuidancePreference = GuidancePreference(),
+    val stage1Checks: List<Stage1Check> = emptyList(),
 ) {
+    fun withStage1Check(c: Stage1Check) = copy(stage1Checks = stage1Checks.filterNot { it.id == c.id } + c)
     /** Only finished attempts with real active time (an attempt ended at 0 s leaves no record, as in the wireframe). */
     fun withAttempt(a: SadhanaAttempt): SadhanaRecord =
         if (a.outcome == SadhanaOutcome.IN_PROGRESS || (a.activeSeconds == 0L && a.outcome != SadhanaOutcome.COMPLETED)) this
@@ -86,7 +88,8 @@ object CapabilityCriteria {
 object SadhanaGuidance {
     /** Verbatim from app.js guidance(). Text only; never timed to breathing. */
     fun line(p: SadhanaPracticeDefinition, detail: GuidanceDetail, carrying: Boolean, intendedSeconds: Long, elapsed: Long): String =
-        if (detail != GuidanceDetail.FULL || carrying) { if (elapsed < 12) p.prompt else "No further instruction. Return when you choose." }
+        if (p.id == Stage1.ID && detail == GuidanceDetail.FULL && !carrying) Stage1.guidance(elapsed, intendedSeconds)
+        else if (detail != GuidanceDetail.FULL || carrying) { if (elapsed < 12) p.prompt else "No further instruction. Return when you choose." }
         else if (elapsed < 15) p.prompt
         else if (elapsed < intendedSeconds / 2) "Attention moved. That is the moment of practice. Return without force."
         else "Let the next return be yours. Nothing needs to look special."
