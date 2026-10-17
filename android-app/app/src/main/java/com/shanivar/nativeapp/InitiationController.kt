@@ -129,6 +129,8 @@ class InitiationController(
     private val auth: InitiationAuthCoordinator = InitiationAuthCoordinator(draftRepo),
     /** DEV-47: leaving Proposition as a guest starts the silent guest sign-in (AppSync.onGuestChosen). Never blocks. */
     private val onGuestReady: () -> Unit = {},
+    /** DEV-47: Initiation completed as a guest; retries the guest sign-in once if there is still no session. */
+    private val onGuestComplete: () -> Unit = {},
 ) {
     /** Compose-observable: every assignment notifies (neverEqualPolicy), so screens recompose after any action. */
     private var uiState by mutableStateOf(InitiationUi(), neverEqualPolicy())
@@ -250,6 +252,8 @@ class InitiationController(
 
     fun enter() {
         draftRepo.complete(ports.wallNow())
+        draftRepo.draft.takeIf { it.checkpoint == InitiationCheckpoint.COMPLETE && it.identityMode == IdentityMode.GUEST }
+            ?.let { runCatching { onGuestComplete() } }
         orbit.recordEntry(ports.today())
         go(InitiationScreen.ROUTINE)
     }

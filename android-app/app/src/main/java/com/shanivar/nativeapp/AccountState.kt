@@ -38,6 +38,8 @@ class AccountState(
     var noteError by mutableStateOf<String?>(null)
         private set
     private var noteJob: Job? = null
+    /** The logout flush-then-sign-out job (tests join it). */
+    @androidx.annotation.VisibleForTesting internal var syncSignOut: Job? = null
     private var revision = 0
 
     fun connect(value: Account) {
@@ -57,7 +59,7 @@ class AccountState(
         ShanivarSession.api = null
         // DEV-47 AC6: logout clears the sync session (signOut), not a reset: it keeps the person's local
         // records, and the engine keeps queued items stamped to this user so none go out under a new one.
-        runCatching { sync().requestSignOut() }
+        syncSignOut = runCatching { sync().requestSignOut() }.getOrNull()
     }
     private fun invalidate() {
         revision++
