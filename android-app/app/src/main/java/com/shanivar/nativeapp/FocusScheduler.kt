@@ -17,8 +17,11 @@ import java.time.ZonedDateTime
  * *which* boundary (start or end) is next, since a focus window - unlike an alarm - has two kinds
  * of event, not one.
  *
- * v1 scope: exactly one focus schedule at a time, matching the existing one-alarm limit. A second
- * concurrent schedule is a real later capability, not a hidden bug - see the ADR's "Revisit when."
+ * The Focus card still saves one schedule. The persisted window list can hold more than one rule
+ * so an END releases protection only when no other window is still in effect (`FocusWindowEnd`).
+ * One AlarmManager trigger is armed at a time. `scheduleNext` arms the rule it was given (the
+ * card's contract). After a boundary fires, `armSoonest` points that single trigger at whichever
+ * stored window's boundary is next, so ending window A does not drop window B.
  *
  * Uses `setExactAndAllowWhileIdle`, not `setAlarmClock`: this window toggle is a silent background
  * action with no user-facing alarm-clock semantics, and `setAlarmClock` would put a persistent
@@ -40,6 +43,7 @@ class FocusScheduler(private val context: Context) {
         val (occurrence, action) = FocusWindowRecurrence.nextBoundary(rule.days, rule.startTime, rule.endTime, after) ?: return null
         val triggerAt = occurrence.toInstant().toEpochMilli()
         if (!armNativeAlarm(triggerAt)) return null
+        val stored = storedWindows().filter { it.scheduleId != rule.scheduleId } + rule
         prefs.edit()
             .putString(KEY_SCHEDULE_ID, rule.scheduleId)
             .putString(KEY_DAYS, rule.days.sorted().joinToString(","))
@@ -48,8 +52,18 @@ class FocusScheduler(private val context: Context) {
             .putStringSet(KEY_PACKAGES, rule.blockPackages)
             .putString(KEY_PENDING_ACTION, action.name)
             .putLong(KEY_NEXT_TRIGGER, triggerAt)
+            .putString(KEY_WINDOWS, encodeWindows(stored))
             .apply()
         return triggerAt to action
+    }
+
+    /** Re-arm the single native trigger for the soonest boundary across every stored window.
+     * No-op (returns null, changes nothing) when nothing is stored or exact alarms are unavailable. */
+    fun armSoonest(after: ZonedDateTime = ZonedDateTime.now()): Pair<Long, FocusWindowAction>? {
+        val rules = windows()
+        val boundary = FocusWindowEnd.soonestBoundary(rules.map { it.asFocusWindow() }, after) ?: return null
+        val rule = rules.firstOrNull { it.scheduleId == boundary.scheduleId } ?: return null
+        return scheduleNext(rule, after)
     }
 
     /** What the persisted rule's *currently pending* trigger represents - read this before
@@ -69,11 +83,22 @@ class FocusScheduler(private val context: Context) {
         return Rule(scheduleId, days, start, end, packages)
     }
 
+    /** Every window whose END/START must be considered. The armed rule is included even if it was
+     * persisted before the window list existed, so a single-window install keeps its old behavior. */
+    fun windows(): List<Rule> {
+        val stored = storedWindows()
+        val pending = pendingRule() ?: return stored
+        return if (stored.any { it.scheduleId == pending.scheduleId }) stored else stored + pending
+    }
+
     fun cancel() {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(firePendingIntent())
         prefs.edit().clear().apply()
     }
+
+    private fun storedWindows(): List<Rule> =
+        prefs.getString(KEY_WINDOWS, null)?.lineSequence()?.mapNotNull { decodeWindow(it) }?.toList().orEmpty()
 
     private fun armNativeAlarm(triggerAtEpochMillis: Long): Boolean {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -96,6 +121,33 @@ class FocusScheduler(private val context: Context) {
         private const val KEY_PACKAGES = "packages"
         private const val KEY_PENDING_ACTION = "pending_action"
         private const val KEY_NEXT_TRIGGER = "next_trigger_at"
+        private const val KEY_WINDOWS = "windows"
         private const val REQUEST_CODE = 4301
+
+        private fun encodeWindows(rules: List<Rule>): String =
+            rules.joinToString("\n") { rule ->
+                listOf(
+                    rule.scheduleId,
+                    rule.days.sorted().joinToString(","),
+                    rule.startTime.toString(),
+                    rule.endTime.toString(),
+                    rule.blockPackages.sorted().joinToString(","),
+                ).joinToString("\t")
+            }
+
+        private fun decodeWindow(line: String): Rule? {
+            val parts = line.split('\t')
+            if (parts.size != 5 || parts[0].isBlank()) return null
+            val days = parts[1].split(',').mapNotNull { it.toIntOrNull() }.toSet()
+            if (days.isEmpty()) return null
+            val start = runCatching { LocalTime.parse(parts[2]) }.getOrNull() ?: return null
+            val end = runCatching { LocalTime.parse(parts[3]) }.getOrNull() ?: return null
+            val packages = parts[4].split(',').filter { it.isNotBlank() }.toSet()
+            return Rule(parts[0], days, start, end, packages)
+        }
     }
 }
+
+internal fun FocusScheduler.Rule.asFocusWindow() = FocusWindowEnd.Window(
+    scheduleId, days, startTime, endTime, blockPackages,
+)

@@ -39,7 +39,15 @@ class FocusScheduleReceiver : BroadcastReceiver() {
                                 val minutes = minutesUntilWindowEnd(rule)
                                 if (minutes >= 1) discipline.startFocus(minutes, rule.blockPackages)
                             }
-                            FocusWindowAction.END -> discipline.releaseFocus()
+                            // Release only when no other stored window is still in effect.
+                            // releaseFocus() clears the one shared session, so an unconditional
+                            // call here would drop a sibling window that is still active.
+                            FocusWindowAction.END -> FocusWindowEnd.apply(
+                                endingScheduleId = rule.scheduleId,
+                                windows = scheduler.windows().map { it.asFocusWindow() },
+                                at = ZonedDateTime.now(),
+                                discipline = discipline,
+                            )
                         }
                     }
                 }
@@ -47,7 +55,7 @@ class FocusScheduleReceiver : BroadcastReceiver() {
                 // Always advance, even if the action above failed or no session was available -
                 // a schedule that gets permanently stuck retrying one missed boundary is worse
                 // than one that silently skips it and tries again at the next occurrence.
-                runCatching { scheduler.scheduleNext(rule) }
+                runCatching { scheduler.armSoonest() }
                 pendingResult.finish()
             }
         }

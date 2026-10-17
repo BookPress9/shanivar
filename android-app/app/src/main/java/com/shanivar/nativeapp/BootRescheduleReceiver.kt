@@ -46,7 +46,9 @@ class BootRescheduleReceiver : BroadcastReceiver() {
         // Re-arm the correct next boundary regardless of whether we're currently inside the
         // window - FocusWindowRecurrence.nextBoundary already resolves to today's END when
         // called from inside an active window, with no special-casing needed here.
-        runCatching { focusScheduler.scheduleNext(focusRule, now) }
+        // Same re-arm as a single window when only one rule is stored. With more than one,
+        // arm the soonest boundary so a sibling window is not left without a trigger.
+        runCatching { focusScheduler.armSoonest(now) }
         if (!FocusWindowRecurrence.isActiveAt(focusRule.days, focusRule.startTime, focusRule.endTime, now)) return
 
         // We're inside the window and it was missed (device was off/rebooting through its
