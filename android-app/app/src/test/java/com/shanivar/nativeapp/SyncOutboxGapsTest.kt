@@ -15,6 +15,7 @@ import java.time.LocalTime
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class SyncOutboxGapsTest {
+    @get:org.junit.Rule val outboxReset = AppSyncOutboxReset()
     private val clock = FakeSadhanaClock()
     private val outStore = MemDraftStore()
     private fun controller(initiation: PracticeAttempt? = null) =
@@ -97,5 +98,62 @@ class SyncOutboxGapsTest {
             server.takeRequest().let { assertEquals("POST", it.method); assertTrue(it.path!!.startsWith("/rest/v1/self_reports?on_conflict")) }
             server.takeRequest().let { assertEquals("DELETE", it.method); assertEquals("/rest/v1/self_reports?id=eq.s2", it.path) }
         }
+    }
+
+    private val done7 = PracticeAttempt("a7", "v1", 1000, 60_000, AttemptOutcome.COMPLETED, 61_000)
+    /** A record written by a pre-DEV-38 build: onboarding attempt imported, a normal attempt, nothing queued, no flag. */
+    private fun preFixStore(): MemDraftStore {
+        val store = MemDraftStore()
+        val old = SadhanaController(store, clock, true, initiationAttempt = { done7 }, outbox = null)
+        old.setStationary(true); old.begin(); clock.advance(5_000); old.tick(); old.end()
+        assertEquals(2, SadhanaController(store, clock, true).record.attempts.size)
+        assertFalse(store.value!!.contains("outboxBackfillV1"))
+        return store
+    }
+
+    @Test fun backfillQueuesOnboardingAttemptAlreadyImportedByOldBuild() {
+        val store = preFixStore()
+        SadhanaController(store, clock, true, initiationAttempt = { done7 }, outbox = SyncOutbox(outStore))
+        val item = pending().single()
+        assertEquals("attempt:initiation-a7", item.key)
+        assertTrue(item.payload.contains("\"id\":\"initiation-a7\"") && item.payload.contains("\"outcome\":\"COMPLETED\""))
+        assertTrue(store.value!!.contains("outboxBackfillV1=done"))
+    }
+
+    @Test fun backfillRunsOnceAcrossRestarts() {
+        val store = preFixStore()
+        SadhanaController(store, clock, true, initiationAttempt = { done7 }, outbox = SyncOutbox(outStore))
+        assertEquals(1, SyncOutbox(outStore).drain { true })
+        repeat(3) { SadhanaController(store, clock, true, initiationAttempt = { done7 }, outbox = SyncOutbox(outStore)) }
+        assertTrue("flag set: nothing re-queued after the drain", pending().isEmpty())
+    }
+
+    @Test fun backfillIsIdempotentByAttemptId() {
+        val store = preFixStore()
+        SadhanaController(store, clock, true, initiationAttempt = { done7 }, outbox = SyncOutbox(outStore))
+        // Simulate a crash before the flag reached disk: the backfill runs again over the undrained queue.
+        store.value = store.value!!.replace("outboxBackfillV1=done", "")
+        SadhanaController(store, clock, true, initiationAttempt = { done7 }, outbox = SyncOutbox(outStore))
+        assertEquals(listOf("attempt:initiation-a7"), pending().map { it.key })
+        // Fresh install: import and backfill both see the attempt; still one entry.
+        val fresh = MemDraftStore(); val out2 = MemDraftStore()
+        SadhanaController(fresh, clock, true, initiationAttempt = { done7 }, outbox = SyncOutbox(out2))
+        assertEquals(listOf("attempt:initiation-a7"), SyncOutbox(out2).pending.map { it.key })
+    }
+
+    @Test fun backfillWaitsForAnOutbox() {
+        val store = preFixStore()
+        SadhanaController(store, clock, true, initiationAttempt = { done7 }, outbox = null)
+        assertFalse(store.value!!.contains("outboxBackfillV1"))
+        SadhanaController(store, clock, true, initiationAttempt = { done7 }, outbox = SyncOutbox(outStore))
+        assertEquals(listOf("attempt:initiation-a7"), pending().map { it.key })
+    }
+
+    @Test fun appSyncOutboxResetRebindsTheSingleton() {
+        val app = RuntimeEnvironment.getApplication()
+        val a = AppSyncOutbox.get(app)
+        assertSame(a, AppSyncOutbox.get(app))
+        AppSyncOutbox.reset()
+        assertNotSame(a, AppSyncOutbox.get(app))
     }
 }

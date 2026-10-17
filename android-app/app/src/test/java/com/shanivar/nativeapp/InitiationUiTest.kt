@@ -18,6 +18,7 @@ import java.io.File
 @Config(sdk = [34], qualifiers = "w390dp-h844dp-xhdpi")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class InitiationUiTest {
+    @get:org.junit.Rule val outboxReset = AppSyncOutboxReset()
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
     private val ports = FakeInitiationPorts()
     private lateinit var c: InitiationController

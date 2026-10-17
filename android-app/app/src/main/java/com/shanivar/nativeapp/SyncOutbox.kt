@@ -61,4 +61,8 @@ object AppSyncOutbox {
     fun get(context: android.content.Context): SyncOutbox = instance ?: synchronized(this) {
         instance ?: SyncOutbox(FileDraftStore(java.io.File(context.applicationContext.filesDir, "sadhana/outbox.properties"))).also { instance = it }
     }
+
+    /** Tests only: drop the process-wide instance so the next [get] binds to the current test's filesDir. */
+    @androidx.annotation.VisibleForTesting
+    internal fun reset() = synchronized(this) { instance = null }
 }
