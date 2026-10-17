@@ -23,7 +23,7 @@ Items 5-7 are only partly guarded automatically:
   (routine_plans, protection_windows, practice_attempts, self_reports, orbit_events, practice_reflections). A new synced table
   must be added to that list by hand.
 - Item 6, size caps: `04_size_caps.test.sql` tests the specific DEV-42 caps on the five DEV-42 tables only
-  (DEV-54 caps: `07_sadhana_record.test.sql`). It
+  (DEV-54 caps: `07_sadhana_record.test.sql`, PM length caps: `08_dev54_length_caps.test.sql`). It
   does not detect a new table without caps; each new table needs its own cap tests.
 - Item 6, privileges: `05_privileges.test.sql` iterates over every table in `public`: anon has no
   privilege on any table, and authenticated has no TRUNCATE/REFERENCES/TRIGGER on any table. That
