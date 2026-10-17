@@ -1,0 +1,614 @@
+{
+ "opal": {
+  "n": 500,
+  "from": "2026-06-15",
+  "to": "2026-10-16",
+  "avg": 3.86,
+  "low_pct": 21.4,
+  "low_n": 107,
+  "themes_low": {
+   "price/subscription/paywall": 18,
+   "bugs/doesn't work/crash": 27,
+   "easy to bypass/disable": 9,
+   "permissions/battery/accessibility": 12,
+   "alarm failed/too harsh": 3,
+   "ads": 2,
+   "login/account/sync": 12,
+   "content repetitive/limited": 0,
+   "notifications nagging": 2
+  },
+  "meta": {
+   "title": "Opal Screen Time Limit & Timer",
+   "installs": "500,000+",
+   "realInstalls": 883245,
+   "score": 4.6633663,
+   "ratings": 10573,
+   "reviews": 231,
+   "histogram": [
+    206,
+    97,
+    412,
+    1561,
+    8263
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$2.99 - $79.99 per item",
+   "updated": 1792011897,
+   "developer": "Opal: The Focus Company"
+  }
+ },
+ "alarmy": {
+  "n": 500,
+  "from": "2026-10-04",
+  "to": "2026-10-17",
+  "avg": 4.26,
+  "low_pct": 14.0,
+  "low_n": 70,
+  "themes_low": {
+   "price/subscription/paywall": 7,
+   "bugs/doesn't work/crash": 7,
+   "easy to bypass/disable": 8,
+   "permissions/battery/accessibility": 3,
+   "alarm failed/too harsh": 19,
+   "ads": 10,
+   "login/account/sync": 1,
+   "content repetitive/limited": 1,
+   "notifications nagging": 1
+  },
+  "meta": {
+   "title": "Alarmy - Alarm Clock & Sleep",
+   "installs": "50,000,000+",
+   "realInstalls": 51854172,
+   "score": 4.6517286,
+   "ratings": 2175324,
+   "reviews": 81655,
+   "histogram": [
+    87313,
+    30422,
+    62457,
+    192139,
+    1802977
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$2.90 - $159.99 per item",
+   "updated": 1792126833,
+   "developer": "Sleep Tracker & Alarm Clock by Delightroom"
+  }
+ },
+ "onesec": {
+  "n": 500,
+  "from": "2025-10-29",
+  "to": "2026-10-15",
+  "avg": 4.04,
+  "low_pct": 18.6,
+  "low_n": 93,
+  "themes_low": {
+   "price/subscription/paywall": 35,
+   "bugs/doesn't work/crash": 18,
+   "easy to bypass/disable": 3,
+   "permissions/battery/accessibility": 6,
+   "alarm failed/too harsh": 1,
+   "ads": 4,
+   "login/account/sync": 2,
+   "content repetitive/limited": 2,
+   "notifications nagging": 2
+  },
+  "meta": {
+   "title": "one sec | app blocker, focus",
+   "installs": "1,000,000+",
+   "realInstalls": 1978746,
+   "score": 4.761733,
+   "ratings": 46277,
+   "reviews": 391,
+   "histogram": [
+    1333,
+    0,
+    658,
+    4338,
+    39912
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$3.99 - $99.99 per item",
+   "updated": 1790157010,
+   "developer": "riedel.wtf"
+  }
+ },
+ "screenzen": {
+  "n": 500,
+  "from": "2026-09-02",
+  "to": "2026-10-17",
+  "avg": 4.62,
+  "low_pct": 6.0,
+  "low_n": 30,
+  "themes_low": {
+   "price/subscription/paywall": 2,
+   "bugs/doesn't work/crash": 11,
+   "easy to bypass/disable": 6,
+   "permissions/battery/accessibility": 7,
+   "alarm failed/too harsh": 0,
+   "ads": 1,
+   "login/account/sync": 1,
+   "content repetitive/limited": 0,
+   "notifications nagging": 2
+  },
+  "meta": {
+   "title": "ScreenZen\u30fbScreen Time Control",
+   "installs": "1,000,000+",
+   "realInstalls": 1254414,
+   "score": 4.7942176,
+   "ratings": 34429,
+   "reviews": 1575,
+   "histogram": [
+    638,
+    579,
+    286,
+    2160,
+    30739
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$4.99 - $19.99 per item",
+   "updated": 1789802900,
+   "developer": "screenzen"
+  }
+ },
+ "freedom": {
+  "n": 500,
+  "from": "2025-03-11",
+  "to": "2026-10-16",
+  "avg": 3.63,
+  "low_pct": 29.4,
+  "low_n": 147,
+  "themes_low": {
+   "price/subscription/paywall": 50,
+   "bugs/doesn't work/crash": 17,
+   "easy to bypass/disable": 22,
+   "permissions/battery/accessibility": 16,
+   "alarm failed/too harsh": 1,
+   "ads": 4,
+   "login/account/sync": 12,
+   "content repetitive/limited": 1,
+   "notifications nagging": 6
+  },
+  "meta": {
+   "title": "Freedom: App & Website Blocker",
+   "installs": "1,000,000+",
+   "realInstalls": 2012412,
+   "score": 4.5608463,
+   "ratings": 8235,
+   "reviews": 828,
+   "histogram": [
+    652,
+    127,
+    83,
+    433,
+    6925
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$12.99 - $199.99 per item",
+   "updated": 1790880470,
+   "developer": "Eighty Percent Solutions Corporation"
+  }
+ },
+ "forest": {
+  "n": 500,
+  "from": "2026-08-20",
+  "to": "2026-10-16",
+  "avg": 3.02,
+  "low_pct": 45.4,
+  "low_n": 227,
+  "themes_low": {
+   "price/subscription/paywall": 60,
+   "bugs/doesn't work/crash": 32,
+   "easy to bypass/disable": 10,
+   "permissions/battery/accessibility": 2,
+   "alarm failed/too harsh": 13,
+   "ads": 5,
+   "login/account/sync": 12,
+   "content repetitive/limited": 0,
+   "notifications nagging": 4
+  },
+  "meta": {
+   "title": "Forest: Stay Focused",
+   "installs": "10,000,000+",
+   "realInstalls": 49608585,
+   "score": 4.3061914,
+   "ratings": 813854,
+   "reviews": 10003,
+   "histogram": [
+    72972,
+    32653,
+    40607,
+    93446,
+    574120
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$0.99 - $59.99 per item",
+   "updated": 1791873191,
+   "developer": "Seekrtech"
+  }
+ },
+ "fabulous": {
+  "n": 500,
+  "from": "2026-07-09",
+  "to": "2026-10-17",
+  "avg": 2.6,
+  "low_pct": 57.6,
+  "low_n": 288,
+  "themes_low": {
+   "price/subscription/paywall": 212,
+   "bugs/doesn't work/crash": 9,
+   "easy to bypass/disable": 11,
+   "permissions/battery/accessibility": 8,
+   "alarm failed/too harsh": 18,
+   "ads": 27,
+   "login/account/sync": 35,
+   "content repetitive/limited": 4,
+   "notifications nagging": 15
+  },
+  "meta": {
+   "title": "Fabulous Daily Routine Planner",
+   "installs": "10,000,000+",
+   "realInstalls": 27803948,
+   "score": 3.847416,
+   "ratings": 589928,
+   "reviews": 39871,
+   "histogram": [
+    125524,
+    20444,
+    20374,
+    75746,
+    347826
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$3.99 - $299.99 per item",
+   "updated": 1791399846,
+   "developer": "TheFabulous"
+  }
+ },
+ "sleepandroid": {
+  "n": 500,
+  "from": "2026-05-03",
+  "to": "2026-10-16",
+  "avg": 3.75,
+  "low_pct": 27.0,
+  "low_n": 135,
+  "themes_low": {
+   "price/subscription/paywall": 38,
+   "bugs/doesn't work/crash": 12,
+   "easy to bypass/disable": 21,
+   "permissions/battery/accessibility": 11,
+   "alarm failed/too harsh": 18,
+   "ads": 25,
+   "login/account/sync": 3,
+   "content repetitive/limited": 0,
+   "notifications nagging": 9
+  },
+  "meta": {
+   "title": "Sleep as Android: Smart alarm",
+   "installs": "10,000,000+",
+   "realInstalls": 24268051,
+   "score": 4.5674953,
+   "ratings": 392616,
+   "reviews": 17703,
+   "histogram": [
+    18940,
+    8483,
+    14061,
+    40443,
+    310672
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$0.99 - $75.00 per item",
+   "updated": 1792063112,
+   "developer": "Petr N\u00e1levka (Urbandroid)"
+  }
+ },
+ "habitica": {
+  "n": 500,
+  "from": "2025-12-21",
+  "to": "2026-10-16",
+  "avg": 4.19,
+  "low_pct": 13.6,
+  "low_n": 68,
+  "themes_low": {
+   "price/subscription/paywall": 8,
+   "bugs/doesn't work/crash": 4,
+   "easy to bypass/disable": 4,
+   "permissions/battery/accessibility": 1,
+   "alarm failed/too harsh": 2,
+   "ads": 1,
+   "login/account/sync": 5,
+   "content repetitive/limited": 1,
+   "notifications nagging": 2
+  },
+  "meta": {
+   "title": "Habitica: Gamify Your Tasks",
+   "installs": "5,000,000+",
+   "realInstalls": 8373754,
+   "score": 4.64897,
+   "ratings": 75906,
+   "reviews": 3938,
+   "histogram": [
+    2341,
+    1017,
+    2825,
+    8536,
+    61168
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$0.99 - $47.99 per item",
+   "updated": 1791206973,
+   "developer": "HabitRPG, Inc."
+  }
+ },
+ "headspace": {
+  "n": 500,
+  "from": "2026-03-14",
+  "to": "2026-10-17",
+  "avg": 1.93,
+  "low_pct": 73.6,
+  "low_n": 368,
+  "themes_low": {
+   "price/subscription/paywall": 146,
+   "bugs/doesn't work/crash": 91,
+   "easy to bypass/disable": 35,
+   "permissions/battery/accessibility": 0,
+   "alarm failed/too harsh": 4,
+   "ads": 5,
+   "login/account/sync": 35,
+   "content repetitive/limited": 2,
+   "notifications nagging": 5
+  },
+  "meta": {
+   "title": "Headspace: Sleep & Meditation",
+   "installs": "10,000,000+",
+   "realInstalls": 42505114,
+   "score": 4.254997,
+   "ratings": 339983,
+   "reviews": 31754,
+   "histogram": [
+    42109,
+    12835,
+    11050,
+    24227,
+    249750
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$4.99 - $119.99 per item",
+   "updated": 1792011874,
+   "developer": "Headspace for Meditation, Mindfulness and Sleep"
+  }
+ },
+ "calm": {
+  "n": 500,
+  "from": "2026-06-27",
+  "to": "2026-10-16",
+  "avg": 3.11,
+  "low_pct": 43.4,
+  "low_n": 217,
+  "themes_low": {
+   "price/subscription/paywall": 140,
+   "bugs/doesn't work/crash": 19,
+   "easy to bypass/disable": 13,
+   "permissions/battery/accessibility": 2,
+   "alarm failed/too harsh": 7,
+   "ads": 15,
+   "login/account/sync": 21,
+   "content repetitive/limited": 4,
+   "notifications nagging": 6
+  },
+  "meta": {
+   "title": "Calm - Sleep, Meditate, Relax",
+   "installs": "50,000,000+",
+   "realInstalls": 70405638,
+   "score": 4.476858,
+   "ratings": 616435,
+   "reviews": 63829,
+   "histogram": [
+    45191,
+    11684,
+    22871,
+    60910,
+    475772
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$0.99 - $399.99 per item",
+   "updated": 1791819840,
+   "developer": "Calm.com, Inc."
+  }
+ },
+ "insight": {
+  "n": 500,
+  "from": "2026-07-19",
+  "to": "2026-10-16",
+  "avg": 4.02,
+  "low_pct": 21.6,
+  "low_n": 108,
+  "themes_low": {
+   "price/subscription/paywall": 32,
+   "bugs/doesn't work/crash": 26,
+   "easy to bypass/disable": 14,
+   "permissions/battery/accessibility": 0,
+   "alarm failed/too harsh": 8,
+   "ads": 3,
+   "login/account/sync": 8,
+   "content repetitive/limited": 3,
+   "notifications nagging": 5
+  },
+  "meta": {
+   "title": "Insight Timer - Meditation App",
+   "installs": "10,000,000+",
+   "realInstalls": 11812691,
+   "score": 4.69753,
+   "ratings": 263176,
+   "reviews": 20807,
+   "histogram": [
+    9768,
+    5113,
+    5467,
+    14242,
+    228577
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$1.99 - $199.99 per item",
+   "updated": 1792075931,
+   "developer": "Insight Network Inc"
+  }
+ },
+ "wakingup": {
+  "n": 500,
+  "from": "2024-11-23",
+  "to": "2026-10-16",
+  "avg": 4.29,
+  "low_pct": 16.0,
+  "low_n": 80,
+  "themes_low": {
+   "price/subscription/paywall": 39,
+   "bugs/doesn't work/crash": 5,
+   "easy to bypass/disable": 3,
+   "permissions/battery/accessibility": 0,
+   "alarm failed/too harsh": 0,
+   "ads": 0,
+   "login/account/sync": 8,
+   "content repetitive/limited": 0,
+   "notifications nagging": 0
+  },
+  "meta": {
+   "title": "Waking Up: Meditation & Wisdom",
+   "installs": "1,000,000+",
+   "realInstalls": 2144140,
+   "score": 4.590312,
+   "ratings": 41758,
+   "reviews": 5401,
+   "histogram": [
+    3016,
+    617,
+    788,
+    1611,
+    35721
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$7.99 - $209.99 per item",
+   "updated": 1791218982,
+   "developer": "Waking Up LLC"
+  }
+ },
+ "medito": {
+  "n": 500,
+  "from": "2025-11-05",
+  "to": "2026-10-17",
+  "avg": 4.65,
+  "low_pct": 6.0,
+  "low_n": 30,
+  "themes_low": {
+   "price/subscription/paywall": 4,
+   "bugs/doesn't work/crash": 5,
+   "easy to bypass/disable": 3,
+   "permissions/battery/accessibility": 2,
+   "alarm failed/too harsh": 0,
+   "ads": 1,
+   "login/account/sync": 2,
+   "content repetitive/limited": 1,
+   "notifications nagging": 0
+  },
+  "meta": {
+   "title": "Medito: Meditation & Sleep",
+   "installs": "1,000,000+",
+   "realInstalls": 2814677,
+   "score": 4.7800455,
+   "ratings": 41092,
+   "reviews": 2197,
+   "histogram": [
+    1110,
+    457,
+    643,
+    1856,
+    36987
+   ],
+   "free": true,
+   "offersIAP": false,
+   "inAppProductPrice": null,
+   "updated": 1792048271,
+   "developer": "Medito for Mindfulness, Meditation and Sleep"
+  }
+ },
+ "balance": {
+  "n": 500,
+  "from": "2025-06-06",
+  "to": "2026-10-15",
+  "avg": 3.98,
+  "low_pct": 23.8,
+  "low_n": 119,
+  "themes_low": {
+   "price/subscription/paywall": 72,
+   "bugs/doesn't work/crash": 18,
+   "easy to bypass/disable": 4,
+   "permissions/battery/accessibility": 0,
+   "alarm failed/too harsh": 3,
+   "ads": 8,
+   "login/account/sync": 10,
+   "content repetitive/limited": 3,
+   "notifications nagging": 4
+  },
+  "meta": {
+   "title": "Balance: Meditation & Sleep",
+   "installs": "1,000,000+",
+   "realInstalls": 3686067,
+   "score": 4.6309447,
+   "ratings": 48627,
+   "reviews": 3323,
+   "histogram": [
+    2617,
+    768,
+    614,
+    3914,
+    40702
+   ],
+   "free": true,
+   "offersIAP": true,
+   "inAppProductPrice": "$4.99 - $399.99 per item",
+   "updated": 1790193086,
+   "developer": "The Mind Company"
+  }
+ },
+ "routinery": {
+  "n": 500,
+  "from": "2025-06-14",
+  "to": "2026-10-15",
+  "avg": 3.92,
+  "low_pct": 22.6,
+  "low_n": 113,
+  "themes_low": {
+   "price/subscription/paywall": 30,
+   "bugs/doesn't work/crash": 25,
+   "easy to bypass/disable": 15,
+   "permissions/battery/accessibility": 2,
+   "alarm failed/too harsh": 11,
+   "ads": 3,
+   "login/account/sync": 5,
+   "content repetitive/limited": 0,
+   "notifications nagging": 14
+  },
+  "meta": {
+   "title": "Routine Planner, Habit Tracker",
+   "installs": "1,000,000+",
+   "score": 4.4096775,
+   "ratings": 18726,
+   "inAppProductPrice": "$0.99 - $72.00 per item",
+   "updated": 1792042789
+  }
+ }
+}

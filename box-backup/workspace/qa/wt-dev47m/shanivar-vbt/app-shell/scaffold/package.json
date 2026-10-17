@@ -1,0 +1,18 @@
+{
+  "name": "shanivar-vbt-shell",
+  "version": "0.1.0",
+  "private": true,
+  "description": "REFERENCE ONLY, superseded — see ./README.md. Architecture reconciled to fully-native (../architecture-decision.md); Codex owns the real frontend build. Not the project to extend.",
+  "scripts": {
+    "sync": "cap sync android",
+    "open:android": "cap open android",
+    "build": "echo 'No local web build — see capacitor.config.ts server.url (remote-URL mode). Switch to a bundled build only if the architecture decision changes.'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}

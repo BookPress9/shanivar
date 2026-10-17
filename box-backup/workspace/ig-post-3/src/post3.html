@@ -1,0 +1,104 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:1080px;height:1350px;background:#080b09;overflow:hidden}
+.c{position:relative;width:1080px;height:1350px;overflow:hidden;
+ background:
+  radial-gradient(ellipse 46% 30% at 50% 26%,rgba(101,123,93,.20),transparent 72%),
+  radial-gradient(ellipse 55% 30% at 50% 104%,rgba(151,106,56,.13),transparent 80%),
+  radial-gradient(circle at 50% 45%,#121a13 0,#080b09 68%);
+ color:#e9e8dd;font-family:'DM Sans',sans-serif}
+svg.art{position:absolute;inset:0}
+canvas{position:absolute;inset:0}
+.eyebrow{position:absolute;top:92px;left:0;right:0;text-align:center;font-size:17px;letter-spacing:.34em;font-weight:700;color:#c7a06b;text-transform:uppercase}
+.text{position:absolute;left:0;right:0;top:908px;text-align:center}
+h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:116px;line-height:.96;letter-spacing:-.045em;margin:0;color:#ecece0}
+h1 em{color:#d9e0c5}
+.sub{margin-top:30px;font:italic 34px 'DM Serif Display',serif;color:#b2b7ac;letter-spacing:-.01em}
+.foot{position:absolute;bottom:70px;left:96px;right:96px;display:flex;justify-content:space-between;align-items:center;font-size:15px;letter-spacing:.3em;text-transform:uppercase}
+.foot b{color:#e7e9dc;font-weight:700}
+.foot span{color:#b4ab8b}
+.grain{position:absolute;inset:0;opacity:.13;mix-blend-mode:screen;pointer-events:none;
+ background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.5' filter='url(%23n)'/%3E%3C/svg%3E");background-size:300px 300px}
+.vign{position:absolute;inset:0;background:radial-gradient(ellipse 75% 70% at 50% 45%,transparent 55%,rgba(0,0,0,.55) 100%)}
+</style></head><body><div class="c">
+<canvas id="dust" width="1080" height="1350"></canvas>
+<svg class="art" width="1080" height="1350" viewBox="0 0 1080 1350">
+ <defs>
+  <radialGradient id="orb" cx="34%" cy="25%" r="78%">
+   <stop offset="0" stop-color="#cbd0ae"/><stop offset=".19" stop-color="#9da88a"/>
+   <stop offset=".42" stop-color="#68765e"/><stop offset=".69" stop-color="#29382c"/><stop offset=".9" stop-color="#0d140f"/>
+  </radialGradient>
+  <radialGradient id="glowOrb" cx="50%" cy="50%" r="50%">
+   <stop offset="0" stop-color="#95aa73" stop-opacity=".22"/><stop offset="1" stop-color="#95aa73" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="warm" cx="50%" cy="50%" r="50%">
+   <stop offset="0" stop-color="#fff2b2"/><stop offset=".25" stop-color="#efbb67" stop-opacity=".9"/>
+   <stop offset=".6" stop-color="#d79c5f" stop-opacity=".25"/><stop offset="1" stop-color="#d79c5f" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="trace" x1="0" y1="1" x2="0" y2="0">
+   <stop offset="0" stop-color="#c7a06b" stop-opacity=".55"/><stop offset="1" stop-color="#c7a06b" stop-opacity="0"/>
+  </linearGradient>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+  <clipPath id="front"><rect x="0" y="330" width="1080" height="400"/></clipPath>
+ </defs>
+ <!-- halos -->
+ <g fill="none" stroke="#7f7350" stroke-opacity=".28">
+  <circle cx="540" cy="300" r="300"/><circle cx="540" cy="300" r="232" stroke-opacity=".22"/>
+  <circle cx="540" cy="300" r="380" stroke-opacity=".12"/>
+ </g>
+ <circle cx="540" cy="300" r="260" fill="url(#glowOrb)"/>
+ <g id="spine"></g>
+ <!-- Saturn: back of ring, planet, front of ring -->
+ <g transform="rotate(-24 540 300)">
+  <ellipse cx="540" cy="300" rx="250" ry="68" fill="none" stroke="#d6ad6f" stroke-width="1.6" opacity=".55"/>
+ </g>
+ <circle cx="540" cy="300" r="116" fill="url(#orb)" style="filter:saturate(.8)"/>
+ 
+ <g transform="rotate(-24 540 300)">
+  <path d="M290 300 A250 68 0 0 0 790 300" fill="none" stroke="#d6ad6f" stroke-width="1.9"/>
+  <path d="M303 300 A237 61 0 0 0 777 300" fill="none" stroke="#d6ad6f" stroke-width=".8" opacity=".45"/>
+ </g>
+ <path d="M540 478 C 470 455, 300 420, 250 330 S 236 200, 236 168" fill="none" stroke="#e1b478" stroke-width="1.2" stroke-opacity=".7" stroke-dasharray="2 7" stroke-linecap="round"/>
+ <circle cx="236" cy="168" r="3" fill="#f1e4b8"/><circle cx="236" cy="168" r="10" fill="#dfd9b1" opacity=".18"/>
+</svg>
+<div class="eyebrow">Sadhana · Thirty-three of thirty-three</div>
+<div class="text">
+ <h1>Not the end.<br><em>The door.</em></h1>
+ <div class="sub">The next path is yours.</div>
+</div>
+<div class="foot"><b>Shanivar</b><span>Discipline is freedom.</span></div>
+<div class="vign"></div><div class="grain"></div>
+</div>
+<script>
+// seeded rng
+let s=20261016;const r=()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296};
+// Living Spine: 33 segments from base (y=905) up to under the planet (y=490)
+const NS="http://www.w3.org/2000/svg",g=document.getElementById('spine');
+const sTop=478,base=846,n=33,step=(base-sTop)/(n-1);
+const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);g.appendChild(e);return e};
+el('line',{x1:540,y1:sTop-20,x2:540,y2:base+20,stroke:'url(#trace)','stroke-width':1});
+for(let i=0;i<n;i++){ // i=0 base
+  const y=base-i*step, w= i<4? 30-i*3 : i<9? 30 : i<21? 26 : 20 - (i-21)*0.4;
+  const lit=i===n-1;
+  el('rect',{x:540-w/2,y:y-2.6,width:w,height:5.2,rx:2.6,
+    fill: lit?'#7f6038':'#362f27', 'fill-opacity': lit?.9:.45,
+    stroke: lit?'#e1b478':'#997b57','stroke-opacity': lit?1:.45,'stroke-width':.8});
+}
+// seven centres at thresholds 1,5,11,17,24,29,33 (plain markers, no labels)
+[1,5,11,17,24,29,33].forEach((t,k)=>{
+  const y=base-(t-1)*step, x=540+ (k%2?-1:1)*0;
+  const lit=t===33;
+  if(lit){el('circle',{cx:540,cy:y,r:46,fill:'url(#warm)'});}
+  el('circle',{cx:x,cy:y,r:lit?10:8,fill:'#080908',stroke: lit?'#efbb67':'#b89860','stroke-opacity':lit?1:.55,'stroke-width':1});
+  el('rect',{x:x-3.5,y:y-3.5,width:7,height:7,fill:'none',stroke:lit?'#ffe099':'#b89860','stroke-opacity':lit?1:.45,'stroke-width':.8,transform:`rotate(45 ${x} ${y})`});
+  el('circle',{cx:x,cy:y,r:lit?17:13,fill:'none',stroke:'#b89860','stroke-opacity':lit?.6:.22,'stroke-dasharray':'1.5 4','stroke-width':1});
+  if(lit) el('circle',{cx:x,cy:y,r:3,fill:'#fff2b2'});
+});
+// small readout beside base
+const t=el('text',{x:604,y:sTop+5,fill:'#c7a06b','font-family':'DM Sans','font-size':15,'letter-spacing':'3.5','font-weight':700});t.textContent='33 / 33';
+const t2=el('text',{x:476,y:sTop+5,fill:'#8e8a76','font-family':'DM Sans','font-size':13,'letter-spacing':'3','text-anchor':'end','font-weight':600});t2.textContent='OPEN';
+// dust
+const c=document.getElementById('dust').getContext('2d');
+for(let i=0;i<260;i++){const x=r()*1080,y=r()*1350,rad=r()<.92?r()*1.2+.3:r()*2.2+1.2,a=r()*.5+.08;
+ c.beginPath();c.arc(x,y,rad,0,7);c.fillStyle=`rgba(236,228,190,${a})`;c.shadowColor='rgba(240,220,160,.6)';c.shadowBlur=rad>1.5?8:0;c.fill();}
+for(let i=0;i<14;i++){const x=250+r()*330,y=170+r()*330,rad=1.4+r()*1.6;c.beginPath();c.arc(x,y,rad,0,7);c.fillStyle='rgba(245,215,120,.75)';c.shadowColor='#f5d778';c.shadowBlur=14;c.fill();}
+</script></body></html>

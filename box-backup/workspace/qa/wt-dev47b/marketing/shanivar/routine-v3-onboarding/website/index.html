@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Shanivar — Discipline is freedom. Android app in development</title>
+  <meta name="description" content="Shanivar is an Android app in development by The Hybrid Monk. Routine helps you build the day you intend to live. Sadhana trains attention until the practice can leave the phone. Join early testing.">
+  <link rel="canonical" href="https://shanivar.com/">
+  <meta name="theme-color" content="#0b0d0b">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Shanivar">
+  <meta property="og:title" content="Shanivar — Discipline is freedom.">
+  <meta property="og:description" content="An Android app in development. Routine shapes the day. Sadhana trains attention until it needs the phone less. Not released yet: join early testing.">
+  <meta property="og:url" content="https://shanivar.com/">
+  <meta property="og:image" content="https://shanivar.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Shanivar. Discipline is freedom. Android app in development.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="style.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="status-ribbon" role="note">
+    <div class="wrap"><p><strong>Not released.</strong> Android app in development. Not on the Play Store.</p></div>
+  </div>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Shanivar by The Hybrid Monk, home">
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="14" fill="#5d6a55"/><ellipse cx="32" cy="32" rx="26" ry="7.5" fill="none" stroke="#c9aa73" stroke-width="3" transform="rotate(-15 32 32)"/><circle cx="14" cy="15" r="3" fill="#d8e5b7"/></svg>
+        <span>SHANIVAR<small>BY THE HYBRID MONK</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="#routine">The app</a></li>
+          <li><a href="#day">Your day</a></li>
+          <li><a href="#sadhak">Sadhak</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a class="nav-cta" href="#early-access">Join the list</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- STANZA (ST-010) -->
+    <section class="stanza-sec dark" aria-labelledby="hero-title">
+      <div class="wrap stanza-grid">
+        <div>
+          <p class="eyebrow">Shanivar · Android app in development</p>
+          <p class="stanza">There is suffering.<br>
+            Becoming a Sadhak is a path to becoming free of it.<br>
+            Face it with the right stance. Grow through it.<br>
+            Sadhana is uncomfortable. If you cannot cope, you simply cannot. Just accept it.<br>
+            The Hybrid Monk: connected with everything, attached to nothing.<br>
+            <em>Headless. Just the body.</em></p>
+          <div class="still-box" id="still-box">
+            <p class="still-step" data-step="intro">Let attention drop from the head into the body.</p>
+            <p class="still-step" data-step="on">Feet. Hands. Weight. No pace, no count. Stay as long as you like.</p>
+            <p class="still-step" data-step="end">However that felt, it's information. Nothing to fix.</p>
+            <div class="actions" hidden id="still-controls">
+              <button class="btn btn-secondary" type="button" id="still-begin">Drop into the body</button>
+              <button class="btn btn-secondary" type="button" id="still-end" hidden>End</button>
+            </div>
+          </div>
+          <p class="fine">A contemplative aim, not a treatment. Only where you are still. Nothing is recorded.</p>
+          <h1 id="hero-title">Discipline is freedom.</h1>
+          <div class="actions doors">
+            <a class="btn btn-primary" href="#day">Build your routine</a>
+            <a class="btn btn-secondary" href="#sadhak">Become a Sadhak</a>
+          </div>
+        </div>
+        <div aria-hidden="true"><div class="saturn"><div class="orbit"><i></i></div><div class="body"></div><div class="ring"></div></div></div>
+      </div>
+    </section>
+
+    <!-- WHAT THE APP IS -->
+    <section class="section paper" id="routine" aria-labelledby="app-title">
+      <div class="wrap">
+        <h2 id="app-title">One app. Two places.</h2>
+        <div class="two-up">
+          <article class="place"><p class="eyebrow">Routine · in development</p><h3>Shape the day.</h3><p>Wake and sleep times, your activities, a wake alarm and protected time from chosen apps.</p></article>
+          <article class="place"><p class="eyebrow">Sadhana · in development</p><h3>Practise until you need the app less.</h3><p>Steady: one minute with your natural breath. Unpaced. End anytime. No streaks, points or ranks.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANNOTATED DAY -->
+    <section class="section dark" id="day" aria-labelledby="day-title">
+      <div class="wrap">
+        <p class="eyebrow">Your day in Routine</p>
+        <h2 id="day-title">Two fixed points. Two guardrails.</h2>
+        <div class="pickers" role="group" aria-label="Choose wake and sleep times">
+          <label for="wake">I usually wake around <select id="wake"><option>05:30</option><option>06:00</option><option selected>06:30</option><option>07:00</option><option>07:30</option><option>08:00</option></select></label>
+          <label for="sleep">I make room for sleep around <select id="sleep"><option>21:30</option><option>22:00</option><option selected>22:30</option><option>23:00</option><option>23:30</option></select></label>
+        </div>
+        <div class="diagram">
+          <ol class="tl" aria-label="Example day">
+            <li class="ev ev-key"><span class="mk" aria-hidden="true">1</span><time id="t-wake">06:30</time><strong>Wake alarm</strong></li>
+            <li class="ev"><time id="t-gym">07:00</time><strong>Gym</strong></li>
+            <li class="ev ev-key ev-win"><span class="mk" aria-hidden="true">2</span><time id="t-win">09:00 – 12:00</time><strong>Protection window</strong></li>
+            <li class="ev"><time id="t-read">21:00</time><strong>Read a book</strong></li>
+            <li class="ev"><time id="t-sleep">22:30</time><strong>Make room for sleep</strong></li>
+          </ol>
+          <aside class="co co-1" aria-label="1. Wake alarm">
+            <h3><span class="mk" aria-hidden="true">1</span>Wake alarm</h3>
+            <ul>
+              <li>Rings louder in steps, through Do Not Disturb.</li>
+              <li>Dismiss by walking. QR code or photo also possible.</li>
+              <li>An accessible way out, with no physical task, is always on screen.</li>
+              <li>Stops by itself after 15 minutes at most.</li>
+            </ul>
+          </aside>
+          <aside class="co co-2" aria-label="2. Protection window">
+            <h3><span class="mk" aria-hidden="true">2</span>Protection window</h3>
+            <ul>
+              <li>Choose distracting apps once. Calls and system apps can't be chosen.</li>
+              <li>Up to eight windows: every day, weekdays, weekends or custom, overnight too.</li>
+              <li>Open a chosen app and Shanivar's screen appears. A brief flash is possible.</li>
+              <li>Needs Usage access and Display over other apps.</li>
+              <li>Stop protection anytime: no network, payment, timer or practice.</li>
+              <li>Hard to undo from bed. Not impossible.</li>
+            </ul>
+          </aside>
+        </div>
+        <p class="fine">Shanivar says Active only when the phone confirms it.</p>
+      </div>
+    </section>
+
+    <!-- SADHAK PATH -->
+    <section class="section paper" id="sadhak" aria-labelledby="sadhak-title">
+      <div class="wrap">
+        <p class="eyebrow">The Sadhak path</p>
+        <h2 id="sadhak-title">Six founder principles.</h2>
+        <ol class="path">
+          <li><details><summary><span>1</span>Discipline</summary><p>In the founder's words.</p></details></li>
+          <li><details><summary><span>2</span>Keep moving forward</summary><p>In the founder's words.</p></details></li>
+          <li><details><summary><span>3</span>Learning</summary><p>In the founder's words.</p></details></li>
+          <li><details><summary><span>4</span>Curiosity</summary><p>In the founder's words.</p></details></li>
+          <li><details><summary><span>5</span>Be more present, be more in your body</summary><p>In the founder's words.</p></details></li>
+          <li><details><summary><span>6</span>Walk towards your purpose</summary><p>In the founder's words.</p></details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section panel" id="faq" aria-labelledby="faq-title">
+      <div class="wrap"><div class="faq faq-dark">
+        <h2 id="faq-title">Straight answers.</h2>
+        <details><summary>Can I download Shanivar now?</summary><p>No. It is in development for Android. No Play Store listing yet.</p></details>
+        <details><summary>Is it on iPhone?</summary><p>No. Android only.</p></details>
+        <details><summary>Can it lock me out of my phone?</summary><p>No. Stop protection anytime. Calls and system apps are never chosen.</p></details>
+        <details><summary>What will it cost?</summary><p>Not decided. Never a fee to end protection early.</p></details>
+      </div></div>
+    </section>
+
+    <!-- EARLY ACCESS -->
+    <section class="section dark" id="early-access" aria-labelledby="ea-title">
+      <div class="wrap two-col">
+        <div>
+          <p class="eyebrow">Early access</p>
+          <h2 id="ea-title" style="margin:.7rem 0 1rem">Not released yet.</h2>
+          <ul class="ticks">
+            <li>Android only, version 8.0 or newer.</li>
+            <li>Adults (18+) first.</li>
+            <li>Early builds can have bugs.</li>
+          </ul>
+        </div>
+        <!-- Waitlist form, collected by Netlify Forms (free tier). Approved by the founder for launch on 6 Oct 2026.
+             The privacy notice is still a draft pending legal review, which the notice below says plainly. -->
+        <form class="signup" id="early-access-form" name="early-access" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="early-access">
+          <p hidden><label>Leave this empty: <input name="bot-field"></label></p>
+          <!-- Funnel attribution: site.js copies utm_source / utm_medium / utm_campaign from the page URL into this field. -->
+          <input type="hidden" id="ea-source" name="source" value="direct">
+          <div class="field">
+            <label for="ea-email">Email address</label>
+            <input id="ea-email" name="email" type="email" autocomplete="email" required aria-describedby="ea-email-hint">
+            <span class="hint" id="ea-email-hint">Used only to invite you to early testing.</span>
+          </div>
+          <div class="field">
+            <label for="ea-phone">Android phone model <span style="font-weight:400">(optional)</span></label>
+            <input id="ea-phone" name="phone_model" type="text" autocomplete="off" aria-describedby="ea-phone-hint">
+            <span class="hint" id="ea-phone-hint">For example: Samsung Galaxy A54. Alarms and app protection behave differently across phone makers.</span>
+          </div>
+          <div class="check">
+            <input id="ea-adult" name="adult_confirmed" value="yes" type="checkbox" required>
+            <label for="ea-adult">I am 18 or older and I understand Shanivar is unreleased test software.</label>
+          </div>
+          <button class="btn btn-primary" type="submit">Join the early-access list</button>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          <p class="hint draft-notice" style="font-size:.88rem;color:var(--muted)"><strong>Draft privacy notice:</strong> our <a href="privacy.html">privacy notice</a> is a draft pending legal review. We use your email only to invite you to early testing, never sell it, and will delete it if you reply to any invite and ask.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy (draft)</a></li>
+        <li><a href="#early-access">Early access</a></li>
+      </ul>
+      <p>Shanivar by The Hybrid Monk. Pre-launch draft. Android app in development, not yet released.</p>
+    </div>
+  </footer>
+</body>
+</html>

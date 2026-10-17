@@ -1,0 +1,523 @@
+1. Psychol Bull. 2007 Jan;133(1):65-94. doi: 10.1037/0033-2909.133.1.65.
+
+The nature of procrastination: a meta-analytic and theoretical review of 
+quintessential self-regulatory failure.
+
+Steel P(1).
+
+Author information:
+(1)Human Resources and Organizational Dynamics, University of Calgary, Calgary, 
+AB, Canada. Piers.Steel@Haskayne.UCalgary.ca
+
+Procrastination is a prevalent and pernicious form of self-regulatory failure 
+that is not entirely understood. Hence, the relevant conceptual, theoretical, 
+and empirical work is reviewed, drawing upon correlational, experimental, and 
+qualitative findings. A meta-analysis of procrastination's possible causes and 
+effects, based on 691 correlations, reveals that neuroticism, rebelliousness, 
+and sensation seeking show only a weak connection. Strong and consistent 
+predictors of procrastination were task aversiveness, task delay, self-efficacy, 
+and impulsiveness, as well as conscientiousness and its facets of self-control, 
+distractibility, organization, and achievement motivation. These effects prove 
+consistent with temporal motivation theory, an integrative hybrid of expectancy 
+theory and hyperbolic discounting. Continued research into procrastination 
+should not be delayed, especially because its prevalence appears to be growing.
+
+(c) 2007 APA, all rights reserved.
+
+DOI: 10.1037/0033-2909.133.1.65
+PMID: 17201571 [Indexed for MEDLINE]
+
+
+2. Br J Gen Pract. 2012 Dec;62(605):664-6. doi: 10.3399/bjgp12X659466.
+
+Making health habitual: the psychology of 'habit-formation' and general 
+practice.
+
+Gardner B(1), Lally P, Wardle J.
+
+Author information:
+(1)Health Behaviour Research Centre, Department of Epidemiology and Public 
+Health, University College London, London, UK. b.gardnersood@ucl.ac.uk
+
+Comment in
+    Br J Gen Pract. 2013 Feb;63(607):70-1. doi: 10.3399/bjgp13X662966.
+
+DOI: 10.3399/bjgp12X659466
+PMCID: PMC3505409
+PMID: 23211256 [Indexed for MEDLINE]
+
+
+3. Science. 2014 Jul 4;345(6192):75-7. doi: 10.1126/science.1250830.
+
+Social psychology. Just think: the challenges of the disengaged mind.
+
+Wilson TD(1), Reinhard DA(2), Westgate EC(2), Gilbert DT(3), Ellerbeck N(2), 
+Hahn C(2), Brown CL(2), Shaked A(2).
+
+Author information:
+(1)Department of Psychology, University of Virginia, Charlottesville, VA, USA. 
+tdw@virginia.edu.
+(2)Department of Psychology, University of Virginia, Charlottesville, VA, USA.
+(3)Department of Psychology, Harvard University, Cambridge, MA, USA.
+
+In 11 studies, we found that participants typically did not enjoy spending 6 to 
+15 minutes in a room by themselves with nothing to do but think, that they 
+enjoyed doing mundane external activities much more, and that many preferred to 
+administer electric shocks to themselves instead of being left alone with their 
+thoughts. Most people seem to prefer to be doing something rather than nothing, 
+even if that something is negative.
+
+Copyright © 2014, American Association for the Advancement of Science.
+
+DOI: 10.1126/science.1250830
+PMCID: PMC4330241
+PMID: 24994650 [Indexed for MEDLINE]
+
+
+4. Perspect Psychol Sci. 2016 Jul;11(4):546-73. doi: 10.1177/1745691616652873.
+
+A Multilab Preregistered Replication of the Ego-Depletion Effect.
+
+Hagger MS(1), Chatzisarantis NLD(2), Alberts H(3), Anggono CO(4), Batailler 
+C(5), Birt AR(6), Brand R(7), Brandt MJ(8), Brewer G, Bruyneel S(9), Calvillo 
+DP, Campbell WK, Cannon PR, Carlucci M, Carruth NP, Cheung T, Crowell A, De 
+Ridder DTD, Dewitte S(9), Elson M, Evans JR, Fay BA, Fennis BM, Finley A, 
+Francis Z, Heise E, Hoemann H, Inzlicht M, Koole SL, Koppel L, Kroese F, Lange 
+F, Lau K, Lynch BP, Martijn C(3), Merckelbach H(3), Mills NV, Michirev A(3), 
+Miyake A, Mosser AE, Muise M(6), Muller D(5), Muzi M(7), Nalis D, Nurwanti R(4), 
+Otgaar H(3), Philipp MC, Primoceri P(10), Rentzsch K, Ringos L, Schlinkert C, 
+Schmeichel BJ, Schoch SF(10), Schrama M, Schütz A, Stamos A(9), Tinghög G, 
+Ullrich J(10), vanDellen M, Wimbarti S(11), Wolff W(7), Yusainy C(4), Zerhouni 
+O(5), Zwienenberg M.
+
+Author information:
+(1)Curtin University, Australia martin.hagger@curtin.edu.au.
+(2)Curtin University, Australia
+(3)Maastricht University, the Netherlands
+(4)Brawijaya University, Indonesia
+(5)Université Grenoble-Alpes, France
+(6)Mount Saint Vincent University, Canada
+(7)Potsdam University, Germany
+(8)Tilburg University, the Netherlands
+(9)KU Leuven, Belgium
+(10)University of Zurich, Switzerland
+(11)Gadjah Mada University, Indonesia
+
+Comment in
+    Front Psychol. 2016 Aug 03;7:1155. doi: 10.3389/fpsyg.2016.01155.
+    Front Psychol. 2017 Feb 28;8:273. doi: 10.3389/fpsyg.2017.00273.
+
+Good self-control has been linked to adaptive outcomes such as better health, 
+cohesive personal relationships, success in the workplace and at school, and 
+less susceptibility to crime and addictions. In contrast, self-control failure 
+is linked to maladaptive outcomes. Understanding the mechanisms by which 
+self-control predicts behavior may assist in promoting better regulation and 
+outcomes. A popular approach to understanding self-control is the strength or 
+resource depletion model. Self-control is conceptualized as a limited resource 
+that becomes depleted after a period of exertion resulting in self-control 
+failure. The model has typically been tested using a sequential-task 
+experimental paradigm, in which people completing an initial self-control task 
+have reduced self-control capacity and poorer performance on a subsequent task, 
+a state known as ego depletion Although a meta-analysis of ego-depletion 
+experiments found a medium-sized effect, subsequent meta-analyses have 
+questioned the size and existence of the effect and identified instances of 
+possible bias. The analyses served as a catalyst for the current Registered 
+Replication Report of the ego-depletion effect. Multiple laboratories (k = 23, 
+total N = 2,141) conducted replications of a standardized ego-depletion protocol 
+based on a sequential-task paradigm by Sripada et al. Meta-analysis of the 
+studies revealed that the size of the ego-depletion effect was small with 95% 
+confidence intervals (CIs) that encompassed zero (d = 0.04, 95% CI [-0.07, 
+0.15]. We discuss implications of the findings for the ego-depletion effect and 
+the resource depletion model of self-control.
+
+© The Author(s) 2016.
+
+DOI: 10.1177/1745691616652873
+PMID: 27474142 [Indexed for MEDLINE]
+
+
+5. Pers Soc Psychol Rev. 2012 Feb;16(1):76-99. doi: 10.1177/1088868311418749.
+Epub  2011 Aug 30.
+
+Taking stock of self-control: a meta-analysis of how trait self-control relates 
+to a wide range of behaviors.
+
+de Ridder DT(1), Lensvelt-Mulders G, Finkenauer C, Stok FM, Baumeister RF.
+
+Author information:
+(1)Utrecht University, Utrecht, Netherlands. D.T.D.deRidder@uu.nl
+
+Given assertions of the theoretical, empirical, and practical importance of 
+self-control, this meta-analytic study sought to review evidence concerning the 
+relationship between dispositional self-control and behavior. The authors 
+provide a brief overview over prominent theories of self-control, identifying 
+implicit assumptions surrounding the effects of self-control that warrant 
+empirical testing. They report the results of a meta-analysis of 102 studies 
+(total N = 32,648) investigating the behavioral effects of self-control using 
+the Self-Control Scale, the Barratt Impulsiveness Scale, and the Low 
+Self-Control Scale. A small to medium positive effect of self-control on 
+behavior was found for the three scales. Only the Self-Control Scale allowed for 
+a fine-grained analysis of conceptual moderators of the self-control behavior 
+relation. Specifically, self-control (measured by the Self-Control Scale) 
+related similarly to the performance of desired behaviors and the inhibition of 
+undesired behaviors, but its effects varied dramatically across life domains 
+(e.g., achievement, adjustment). In addition, the associations between 
+self-control and behavior were significantly stronger for automatic (as compared 
+to controlled) behavior and for imagined (as compared to actual) behavior.
+
+DOI: 10.1177/1088868311418749
+PMID: 21878607 [Indexed for MEDLINE]
+
+
+6. Psychol Bull. 2010 Jul;136(4):576-600. doi: 10.1037/a0019712.
+
+Distress tolerance and psychopathological symptoms and disorders: a review of 
+the empirical literature among adults.
+
+Leyro TM(1), Zvolensky MJ, Bernstein A.
+
+Author information:
+(1)Department of Psychology, University of Vermont, Burlington, VT 05405-0134, 
+USA. michael.zvolensky@uvm.edu
+
+We review theory and empirical study of distress tolerance, an emerging risk 
+factor candidate for various forms of psychopathology. Despite the long-standing 
+interest in and promise of work on distress tolerance for understanding adult 
+psychopathology, there has not been a comprehensive review of the extant 
+empirical literature focused on the construct. As a result, a comprehensive 
+synthesis of theoretical and empirical scholarship on distress tolerance, 
+including integration of extant research on the relations between distress 
+tolerance and psychopathology, is lacking. Inspection of the scientific 
+literature indicates that there are a number of promising ways to conceptualize 
+and measure distress tolerance, as well as documented relations between distress 
+tolerance factors and psychopathological symptoms and disorders. Although 
+promising, there also is notable conceptual and operational heterogeneity across 
+the distress tolerance literature. Moreover, a number of basic questions remain 
+unanswered regarding the associations between distress tolerance and other risk 
+and protective factors and processes, as well as its putative role(s) in 
+vulnerability for and resilience to psychopathology. Thus, the current article 
+provides a comprehensive review of past and contemporary theory and research and 
+proposes key areas for future empirical study of this construct.
+
+DOI: 10.1037/a0019712
+PMCID: PMC2891552
+PMID: 20565169 [Indexed for MEDLINE]
+
+
+7. Psychol Addict Behav. 2009 Dec;23(4):666-71. doi: 10.1037/a0017127.
+
+Surfing the urge: brief mindfulness-based intervention for college student 
+smokers.
+
+Bowen S(1), Marlatt A.
+
+Author information:
+(1)Addictive Behaviors Research Center, Department of Psychology, University of 
+Washington, Seattle, WA 98195-1525, USA. swbowen@u.washington.edu
+
+The current study investigates effects of a brief mindfulness-based instruction 
+set, based on Marlatt's "urge surfing" technique (Marlatt & Gordon, 1985), on 
+smoking-related urges and behavior. Undergraduate smokers (N = 123) who were 
+interested in changing their smoking, but not currently involved in a cessation 
+program, participated in a cue exposure paradigm designed to elicit urges to 
+smoke. They were randomly assigned either to a group receiving brief 
+mindfulness-based instructions or to a no-instruction control group. Results 
+suggest that groups did not differ significantly on measures of urges. However, 
+those in the mindfulness group smoked significantly fewer cigarettes over a 
+7-day follow-up period as compared to those in the control group. These findings 
+suggest that the mindfulness techniques may not initially reduce urges to smoke 
+but may change the response to urges. The study provides preliminary data for 
+future studies examining both mechanisms and effectiveness of mindfulness-based 
+interventions for cigarette smoking.
+
+Copyright 2009 APA
+
+DOI: 10.1037/a0017127
+PMID: 20025372 [Indexed for MEDLINE]
+
+
+8. J Exp Psychol Hum Percept Perform. 2015 Aug;41(4):893-897. doi: 
+10.1037/xhp0000100. Epub 2015 Jun 29.
+
+The attentional cost of receiving a cell phone notification.
+
+Stothart C(1), Mitchum A(1), Yehnert C(1).
+
+Author information:
+(1)Department of Psychology, Florida State University.
+
+It is well documented that interacting with a mobile phone is associated with 
+poorer performance on concurrently performed tasks because limited attentional 
+resources must be shared between tasks. However, mobile phones generate auditory 
+or tactile notifications to alert users of incoming calls and messages. Although 
+these notifications are generally short in duration, they can prompt 
+task-irrelevant thoughts, or mind wandering, which has been shown to damage task 
+performance. We found that cellular phone notifications alone significantly 
+disrupted performance on an attention-demanding task, even when participants did 
+not directly interact with a mobile device during the task. The magnitude of 
+observed distraction effects was comparable in magnitude to those seen when 
+users actively used a mobile phone, either for voice calls or text messaging.
+
+(c) 2015 APA, all rights reserved).
+
+DOI: 10.1037/xhp0000100
+PMID: 26121498 [Indexed for MEDLINE]
+
+
+9. Ann N Y Acad Sci. 2011 Oct;1235:30-43. doi: 10.1111/j.1749-6632.2011.06201.x.
+
+Future self-continuity: how conceptions of the future self transform 
+intertemporal choice.
+
+Hershfield HE(1).
+
+Author information:
+(1)New York University, USA. h-ersnerhershfield@kellogg.northwestern.edu
+
+With life expectancy dramatically increasing throughout much of the world, 
+people have to make choices with a longer future in mind than they ever had to 
+before. Yet, many indicators suggest that undersaving for the long term often 
+occurs: in America, for instance, many individuals will not be able to maintain 
+their preretirement standard of living in retirement. Previous research has 
+tried to understand problems with intertemporal choice by focusing on the ways 
+in which people treat present and future rewards. In this paper, the author 
+reviews a burgeoning body of theoretical and empirical work that takes a 
+different viewpoint, one that focuses on how perceptions of the self over time 
+can dramatically affect decision making. Specifically, when the future self 
+shares similarities with the present self, when it is viewed in vivid and 
+realistic terms, and when it is seen in a positive light, people are more 
+willing to make choices today that may benefit them at some point in the years 
+to come.
+
+© 2011 New York Academy of Sciences.
+
+DOI: 10.1111/j.1749-6632.2011.06201.x
+PMCID: PMC3764505
+PMID: 22023566 [Indexed for MEDLINE]
+
+Conflict of interest statement: Conflicts of interest The author declares no 
+conflicts of interest.
+
+
+10. J Mark Res. 2011 Nov;48:S23-S37. doi: 10.1509/jmkr.48.SPL.S23.
+
+INCREASING SAVING BEHAVIOR THROUGH AGE-PROGRESSED RENDERINGS OF THE FUTURE SELF.
+
+Hershfield HE(1), Goldstein DG(2), Sharpe WF(3), Fox J(4), Yeykelis L(5), 
+Carstensen LL(6), Bailenson JN(7).
+
+Author information:
+(1)Post-doctoral Fellow and Visiting Assistant Professor at the Kellogg School 
+of Management, Northwestern University, 2001 Sheridan Rd, Evanston, IL 60208, 
+USA.
+(2)Assistant Professor of Marketing at London Business School and Principal 
+Research Scientist at Yahoo Research, 110 West 40 Street, 17 Floor, New York, NY 
+10028, USA.
+(3)STANCO 25 Professor of Finance, Emeritus at Stanford University Graduate 
+School of Business, 518 Memorial Way, Stanford, CA 94305-5015, USA.
+(4)Assistant Professor of Communication at The Ohio State University, 3016 Derby 
+Hall, 154 North Oval Mall, Columbus, OH, 43210-1339.
+(5)Student in the Communication Department at Stanford University, 420 Serra 
+Mall, Stanford, CA 94305, USA.
+(6)Fairleigh Dickinson, Jr. Professor of Public Policy and Professor of 
+Psychology at Stanford University, Department of Psychology, 450 Serra Mall, 
+Stanford, CA 94305, USA.
+(7)Associate Professor of Communication at Stanford University Department of 
+Communication, 420 Serra Mall, Stanford, CA 94305, USA.
+
+Many people fail to save what they need to for retirement (Munnell, Webb, and 
+Golub-Sass 2009). Research on excessive discounting of the future suggests that 
+removing the lure of immediate rewards by pre-committing to decisions, or 
+elaborating the value of future rewards can both make decisions more 
+future-oriented. In this article, we explore a third and complementary route, 
+one that deals not with present and future rewards, but with present and future 
+selves. In line with thinkers who have suggested that people may fail, through a 
+lack of belief or imagination, to identify with their future selves (Parfit 
+1971; Schelling 1984), we propose that allowing people to interact with 
+age-progressed renderings of themselves will cause them to allocate more 
+resources toward the future. In four studies, participants interacted with 
+realistic computer renderings of their future selves using immersive virtual 
+reality hardware and interactive decision aids. In all cases, those who 
+interacted with virtual future selves exhibited an increased tendency to accept 
+later monetary rewards over immediate ones.
+
+DOI: 10.1509/jmkr.48.SPL.S23
+PMCID: PMC3949005
+PMID: 24634544
+
+
+11. J Consult Clin Psychol. 1996 Dec;64(6):1152-68. doi: 
+10.1037//0022-006x.64.6.1152.
+
+Experimental avoidance and behavioral disorders: a functional dimensional 
+approach to diagnosis and treatment.
+
+Hayes SC(1), Wilson KG, Gifford EV, Follette VM, Strosahl K.
+
+Author information:
+(1)Department of Psychology, University of Nevada, Reno 89557-0062, USA.
+
+Syndromal classification is a well-developed diagnostic system but has failed to 
+deliver on its promise of the identification of functional pathological 
+processes. Functional analysis is tightly connected to treatment but has failed 
+to develop testable, replicable classification systems. Functional diagnostic 
+dimensions are suggested as a way to develop the functional classification 
+approach, and experiential avoidance is described as 1 such dimension. A wide 
+range of research is reviewed showing that many forms of psychopathology can be 
+conceptualized as unhealthy efforts to escape and avoid emotions, thoughts, 
+memories, and other private experiences. It is argued that experiential 
+avoidance, as a functional diagnostic dimension, has the potential to integrate 
+the efforts and findings of researchers from a wide variety of theoretical 
+paradigms, research interests, and clinical domains and to lead to testable new 
+approaches to the analysis and treatment of behavioral disorders.
+
+DOI: 10.1037//0022-006x.64.6.1152
+PMID: 8991302 [Indexed for MEDLINE]
+
+
+12. Br J Soc Psychol. 2008 Sep;47(Pt 3):373-95. doi: 10.1348/014466607X267010.
+Epub  2007 Dec 18.
+
+Mechanisms of implementation intention effects: the role of goal intentions, 
+self-efficacy, and accessibility of plan components.
+
+Webb TL(1), Sheeran P.
+
+Author information:
+(1)Department of Psychology, University of Sheffield, Sheffield, UK. 
+t.webb@sheffield.ac.uk
+
+Although considerable evidence suggests that forming an implementation intention 
+increases rates of goal attainment, less research has examined the mechanisms 
+that underlie these effects. The present research investigated the role of 
+deliberative processes and accessibility of plan components as explanation for 
+the relationship between implementation intentions and goal achievement. Study 1 
+used meta-analysis to quantify the effects of implementation intentions on goal 
+intentions and self-efficacy. The results of 66 tests suggested that forming 
+implementation intentions had negligible effects on both variables. Study 2 
+focused on the accessibility of plan components and found that the effect of 
+implementation intentions on goal achievement was mediated simultaneously by the 
+accessibility of specified situational cues and by the strength of the 
+association forged between these cues and the intended response. These findings 
+suggest that implementation intention effects are not explained by increased 
+deliberation, but rather accrue from heightened accessibility of specified 
+opportunities and strong opportunity-response links.
+
+DOI: 10.1348/014466607X267010
+PMID: 18096108 [Indexed for MEDLINE]
+
+
+13. Acta Psychol (Amst). 2022 Oct;230:103717. doi: 10.1016/j.actpsy.2022.103717. 
+Epub 2022 Aug 22.
+
+Reexamining the "brain drain" effect: A replication of Ward et al. (2017).
+
+Ruiz Pardo AC(1), Minda JP(2).
+
+Author information:
+(1)Department of Psychology & The Brain and Mind Institute, Western 
+Interdisciplinary Research Building, Western University, London, ON N6A 5C2, 
+Canada. Electronic address: aruizpar@uwo.ca.
+(2)Department of Psychology & The Brain and Mind Institute, Western 
+Interdisciplinary Research Building, Western University, London, ON N6A 5C2, 
+Canada. Electronic address: jpminda@uwo.ca.
+
+The present study was a pre-registered direct replication of Ward et al.'s 
+(2017) second experiment (OSF pre-registration found at: https://osf.io/5fq4r). 
+This replication assigned both smartphone location (on desk, in pocket/bag, or 
+outside of the testing room) and smartphone power (on, or off) for a total of 
+six conditions. Participants completed an automated operation span (OSpan) task, 
+a Cue-Dependent Go/No-Go task, and the smartphone attachment and dependency 
+inventory. It was hypothesized that performance on an attention-demanding task 
+(i.e., the OSpan task) would be worse for those in closer proximity to their 
+smartphone (on desk) and that those with greater smartphone attachment and 
+dependency would have a larger "brain drain" effect. Using the same tasks and 
+conditions as in Ward et al.'s (2017) second experiment, the present study found 
+that the "brain drain" effect did not replicate: there was no difference between 
+smartphone location conditions on performance on either the o-span task or the 
+go/no-go task. These findings demonstrate that the mere presence of one's 
+smartphone may not be enough to affect cognitive performance. Understanding 
+these effects is crucial in a time where smartphones are a basic necessity.
+
+Copyright © 2022 The Authors. Published by Elsevier B.V. All rights reserved.
+
+DOI: 10.1016/j.actpsy.2022.103717
+PMID: 36007374 [Indexed for MEDLINE]
+
+Conflict of interest statement: Declaration of competing interest None declared.
+
+
+14. Psychol Bull. 2006 Mar;132(2):249-68. doi: 10.1037/0033-2909.132.2.249.
+
+Does changing behavioral intentions engender behavior change? A meta-analysis of 
+the experimental evidence.
+
+Webb TL(1), Sheeran P.
+
+Author information:
+(1)School of Psychological Sciences, The University of Manchester, Manchester, 
+United Kingdom. thomas.webb@manchester.ac.uk
+
+Numerous theories in social and health psychology assume that intentions cause 
+behaviors. However, most tests of the intention- behavior relation involve 
+correlational studies that preclude causal inferences. In order to determine 
+whether changes in behavioral intention engender behavior change, participants 
+should be assigned randomly to a treatment that significantly increases the 
+strength of respective intentions relative to a control condition, and 
+differences in subsequent behavior should be compared. The present research 
+obtained 47 experimental tests of intention-behavior relations that satisfied 
+these criteria. Meta-analysis showed that a medium-to-large change in intention 
+(d = 0.66) leads to a small-to-medium change in behavior (d = 0.36). The review 
+also identified several conceptual factors, methodological features, and 
+intervention characteristics that moderate intention-behavior consistency.
+
+DOI: 10.1037/0033-2909.132.2.249
+PMID: 16536643 [Indexed for MEDLINE]
+
+
+15. Wiley Interdiscip Rev Cogn Sci. 2019 Jul;10(4):e1492. doi: 10.1002/wcs.1492. 
+Epub 2019 Jan 14.
+
+To do it now or later: The cognitive mechanisms and neural substrates underlying 
+procrastination.
+
+Zhang S(1), Liu P(2), Feng T(1)(3).
+
+Author information:
+(1)Faculty of Psychology, Southwest University, Chongqing, China.
+(2)Department of Psychology, University of Florida, Gainesville, Florida.
+(3)Key Laboratory of Cognition and Personality, Ministry of Education, Southwest 
+University, Chongqing, China.
+
+Procrastination, the voluntary and irrational delay of an intended course of 
+action, has troubled individuals and society extensively. Various studies have 
+been conducted to explain why people procrastinate and to explore the neural 
+substrates of procrastination. First, research has identified many contributing 
+factors to procrastination. Specifically, task aversiveness, future incentives, 
+and time delay of these incentives have been confirmed as three prominent task 
+characteristics that affect procrastination. On the other hand, self-control and 
+impulsivity have been identified as two most predictive traits of 
+procrastination. After identifying contributing factors, two important theories 
+proposed to explain procrastination by integrating these factors are reviewed. 
+Specifically, an emotion-regulation perspective regards procrastination as a 
+form of self-regulation failure that reflects giving priority to short-term mood 
+repair over achieving long-term goals. However, temporal motivation theory 
+explains why people's motivation to act increases when time approaches a 
+deadline with time discounting effect. To further specify the cognitive 
+mechanism underlying procrastination, this study proposes a novel theoretical 
+model which clarifies how the motivation to act and the motivation to avoid vary 
+differently when delaying a task, explaining why people decide not to act now 
+but are willing to act in the future. Of note, few recent studies have 
+investigated neural correlates of procrastination. Specifically, it was revealed 
+that individual differences in procrastination are correlated with structural 
+abnormalities and altered spontaneous metabolism in the parahippocampal cortex 
+and the prefrontal cortex, which might contribute to procrastination through 
+episodic future thinking or memory and emotion regulation, respectively. This 
+article is categorized under: Economics > Individual Decision Making Psychology 
+> Theory and Methods Psychology > Emotion and Motivation Psychology > Reasoning 
+and Decision Making.
+
+© 2019 Wiley Periodicals, Inc.
+
+DOI: 10.1002/wcs.1492
+PMID: 30638308 [Indexed for MEDLINE]

@@ -1,0 +1,128 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Environment files (never commit secrets). Broadened after backend/.env was found
+# committed and pushed in this repo's predecessor — match every .env variant and
+# opt specific safe templates back in, rather than listing variants one at a time.
+.env
+.env.*
+!.env.example
+!.env.template
+!*.env.example
+!*.env.template
+
+# Android build outputs and signing material
+.gradle/
+local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Archived material from earlier project phases — contains live credentials
+# (a Render API key, old production env files) and a nested git repo.
+archive_deployment/
+archive_auxiliary/
+
+# Marketing working directory: 115MB of video/image assets and a bundled ffmpeg
+# binary. The strategy documents in it are tracked explicitly instead.
+marketing/shanivar/*
+!marketing/shanivar/*.md
+# Keep the new editorial plan, copy, review exports and QA evidence reviewable.
+# Future rendered campaign media belongs in assets and remains excluded.
+!marketing/shanivar/month-02/
+marketing/shanivar/month-02/assets/
+!marketing/shanivar/execution-2026-09-30/
+marketing/shanivar/execution-2026-09-30/**/*.jpg
+marketing/shanivar/execution-2026-09-30/*.zip
+# Routine V3 onboarding pack and pre-launch website (text, HTML, CSS only).
+!marketing/shanivar/routine-v3-onboarding/
+marketing/shanivar/routine-v3-onboarding/website/.netlify/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+/coverage
+/test-results
+/playwright-report
+
+# Supabase local
+supabase/.branches
+supabase/.temp
+
+# Antigravity CLI
+.antigravity/
+
+# Claude Code local settings
+.claude/
+
+# ---------------------------------------------------------------------------
+# Excluded from the Shanivar branch. All of this still exists on disk — these
+# lines keep it out of the repo, not off the machine. Delete a line to re-admit.
+# ---------------------------------------------------------------------------
+
+# Legacy Hybrid Monk web stack (Next.js app + its root dev orchestrator),
+# superseded by the native Android app. Shanivar is backend/ + android-app/.
+/frontend/
+/package.json
+/package-lock.json
+/run_local.js
+/run_real.js
+
+# Local n8n social-automation workspace: ~1,580 files including a .n8n-local
+# cache. A separate concern from the product, and not part of any build.
+automation/
+
+# Vendored agent skill copies, present at two diverging paths and regenerable.
+backend/.agents/
+backend/agent/
+backend/skills-lock.json
+
+# Deploy configs for platforms we don't use. Production is Render + the
+# Supabase pooler — see docs/decisions/0004-supavisor-pooler-required.md.
+backend/Dockerfile
+backend/.dockerignore
+backend/railway.json
+
+# Scratch harnesses and captured output. The real suite is backend/tests/.
+backend/puretest.js
+backend/test_out.txt
+
+# Scratch extraction from source PDFs (page images, raw text dumps). Research outputs
+# belong in research/ as bibliography and original synthesis - never the extracted
+# pages themselves, which would put copyrighted material in the repo permanently.
+tmp/
+
+# Retain source UGC pilot scripts and queue; exclude future generated media.
+!marketing/shanivar/ugc-pilot-2026-09-30/
+marketing/shanivar/ugc-pilot-2026-09-30/assets/
+!marketing/shanivar/research-led-pilot/
+marketing/shanivar/research-led-pilot/assets/
+
+# Netlify local state (never commit)
+.netlify/

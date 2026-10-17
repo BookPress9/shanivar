@@ -1,0 +1,58 @@
+{
+ "tot": {
+  "MO": 65,
+  "GAP": 132,
+  "AP": 76,
+  "RD": 37,
+  "EMU": 21,
+  "PEND": 12
+ },
+ "per_epic": {
+  "A \u2014 Strategy & measurement": {
+   "MO": 3,
+   "GAP": 1
+  },
+  "B \u2014 Protection": {
+   "AP": 19,
+   "RD": 17,
+   "MO": 7,
+   "GAP": 11,
+   "EMU": 12
+  },
+  "C \u2014 Routine": {
+   "AP": 13,
+   "RD": 8,
+   "GAP": 23,
+   "MO": 6,
+   "PEND": 2,
+   "EMU": 9
+  },
+  "D \u2014 Sadhana": {
+   "MO": 10,
+   "AP": 24,
+   "RD": 3,
+   "GAP": 22
+  },
+  "E \u2014 Security, privacy & reliability": {
+   "MO": 29,
+   "GAP": 55,
+   "AP": 20,
+   "RD": 3,
+   "PEND": 10
+  },
+  "F \u2014 QA & release": {
+   "GAP": 11,
+   "RD": 6,
+   "MO": 6
+  },
+  "G \u2014 CS & growth": {
+   "GAP": 9,
+   "MO": 3
+  },
+  "No epic": {
+   "MO": 1
+  }
+ },
+ "derived": 21,
+ "missing": []
+}

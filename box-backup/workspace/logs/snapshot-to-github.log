@@ -1,0 +1,86 @@
+=== snapshot-to-github 2026-10-17 22:54 CEST ===
+visibility: PRIVATE
+DRY: git push -q origin refs/heads/dev-38-outbox-gaps:refs/heads/dev-38-outbox-gaps
+branch dev-38-outbox-gaps: pushed
+branch dev-39-techniques-safety: up-to-date
+DRY: git push -q origin refs/heads/dev-42-schema-hygiene:refs/heads/dev-42-schema-hygiene
+branch dev-42-schema-hygiene: pushed
+DRY: git push -q origin refs/heads/dev-45-sync-engine:refs/heads/dev-45-sync-engine
+branch dev-45-sync-engine: pushed
+DRY: git push -q origin refs/heads/dev-47-sync-wiring:refs/heads/dev-47-sync-wiring
+branch dev-47-sync-wiring: pushed
+DRY: git push -q origin refs/heads/dev-54-sadhana-record-schema:refs/heads/dev-54-sadhana-record-schema
+branch dev-54-sadhana-record-schema: pushed
+DRY: git push -q origin refs/heads/dev-89-breathing-safety:refs/heads/dev-89-breathing-safety
+branch dev-89-breathing-safety: pushed
+DRY: git push -q origin refs/tags/backup/dev39-3471087:refs/tags/backup/dev39-3471087
+tag backup/dev39-3471087: pushed
+tag sadhana-visual-v1: up-to-date
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'box@grok-bot-vm-456952129.(none)')
+DRY: git -C /workspace/qa/wt-dev47m push -q origin +:refs/heads/wip/detached-wt-dev47m
+fatal: : not a valid SHA1
+fatal: Needed a single revision
+wip/detached-wt-dev47m: pushed 
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'box@grok-bot-vm-456952129.(none)')
+DRY: git -C /workspace/scratch-dev47x45 push -q origin +:refs/heads/wip/detached-scratch-dev47x45
+fatal: : not a valid SHA1
+fatal: Needed a single revision
+wip/detached-scratch-dev47x45: pushed 
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'box@grok-bot-vm-456952129.(none)')
+DRY: git -C /workspace/shanivar-v3-dev89 push -q origin +:refs/heads/wip/dev-89-breathing-safety
+fatal: : not a valid SHA1
+fatal: Needed a single revision
+wip/dev-89-breathing-safety: pushed 
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'box@grok-bot-vm-456952129.(none)')
+DRY: git -C /workspace/shanivar-app push -q origin +:refs/heads/wip/shanivar-app-main
+fatal: : not a valid SHA1
+fatal: Needed a single revision
+wip/shanivar-app-main: pushed 

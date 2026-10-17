@@ -1,0 +1,6 @@
+# 10. Links to implementation, testing and launch tickets
+<callout icon="🔗" color="gray_bg">
+	**Populated from the Jira backlog step (17 Oct 2026, `/workspace/pm/backlog-2026-10-17.md`).** DEV is a service-desk project with no Epic type, so epics are "EPIC:" tasks and links are comments. Existing tickets keep their Jira status; PM notes appear in brackets where Jira lags. Every ticket follows brief §10 fields. The "First release?" column is the PM proposal for founder approval.
+</callout>
+Epics: [DEV-56 A Strategy & measurement](https://shanivar.atlassian.net/browse/DEV-56) · [DEV-57 B Protection](https://shanivar.atlassian.net/browse/DEV-57) · [DEV-58 C Routine](https://shanivar.atlassian.net/browse/DEV-58) · [DEV-59 D Sadhana](https://shanivar.atlassian.net/browse/DEV-59) · [DEV-60 E Security](https://shanivar.atlassian.net/browse/DEV-60) · [DEV-61 F QA & release](https://shanivar.atlassian.net/browse/DEV-61) · [DEV-62 G CS & growth](https://shanivar.atlassian.net/browse/DEV-62). Finance and wider Marketing have **no epic** yet (Q4).
+Traceability chain per brief §2B: User problem → Hypothesis \[H\] → Requirement → Ticket → Test case (DEV-82 matrix) → Measured outcome (Measurement plan).

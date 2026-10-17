@@ -1,0 +1,126 @@
+package com.shanivar.nativeapp
+
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.*
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
+import java.io.File
+import java.time.LocalTime
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+
+/** QA scratch (not committed): DEV-38 points 4 and 6 plus the original repro, using the real app wiring. */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
+class QaDev38ScratchTest {
+    private val app get() = RuntimeEnvironment.getApplication()
+    // Robolectric gives each test a fresh Application/filesDir; the process singleton would stay bound to an earlier one.
+    @get:org.junit.Rule val outboxReset = AppSyncOutboxReset()
+    private val outFile get() = File(app.filesDir, "sadhana/outbox.properties")
+    private fun reload() = SyncOutbox(FileDraftStore(outFile)).pending
+    private fun dump(name: String) = File("/workspace/qa/dev38/rerun-$name.properties").writeText(outFile.takeIf { it.exists() }?.readText() ?: "(no file)")
+
+    @Test fun p6_concurrentEnqueuesOnSharedInstanceKeepEverything() {
+        val box = AppSyncOutbox.get(app)
+        val before = box.pending.size
+        val pool = Executors.newFixedThreadPool(8); val go = CountDownLatch(1)
+        repeat(8) { t -> pool.submit { go.await(); repeat(50) { i -> box.enqueue("attempt", "t$t-$i", "{\"n\":$i}") } } }
+        go.countDown(); pool.shutdown(); assertTrue(pool.awaitTermination(60, TimeUnit.SECONDS))
+        assertEquals(before + 400, box.pending.size)
+        assertEquals(before + 400, reload().size)
+    }
+
+    @Test fun p6_routineAndSadhanaWritersShareFileWithoutClobbering() = runBlocking {
+        val box = AppSyncOutbox.get(app); box.drain { true }
+        val clock = FakeSadhanaClock()
+        val c = SadhanaController(MemDraftStore(), clock, true, outbox = AppSyncOutbox.get(app))
+        c.setOwnMinutes(4); c.recordOwn()
+        val repo = SharedPrefsRoutinePlanRepository(app)   // default outbox = AppSyncOutbox.get(context)
+        assertTrue(repo.save(RoutinePlanV1(wakeTime = LocalTime.of(6, 0))).isSuccess)
+        c.setOwnMinutes(9); c.recordOwn()
+        val keys = reload().map { it.key }
+        assertEquals(3, keys.size)
+        assertTrue(keys.contains("routine:current"))
+        assertEquals(2, keys.count { it.startsWith("self_report:") })
+        dump("p6-shared-writers")
+    }
+
+    @Test fun p4_importQueuedOnceAcrossRestartWithoutDrain() {
+        val store = FileDraftStore(File(app.filesDir, "sadhana/state-qa.properties"))
+        val outStore = MemDraftStore()
+        val done = PracticeAttempt("a9", "v1", 1000, 60_000, AttemptOutcome.COMPLETED, 61_000)
+        val clock = FakeSadhanaClock()
+        SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(outStore))
+        SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(outStore)) // restart, not drained
+        SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(outStore))
+        val p = SyncOutbox(outStore).pending
+        assertEquals(1, p.size); assertEquals("attempt:initiation-a9", p.single().key)
+        var sent = 0; SyncOutbox(outStore).drain { sent++; true }; assertEquals(1, sent)
+        SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(outStore))
+        assertEquals(0, SyncOutbox(outStore).pending.size)
+    }
+
+    @Test fun p4_legacyImportIsBackfilledOnceAndIdempotent() {
+        // Upgrade path: a record that already holds the import from a pre-fix build (no outbox, no flag).
+        val stateFile = File(app.filesDir, "sadhana/state-legacy.properties")
+        val store = FileDraftStore(stateFile); val clock = FakeSadhanaClock()
+        val done = PracticeAttempt("a7", "v1", 1000, 60_000, AttemptOutcome.COMPLETED, 61_000)
+        SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = null)
+        assertFalse(stateFile.readText().contains("outboxBackfillV1"))
+        val out = FileDraftStore(File(app.filesDir, "sadhana/outbox-legacy.properties"))
+        SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(out))
+        assertEquals(listOf("attempt:initiation-a7"), SyncOutbox(out).pending.map { it.key })
+        repeat(2) { SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(out)) } // restarts, undrained
+        assertEquals(1, SyncOutbox(out).pending.size)
+        assertEquals(1, SyncOutbox(out).drain { true })
+        repeat(3) { SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(out)) } // restarts after send
+        println("QA-NOTE legacyAfterSend pending=" + SyncOutbox(out).pending.map { it.key })
+        assertTrue(SyncOutbox(out).pending.isEmpty())
+        // Later own-practice edits still persist the flag (other persist paths keep it).
+        val c = SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(out))
+        c.setOwnMinutes(2); c.recordOwn()
+        assertTrue(stateFile.readText().contains("outboxBackfillV1=done"))
+        assertEquals(1, SyncOutbox(out).pending.size) // only the new self-report
+    }
+
+    @Test fun p4_freshInstallQueuesOnce() {
+        val store = MemDraftStore(); val clock = FakeSadhanaClock(); val out = MemDraftStore()
+        val done = PracticeAttempt("f1", "v1", 1000, 60_000, AttemptOutcome.COMPLETED, 61_000)
+        SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(out))
+        assertEquals(listOf("attempt:initiation-f1"), SyncOutbox(out).pending.map { it.key })
+        SyncOutbox(out).drain { true }
+        repeat(2) { SadhanaController(store, clock, true, initiationAttempt = { done }, outbox = SyncOutbox(out)) }
+        assertTrue(SyncOutbox(out).pending.isEmpty())
+    }
+
+    @Test fun leak_singletonBindsToCurrentTestFilesDir() {
+        // Runs after/before others in random order; with the rule the singleton must start empty and write here.
+        val box = AppSyncOutbox.get(app)
+        assertEquals("singleton leaked entries from another test", 0, box.pending.size)
+        box.enqueue("attempt", "leak-check", "{}")
+        assertEquals(1, reload().size)
+    }
+
+    @Test fun originalRepro_recordPlusOneDeleteAndImport() {
+        val box = AppSyncOutbox.get(app); box.drain { true }
+        val clock = FakeSadhanaClock()
+        val done = PracticeAttempt("ob1", "v1", 1000, 60_000, AttemptOutcome.COMPLETED, 61_000)
+        val c = SadhanaController(MemDraftStore(), clock, true, initiationAttempt = { done }, outbox = AppSyncOutbox.get(app))
+        c.setOwnMinutes(3); c.recordOwn()
+        val id = c.record.independent.single().id
+        dump("repro-1-after-record")
+        c.adjustOwnActual(id, 1)
+        assertTrue(reload().first { it.key == "self_report:$id" }.payload.contains("\"actual_minutes\":4"))
+        dump("repro-2-after-plus1")
+        c.deleteOwn(id)
+        dump("repro-3-after-delete")
+        val p = reload().associateBy { it.key }
+        assertTrue(SyncPayloads.isTombstone(p.getValue("self_report:$id").payload))
+        assertTrue(p.containsKey("attempt:initiation-ob1"))
+        assertEquals(2, p.size)
+    }
+}

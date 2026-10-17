@@ -1,0 +1,29 @@
+package com.shanivar.nativeapp
+
+import okhttp3.mockwebserver.*
+import org.junit.Assert.*
+import org.junit.Test
+
+class QaDev45ScratchTest {
+    @Test fun requestTimeout408Retries() = MockWebServer().use { server ->
+        server.enqueue(MockResponse().setResponseCode(408))
+        val rig = SyncRig(server)
+        rig.outbox.enqueue("attempt", "a1", """{"id":"a1"}""")
+        assertEquals(FlushOutcome.RetryLater(null, 0), rig.flusher.flush())
+        assertEquals(1, rig.outbox.pending.size); assertTrue(rig.outbox.deadLetters.isEmpty())
+    }
+    /** A permanently missing table (404) at the head: do later items for existing tables ever go out? */
+    @Test fun persistent404HeadOfLine() = MockWebServer().use { server ->
+        server.dispatcher = object : Dispatcher() {
+            override fun dispatch(r: RecordedRequest) =
+                if (r.path!!.contains("/orbit_events")) MockResponse().setResponseCode(404).setBody("""{"code":"PGRST205"}""")
+                else MockResponse().setResponseCode(201)
+        }
+        val rig = SyncRig(server)
+        rig.outbox.enqueue("orbit", "o1", """{"id":"o1"}""")
+        rig.outbox.enqueue("attempt", "a1", """{"id":"a1"}""")
+        rig.outbox.enqueue("self_report", "s1", """{"id":"s1"}""")
+        repeat(5) { rig.flusher.flush() }
+        println("QA-HOL pending=" + rig.outbox.pending.map { it.key } + " requests=" + server.requestCount)
+    }
+}

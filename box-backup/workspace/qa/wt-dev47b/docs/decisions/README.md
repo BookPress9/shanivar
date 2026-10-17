@@ -1,0 +1,58 @@
+# Decision log
+
+One file per decision that **closes off an alternative**: a schema shape, a platform API declined,
+an enforcement boundary, a dependency taken on. Not for ordinary changes — the git history covers
+those.
+
+Name them `NNNN-short-title.md`, numbered in order, never renumbered. A decision that is later
+reversed keeps its file and gets `Status: Superseded by NNNN`; deleting it destroys the reason the
+reversal was needed.
+
+## Why this exists
+
+The git diff records *what* changed. This records *why*, and — more valuable — **what we already
+considered and rejected.** Most wasted engineering time is spent rediscovering a dead end someone
+already walked down. That risk multiplies when agents do the work, because an agent arriving cold
+has no memory of the discussion, only the code.
+
+## Template
+
+```markdown
+# NNNN — Title in plain language
+
+- **Date:** YYYY-MM-DD
+- **Status:** Accepted | Superseded by NNNN | Reversed
+
+## Context
+What forced a decision. The constraints as they actually were, not as we'd like them remembered.
+
+## Options
+What was genuinely considered, including the ones rejected — with the reason each was rejected.
+
+## Decision
+What we chose.
+
+## Consequences
+What this costs us, stated honestly. A decision with no downside was not a decision.
+
+## Revisit when
+The concrete trigger that should reopen this. A decision without an expiry condition quietly
+becomes a permanent constraint nobody remembers choosing.
+```
+
+## Index
+
+- [0001 — Schema changes run inline at boot, not through a migration runner](0001-inline-schema-migrations.md)
+- [0002 — Enforcement never uses Device Admin or Accessibility Services](0002-no-device-admin-enforcement.md)
+- [0003 — Movement is the default alarm dismissal, with a mandatory accessible alternative](0003-movement-first-alarm-dismissal.md)
+- [0004 — All database connections go through the Supavisor pooler](0004-supavisor-pooler-required.md)
+- [0005 — `BookPress9/shanivar` is the only repository](0005-single-repo-shanivar.md)
+- [0006 — One simple MVP for family introductions and younger self-use](0006-two-entry-simple-mvp.md)
+- [0007 — V1 includes alarms and focus modes](0007-v1-alarms-and-focus.md)
+- [0008 — Alarm recurrence is recomputed after every fire, not pre-generated](0008-alarm-recurrence-recomputed-not-pregenerated.md)
+- [0009 — Return for the next conscious choice, not engagement](0009-behavioral-return-loop.md)
+- [0010 — Recurring focus schedules, and a when-then commitment instead of a "deepest desire" prompt](0010-focus-schedule-when-then-commitment.md)
+- [0011 ? VBT breathing becomes a scoped third pillar](0011-vbt-breathing-third-pillar.md)
+- [0012 — The breathing session owner is process-scoped, not a ViewModel](0012-breathing-session-owner-is-process-scoped.md)
+- [0013 — Sadhana progression, and what "gamified" may and may not mean](0013-sadhana-progression-and-the-gamification-question.md) — **PROPOSED, founder decision required**
+- [0014 — Routine + Sadhana shell and Routine V3](0014-routine-sadhana-shell-and-routine-v3.md) — **ACCEPTED, Routine implementation authorized**

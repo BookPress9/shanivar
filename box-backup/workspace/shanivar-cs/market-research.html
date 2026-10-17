@@ -1,0 +1,675 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Shanivar Market Research</title><style>@page{size:A4;margin:16mm 14mm}body{font-family:'DejaVu Sans',Arial,sans-serif;font-size:9.6pt;line-height:1.45;color:#1c1c1c}
+h1{font-size:20pt;color:#5a3b12;border-bottom:2px solid #a8752f;padding-bottom:4px}h2{font-size:14pt;color:#5a3b12;margin-top:20px;border-bottom:1px solid #ddd;page-break-after:avoid}
+h3{font-size:11.5pt;color:#7a5220;page-break-after:avoid}table{border-collapse:collapse;width:100%;margin:8px 0;font-size:8pt;page-break-inside:auto}
+th,td{border:1px solid #ccc;padding:3px 5px;vertical-align:top}th{background:#f3eadc}tr{page-break-inside:avoid}
+blockquote{border-left:3px solid #a8752f;margin:8px 0;padding:4px 10px;background:#faf6ef}a{color:#7a5220;text-decoration:none;word-break:break-word}code{font-size:8.5pt;background:#f4f4f4}</style></head><body><h1>Shanivar: Market Research and Customer-Success Playbook</h1>
+<p><strong>Routine and discipline tools × meditation and stillness tools: where Shanivar should sit</strong></p>
+<p>Prepared for: Shubham Kumar (founder) and the Shanivar PM · Date: 17 October 2026 (Europe/Berlin) · Version 1.0</p>
+<hr />
+<h2>0. How to read this report</h2>
+<p><strong>Evidence rules.</strong> Every number has a source link next to it. If a number is an outside estimate (Business of Apps, research-firm market reports), the report says so. If data was not available, the report says that too.</p>
+<p><strong>Primary data collected for this report (17 Oct 2026).</strong>
+- <em>Google Play listing data</em> (install band, star rating, rating count, in-app price range, last update) for 16 apps. I pulled it from each app's public Play page (US English store) and cross-checked it with the open-source <code>google-play-scraper</code> library. Raw files: <code>/workspace/shanivar-cs/src/</code>.
+- <em>Review sample:</em> the <strong>500 newest US-English Google Play reviews per app</strong> (8,000 reviews total). For each app I counted the share of 1–2★ reviews and ran keyword theme matching on those 1–2★ reviews (price/paywall, bugs, bypass, permissions/battery, ads, login/sync, and so on). Limits: "newest" sorting over-weights recent updates and angry reviewers. Sample windows differ by app (Alarmy's 500 reviews span about 2 weeks; Waking Up's span about 2 years). Keyword matching is a rough signal, not a validated coding scheme. Treat the theme counts as directional.
+- <em>Reddit:</em> Reddit blocked direct fetches from this environment (both www and old.reddit). Reddit findings below come from search-engine excerpts of the named threads. Each thread is linked, and I paraphrase rather than quote.</p>
+<p><strong>What Shanivar is today</strong> comes from the read-only local repo <code>/workspace/shanivar-v3</code>: README, decisions 0014/0017/0018, the initial MVP scope, the tone guide, the voice direction, and the Kotlin screen and feature names. Nothing in the repo was modified.</p>
+<hr />
+<h2>1. Executive summary</h2>
+<ol>
+<li><strong>Both categories leak users fast.</strong> Across 93 popular Android mental-health apps, median retention was <strong>3.9% at day 15 and 3.3% at day 30</strong>. Mindfulness apps did a little better (median <strong>4.7%</strong> at day 30), and breathing-only apps had a median of <strong>0%</strong> (<a href="https://www.jmir.org/2019/9/e14567/">Baumel et al., JMIR 2019</a>).</li>
+<li><strong>The meditation leaders are shrinking.</strong> Outside estimates put Headspace at <strong>$140M revenue and 2.0M subscribers in 2025</strong>, down from $235M and 3.3M in 2022 (<a href="https://www.businessofapps.com/data/headspace-statistics/">Business of Apps</a>). Calm is put at <strong>$210M and 3.5M subscribers in 2025</strong>, down from $355M and 5.0M in 2022 (<a href="https://www.businessofapps.com/data/calm-statistics/">Business of Apps</a>). In our Play sample, the newest 500 reviews averaged <strong>1.93★ for Headspace</strong> and <strong>3.11★ for Calm</strong>, against lifetime ratings of 4.25★ and 4.48★.</li>
+<li><strong>The category is still growing.</strong> Market estimates differ by definition: <strong>$1.82B (2024) → $4.97B (2030), 17.7% CAGR</strong> (<a href="https://www.grandviewresearch.com/horizon/statistics/mental-health-apps-market/application/meditation-management/global">Grand View Research</a>), and <strong>$2.16B (2025) → $7.91B (2030), 29.6% CAGR</strong> (<a href="https://www.thebusinessresearchcompany.com/report/mindfulness-meditation-application-global-market-report">The Business Research Company</a>).</li>
+<li><strong>In blockers, friction works but fades.</strong> one sec cut actual target-app openings by <strong>57% after 6 weeks</strong>, and the <em>option to dismiss</em> was the strongest ingredient (<a href="https://www.pnas.org/doi/10.1073/pnas.2213114120">PNAS 2023</a>). On Reddit, people say pauses turn into muscle memory within weeks and get bypassed (<a href="https://www.reddit.com/r/ProductivityApps/comments/1v314we/why_do_most_app_blockers_only_work_for_a_few_weeks/">r/ProductivityApps</a>, <a href="https://www.reddit.com/r/getdisciplined/comments/1vqqrpb/app_blockers_stopped_working_for_me_after_a_few/">r/getdisciplined</a>).</li>
+<li><strong>Monetization is the biggest complaint everywhere.</strong> Price/paywall/trial terms were the top 1–2★ theme for 12 of 16 sampled apps. The two donation-funded apps, <strong>ScreenZen and Medito</strong>, had the best recent sentiment (4.62★ and 4.65★ recent averages, 6% 1–2★ each).</li>
+<li><strong>Users are already pairing the two categories on their own.</strong> Blocker users praise the breathing pause. Routine-app users say routines fail because they doomscroll. Meditation users ask for a plain timer, less talk, and no guilt-driven streaks. No mainstream app makes <strong>protected time</strong> and <strong>trained attention</strong> into one daily skill.</li>
+<li><strong>Recommended position for Shanivar:</strong> <em>the Android practice that protects the hours you choose and trains the attention you bring to them, and that measures success partly by how much less you need it.</em></li>
+</ol>
+<hr />
+<h2>2. Shanivar today (from the repo)</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>What exists or is decided</th>
+<th>Repo evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shell</td>
+<td>Two destinations, <strong>Routine</strong> (opens first) and <strong>Sadhana</strong>. No dashboard.</td>
+<td><code>docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md</code>, <code>RoutineShell.kt</code>, <code>ShanivarShell.kt</code></td>
+</tr>
+<tr>
+<td>Routine</td>
+<td>Wake and sleep anchors, editable personal activities, an optional <strong>wake alarm</strong> with movement or non-walking dismissal, a reusable set of distracting apps, <strong>multiple protection windows</strong> with weekly recurrence (including overnight), a daily timeline, and honest rule states (<code>DRAFT → SAVED_LOCAL → NEEDS_DEVICE_ACCESS → READY → ACTIVE → NEEDS_ATTENTION → OFF</code>). Local stop is always available.</td>
+<td><code>RoutineScreen.kt</code>, <code>RoutineProtectionScreen.kt</code>, <code>RoutineTimeline.kt</code>, <code>FocusWindowRecurrence.kt</code>, <code>AlarmScheduler.kt</code>, <code>MovementDismissal.kt</code>, <code>BlockOverlayActivity.kt</code></td>
+</tr>
+<tr>
+<td>Enforcement stance</td>
+<td>Whole-app blocking through Usage access plus an overlay. No Device Admin and no accessibility service. No promise that blocking can't be bypassed.</td>
+<td><code>android-app/ENFORCEMENT_STANCE_2026-09-12.md</code>, decision 0002</td>
+</tr>
+<tr>
+<td>Sadhana</td>
+<td>The "Living Spine" path (33 stages, visual only, unlocks nothing). Capabilities are <em>Arrive → Return → See → Choose → Carry</em>. Factual tracking of attempts, active seconds and outcomes. <strong>Guidance tapers</strong> (full/reduced/minimal) only when the user chooses. Practices run 1/3/5/10 minutes. All other apps are locked by default during practice. No streaks, XP or rank.</td>
+<td>Decision 0017, <code>SadhanaHomeScreens.kt</code>, <code>SadhanaPracticeScreens.kt</code>, <code>SadhanaFocusLock.kt</code>, <code>SadhanaSpine.kt</code></td>
+</tr>
+<tr>
+<td>Attention self-check</td>
+<td>Stage 1 "The base" is a 60-second sitting. Afterwards an optional self-check asks: did you reach the spine (Yes/Partly/No), how many times did attention drift (0…10+), and what pulled it away (thoughts, sounds, body discomfort, phone/notification urge, sleepiness, emotion, other), plus a note. Answers are stored locally as self-report and are never scored.</td>
+<td>Decision 0018, <code>SadhanaStage1.kt</code>, <code>SadhanaRecordScreens.kt</code></td>
+</tr>
+<tr>
+<td>Voice and claims</td>
+<td>Plain, honest and agency-first. No streak pressure, no health, energy or enlightenment claims. The app and marketing name no teacher or tradition (deep study is the only exception).</td>
+<td><code>docs/strategy/shanivar-tone-and-values.md</code>, <code>marketing/shanivar/voice-direction.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What this means.</strong> Shanivar already has the parts that competitors split across separate apps: an alarm, scheduled protection, a lock during practice, and a reflective attention self-check. The open question is whether people understand the <strong>link</strong> between them and keep using it.</p>
+<hr />
+<h2>3. Part A: Routine, alarm and screen-protection apps</h2>
+<h3>3.1 Opal (focus sessions, app blocking)</h3>
+<ul>
+<li><strong>Core features:</strong> scheduled and on-demand blocking sessions, "Deep Focus" sessions that can't be cancelled, app limits, a Focus Score, and breaks/pauses (<a href="https://www.opal.so/pricing">Opal pricing</a>).</li>
+<li><strong>Pricing:</strong> Opal Pro is <strong>$99.99/yr</strong>, <strong>$19.99/mo</strong> or <strong>$399 lifetime</strong>, with a 7-day trial. The free tier has basic blocking (<a href="https://www.opal.so/pricing">Opal pricing</a>, <a href="https://help.opalapp.com/article/how-and-why-should-i-subscribe-to-opal-pro">help center</a>). Play lists in-app items at $2.99–$79.99 (<a href="https://play.google.com/store/apps/details?id=com.withopal.opal">Play</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>500K+ installs, 4.67★ from 10,573 ratings</strong> (<a href="https://play.google.com/store/apps/details?id=com.withopal.opal">Play</a>). The company reports more than <strong>$10M ARR</strong> with 11 people (<a href="https://www.speedinvest.com/knowledge/scaling-smart-how-opal-built-a-10m-arr-business-in-just-2-years">Speedinvest</a>) and is hiring to "scale from 1 to 10M+ daily active users" (<a href="https://www.linkedin.com/posts/kennethschlenker_opal-careers-join-team-opal-activity-7388877324668207104--5oi">LinkedIn</a>). Both figures are company-reported. Opal is iOS-first, and Android is the smaller platform.</li>
+<li><strong>What users love:</strong> blocks that really hold. <em>"doesn't let me just ignore the block like others I've tried"</em> (Play, 12 Sep 2026). Users also like the escalating wait: <em>"I do a couple minutes of deep breathing and then I don't even want to check anything anymore!"</em> (Play, 14 Oct 2026).</li>
+<li><strong>What users complain about:</strong> In the newest-500 sample, 21.4% were 1–2★. The top themes were bugs (rules firing at the wrong times, apps being recategorized), paywall, and permissions. <em>"Half the time it blocks apps on the wrong days or the wrong times"</em> (Play, 10 Aug 2026). <em>"It's way to easy to bypass … All the options to ACTUALLY make it something useful are behind a paywall"</em> (Play, 24 Aug 2026). Users also say the rules can't handle split windows such as 9–11 and 2–5.</li>
+<li><strong>Churn reasons:</strong> One r/nosurf tester uninstalled after 14 days, citing subscription dark patterns, battery drain, inflated "time saved" stats, and blocking that "treats symptoms". They reported their screen time was back to normal within 48 hours (<a href="https://www.reddit.com/r/nosurf/comments/1r0hjaq/i_tested_opal_screen_time_app_for_two_weeks_heres/">r/nosurf</a>, from a search excerpt).</li>
+</ul>
+<h3>3.2 Alarmy (mission-based alarm; "Alarmi")</h3>
+<ul>
+<li><strong>Core features:</strong> the alarm only turns off after a "mission" (math, memory, typing, squats, steps, photo or barcode scan), plus a "Wake Up Check" and sleep features (<a href="https://alar.my/en">alar.my</a>, <a href="https://alar.my/en/blog/how-to-choose-alarmy-mission">mission guide</a>).</li>
+<li><strong>Pricing:</strong> freemium with ads, and a Premium subscription that removes ads and adds missions. Play lists in-app items at <strong>$2.90–$159.99</strong> (<a href="https://play.google.com/store/apps/details?id=droom.sleepIfUCan">Play</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>50M+ installs, 4.65★ from 2,175,324 ratings</strong>. DelightRoom reports <strong>2M DAU, KRW 30B annual revenue and KRW 19B operating profit (2024)</strong>, and says it ranked #1 in 100 countries (<a href="https://delightroom.com/blog/en/daro-revealing-alarmy-ad-monetization-secrets">DelightRoom blog</a>).</li>
+<li><strong>What users love:</strong> it really gets people out of bed, and the math missions "focus" the mind. <em>"Love the Math missions"</em> (Play, 7 Oct 2026).</li>
+<li><strong>What users complain about:</strong> 14.0% of the newest 500 were 1–2★. The top themes were missed or failed alarms, <strong>ads at dismissal</strong>, and paywall. <em>"Now every time I dismiss an alarm an ad pops up"</em> (Play, 14 Oct 2026). <em>"occasionally an alarm just won't trigger"</em> (Play, 15 Oct 2026). Some users report volume resetting to maximum after an update.</li>
+<li><strong>Churn reasons:</strong> users dismiss the alarm half-asleep and go back to bed. <em>"It for sure gets me out of bed!..... until I just go lay on the couch and fall asleep again"</em> (Play, 9 Oct 2026). The same pattern shows up on Reddit (<a href="https://www.reddit.com/r/GetOutOfBed/comments/1b73g2r/even_alarmy_cant_wake_me_up/">r/GetOutOfBed</a>). Ad load in the morning is a stated reason for leaving: <em>"after a year, I'm just about done with this app"</em>.</li>
+</ul>
+<h3>3.3 one sec (friction before distracting apps)</h3>
+<ul>
+<li><strong>Core features:</strong> a pause screen (breathing and a short delay) appears before chosen apps, with the option to close the app instead. Also re-interventions and in-app blocking such as Shorts (<a href="https://one-sec.app/faq/">FAQ</a>).</li>
+<li><strong>Pricing:</strong> the free tier covers 1 app. Pro is about <strong>$3.99/mo or $19.99/yr, or $99.99 lifetime</strong>, depending on store (<a href="https://one-sec.app/faq/">one sec FAQ</a>, <a href="https://apps.apple.com/us/app/one-sec-screen-time-focus/id1532875441">App Store</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>1M+ installs, 4.76★ from 46,277 ratings</strong> (<a href="https://play.google.com/store/apps/details?id=wtf.riedel.onesec">Play</a>).</li>
+<li><strong>Evidence:</strong> In a 280-person, 6-week field study, users closed the target app 36% of the time and made 37% fewer attempts, for <strong>57% fewer actual openings</strong>. The option to dismiss was the most effective component, and a reflection message alone was not effective (<a href="https://www.pnas.org/doi/10.1073/pnas.2213114120">PNAS 2023</a>).</li>
+<li><strong>What users love:</strong> a minimal tool that works. <em>"the first time it was so effective I quit doomscrolling for a year"</em> (Play, 6 Feb 2026).</li>
+<li><strong>What users complain about:</strong> 18.6% were 1–2★, and price led the themes (35 of 93 low reviews). Users call it <em>"ABSURDLY priced for such a simple app"</em> (Play, 25 Jan 2026), say the Android version has fewer features than iOS, and report that Android turns the accessibility service off on its own.</li>
+<li><strong>Churn reasons:</strong> the free tier is limited to one app, users resent paying a subscription for a simple utility, and the OS disables the service.</li>
+</ul>
+<h3>3.4 ScreenZen (free, donation-funded)</h3>
+<ul>
+<li><strong>Core features:</strong> delays and limits per app, "open intentionally" prompts (such as typing your reason), blocking parts of apps (Facebook vs Reels, YouTube Shorts) (<a href="https://screenzen.co/">screenzen.co</a>).</li>
+<li><strong>Pricing:</strong> free, with no premium tier; optional tips/donations (<a href="https://screenzen.co/">screenzen.co</a>). Play lists $4.99–$19.99 items, which are tips.</li>
+<li><strong>Scale:</strong> Play shows <strong>1M+ installs, 4.79★ from 34,429 ratings</strong> (<a href="https://play.google.com/store/apps/details?id=com.screenzen">Play</a>).</li>
+<li><strong>What users love:</strong> it is mindful without being punishing. <em>"works to make me mindful about app use without being so annoying or restrictive that I delete it within a week"</em> (Play, 5 Sep 2026). The written-reason intervention <em>"actually makes me reflect and pause"</em> (Play, 7 Sep 2026).</li>
+<li><strong>What users complain about:</strong> only 6.0% were 1–2★ (the lowest share among the blockers). Complaints focus on <strong>Android accessibility-service drops</strong>, lag, and lost records. <em>"constantly being asked to turn accessibility services off/on"</em> (Play, 13 Sep 2026). Another user lost a 60-day Facebook-free record after an update.</li>
+<li><strong>Churn reasons:</strong> reliability on phones with aggressive battery optimization, and on Reddit, delays that people learn to wait out (<a href="https://www.reddit.com/r/nosurf/comments/1r2zrvi/i_tried_screenzen_for_a_month_heres_what_nobody/">r/nosurf</a>, from a search excerpt).</li>
+</ul>
+<h3>3.5 Freedom (cross-device blocker)</h3>
+<ul>
+<li><strong>Core features:</strong> blocking across devices, scheduled sessions, and <strong>Locked Mode</strong>, which stops a running session from being ended or edited (<a href="https://support.freedom.to/en/articles/1802927-locked-mode">Locked Mode</a>).</li>
+<li><strong>Pricing:</strong> <strong>$39.99/yr</strong>, or lifetime at $199 (often on sale at $99.50) (<a href="https://freedom.to/premium">freedom.to/premium</a>, <a href="https://freedom.to/forever/">Forever</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>1M+ installs, 4.56★ from 8,235 ratings</strong> (<a href="https://play.google.com/store/apps/details?id=to.freedom.android2">Play</a>).</li>
+<li><strong>What users love:</strong> sessions that can't be cancelled. <em>"Other apps allow you to cancel block sessions, which defeats the purpose"</em> (Play, 25 Jul 2025). Users also mention ADHD and "time-blindness" support.</li>
+<li><strong>What users complain about:</strong> 29.4% were 1–2★. Themes: price and annual-only plans, being easy to get around, daylight-saving and time bugs, and whole-domain blocking. <em>"Only install if you're sure you want to pay $40 for an app you're statistically unlikely to keep using"</em> (Play, 18 May 2026).</li>
+<li><strong>Churn reasons:</strong> rigid "cold turkey" blocking with no daily allowance, sync and time errors, and cancellation friction.</li>
+</ul>
+<h3>3.6 Forest (gamified focus timer)</h3>
+<ul>
+<li><strong>Core features:</strong> a tree grows while you stay off your phone, with an allow-list, group focus, and coins that can plant real trees through Trees for the Future (<a href="https://forestapp.cc/">forestapp.cc</a>).</li>
+<li><strong>Pricing:</strong> free core with ads outside sessions. The old one-time Pro purchase has been replaced for new users by the <strong>Forest Plus subscription</strong> (<a href="https://forestapp.cc/">forestapp.cc</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>10M+ installs, 4.31★ from 813,854 ratings</strong> (<a href="https://play.google.com/store/apps/details?id=cc.forestapp">Play</a>).</li>
+<li><strong>What users love:</strong> social study sessions. <em>"I made all my friends get this app"</em> (Play, 2 Sep 2026).</li>
+<li><strong>What users complain about:</strong> 45.4% were 1–2★, set off by a <strong>September 2026 redesign</strong>. Users report extra screens after each session, hidden totals, and <strong>paid features removed</strong>. <em>"monetisation and engagement are the focus, every UI transition is too long and flashy"</em> (Play, 16 Sep 2026).</li>
+<li><strong>Churn reasons:</strong> broken trust after paid features were removed, and engagement mechanics that interrupt the focus the app is meant to protect.</li>
+</ul>
+<h3>3.7 Fabulous (routine and habit coach)</h3>
+<ul>
+<li><strong>Core features:</strong> guided habit "journeys" (morning, evening and other routines), habit stacking, and coaching content. The company presents it as rooted in Duke behavioral-economics work (<a href="https://thefabulous.co/">thefabulous.co</a>).</li>
+<li><strong>Pricing:</strong> checkout pricing is personalized, so no single public price was available. Play lists <strong>$3.99–$299.99</strong> items (<a href="https://play.google.com/store/apps/details?id=co.thefabulous.app">Play</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>10M+ installs, 3.85★ from 589,928 ratings</strong>.</li>
+<li><strong>What users love:</strong> gentle structure and visuals. <em>"I remember how good my life was when i used it"</em> (Play, 9 Oct 2026).</li>
+<li><strong>What users complain about:</strong> <strong>57.6% were 1–2★</strong>, and 212 of the 288 low reviews matched billing terms. Users describe surprise charges, overlapping bundles, and hard cancellation. They also call it <em>"a glorified reminder app"</em> with <em>"super persistent annoying reminders"</em> (Play, Jul–Aug 2026).</li>
+<li><strong>Churn reasons:</strong> loss of trust over billing, notification overload, and a busy interface.</li>
+</ul>
+<h3>3.8 Routinery (step-by-step routine timer)</h3>
+<ul>
+<li><strong>Core features:</strong> routines broken into timed steps with voice prompts and a start alarm (<a href="https://play.google.com/store/apps/details?id=com.alt.goodmorning">Play</a>).</li>
+<li><strong>Pricing:</strong> freemium. The free tier was cut to 2 routines, and Play lists $0.99–$72.00 items.</li>
+<li><strong>Scale:</strong> Play shows <strong>1M+ installs, 4.41★ from 18,726 ratings</strong>.</li>
+<li><strong>What users love:</strong> ADHD-friendly structure. <em>"I know what routines will make my life better, but I am easily distracted"</em> (Play, 31 Dec 2025).</li>
+<li><strong>What users complain about:</strong> 22.6% were 1–2★, about the free-tier cut, bugs, and loud default alarms. One review captures the intersection gap directly: <em>"I was hoping this app would help me stick on schedule since I doomscroll a lot in the mornings but there's no visual or audio alarm so I just keep doomscrolling"</em> (Play, 24 Sep 2025).</li>
+</ul>
+<h3>3.9 Sleep as Android (smart alarm and sleep tracking)</h3>
+<ul>
+<li><strong>Core features:</strong> sleep-cycle smart wake, CAPTCHA wake tasks, wearable integration, and cloud backup (<a href="https://sleep.urbandroid.org/docs/general/plan.html">docs</a>).</li>
+<li><strong>Pricing:</strong> monthly or yearly subscription, or an in-app lifetime purchase listed at <strong>$75</strong>. The old Unlock app is legacy (<a href="https://sleep.urbandroid.org/docs/general/plan.html">docs</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>10M+ installs, 4.57★ from 392,616 ratings</strong> (<a href="https://play.google.com/store/apps/details?id=com.urbandroid.sleep">Play</a>).</li>
+<li><strong>What users love:</strong> reliability and depth over years of use, plus responsive support (the top review has 118 likes).</li>
+<li><strong>What users complain about:</strong> 27.0% were 1–2★. Themes: a <strong>second paywall for users who already paid once</strong>, ads with sound at bedtime, and alarms not going off. <em>"This is the 10th time my alarm did not go off"</em> (Play, 27 Jun 2026).</li>
+</ul>
+<p><em>(Habitica, 5M+ installs and 4.65★, was also sampled. Its 13.6% low share splits between subscription-perk and price complaints and server, sync and timezone problems. People who like it use it as an ad-free habit tracker and ignore the game layer.)</em></p>
+<h3>3.10 Part A synthesis: what works and what doesn't</h3>
+<p><strong>Working</strong>
+- <strong>Friction with a way out.</strong> A pause plus the option to dismiss gave the strongest measured effect (<a href="https://www.pnas.org/doi/10.1073/pnas.2213114120">PNAS</a>). Many 5★ reviews praise breathing or reflection prompts inside blockers (Opal, one sec, ScreenZen).
+- <strong>Commitment you can't undo mid-session,</strong> chosen ahead of time: Freedom Locked Mode, Opal Deep Focus. A systematic review found blocking works when bypassing takes real effort, yet users <em>prefer</em> negotiable blocks (<a href="https://onlinelibrary.wiley.com/doi/full/10.1111/jcal.12581">Biedermann et al. 2021</a>). The same review found that awareness-only dashboards were generally ineffective.
+- <strong>A physical action at wake-up.</strong> Alarmy's missions work at very large scale.
+- <strong>Generous free tiers build goodwill.</strong> ScreenZen had 6% low reviews and Medito 6%, compared with 21–58% for subscription-heavy peers.</p>
+<p><strong>Not working</strong>
+- <strong>Habituation.</strong> Pauses become muscle memory within weeks (<a href="https://www.reddit.com/r/ProductivityApps/comments/1v314we/why_do_most_app_blockers_only_work_for_a_few_weeks/">r/ProductivityApps</a>). Alarms get dismissed and people go back to bed.
+- <strong>Reliability on Android.</strong> OEM battery killers and accessibility-service drops (one sec, ScreenZen), mis-timed rules (Opal, Freedom), and missed alarms (Alarmy, Sleep as Android). A tool that fails silently loses trust right away.
+- <strong>Monetization in the moment of need:</strong> ads at alarm dismissal, paywalls on basic rules, surprise renewals, and paid features removed (Forest, Sleep as Android).
+- <strong>Engagement features that contradict the promise.</strong> Forest's post-session reward screens and Fabulous's notification floods.
+- <strong>Symptom-only design.</strong> Blocking without an inner skill: "screen time back to normal within 48 hours" after uninstalling (<a href="https://www.reddit.com/r/nosurf/comments/1r0hjaq/i_tested_opal_screen_time_app_for_two_weeks_heres/">r/nosurf</a>).</p>
+<hr />
+<h2>4. Part B: Meditation, mindfulness and stillness apps</h2>
+<h3>4.1 Headspace</h3>
+<ul>
+<li><strong>Core features:</strong> guided courses, sleep content, coaching and therapy (in some markets), and <strong>Ebb, an AI companion</strong> (with voice since Dec 2025) (<a href="https://www.headspace.com/ai-mental-health-companion">Headspace</a>, <a href="https://www.businesswire.com/news/home/20251208896917/en/Headspace-Rolls-out-Voice-Feature-for-Empathetic-AI-Companion-Ebb">BusinessWire</a>).</li>
+<li><strong>Pricing:</strong> subscription. Play lists <strong>$4.99–$119.99</strong> items (<a href="https://play.google.com/store/apps/details?id=com.getsomeheadspace.android">Play</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>10M+ installs, 4.25★ from 339,983 ratings</strong>. Estimates: <strong>$140M revenue and 2.0M subscribers in 2025</strong>, down from a 2022 peak (<a href="https://www.businessofapps.com/data/headspace-statistics/">Business of Apps</a>, outside estimate). The company cut 13% of staff in 2025 (<a href="https://www.emarketer.com/content/headspace-cuts-13--of-its-workforce--transitions-staff-therapists-contract-part-time-roles">eMarketer</a>). Ebb users reportedly show 34% higher engagement (<a href="https://www.headspace.com/articles/headspace-brings-empathetic-ai-companion-ebb-to-uk-members">Headspace</a>, company claim).</li>
+<li><strong>What users love:</strong> it teaches beginners. <em>"It taught me to meditate and encouraged me to stick with it"</em> (Play, 28 Jun 2026).</li>
+<li><strong>What users complain about:</strong> the <strong>newest-500 average was 1.93★ and 73.6% were 1–2★</strong>. Themes: crashes and loading, a cluttered redesign, price, AI customer service and the AI feature. <em>"No room for 'headspace' when there's pop ups, freezes, recommendations"</em> (Play, 14 Jul 2026). <em>"This is an app that plays MP3's … It does not do it well"</em> (Play, 4 Oct 2026).</li>
+<li><strong>Churn reasons:</strong> lost simplicity, reliability problems, price, and people outgrowing guided content (<a href="https://www.reddit.com/r/Meditation/comments/1hmuqfq/has_anyone_here_tried_calm_or_headspace_for_a/">r/Meditation</a>, from a search excerpt).</li>
+</ul>
+<h3>4.2 Calm</h3>
+<ul>
+<li><strong>Core features:</strong> sleep stories, music and soundscapes, guided meditation. New in 2025: a <strong>Calm Sleep</strong> app with personalized sleep plans and HealthKit sync (<a href="https://blog.calm.com/blog/calm-sleep-press-release">Calm blog</a>).</li>
+<li><strong>Pricing:</strong> <strong>$14.99/mo, $69.99/yr or $399.99 lifetime</strong>, with a limited free tier (<a href="https://www.cnbc.com/2025/01/16/2-friends-spent-years-getting-turned-down-for-their-terrible-ideanow-the-calm-app-is-worth-2-billion.html">CNBC 2025</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>50M+ installs, 4.48★ from 616,435 ratings</strong>. Estimates: <strong>$210M revenue and 3.5M subscribers in 2025, with 7.3M downloads in 2025</strong> (<a href="https://www.businessofapps.com/data/calm-statistics/">Business of Apps</a>, outside estimate). The last valuation was $2B (2020).</li>
+<li><strong>What users love:</strong> the sleep library and voices. <em>"Still using Calm 6 years later"</em> (Play, 29 Aug 2026).</li>
+<li><strong>What users complain about:</strong> 43.4% were 1–2★. Billing and cancellation matched 140 of 217 low reviews. <em>"the keep subscription was in the button and to cancel was in small print below it"</em> (Play, 12 Jul 2026). Users also report locked content and slow support.</li>
+<li><strong>Churn reasons:</strong> subscription fatigue and perceived dark patterns (<a href="https://www.reddit.com/r/Meditation/comments/1fyjgzv/calm_app_greed/">r/Meditation "Calm App Greed"</a>, from a search excerpt). Many use it for sleep only, without a practice.</li>
+</ul>
+<h3>4.3 Insight Timer</h3>
+<ul>
+<li><strong>Core features:</strong> the largest free library (<strong>300K+ free tracks</strong>, 30M+ members), live events, a meditation timer, and paid courses (<a href="https://help.insighttimer.com/support/solutions/articles/67000664719-what-is-insight-timer-">Insight Timer support</a>).</li>
+<li><strong>Pricing:</strong> free core. MemberPlus is <strong>$9.99/mo or $59.99/yr</strong> (<a href="https://help.insighttimer.com/support/solutions/articles/67000664579-how-much-does-insight-timer-cost-">pricing</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>10M+ installs, 4.70★ from 263,176 ratings</strong>.</li>
+<li><strong>What users love:</strong> the breadth and the free value, and a <strong>simple timer</strong> (88 of the 500 reviews mention the timer or silence).</li>
+<li><strong>What users complain about:</strong> 21.6% were 1–2★. Clutter (quotes, stories, onboarding questions) and <strong>compulsory goals and streaks</strong>. <em>"I don't need an app to tell me off and guilt me if I meditate without it for a few days"</em> (Play, 19 Aug 2026). <em>"forces you to answer loads of questions … when I just want to use a basic timer"</em> (Play, 5 Oct 2026).</li>
+<li><strong>Churn reasons:</strong> feature creep that pushes out the silent practitioner the app grew up on.</li>
+</ul>
+<h3>4.4 Waking Up</h3>
+<ul>
+<li><strong>Core features:</strong> an introductory course, a daily guided sitting, theory and conversations, and a non-dual and insight focus (<a href="https://www.wakingup.com/?c=GetStarted">wakingup.com</a>).</li>
+<li><strong>Pricing:</strong> <strong>$19.99/mo or $129.99/yr</strong>, a free scholarship on request, and a refund policy (<a href="https://www.wakingup.com/?c=GetStarted">Waking Up</a>, <a href="https://help.wakingup.com/article/72-what-s-waking-up-s-risk-free-pricing-policy">help</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>1M+ installs, 4.59★ from 41,758 ratings</strong>.</li>
+<li><strong>What users love:</strong> depth, and a sense of real progress. <em>"After 15 sessions … that has changed for me"</em> (Play, 18 Mar 2025).</li>
+<li><strong>What users complain about:</strong> 16.0% were 1–2★. Users dislike that there is <strong>no free content without entering a card</strong> (<em>"ZERO free content to evaluate"</em>, Play, 7 Jun 2025) and confusing trials. Some reviews are put off by the founder's public persona, which shows the <strong>risk of a brand tied to one person</strong>.</li>
+</ul>
+<h3>4.5 Medito (nonprofit)</h3>
+<ul>
+<li><strong>Core features:</strong> guided courses, a daily session, sleep, breathing and a timer, <strong>all free with no ads</strong> (<a href="https://meditofoundation.org/free-meditation-app/">Medito Foundation</a>).</li>
+<li><strong>Pricing:</strong> free and donation-funded (<a href="https://meditofoundation.org/about/">About</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>1M+ installs, 4.78★ from 41,092 ratings</strong>.</li>
+<li><strong>What users love:</strong> <em>"Finally, an app that cares about the user experience and not just signing you up for a subscription"</em> (Play, 14 Apr 2026).</li>
+<li><strong>What users complain about:</strong> only 6.0% were 1–2★: sign-up loops, repetitive daily content, and "smart" defaults that replaced fixed reminder times. <em>"Because of these 'smart' features, I rarely meditate. Before the changes, I meditated daily for two years"</em> (Play, 10 Jul 2026). Some users also object to streaks ("manipulation without consent").</li>
+</ul>
+<h3>4.6 Balance (adaptive, personalized)</h3>
+<ul>
+<li><strong>Core features:</strong> plans that adapt to your answers and progress, with mid-plan check-ins (<a href="https://balanceapp.com/">balanceapp.com</a>).</li>
+<li><strong>Pricing:</strong> the earlier "first year free" offer has ended. It is now a <strong>30-day trial, then $69.99/yr</strong> (US) (<a href="https://get.balanceapp.com/account/subscription/new">Balance</a>).</li>
+<li><strong>Scale:</strong> Play shows <strong>1M+ installs, 4.63★ from 48,627 ratings</strong>.</li>
+<li><strong>What users love:</strong> personalization that remembers you. <em>"remembers when last you've done a meditation and doesn't repeat the instructions"</em> (Play, 16 Apr 2026).</li>
+<li><strong>What users complain about:</strong> 23.8% were 1–2★. Themes: trial-to-annual charges, cancellation friction ("SEVEN different pages"), playback stopping mid-session, and <em>"the meditations talk too much and don't really give much time to meditate"</em> (Play, 25 Aug 2025).</li>
+</ul>
+<h3>4.7 Attention-training example: Healthy Minds Program</h3>
+<ul>
+<li><strong>Core features:</strong> free, skill-based training in Awareness, Connection, Insight and Purpose, with up to 600 days of content (<a href="https://www.humin.org/wellbeing-tools/app">humin.org</a>).</li>
+<li><strong>Evidence:</strong> a three-arm RCT found reduced distress after 8 weeks (<a href="https://mental.jmir.org/2020/11/e23825/">JMIR Mental Health 2020</a>). A 4-week RCT with 662 school employees found improved wellbeing (<a href="https://doi.org/10.1037/edu0000739">doi</a>).</li>
+<li><strong>Android Play data:</strong> not retrieved. The package wasn't found in Play search from this environment, so no figures are given.</li>
+<li><strong>Relevance:</strong> this is the "skill, not content" model Sadhana follows. Breath counting is a validated <strong>behavioral</strong> measure of mindfulness, and its accuracy tracks lower mind-wandering (<a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.01202/full">Levinson et al. 2014</a>). Experience sampling found minds wander in <strong>46.9%</strong> of waking moments (<a href="https://www.science.org/doi/10.1126/science.1192439">Killingsworth &amp; Gilbert 2010</a>). This supports a drift-and-return self-check as meaningful, if self-reported.</li>
+</ul>
+<h3>4.8 Part B synthesis</h3>
+<p><strong>Top challenges</strong>
+1. <strong>Retention collapse.</strong> About 69% of users open on day 1, 3.9% on day 15 and 3.3% on day 30, with the steepest drop between days 1 and 10 (<a href="https://www.jmir.org/2019/9/e14567/">Baumel 2019</a>).
+2. <strong>Subscription fatigue and billing distrust.</strong> Price/billing was the #1 low-review theme for Headspace, Calm, Insight Timer, Waking Up and Balance. Free and donation models (Medito, Insight Timer's core) hold the most goodwill.
+3. <strong>Content fatigue and bloat.</strong> Libraries grow while the practice gets buried (Headspace, Insight Timer). People want <em>less</em>: a timer, less talk, and the app remembering their settings.
+4. <strong>Guided vs. silent.</strong> Beginners need guidance, while experienced users leave for silence. Leaving because they've grown (<a href="https://www.reddit.com/r/Meditation/comments/1hmuqfq/has_anyone_here_tried_calm_or_headspace_for_a/">r/Meditation</a>) is a normal path, and most apps treat it as churn.
+5. <strong>Measuring progress.</strong> Minutes and streaks are the default metrics. Streaks create guilt (Insight Timer and Medito reviews), and there is no common measure of <em>attention quality</em>. Validated behavioral measures exist (breath counting) but are rarely productized.
+6. <strong>The phone is the distraction.</strong> Phone-based mindfulness invites interruption (<a href="https://www.theatlantic.com/health/archive/2023/06/meditation-app-mind-distraction/674500/">The Atlantic 2023</a>). Shanivar's lock during practice addresses this directly.
+7. <strong>Safety and claims.</strong> In an MBCT sample, 6–14% reported lasting bad effects of more than a day (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8845498/">Britton et al. 2021</a>). This supports Shanivar's no-breath-pacing and "End always reachable" rules.</p>
+<p><strong>Usage patterns.</strong> Meditation apps peak <strong>twice a day, morning and night</strong>. Other mental-health apps peak in the evening. Among active users, meditation apps had high daily minutes (median 21.5) but a low open rate (median 4% DAU/installs overall) (<a href="https://www.jmir.org/2019/9/e14567/">Baumel 2019</a>). Sleep is the main job for Calm users (from review content).</p>
+<p><strong>Market trends</strong>
+- <strong>Size and growth:</strong> $1.82B (2024) → $4.97B (2030), 17.7% CAGR for meditation-management apps (<a href="https://www.grandviewresearch.com/horizon/statistics/mental-health-apps-market/application/meditation-management/global">Grand View</a>). $2.24B (2025) → $5.36B (2030), 18.6% CAGR (<a href="https://www.thebusinessresearchcompany.com/report/meditation-management-apps-global-market-report">TBRC</a>). TBRC names Asia-Pacific the fastest-growing region.
+- <strong>India:</strong> Statista projects the India meditation-app segment at <strong>US$78.94M in 2025</strong>, with 0.14% user penetration (<a href="https://www.statista.com/outlook/hmo/digital-health/digital-fitness-well-being/health-wellness-coaching/meditation-apps/india">Statista</a>; paywalled, so the figure comes from a search excerpt). Grand View puts India spiritual-wellness apps at <strong>US$81.9M in 2025, with Android at 54.21% of revenue</strong> (<a href="https://www.grandviewresearch.com/horizon/outlook/spiritual-wellness-app-market/india">Grand View</a>). Free, teacher-led launches can spike: one free app passed 1M downloads within 15 hours of launch in Mar 2025 (<a href="https://timesofindia.indiatimes.com/technology/tech-news/sadhgurus-free-meditation-app-miracle-of-mind-beats-chatgpt-sees-1-million-plus-downloads-in-15-hours/articleshow/118674942.cms">Times of India</a>).
+- <strong>AI personalization:</strong> Headspace's Ebb has received 7M+ messages (<a href="https://www.businesswire.com/news/home/20251208896917/en/Headspace-Rolls-out-Voice-Feature-for-Empathetic-AI-Companion-Ebb">BusinessWire</a>). Balance's adaptive plans are well liked. But AI also drew backlash in Headspace reviews (35 of the newest 500 mention AI; 25 of those are 1–2★).
+- <strong>Digital wellbeing and physical friction:</strong> devices like Brick ($49–$60, no subscription) are part of a "bricking" and digital-minimalism trend (<a href="https://www.marketplace.org/story/2025/11/12/the-growing-business-of-disconnecting">Marketplace 2025</a>, <a href="https://slate.com/technology/2025/09/brick-app-review-digital-detox-instagram-tiktok.html">Slate 2025</a>).
+- <strong>Wearables:</strong> Oura and Apple Watch link mindfulness sessions with HRV and heart-rate feedback (<a href="https://ouraring.com/blog/new-movement-partnerships/">Oura</a>, <a href="https://support.apple.com/guide/watch/start-a-reflect-or-breathe-session-apd371dfe3d7/watchos">Apple</a>). Smartwatch feedback improved mindfulness and stress, but not anxiety or depression, in one RCT (<a href="https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0322413">PLOS One</a>).</p>
+<hr />
+<h2>5. Competitor comparison table</h2>
+<p>Play data was retrieved on 17 Oct 2026 (US store). "Recent avg" and "1–2★ share" come from the newest 500 Play reviews per app. "Top low-review theme" is the most frequent keyword theme among the 1–2★ reviews in that sample.</p>
+<table>
+<thead>
+<tr>
+<th>App</th>
+<th>Side</th>
+<th>Play installs</th>
+<th>Lifetime ★ (ratings)</th>
+<th>Recent-500 avg ★</th>
+<th>1–2★ share (recent)</th>
+<th>Top low-review theme</th>
+<th>Model / price (sourced above)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Opal</td>
+<td>A</td>
+<td>500K+</td>
+<td>4.67 (10,573)</td>
+<td>3.86</td>
+<td>21.4%</td>
+<td>Bugs / mis-timed rules</td>
+<td>Sub: $99.99/yr, $19.99/mo, $399 lifetime</td>
+</tr>
+<tr>
+<td>Alarmy</td>
+<td>A</td>
+<td>50M+</td>
+<td>4.65 (2.18M)</td>
+<td>4.26</td>
+<td>14.0%</td>
+<td>Missed alarm / ads</td>
+<td>Ads + Premium sub</td>
+</tr>
+<tr>
+<td>one sec</td>
+<td>A</td>
+<td>1M+</td>
+<td>4.76 (46,277)</td>
+<td>4.04</td>
+<td>18.6%</td>
+<td>Price</td>
+<td>1 app free; ~$19.99/yr, $99.99 lifetime</td>
+</tr>
+<tr>
+<td>ScreenZen</td>
+<td>A</td>
+<td>1M+</td>
+<td>4.79 (34,429)</td>
+<td>4.62</td>
+<td>6.0%</td>
+<td>Accessibility drops / bugs</td>
+<td>Free, donations</td>
+</tr>
+<tr>
+<td>Freedom</td>
+<td>A</td>
+<td>1M+</td>
+<td>4.56 (8,235)</td>
+<td>3.63</td>
+<td>29.4%</td>
+<td>Price / annual-only</td>
+<td>$39.99/yr; lifetime $199</td>
+</tr>
+<tr>
+<td>Forest</td>
+<td>A</td>
+<td>10M+</td>
+<td>4.31 (813,854)</td>
+<td>3.02</td>
+<td>45.4%</td>
+<td>Price / redesign</td>
+<td>Free + ads; Plus sub</td>
+</tr>
+<tr>
+<td>Fabulous</td>
+<td>A</td>
+<td>10M+</td>
+<td>3.85 (589,928)</td>
+<td>2.60</td>
+<td>57.6%</td>
+<td>Billing</td>
+<td>Personalized sub pricing</td>
+</tr>
+<tr>
+<td>Routinery</td>
+<td>A</td>
+<td>1M+</td>
+<td>4.41 (18,726)</td>
+<td>3.92</td>
+<td>22.6%</td>
+<td>Free-tier cut / bugs</td>
+<td>Freemium sub</td>
+</tr>
+<tr>
+<td>Sleep as Android</td>
+<td>A</td>
+<td>10M+</td>
+<td>4.57 (392,616)</td>
+<td>3.75</td>
+<td>27.0%</td>
+<td>Second paywall / ads</td>
+<td>Sub or $75 lifetime</td>
+</tr>
+<tr>
+<td>Habitica</td>
+<td>A</td>
+<td>5M+</td>
+<td>4.65 (75,906)</td>
+<td>4.19</td>
+<td>13.6%</td>
+<td>Price / server-sync</td>
+<td>Free + optional sub</td>
+</tr>
+<tr>
+<td>Headspace</td>
+<td>B</td>
+<td>10M+</td>
+<td>4.25 (339,983)</td>
+<td><strong>1.93</strong></td>
+<td><strong>73.6%</strong></td>
+<td>Price / crashes</td>
+<td>Sub ($4.99–$119.99 items)</td>
+</tr>
+<tr>
+<td>Calm</td>
+<td>B</td>
+<td>50M+</td>
+<td>4.48 (616,435)</td>
+<td>3.11</td>
+<td>43.4%</td>
+<td>Billing / cancellation</td>
+<td>$69.99/yr, $399.99 lifetime</td>
+</tr>
+<tr>
+<td>Insight Timer</td>
+<td>B</td>
+<td>10M+</td>
+<td>4.70 (263,176)</td>
+<td>4.02</td>
+<td>21.6%</td>
+<td>Clutter, forced streaks</td>
+<td>Free core; $59.99/yr</td>
+</tr>
+<tr>
+<td>Waking Up</td>
+<td>B</td>
+<td>1M+</td>
+<td>4.59 (41,758)</td>
+<td>4.29</td>
+<td>16.0%</td>
+<td>Card-gated trial</td>
+<td>$129.99/yr; scholarships</td>
+</tr>
+<tr>
+<td>Medito</td>
+<td>B</td>
+<td>1M+</td>
+<td>4.78 (41,092)</td>
+<td>4.65</td>
+<td>6.0%</td>
+<td>Sign-up bugs</td>
+<td>Free nonprofit</td>
+</tr>
+<tr>
+<td>Balance</td>
+<td>B</td>
+<td>1M+</td>
+<td>4.63 (48,627)</td>
+<td>3.98</td>
+<td>23.8%</td>
+<td>Trial → annual charge</td>
+<td>30-day trial, $69.99/yr</td>
+</tr>
+<tr>
+<td>Healthy Minds</td>
+<td>B</td>
+<td>n/a (not retrieved)</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><strong>Shanivar</strong></td>
+<td>A+B</td>
+<td>Pre-launch</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>Payments deferred (MVP scope)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Pattern:</strong> the apps that monetize most aggressively get the angriest recent reviews. This is a correlation in a skewed sample, not proof of cause.</p>
+<hr />
+<h2>6. Part C: The intersection and Shanivar's position</h2>
+<h3>6.1 Unmet needs that fall between the two categories</h3>
+<table>
+<thead>
+<tr>
+<th>Discipline tools give…</th>
+<th>Meditation tools give…</th>
+<th>Neither delivers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A wall around time</td>
+<td>Content for the mind</td>
+<td><strong>Training the attention you bring into the protected hour</strong></td>
+</tr>
+<tr>
+<td>Friction that wears off within weeks</td>
+<td>Practice that stays inside the app</td>
+<td><strong>Practice that carries into the moment of urge</strong> (the block surface as a practice cue)</td>
+</tr>
+<tr>
+<td>Usage dashboards (shown to be weak)</td>
+<td>Minutes and streaks</td>
+<td><strong>An honest attention trend:</strong> drifts, returns, what pulls you away</td>
+</tr>
+<tr>
+<td>Morning missions</td>
+<td>Morning sessions</td>
+<td><strong>One morning sequence:</strong> wake, a short sitting, a protected first hour, all optional</td>
+</tr>
+<tr>
+<td>Lock-in and subscription traps</td>
+<td>Growing libraries</td>
+<td><strong>Graduation:</strong> needing the app less counts as success</td>
+</tr>
+</tbody>
+</table>
+<p>Review evidence for this gap: blocker users praise breathing pauses (Opal and one sec 5★ reviews). A routine-app user says doomscrolling ruins their routine (Routinery). Meditators ask for silence and fewer prompts (Insight Timer, Balance). People leave meditation apps after outgrowing them (r/Meditation).</p>
+<h3>6.2 Positioning statement</h3>
+<blockquote>
+<p><strong>For</strong> Android users who know what they want to do with their day but keep losing it to their phone, <strong>Shanivar is</strong> a daily practice that <strong>protects the hours you choose</strong> (alarms and protection windows) <strong>and trains the attention you bring to them</strong> (Sadhana sittings with an honest drift-and-return self-check). <strong>Unlike</strong> blockers, which build walls that wear off, and meditation apps, which sell libraries that never touch your day, Shanivar treats discipline and stillness as <strong>one skill</strong>, and counts it as success when you need the app less.</p>
+</blockquote>
+<h3>6.3 Core user problems Shanivar should own</h3>
+<ol>
+<li><strong>"I set the boundary, then I break it."</strong> Protection windows that hold, with honest state, an easy way to stop locally, and no guilt.</li>
+<li><strong>"My attention leaves, and I don't notice until much later."</strong> The Stage 1 self-check makes drift and return visible over time, as self-report and never a score.</li>
+<li><strong>"Mornings slip into the feed."</strong> Wake alarm, then an optional 60-second sitting, then a protected first window. Each step is independent and nothing chains automatically (decision 0007/MVP rule).</li>
+<li><strong>"Meditation apps feel like more content, more phone."</strong> Silent or minimal guidance, a lock during practice, and short fixed sittings.</li>
+<li><strong>"Apps keep me hooked instead of making me capable."</strong> No streaks or XP. Guidance tapers when you choose, and "Carry" means practising without the app.</li>
+</ol>
+<h3>6.4 Target user profiles</h3>
+<ul>
+<li><strong>P1 – The self-directed scroller (primary).</strong> Age 18–35, on Android, India first, English or Hindi. Has tried Digital Wellbeing, Opal, one sec or ScreenZen and relapsed. Wants focus for study or work. Evidence: ScreenZen and one sec 5★ reviews, Reddit relapse threads.</li>
+<li><strong>P2 – The practice-curious who is tired of content.</strong> Has left Headspace or Calm, or uses only Insight Timer's timer. Wants silent, skill-based practice with a sense of progress but no streaks. Evidence: Insight Timer, Medito and Balance reviews.</li>
+<li><strong>P3 – The family introducer (hypothesis, from repo MVP scope).</strong> An adult child introduces Shanivar to a willing parent, who keeps control. This is not yet validated, and the repo says so.</li>
+</ul>
+<h3>6.5 Risks and failure patterns to avoid (from competitors)</h3>
+<table>
+<thead>
+<tr>
+<th>Failure pattern</th>
+<th>Seen in</th>
+<th>Shanivar guard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Silent enforcement failure (OEM battery kill, permission drop, wrong times)</td>
+<td>one sec, ScreenZen, Opal, Freedom</td>
+<td>Show <code>NEEDS_ATTENTION</code> honestly, add a repair flow and OEM guidance (ticket SHAN-3)</td>
+</tr>
+<tr>
+<td>Missed alarm</td>
+<td>Alarmy, Sleep as Android, Routinery</td>
+<td>Keep the watchdog, reboot rescheduling and device QA as release gates</td>
+</tr>
+<tr>
+<td>Ads or paywall at the moment of need</td>
+<td>Alarmy (ads at dismissal), Opal (paywalled basics)</td>
+<td>Never monetize the alarm, block surface or practice surface</td>
+</tr>
+<tr>
+<td>Billing dark patterns, removing paid features</td>
+<td>Fabulous, Calm, Balance, Forest, Sleep as Android</td>
+<td>Cancel in one tap, no card for a trial, keep features people paid for forever (SHAN-7)</td>
+</tr>
+<tr>
+<td>Redesign bloat and engagement screens</td>
+<td>Forest, Headspace, Insight Timer</td>
+<td>No interstitials after sessions; protect the two-destination shell</td>
+</tr>
+<tr>
+<td>Streak guilt and forced goals</td>
+<td>Insight Timer, Medito</td>
+<td>Already banned (decision 0013/0017); keep it that way</td>
+</tr>
+<tr>
+<td>"Smart" defaults that override user choices</td>
+<td>Medito</td>
+<td>Personalization only suggests; the user confirms</td>
+</tr>
+<tr>
+<td>Brand tied to one person</td>
+<td>Waking Up</td>
+<td>Name no teacher; speak only as Shanivar (already policy)</td>
+</tr>
+<tr>
+<td>Habituation to the same pause</td>
+<td>one sec, ScreenZen (Reddit)</td>
+<td>Vary the prompt using the person's own words and self-check data (SHAN-2)</td>
+</tr>
+<tr>
+<td>Health or energy over-claims; distress during practice</td>
+<td>Category-wide; Britton 2021</td>
+<td>Keep SOP-05, no breath pacing, End always reachable</td>
+</tr>
+</tbody>
+</table>
+<h3>6.6 Customer-success playbook</h3>
+<p><strong>North-star metric (proposed):</strong> <em>Weekly protected-and-present hours.</em> This is the sum of protection-window time that reached engine-confirmed <code>ACTIVE</code> and was not released early, plus completed Sadhana seconds. Pair it with a <strong>graduation signal</strong>: self-reported practice without the app.</p>
+<p><strong>Success metrics to track</strong> (local-first and privacy-respecting, following SOP-09):
+| Stage | Metric | Definition | Benchmark / target |
+|---|---|---|---|
+| Activation | Protection activated | First window reaches <code>ACTIVE</code> (engine-confirmed) within 48 h of install | No public benchmark; set a baseline in the pilot |
+| Activation | First sitting | First Stage 1 sitting completed (not ended early) within 7 days | Baseline in pilot |
+| Activation | Alarm armed | Native schedule confirmed (next occurrence shown) | Baseline in pilot |
+| Adherence | Window hold rate | Share of scheduled windows that reached <code>ACTIVE</code> and finished without early release | Watch the trend, not the absolute |
+| Adherence | Alarm follow-through | Fired → dismissed through movement or the accessible alternative (not proof of waking) | Separate from focus metrics (MVP rule) |
+| Attention | Sitting-time trend | Median active seconds per sitting and chosen duration (1/3/5/10) over 4 weeks | Self-chosen; the trend is what matters |
+| Attention | Return trend | Share of self-checks with "reached: Yes/Partly", and median self-reported drifts, over time | Self-report only, never shown as a score |
+| Attention | Pull mix | Distribution of "what pulled you away"; the share that is "phone/notification urge" | Rising phone urge → suggest protection |
+| Retention | D1 / D7 / D30 opens or rule activity | Measured from any device-backed rule firing, not only opens | Beat the category medians: 3.9% D15, 3.3% D30, 4.7% D30 for meditation (<a href="https://www.jmir.org/2019/9/e14567/">Baumel</a>) |
+| Graduation | Practice without the app | Count of self-reports of practising without the app | Counted as success, not churn |</p>
+<p><strong>Key onboarding moments (first 7 days)</strong>
+1. <strong>Minute 1:</strong> the optional local pause before any account. Proof it helps before any permission is requested.
+2. <strong>First boundary:</strong> one window, one app set. Permissions only when needed, and the status must truthfully reach <code>ACTIVE</code>.
+3. <strong>First block hit:</strong> the block surface recalls the person's own intention, and the local pause is offered. This is the moment habituation starts, so the prompt has to change over time.
+4. <strong>First sitting and self-check:</strong> the 60-second Stage 1. The person sees the first "drift, return" reflection.
+5. <strong>Day 3 to 7 link:</strong> if the self-check says "phone urge", offer to protect the usual sitting time. The person confirms.
+6. <strong>End of week 1:</strong> a quiet weekly mirror: protected hours held, sittings, drifts trend, top pulls. No grades.</p>
+<p><strong>At-risk signals → playbook response</strong>
+| Signal | Likely meaning | Response (in-app, non-shaming) |
+|---|---|---|
+| Rule stuck in <code>NEEDS_DEVICE_ACCESS</code> or <code>NEEDS_ATTENTION</code> for more than 24 h; Usage access or overlay revoked | Silent failure, or OEM killed the service | Repair card with OEM-specific steps |
+| Windows saved but never <code>ACTIVE</code> | Setup confusion | One-tap "test protection now" (2-minute window) |
+| 3 or more early releases in a week | Window too long or at the wrong time | Suggest a shorter or moved window |
+| 3 sittings in a row ended or interrupted, or "reached: No" 3 times in a row | Practice too hard, or wrong setting | Offer a shorter duration, posture tips, external-attention anchor |
+| No device activity for 5 days after activation | Lapse | One gentle return note, then silence. No streak-loss messaging |
+| Alarm disabled after fewer than 3 fires | Alarm too harsh or unreliable | Check sound and dismissal; offer the non-walking option |
+| Pull mix dominated by "sleepiness" | Practice placed at a bad time of day | Suggest moving the sitting away from bedtime |</p>
+<p><strong>Example user-facing copy</strong> (Shanivar's poetic second-person voice; no teachers, traditions or claims):
+- Block surface: <em>"You chose this hour for reading. The feed will wait. This hour will not."</em>
+- Pause offer: <em>"Before you go back to your day, sit with yourself for one minute. Nothing will open. Only you will."</em>
+- After the self-check: <em>"You drifted four times. Four times you came back. Each return was yours."</em>
+- Return after a lapse: <em>"You have been away. Nothing was lost. Sit for one minute and begin from here."</em>
+- Morning invitation (optional, after the alarm): <em>"The morning is here. Before the world reaches you, take one minute of your own."</em>
+- Graduation: <em>"Today you sat without the app. That is the practice, carried."</em></p>
+<h3>6.7 Feature and Jira ticket proposals for the PM</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Ticket</th>
+<th>Problem (evidence)</th>
+<th>Scope and acceptance criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHAN-1</td>
+<td><strong>Local-first CS event layer</strong></td>
+<td>Retention can't be managed without measuring it (Baumel benchmarks)</td>
+<td>Typed events for rule state changes, alarm schedule/fire/dismiss, sitting start/end/outcome/seconds, and self-check submit. Stored on device; opt-in sync through the outbox. Dashboard query for activation, hold rate and D1/7/30. No content and no app names leave the device without consent (SOP-09).</td>
+</tr>
+<tr>
+<td>SHAN-2</td>
+<td><strong>Block surface → "one-minute sitting" bridge</strong></td>
+<td>Pauses get habituated (Reddit); the dismiss option is strongest (PNAS); breathing pauses are praised (Opal, one sec reviews)</td>
+<td>From the block surface, offer the Stage 1 sitting inside the lock. It never unlocks. The prompt rotates using the person's own intention text and their last top pull. Measure: % of block hits → sitting started; % → "Return to my day".</td>
+</tr>
+<tr>
+<td>SHAN-3</td>
+<td><strong>Protection health check and OEM repair guide</strong></td>
+<td>Silent failures drive uninstalls (one sec, ScreenZen, Opal, Freedom reviews)</td>
+<td>Daily local self-test of Usage access, overlay, battery-optimization exemption and exact-alarm permission. Show <code>NEEDS_ATTENTION</code> with OEM-specific steps (Xiaomi, Samsung, Oppo/Vivo, OnePlus). Acceptance: no screen shows <code>ACTIVE</code> without engine confirmation (decision 0014).</td>
+</tr>
+<tr>
+<td>SHAN-4</td>
+<td><strong>Weekly attention mirror</strong></td>
+<td>Dashboards alone don't work (Biedermann 2021), and there is no honest attention measure on the market</td>
+<td>A weekly local card covering protected hours held, sittings, median active seconds, the drift trend, the top-3 pulls and practice without the app. No score, streak or ranking. "Clear" and "hide" controls. Copy reviewed under SOP-05.</td>
+</tr>
+<tr>
+<td>SHAN-5</td>
+<td><strong>Self-check → Routine suggestion ("Choose")</strong></td>
+<td>People pair the two categories on their own (Routinery and Opal reviews)</td>
+<td>If "phone/notification urge" is the top pull in 2 of the last 3 self-checks, suggest a protection window around the usual sitting time. The user edits or declines, and nothing is created automatically. Resolves founder question 5 in decision 0017.</td>
+</tr>
+<tr>
+<td>SHAN-6</td>
+<td><strong>Morning sequence, optional and decoupled</strong></td>
+<td>Users dismiss the alarm and go back to bed (Alarmy reviews, Reddit)</td>
+<td>After dismissal, an optional invitation to a 60-second sitting and/or to start the first window. Never starts automatically (MVP rule: dismissal never silently starts protection). Measure the take-up rate.</td>
+</tr>
+<tr>
+<td>SHAN-7</td>
+<td><strong>Trust-first monetization spec (before payments)</strong></td>
+<td>Billing/price is the #1 low-review theme in 12 of 16 sampled apps; donation models get the best sentiment</td>
+<td>Principles: no card for a trial, cancel in one tap, reminder 3 days before renewal, keep anything already paid for forever, never charge for safety or alarm reliability. Test a supporter/donation tier against a premium tier in the pilot.</td>
+</tr>
+<tr>
+<td>SHAN-8</td>
+<td><strong>Silent and minimal mode plus remembered settings</strong></td>
+<td>Requests for timer/silence, "talks too much" and "smart defaults" complaints (Insight Timer, Balance, Medito)</td>
+<td>One tap for minimal guidance. The last duration, guidance level and lock preference are remembered exactly; no "smart" overrides. Optional interval bell, which must not be breath-paced (PRACTICE_SAFETY).</td>
+</tr>
+</tbody>
+</table>
+<h3>6.8 What to validate next</h3>
+<ul>
+<li>Interview 10 P1 users who have relapsed with a blocker, and 10 P2 users who left a meditation app. Test whether the "one skill" framing makes sense to them.</li>
+<li>In the existing pilot worksheet, track the SHAN-2 take-up and the self-check completion rate. If fewer than half of the people who reach the block surface ever try the sitting, the bridge hypothesis is weak.</li>
+<li>Keep the family (P3) and India Hindi fit claims labelled as hypotheses until Hindi-complete pilots report.</li>
+</ul>
+<hr />
+<h2>7. Sources</h2>
+<p><strong>Academic:</strong> <a href="https://www.jmir.org/2019/9/e14567/">Baumel et al. 2019, JMIR</a> · <a href="https://www.pnas.org/doi/10.1073/pnas.2213114120">Grüning et al. 2023, PNAS (one sec)</a> · <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/jcal.12581">Biedermann et al. 2021, JCAL</a> · <a href="https://doi.org/10.1002/ejsp.674">Lally et al. 2010, EJSP</a> (median 66 days to habit automaticity, range 18–254) · <a href="https://www.science.org/doi/10.1126/science.1192439">Killingsworth &amp; Gilbert 2010, Science</a> · <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.01202/full">Levinson et al. 2014, Frontiers</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8845498/">Britton et al. 2021</a> · <a href="https://mental.jmir.org/2020/11/e23825/">Healthy Minds RCT, JMIR MH 2020</a> · <a href="https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0322413">PLOS One smartwatch MBSR</a></p>
+<p><strong>Market and company:</strong> <a href="https://www.grandviewresearch.com/horizon/statistics/mental-health-apps-market/application/meditation-management/global">Grand View Research</a> · <a href="https://www.thebusinessresearchcompany.com/report/meditation-management-apps-global-market-report">TBRC meditation apps</a> · <a href="https://www.thebusinessresearchcompany.com/report/mindfulness-meditation-application-global-market-report">TBRC mindfulness apps</a> · <a href="https://www.statista.com/outlook/hmo/digital-health/digital-fitness-well-being/health-wellness-coaching/meditation-apps/india">Statista India</a> · <a href="https://www.grandviewresearch.com/horizon/outlook/spiritual-wellness-app-market/india">Grand View India spiritual wellness</a> · <a href="https://www.businessofapps.com/data/headspace-statistics/">Business of Apps: Headspace</a> · <a href="https://www.businessofapps.com/data/calm-statistics/">Business of Apps: Calm</a> · <a href="https://www.emarketer.com/content/headspace-cuts-13--of-its-workforce--transitions-staff-therapists-contract-part-time-roles">eMarketer</a> · <a href="https://www.cnbc.com/2025/01/16/2-friends-spent-years-getting-turned-down-for-their-terrible-ideanow-the-calm-app-is-worth-2-billion.html">CNBC Calm</a> · <a href="https://delightroom.com/blog/en/daro-revealing-alarmy-ad-monetization-secrets">DelightRoom</a> · <a href="https://www.speedinvest.com/knowledge/scaling-smart-how-opal-built-a-10m-arr-business-in-just-2-years">Speedinvest on Opal</a> · <a href="https://www.headspace.com/articles/headspace-brings-empathetic-ai-companion-ebb-to-uk-members">Headspace Ebb</a> · <a href="https://www.businesswire.com/news/home/20251208896917/en/Headspace-Rolls-out-Voice-Feature-for-Empathetic-AI-Companion-Ebb">BusinessWire Ebb voice</a> · <a href="https://blog.calm.com/blog/calm-sleep-press-release">Calm Sleep</a> · <a href="https://www.marketplace.org/story/2025/11/12/the-growing-business-of-disconnecting">Marketplace</a> · <a href="https://www.theatlantic.com/health/archive/2023/06/meditation-app-mind-distraction/674500/">The Atlantic</a> · <a href="https://timesofindia.indiatimes.com/technology/tech-news/sadhgurus-free-meditation-app-miracle-of-mind-beats-chatgpt-sees-1-million-plus-downloads-in-15-hours/articleshow/118674942.cms">Times of India</a></p>
+<p><strong>Official pricing and feature pages:</strong> <a href="https://www.opal.so/pricing">Opal</a> · <a href="https://alar.my/en">Alarmy</a> · <a href="https://one-sec.app/faq/">one sec FAQ</a> · <a href="https://screenzen.co/">ScreenZen</a> · <a href="https://freedom.to/premium">Freedom</a> · <a href="https://forestapp.cc/">Forest</a> · <a href="https://thefabulous.co/">Fabulous</a> · <a href="https://sleep.urbandroid.org/docs/general/plan.html">Sleep as Android</a> · <a href="https://help.insighttimer.com/support/solutions/articles/67000664579-how-much-does-insight-timer-cost-">Insight Timer pricing</a> · <a href="https://www.wakingup.com/?c=GetStarted">Waking Up</a> · <a href="https://meditofoundation.org/free-meditation-app/">Medito</a> · <a href="https://get.balanceapp.com/account/subscription/new">Balance</a> · <a href="https://www.humin.org/wellbeing-tools/app">Healthy Minds</a></p>
+<p><strong>Google Play listings and review samples (retrieved 17 Oct 2026):</strong> <a href="https://play.google.com/store/apps/details?id=com.withopal.opal">Opal</a> · <a href="https://play.google.com/store/apps/details?id=droom.sleepIfUCan">Alarmy</a> · <a href="https://play.google.com/store/apps/details?id=wtf.riedel.onesec">one sec</a> · <a href="https://play.google.com/store/apps/details?id=com.screenzen">ScreenZen</a> · <a href="https://play.google.com/store/apps/details?id=to.freedom.android2">Freedom</a> · <a href="https://play.google.com/store/apps/details?id=cc.forestapp">Forest</a> · <a href="https://play.google.com/store/apps/details?id=co.thefabulous.app">Fabulous</a> · <a href="https://play.google.com/store/apps/details?id=com.alt.goodmorning">Routinery</a> · <a href="https://play.google.com/store/apps/details?id=com.urbandroid.sleep">Sleep as Android</a> · <a href="https://play.google.com/store/apps/details?id=com.habitrpg.android.habitica">Habitica</a> · <a href="https://play.google.com/store/apps/details?id=com.getsomeheadspace.android">Headspace</a> · <a href="https://play.google.com/store/apps/details?id=com.calm.android">Calm</a> · <a href="https://play.google.com/store/apps/details?id=com.spotlightsix.zentimerlite2">Insight Timer</a> · <a href="https://play.google.com/store/apps/details?id=org.wakingup.android">Waking Up</a> · <a href="https://play.google.com/store/apps/details?id=meditofoundation.medito">Medito</a> · <a href="https://play.google.com/store/apps/details?id=com.elevatelabs.geonosis">Balance</a></p>
+<p><strong>Reddit (via search excerpts; direct fetch blocked):</strong> <a href="https://www.reddit.com/r/nosurf/comments/1r0hjaq/i_tested_opal_screen_time_app_for_two_weeks_heres/">r/nosurf: Opal 2-week test</a> · <a href="https://www.reddit.com/r/nosurf/comments/1r2zrvi/i_tried_screenzen_for_a_month_heres_what_nobody/">r/nosurf: ScreenZen month</a> · <a href="https://www.reddit.com/r/ProductivityApps/comments/1v314we/why_do_most_app_blockers_only_work_for_a_few_weeks/">r/ProductivityApps: blockers fade</a> · <a href="https://www.reddit.com/r/getdisciplined/comments/1vqqrpb/app_blockers_stopped_working_for_me_after_a_few/">r/getdisciplined: block screen problem</a> · <a href="https://www.reddit.com/r/GetOutOfBed/comments/1b73g2r/even_alarmy_cant_wake_me_up/">r/GetOutOfBed: Alarmy</a> · <a href="https://www.reddit.com/r/Meditation/comments/1hmuqfq/has_anyone_here_tried_calm_or_headspace_for_a/">r/Meditation: quit Calm/Headspace</a> · <a href="https://www.reddit.com/r/Meditation/comments/1fyjgzv/calm_app_greed/">r/Meditation: Calm App Greed</a></p>
+<p><em>Raw data: <code>/workspace/shanivar-cs/src/reviews.json</code> (8,000 reviews), <code>themes.json</code>, <code>samples.txt</code>, and the scripts <code>reviews.py</code> and <code>themes.py</code>.</em></p></body></html>

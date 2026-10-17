@@ -1,0 +1,200 @@
+{
+  "created_on": "2026-09-30",
+  "owner": "Social Media Manager; creative production by Creative Writer",
+  "campaign_status": "Scripts ready; video render blocked",
+  "authority": "Founder instructions already recorded in SHANIVAR_STANCE; ST-001 through ST-008 remain PROPOSED.",
+  "items": [
+    {
+      "id": "SHN-UGC-TEA-01",
+      "title": "The cup was here first",
+      "format": "Reel",
+      "language": "en",
+      "duration_seconds": 28,
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "audience": "Adults choosing for themselves; no inferred diagnosis or faith",
+      "premise": "The presenter notices a cup that has been sitting beside an attention-advice video. A small visual joke moves into optional ordinary observation, without promising an effect.",
+      "script_status": "Script ready",
+      "render_status": "Render blocked",
+      "blocker": "No callable video generator in the current session; no video or voice asset created.",
+      "publication_status": "Not scheduled or published",
+      "script": "Another video about being present. The tea is getting cold. Here is a smaller invitation, if you want it. Notice the cup against your hand. Or a sound nearby. You can stop there. Nothing special has to happen. Want to look further? What were you reaching for? Keep your own answer. Shanivar is in development.",
+      "shots": [
+        {
+          "shot": 1,
+          "start": 0,
+          "end": 4,
+          "direction": "Selfie medium close-up at kitchen table. Presenter glances from an unbranded phone to an ordinary ceramic cup; a wry half-smile, no exaggerated frustration. Open with cup already visible.",
+          "spoken": "Another video about being present. The tea is getting cold.",
+          "subtitle": "Another video about being present. The tea is getting cold.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 1: Selfie medium close-up at kitchen table. Presenter glances from an unbranded phone to an ordinary ceramic cup; a wry half-smile, no exaggerated frustration. Open with cup already visible. Duration 4 seconds. Spoken line: Another video about being present. The tea is getting cold."
+        },
+        {
+          "shot": 2,
+          "start": 4,
+          "end": 8,
+          "direction": "Presenter sets the phone down naturally, remains seated and looks toward camera. Match cut to same eye line, no dramatic lighting change.",
+          "spoken": "Here is a smaller invitation, if you want it.",
+          "subtitle": "Here is a smaller invitation, if you want it.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 2: Presenter sets the phone down naturally, remains seated and looks toward camera. Match cut to same eye line, no dramatic lighting change. Duration 4 seconds. Spoken line: Here is a smaller invitation, if you want it."
+        },
+        {
+          "shot": 3,
+          "start": 8,
+          "end": 13,
+          "direction": "Close-up of hand resting lightly around a room-temperature cup, then a cut to a curtain moving slightly. Do not stage drinking hot liquid or breathing exercises.",
+          "spoken": "Notice the cup against your hand. Or a sound nearby.",
+          "subtitle": "Notice the cup against your hand. Or a sound nearby.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 3: Close-up of hand resting lightly around a room-temperature cup, then a cut to a curtain moving slightly. Do not stage drinking hot liquid or breathing exercises. Duration 5 seconds. Spoken line: Notice the cup against your hand. Or a sound nearby."
+        },
+        {
+          "shot": 4,
+          "start": 13,
+          "end": 18,
+          "direction": "Medium shot. Presenter simply sits, relaxed but not performing bliss. Leave a brief ordinary pause at the end.",
+          "spoken": "You can stop there. Nothing special has to happen.",
+          "subtitle": "You can stop there. Nothing special has to happen.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 4: Medium shot. Presenter simply sits, relaxed but not performing bliss. Leave a brief ordinary pause at the end. Duration 5 seconds. Spoken line: You can stop there. Nothing special has to happen."
+        },
+        {
+          "shot": 5,
+          "start": 18,
+          "end": 23,
+          "direction": "Slightly wider table frame: the phone and cup share the frame. Presenter asks the question without reaching for the phone.",
+          "spoken": "Want to look further? What were you reaching for?",
+          "subtitle": "Want to look further? What were you reaching for?",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 5: Slightly wider table frame: the phone and cup share the frame. Presenter asks the question without reaching for the phone. Duration 5 seconds. Spoken line: Want to look further? What were you reaching for?"
+        },
+        {
+          "shot": 6,
+          "start": 23,
+          "end": 28,
+          "direction": "Return to selfie frame. Presenter gives a small nod and looks back toward the cup. Editor overlays the end card without obscuring subtitles.",
+          "spoken": "Keep your own answer. Shanivar is in development.",
+          "subtitle": "Keep your own answer. Shanivar is in development.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 6: Return to selfie frame. Presenter gives a small nod and looks back toward the cup. Editor overlays the end card without obscuring subtitles. Duration 5 seconds. Spoken line: Keep your own answer. Shanivar is in development."
+        }
+      ],
+      "caption": "AI-generated presenter and fictional scene, created for Shanivar. This is an editorial invitation, not a customer experience.\n\nA video about attention can become one more thing to consume. If you like, notice the cup in your hand or a sound nearby. You can leave it there.\n\nIf you want a question to carry further: what were you reaching for? Your answer belongs to you.\n\nShanivar is in development. Follow @app.shanivar for build updates.\n\n#Shanivar #EverydayAttention",
+      "on_screen_disclosure": "AI-generated presenter | Fictional scene",
+      "disclosure_timing": "Visible throughout, including opening frame; repeat in caption. Add accurate platform AI disclosure at upload if applicable.",
+      "end_card": "SHANIVAR / IN DEVELOPMENT",
+      "end_card_timing": {
+        "start": 23,
+        "end": 28
+      },
+      "generator_global_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission.",
+      "sources": [
+        "SHANIVAR_STANCE.md#founder-instructions-already-recorded",
+        "research/deep-foundation/FOUNDER_BRIEF_2026-09-29.md",
+        "docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md",
+        "marketing/shanivar/voice-direction.md",
+        "marketing/shanivar/breathing-feature-marketing-update-2026-09-25.md"
+      ],
+      "learning_question": "Does the cup-first visual and optional question attract saves or shares after equal exposure?",
+      "asset_paths": [],
+      "generator_tool": null,
+      "generator_model": null,
+      "rendered_at": null,
+      "approval_reference": null,
+      "platform_post_id": null
+    },
+    {
+      "id": "SHN-UGC-LIST-02",
+      "title": "A list with no room left",
+      "format": "Reel",
+      "language": "en",
+      "duration_seconds": 28,
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "audience": "Adults choosing for themselves; no inferred diagnosis or faith",
+      "premise": "A crowded handwritten to-do list becomes the physical prop for one chosen action. The presenter invites observation before an explanation, with a deeper question available but unnecessary.",
+      "script_status": "Script ready",
+      "render_status": "Render blocked",
+      "blocker": "No callable video generator in the current session; no video or voice asset created.",
+      "publication_status": "Not scheduled or published",
+      "script": "This list has room for everything except a person. One more task can wait, if you choose. Feel the chair beneath you, or notice the window light. Then choose one thing you actually want this time for. If you want to go deeper: whose list is this? No answer is required. Shanivar is in development.",
+      "shots": [
+        {
+          "shot": 1,
+          "start": 0,
+          "end": 4,
+          "direction": "Overhead view of a handwritten page crowded with short task-like marks; no legible private names, calendar data or claims. Match cut to fictional presenter at desk holding the page. Exact hook is added as subtitles.",
+          "spoken": "This list has room for everything except a person.",
+          "subtitle": "This list has room for everything except a person.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 1: Overhead view of a handwritten page crowded with short task-like marks; no legible private names, calendar data or claims. Match cut to fictional presenter at desk holding the page. Exact hook is added as subtitles. Duration 4 seconds. Spoken line: This list has room for everything except a person."
+        },
+        {
+          "shot": 2,
+          "start": 4,
+          "end": 8,
+          "direction": "Medium selfie shot. Presenter lays the pencil beside the page; does not cross out all responsibilities or tear the list.",
+          "spoken": "One more task can wait, if you choose.",
+          "subtitle": "One more task can wait, if you choose.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 2: Medium selfie shot. Presenter lays the pencil beside the page; does not cross out all responsibilities or tear the list. Duration 4 seconds. Spoken line: One more task can wait, if you choose."
+        },
+        {
+          "shot": 3,
+          "start": 8,
+          "end": 13,
+          "direction": "Cut to stable side view of seated presenter, then window light across desk. No body scan, breath control, physiological visualization or imposed posture.",
+          "spoken": "Feel the chair beneath you, or notice the window light.",
+          "subtitle": "Feel the chair beneath you, or notice the window light.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 3: Cut to stable side view of seated presenter, then window light across desk. No body scan, breath control, physiological visualization or imposed posture. Duration 5 seconds. Spoken line: Feel the chair beneath you, or notice the window light."
+        },
+        {
+          "shot": 4,
+          "start": 13,
+          "end": 18,
+          "direction": "Presenter moves one blank small card next to a closed book; leave the card blank for editor overlay if desired. A modest choice, no success montage.",
+          "spoken": "Then choose one thing you actually want this time for.",
+          "subtitle": "Then choose one thing you actually want this time for.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 4: Presenter moves one blank small card next to a closed book; leave the card blank for editor overlay if desired. A modest choice, no success montage. Duration 5 seconds. Spoken line: Then choose one thing you actually want this time for."
+        },
+        {
+          "shot": 5,
+          "start": 18,
+          "end": 23,
+          "direction": "Close shot of the page and hand, then presenter looks toward camera with genuine curiosity rather than certainty.",
+          "spoken": "If you want to go deeper: whose list is this?",
+          "subtitle": "If you want to go deeper: whose list is this?",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 5: Close shot of the page and hand, then presenter looks toward camera with genuine curiosity rather than certainty. Duration 5 seconds. Spoken line: If you want to go deeper: whose list is this?"
+        },
+        {
+          "shot": 6,
+          "start": 23,
+          "end": 28,
+          "direction": "Medium frame. Presenter turns toward the book without opening the phone. Editor overlays end card; hold steady for final seconds.",
+          "spoken": "No answer is required. Shanivar is in development.",
+          "subtitle": "No answer is required. Shanivar is in development.",
+          "generator_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission. Shot 6: Medium frame. Presenter turns toward the book without opening the phone. Editor overlays end card; hold steady for final seconds. Duration 5 seconds. Spoken line: No answer is required. Shanivar is in development."
+        }
+      ],
+      "caption": "AI-generated presenter and fictional scene, created for Shanivar. This is an editorial invitation, not a customer experience.\n\nA full list can make it hard to hear your own preference. If it suits the moment, notice the support of the chair or the light by the window. Then choose one thing you want this time for.\n\nThere is an optional question underneath: whose list is this? You can disagree with the question, leave it unanswered, or come back another day.\n\nShanivar is in development. Save this for a day when your list feels crowded.\n\n#Shanivar #ChosenTime",
+      "on_screen_disclosure": "AI-generated presenter | Fictional scene",
+      "disclosure_timing": "Visible throughout, including opening frame; repeat in caption. Add accurate platform AI disclosure at upload if applicable.",
+      "end_card": "SHANIVAR / IN DEVELOPMENT",
+      "end_card_timing": {
+        "start": 23,
+        "end": 28
+      },
+      "generator_global_prompt": "Vertical 9:16, natural handheld smartphone aesthetic, restrained charcoal clothing, bone wall and muted bronze details, lived-in ordinary home, soft window light. One fictional adult presenter aged about 30, warm unhurried delivery; invented appearance, no resemblance to a real person, celebrity or founder. Create illustrative brand storytelling, not testimonial footage. Natural skin texture, ordinary gestures, no transformation montage, no spiritual costume, no app UI or logos, no baked text. Maintain presenter, clothing, room, props and light across clips. Keep face within central frame; lower central area uncluttered for editor-added subtitles. No background music needed; clean dialogue and quiet room tone. Generate each shot separately; preserve timed speech through separate recorded or licensed synthetic voice track if lip sync is unreliable. Never clone a real voice without permission.",
+      "sources": [
+        "SHANIVAR_STANCE.md#founder-instructions-already-recorded",
+        "research/deep-foundation/FOUNDER_BRIEF_2026-09-29.md",
+        "docs/decisions/0014-routine-sadhana-shell-and-routine-v3.md",
+        "marketing/shanivar/voice-direction.md",
+        "marketing/shanivar/breathing-feature-marketing-update-2026-09-25.md"
+      ],
+      "learning_question": "Does a tangible crowded-list hook invite saves without implying that productivity or calm is guaranteed?",
+      "asset_paths": [],
+      "generator_tool": null,
+      "generator_model": null,
+      "rendered_at": null,
+      "approval_reference": null,
+      "platform_post_id": null
+    }
+  ]
+}

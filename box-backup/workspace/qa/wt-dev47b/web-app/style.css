@@ -1,0 +1,42 @@
+/* Adapted from marketing/shanivar/routine-v3-onboarding/website/style.css: V3 black/cream/sage/gold, system fonts. */
+:root{--bg:#0b0d0b;--surface:#151915;--line:#343a33;--ink:#f7f5ee;--muted:#c9cec7;--sage:#d8e5b7;--gold:#c9aa73;--on-sage:#111510;
+--serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Noto Serif","DejaVu Serif",serif;
+--sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans",sans-serif;--notice-bg:#28271d;--notice-line:#4a4632}
+@media (prefers-color-scheme:light){:root{--bg:#f2efe6;--surface:#fbf9f2;--line:#cbc7bb;--ink:#111510;--muted:#4a5148;--sage:#2f4a22;--gold:#7a5c2b;--on-sage:#f7f5ee;--notice-bg:#ebe6d2;--notice-line:#cbc7bb}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.6 var(--sans)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.15;margin:0 0 .6rem}
+h1{font-size:clamp(2rem,6vw,3rem)}h2{font-size:1.4rem}h3{font-size:1.15rem}
+p{margin:0 0 .8rem}
+.muted{color:var(--muted)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:2px}
+main:focus{outline:none}
+.skip{position:absolute;left:1rem;top:-10rem;background:var(--ink);color:var(--bg);padding:.7rem 1rem;border-radius:.5rem;font-weight:700;z-index:5}
+.skip:focus{top:1rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.notice{margin:0;padding:.6rem 1.25rem;background:var(--notice-bg);border-bottom:1px solid var(--notice-line);font-size:.92rem}
+.top{display:flex;gap:.8rem;align-items:baseline;padding:1rem 1.25rem;max-width:40rem;margin:0 auto}
+.brand{font-weight:750;letter-spacing:.16em;font-size:.95rem}.sub{color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-size:.78rem}
+main,.foot{max-width:40rem;margin:0 auto;padding:1rem 1.25rem 2rem}
+.foot{border-top:1px solid var(--line);font-size:.92rem;color:var(--muted);padding-bottom:3rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:.9rem;padding:1.1rem 1.2rem;margin:0 0 1rem}
+.list{list-style:none;margin:0;padding:0}
+.list li{border-top:1px solid var(--line);padding:.8rem 0}
+.list li:first-child{border-top:0}
+.src,.last{font-size:.88rem;color:var(--muted);margin:.1rem 0}
+button,.btn{font:inherit;min-height:48px;padding:.6rem 1.1rem;border-radius:.7rem;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+button.primary{background:var(--sage);color:var(--on-sage);border-color:var(--sage);font-weight:700}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:hover:not(:disabled){border-color:var(--gold)}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;margin:.9rem 0}
+.timer{font-family:var(--serif);font-size:2.6rem;margin:.6rem 0}
+fieldset{border:0;margin:.8rem 0;padding:0}legend{padding:0;font-weight:700;margin-bottom:.3rem}
+.opt{display:inline-flex;align-items:center;gap:.5rem;min-height:48px;margin-right:1rem}
+input[type=radio],input[type=checkbox]{width:1.3rem;height:1.3rem;accent-color:var(--sage)}
+input[type=text]{width:100%;font:inherit;padding:.7rem;border-radius:.6rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-height:48px}
+.echo{font-family:var(--serif);font-size:1.3rem;margin:0 0 1rem}
+.fine{font-size:.88rem;color:var(--muted)}
+.danger{border-color:#b5513f}
+@media (prefers-reduced-motion:no-preference){main>*{animation:in .25s ease-out}@keyframes in{from{opacity:0}to{opacity:1}}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

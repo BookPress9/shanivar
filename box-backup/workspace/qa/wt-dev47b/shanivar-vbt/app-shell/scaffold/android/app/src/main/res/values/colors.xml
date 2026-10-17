@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Saturn / discipline palette — see ../../../../../visual-identity.md §1
+  for full rationale. These tokens back the native-only screens (splash,
+  AlarmActivity) since the rest of the UI lives in the WebView and pulls
+  its palette from frontend/src/app/globals.css directly.
+-->
+<resources>
+    <color name="sv_void">#0A0A0C</color>
+    <color name="sv_lead">#2C2E33</color>
+    <color name="sv_iron">#4B4F56</color>
+    <color name="sv_ring_gold">#A68A4A</color>
+    <color name="sv_signal_amber">#D97706</color>
+    <color name="sv_restraint_red">#8A2E2E</color>
+    <color name="sv_bone">#E8E3D8</color>
+</resources>

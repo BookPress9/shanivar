@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shanivar — Saturn dark wireframes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="workspace-header">
+    <div>
+      <p class="workspace-kicker">SHANIVAR · PRODUCT DESIGN 01</p>
+      <h1>Structure around stillness.</h1>
+    </div>
+    <div class="legend" aria-label="Colour legend">
+      <span><i class="swatch bronze"></i> action</span>
+      <span><i class="swatch amber"></i> live enforcement</span>
+      <span><i class="swatch iron"></i> system structure</span>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <nav class="screen-rail" aria-label="Wireframe screens">
+      <p class="rail-label">CORE FLOW</p>
+      <button class="screen-link active" data-target="language"><span>01</span>Language</button>
+      <button class="screen-link" data-target="account"><span>02</span>Account</button>
+      <button class="screen-link" data-target="birth"><span>03</span>Birth context</button>
+      <button class="screen-link" data-target="permissions"><span>04</span>How it works</button>
+      <button class="screen-link" data-target="onboarding"><span>05</span>Arrival</button>
+      <button class="screen-link" data-target="today"><span>06</span>Today</button>
+      <button class="screen-link" data-target="focus"><span>07</span>Focus setup</button>
+      <button class="screen-link" data-target="locked"><span>08</span>Focus held</button>
+      <button class="screen-link" data-target="rhythm"><span>09</span>Dincharya</button>
+      <button class="screen-link" data-target="practice"><span>10</span>Practice</button>
+      <button class="screen-link" data-target="reflection"><span>11</span>Messages</button>
+      <button class="screen-link" data-target="movement"><span>12</span>Movement cue</button>
+      <button class="screen-link" data-target="alarm"><span>13</span>Alarm</button>
+      <button class="screen-link" data-target="complete"><span>14</span>Return</button>
+      <div class="rail-foot">
+        <span>← / → to move</span>
+        <span>390 × 844 Android</span>
+      </div>
+    </nav>
+
+    <section class="prototype-stage" aria-label="Interactive mobile wireframe">
+      <div class="phone-frame">
+        <div class="phone-speaker" aria-hidden="true"></div>
+        <div class="phone-screen">
+          <div class="status-bar"><span>6:28</span><span>▮▮▮ ᯤ 82%</span></div>
+
+          <section class="screen active" data-screen="language" data-title="Language" data-phase="ONBOARDING · CHOICE" data-note="Language comes before product explanation. Both paths keep the same hierarchy, controls and truth states." data-contract="Language can be changed later · no cultural assumptions from language alone">
+            <div class="screen-content language-content">
+              <p class="brandline">SHANIVAR / शनिवार</p>
+              <div class="saturn-mark language-ring" aria-hidden="true"><i></i></div>
+              <h2>Choose the voice<br>that feels natural.</h2>
+              <p class="lead-copy">You can change this later. The practice remains the same.</p>
+              <div class="language-options">
+                <button data-lang="en" data-go="account"><span><b>English</b><small>Continue in English</small></span><i>EN →</i></button>
+                <button data-lang="hi" data-go="account"><span><b>हिंदी</b><small>हिंदी में आगे बढ़ें</small></span><i>हि →</i></button>
+              </div>
+              <p class="faith-note"><span>शनिवार</span> honours the spirit of time, responsibility, and patient discipline associated with Shani. Faith is welcomed; belief is never required.</p>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="account" data-title="Account" data-phase="ONBOARDING · ACCESS" data-note="Three obvious paths: create an account, sign in, or preview without commitment. Benefits are explained before data entry." data-contract="Authentication error and recovery states use the existing backend contract">
+            <div class="screen-content setup-content">
+              <div class="back-row"><button data-go="language">←</button><span>SETUP · 1 OF 3</span><span>ACCOUNT</span></div>
+              <div class="setup-mark">Ⅱ</div>
+              <h2>Your place<br>in Shanivar.</h2>
+              <p class="lead-copy">An account keeps your rhythm, reflections, and practice history with you.</p>
+              <button class="primary-button" data-go="birth">Create my account <span>→</span></button>
+              <button class="outline-button setup-action" data-go="birth">I already have an account</button>
+              <div class="or-line"><span></span><b>OR</b><span></span></div>
+              <button class="quiet-button" data-go="birth">Explore first</button>
+              <p class="setup-foot">You can begin without an account. Cloud history and personalized daily notes require sign-in.</p>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="birth" data-title="Birth context" data-phase="ONBOARDING · OPTIONAL CONTEXT" data-note="Birth details are optional and skippable. The screen describes their actual use: making chart-based reflections more relevant." data-contract="Validate date, local time, timezone and location · astrology remains interpretive">
+            <div class="screen-content setup-content birth-content">
+              <div class="back-row"><button data-go="account">←</button><span>SETUP · 2 OF 3</span><span>OPTIONAL</span></div>
+              <p class="step-label">A MORE PERSONAL MIRROR</p>
+              <h2>Let the guidance<br>know your context.</h2>
+              <p class="lead-copy small">Birth details help Shanivar shape chart-based reflections around your time and place. They do not define you.</p>
+              <div class="form-stack">
+                <label><span>Date of birth</span><button>14 August 1991 <i>⌄</i></button></label>
+                <label><span>Time of birth</span><button>07:42 <i>⌄</i></button><small>Choose “I don’t know” if uncertain.</small></label>
+                <label><span>Birthplace</span><button>New Delhi, India <i>⌕</i></button></label>
+              </div>
+              <section class="privacy-note"><b>WHY WE ASK</b><p>Used for your chart context and stored with your account. Never used to target ads.</p></section>
+              <button class="primary-button" data-go="permissions">Continue with these details <span>→</span></button>
+              <button class="quiet-button" data-go="permissions">Skip for now</button>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="permissions" data-title="How it works" data-phase="ONBOARDING · TRUST" data-note="Explain the unusual capabilities plainly. Android permission screens appear only when the person enables the related feature." data-contract="Prime now · request at point of use · never gate core practice">
+            <div class="screen-content setup-content permissions-content">
+              <div class="back-row"><button data-go="birth">←</button><span>SETUP · 3 OF 3</span><span>CONTROL</span></div>
+              <h2>Strong structure.<br>Your choice.</h2>
+              <p class="lead-copy">Shanivar can hold a boundary when intention alone is tired.</p>
+              <div class="capability-list">
+                <article><span class="gate-icon">Ⅱ</span><div><b>Protect a focus window</b><p>Block only the apps and times you choose.</p></div><i>LATER</i></article>
+                <article><span class="sand-icon">⌛</span><div><b>Wake you into movement</b><p>Use steps or an optional private scene check.</p></div><i>LATER</i></article>
+                <article><span class="orbit-icon">◯</span><div><b>Offer daily direction</b><p>One reflection, one action, no endless feed.</p></div><i>READY</i></article>
+              </div>
+              <p class="tradition-note">In Indian tradition, Shani represents time, consequence, and patient discipline. Shanivar carries that spirit with respect—your faith and interpretation remain yours.</p>
+              <button class="primary-button" data-go="onboarding">I understand <span>→</span></button>
+              <p class="microcopy">No Android permission is requested on this screen.</p>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="onboarding" data-title="Arrival" data-phase="ONBOARDING · VALUE" data-note="The setup resolves into one clear promise and a three-part mental model before the person reaches Today." data-contract="No permission dialog · practice remains available without discipline access">
+            <div class="screen-content onboarding-content">
+              <p class="brandline">SHANIVAR / THE HYBRID MONK</p>
+              <div class="saturn-mark hero-ring" aria-hidden="true"><i></i></div>
+              <p class="step-label">01 · ATTENTION</p>
+              <h2>Your attention.<br>Back in your hands.</h2>
+              <p class="lead-copy">A daily rhythm for less scrolling, a morning that gets you moving, and space to know yourself.</p>
+              <div class="oath-list">
+                <div><b>01</b><span>Wake with a physical action</span></div>
+                <div><b>02</b><span>Protect a window of attention</span></div>
+                <div><b>03</b><span>Practice, reflect, return</span></div>
+              </div>
+              <div class="page-dots"><i class="active"></i><i></i><i></i></div>
+              <button class="primary-button" data-go="today">Enter today <span>→</span></button>
+              <p class="microcopy">You choose the structure. Practice is always available.</p>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="today" data-title="Today" data-phase="DAILY HOME · ORIENTATION" data-note="One primary action answers what to do now. Confirmed, local, and unavailable states are named instead of being blended together." data-contract="Server-confirmed note · native-confirmed protection · timezone-aware phase">
+            <div class="screen-content with-nav">
+              <div class="top-row"><div><p class="brandline">SATURDAY · 12 SEP</p><h2>Good morning,<br>Arjun.</h2></div><button class="avatar">A</button></div>
+              <div class="phase-line"><span class="vertical-rule"></span><p><b>Before the day gathers speed</b><br><small>Your morning boundary is available until 08:00</small></p></div>
+              <article class="primary-card">
+                <div class="card-top"><span class="tag">YOUR DIRECTION TODAY</span><span class="duration">PERSONAL</span></div>
+                <div class="mini-ring"><i></i></div>
+                <h3>Urgency is not<br>the same as importance.</h3>
+                <p>Before you answer, notice whose clock you are obeying.</p>
+                <button class="primary-button compact" data-go="reflection">Sit with this <span>→</span></button>
+                <button class="source-link">Why this today? · interpretive, not predictive</button>
+              </article>
+              <div class="status-card">
+                <span class="gate-icon">Ⅱ</span><div><b>Morning focus suggested</b><small>30 min · Instagram · adjustable</small></div><button data-go="focus">Review</button>
+              </div>
+              <button class="reflection-prompt" data-go="practice"><span>4-MINUTE PRACTICE</span><b>The two pauses of breath · VBT verse 24</b><i>→</i></button>
+            </div>
+            <nav class="bottom-nav"><button class="active">Today</button><button data-go="focus">Focus</button><button data-go="rhythm">Rhythm</button><button data-go="practice">Practice</button></nav>
+          </section>
+
+          <section class="screen" data-screen="focus" data-title="Focus setup" data-phase="DISCIPLINE · REVIEW" data-note="The user sees exactly what will be blocked, for how long, and which native permissions are missing before anything starts." data-contract="Start label changes to protected only after native confirmation">
+            <div class="screen-content with-nav">
+              <div class="back-row"><button data-go="today">←</button><span>FOCUS WINDOW</span><span>1 OF 2</span></div>
+              <h2>Choose the<br>boundary.</h2>
+              <p class="lead-copy small">A focus window is a commitment you can inspect before it closes.</p>
+              <div class="window-suggestions">
+                <button class="active"><b>Morning</b><small>30 min after waking</small></button>
+                <button><b>Night</b><small>45 min before sleep</small></button>
+                <button><b>Custom</b><small>Choose a transition</small></button>
+              </div>
+              <div class="duration-dial">
+                <div class="dial-ring"><span><b>30</b><small>MINUTES</small></span></div>
+                <div class="dial-controls"><button>−</button><span>Ends at 07:04</span><button>+</button></div>
+              </div>
+              <section class="structural-card">
+                <div class="card-top"><span class="tag">BLOCKED APPS</span><button class="text-button">Edit</button></div>
+                <div class="app-row"><span class="app-icon">◎</span><div><b>Instagram</b><small>Unavailable until 07:04</small></div><span class="selected-mark">✓</span></div>
+              </section>
+              <section class="permission-strip"><span class="gate-icon">Ⅱ</span><div><b>Android access needed</b><small>Usage access · display over apps</small></div><span>→</span></section>
+              <button class="primary-button" data-go="locked">Review & start <span>→</span></button>
+              <p class="microcopy">Night suggestions follow a 30–60 minute screen-free range. Morning timing adapts from your choices.</p>
+            </div>
+            <nav class="bottom-nav"><button data-go="today">Today</button><button class="active">Focus</button><button data-go="rhythm">Rhythm</button><button data-go="practice">Practice</button></nav>
+          </section>
+
+          <section class="screen discipline-live" data-screen="locked" data-title="Focus held" data-phase="DISCIPLINE · LIVE" data-note="Amber appears only while enforcement is active. The surface feels latched and still; there is no ambient pulse." data-contract="Countdown and blocked-app status come from the native discipline engine">
+            <div class="screen-content lock-content">
+              <div class="live-banner"><span class="live-dot"></span>PROTECTION CONFIRMED <span>ANDROID</span></div>
+              <div class="lock-ring"><div><span>FOCUS HELD</span><b>24:18</b><small>ENDS 07:04</small></div></div>
+              <h2>The boundary<br>is holding.</h2>
+              <p class="lead-copy small">Instagram remains unavailable. Calls, messages, and the rest of your phone are open.</p>
+              <section class="locked-app"><span class="app-icon">◎</span><div><b>Instagram</b><small>Blocked · native status confirmed</small></div><span class="barred">—</span></section>
+              <div class="stillness-actions">
+                <button data-go="practice"><span>PRACTICE</span><b>Enter four quiet minutes</b><i>→</i></button>
+                <button data-go="reflection"><span>MESSAGES</span><b>Reflect with Shanivar</b><i>→</i></button>
+              </div>
+              <button class="end-link">End focus early</button>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="rhythm" data-title="Rhythm" data-phase="SCHEDULING · TRUTH" data-note="The day is shown as a small sequence of commitments. Saved preferences and system-confirmed schedules use visibly different status language." data-contract="Never call a saved preference an active alarm or delivered message">
+            <div class="screen-content with-nav">
+              <div class="top-row"><div><p class="brandline">YOUR RHYTHM</p><h2>Built around<br>your day.</h2></div><button class="icon-button">⋮</button></div>
+              <p class="lead-copy small">Change the structure when life changes. Night schedules are welcome here.</p>
+              <div class="timeline">
+                <article class="timeline-item confirmed"><time>06:30</time><i></i><div><span>WAKE</span><b>Morning light</b><small>Alarm confirmed · 18 steps daily</small></div><button data-go="movement">›</button></article>
+                <article class="timeline-item"><time>07:00</time><i></i><div><span>FOCUS</span><b>30 minutes</b><small>Instagram · ready to start</small></div><button>›</button></article>
+                <article class="timeline-item"><time>07:15</time><i></i><div><span>DAILY NOTE</span><b>One clear direction</b><small>App notification · chosen time</small></div><button>›</button></article>
+                <article class="timeline-item quiet"><time>22:30</time><i></i><div><span>QUIET</span><b>Nothing asks for you</b><small>Until 06:30 tomorrow</small></div><button>›</button></article>
+              </div>
+              <button class="outline-button">Edit rhythm</button>
+              <p class="save-state">✓ Saved on this device · 06:27</p>
+            </div>
+            <nav class="bottom-nav"><button data-go="today">Today</button><button data-go="focus">Focus</button><button class="active">Rhythm</button><button data-go="practice">Practice</button></nav>
+          </section>
+
+          <section class="screen contemplative" data-screen="practice" data-title="Practice" data-phase="PRACTICE · GUIDED" data-note="The structural chrome stays still while the passage gets more air, lighter type, and a softer bronze ring. The source remains one tap away." data-contract="Live lock status · sourced passage · pause remains reachable">
+            <div class="screen-content practice-content">
+              <div class="practice-header"><button data-go="today">× EXIT</button><span class="lock-pill"><i></i>FOCUS HELD</span><span>2 / 6</span></div>
+              <div class="practice-progress"><i class="done"></i><i class="active"></i><i></i><i></i><i></i><i></i></div>
+              <p class="step-label">PASSAGE 02 · THE PAUSE</p>
+              <div class="practice-ring"><span>03:12</span></div>
+              <blockquote>At the end of the inhale, notice the brief pause before the breath turns.</blockquote>
+              <p class="practice-guidance">Do not hold it. Let the pause reveal itself.</p>
+              <button class="citation">Source · VBT verse 24 <span>⌄</span></button>
+              <div class="audio-row"><button>◁</button><span><i></i></span><button>♬</button></div>
+              <button class="primary-button meditative">Pause practice</button>
+            </div>
+          </section>
+
+          <section class="screen contemplative" data-screen="reflection" data-title="Messages from Shanivar" data-phase="REFLECTION · RESPONSE" data-note="The next card is earned by a response, creating a stopping point without turning reflection into another endless feed." data-contract="Plain text only · response saved before advance · provenance visible">
+            <div class="screen-content reflection-content">
+              <div class="back-row"><button data-go="today">←</button><span>MESSAGES FROM SHANIVAR</span><span>2 / 5</span></div>
+              <div class="context-line"><span class="mini-orbit"></span><p><b>General reflection</b><small>Focus protected · chart context unavailable</small></p></div>
+              <article class="message-card">
+                <p class="sender">SHANIVAR</p>
+                <p class="message">The first reach of the morning is rarely about the object in your hand.</p>
+                <h3>What feeling arrives just before you open the feed?</h3>
+                <button class="why-link">Why this reflection? ⌄</button>
+              </article>
+              <p class="response-label">CHOOSE WHAT FITS</p>
+              <div class="response-grid"><button>This fits</button><button>Not today</button><button>I'm unsure</button><button>Prefer not to share</button></div>
+              <button class="write-response">Write in your own words <span>＋</span></button>
+              <button class="primary-button" disabled>Continue after responding</button>
+              <p class="microcopy">Your response is private and optional.</p>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="movement" data-title="Movement cue" data-phase="ALARM · SETUP" data-note="The person chooses a familiar destination. Steps are the dependable default; camera context is an optional second signal." data-contract="ACTIVITY_RECOGNITION at point of use · on-device image processing · accessible fallback">
+            <div class="screen-content movement-content">
+              <div class="back-row"><button data-go="rhythm">←</button><span>WAKE ALARM</span><span>MOVEMENT</span></div>
+              <p class="step-label">CHOOSE A MORNING CUE</p>
+              <h2>Where will you<br>walk to?</h2>
+              <p class="lead-copy small">Pick somewhere outside arm's reach. Shanivar counts movement after the alarm begins.</p>
+              <div class="cue-list">
+                <button class="selected"><span class="cue-symbol">☼</span><div><b>Morning light</b><small>Walk 18 steps toward a window or balcony</small></div><i>✓</i></button>
+                <button><span class="cue-symbol">⌂</span><div><b>Kitchen</b><small>Walk 16 steps · optional scene check</small></div><i></i></button>
+                <button><span class="cue-symbol">↟</span><div><b>Washroom</b><small>Walk 12 steps · movement only</small></div><i></i></button>
+                <button><span class="cue-symbol">＋</span><div><b>Choose my own</b><small>Set steps and an accessible alternative</small></div><i></i></button>
+              </div>
+              <section class="privacy-note movement-privacy"><b>PRIVATE BY DEFAULT</b><p>If you add a scene check, recognition happens on this phone. The image is discarded after verification.</p></section>
+              <button class="primary-button" data-go="alarm">Use this movement cue <span>→</span></button>
+              <button class="quiet-button">I need a non-walking option</button>
+            </div>
+          </section>
+
+          <section class="screen alarm-live" data-screen="alarm" data-title="Wake alarm" data-phase="ALARM · VERIFIED ACTION" data-note="The alarm uses the same rare amber as live focus, a discrete segmented ring, and one physical action. It avoids wellness decoration." data-contract="Full-screen native activity · cannot dismiss until verification succeeds">
+            <div class="screen-content alarm-content">
+              <div class="alarm-top"><span>SHANIVAR ALARM</span><span>SAT · 12 SEP</span></div>
+              <div class="alarm-ring"><i></i><i></i><i></i><i></i><i></i><i></i><div><b>06:30</b><span>WAKE</span></div></div>
+              <p class="step-label amber-text">YOUR CHOSEN ACTION</p>
+              <h2>Stand up.<br>Find the light.</h2>
+              <p class="lead-copy">Walk toward your morning window. Keep the phone with you.</p>
+              <div class="step-progress"><div><b>07</b><span>/ 18 STEPS</span></div><i><span></span></i><small>Movement detected · keep walking</small></div>
+              <button class="alarm-button">Continue moving <span>→</span></button>
+              <button class="scene-option">Optional: confirm morning light with camera</button>
+              <p class="alarm-foot">The image is processed on-device and is not saved.</p>
+            </div>
+          </section>
+
+          <section class="screen contemplative" data-screen="complete" data-title="Return" data-phase="COMPLETION · RELEASE" data-note="Completion reports what actually happened, releases the enforcement state, and gives the person a quiet way back into the day." data-contract="Full-session lock confirmation · server-confirmed streak remains separate">
+            <div class="screen-content complete-content">
+              <p class="brandline">PRACTICE COMPLETE</p>
+              <div class="complete-ring"><i></i><span>✓</span></div>
+              <h2>Carry less<br>into the day.</h2>
+              <p class="lead-copy">You stayed for four minutes. Notice what does not need to follow you from this room.</p>
+              <section class="result-card"><div><span>DISCIPLINE</span><b>Maintained</b><small>Focus held for the full practice</small></div><span class="result-mark">Ⅱ</span></section>
+              <section class="reflection-line"><span>ONE LINE FOR YOURSELF</span><button>What became quieter? <i>＋</i></button></section>
+              <button class="primary-button" data-go="today">Return to my day <span>→</span></button>
+              <p class="server-state">Streak update waiting for account confirmation.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div class="flow-controls"><button id="previous" aria-label="Previous screen">←</button><div id="flowDots"></div><button id="next" aria-label="Next screen">→</button><button id="languageToggle" class="demo-language" aria-label="Switch prototype language">हिंदी</button></div>
+    </section>
+
+    <aside class="annotation-panel">
+      <p class="annotation-index" id="annotationIndex">SCREEN 01 / 09</p>
+      <p class="annotation-phase" id="annotationPhase">ONBOARDING · VALUE</p>
+      <h2 id="annotationTitle">Arrival</h2>
+      <p id="annotationNote">State the promise before asking for commitment.</p>
+      <div class="contract-box"><span>PRODUCT CONTRACT</span><p id="annotationContract"></p></div>
+      <div class="design-rules">
+        <span>VISUAL RULES</span>
+        <ul>
+          <li>Void base, lead surfaces, iron dividers</li>
+          <li>Bronze guides; amber means enforcement</li>
+          <li>4–10 px corners for discipline surfaces</li>
+          <li>Rings express time, closure, completion</li>
+          <li>Stillness gets space rather than glow</li>
+        </ul>
+      </div>
+      <p class="annotation-foot">WIREFRAME V1 · 12 SEP 2026</p>
+    </aside>
+  </main>
+  <script src="prototype.js"></script>
+</body>
+</html>

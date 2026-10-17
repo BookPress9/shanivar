@@ -1,0 +1,20 @@
+## Changelog
+- **v2 · 17 Oct 2026, 22:46 (Europe/Berlin)**, founder decision:
+  - **Naming rule:** public copy may name Shani/Saturn but never a classical text (Gita, Upanishads, Vishnu Purana or other Puranas, Yoga Sutras, etc.) or any teacher. Wisdom is paraphrased in Shanivar's voice.
+  - Every reel's "Source and interpretation" field is relabelled **INTERNAL: not for public copy** and keeps the exact attributions.
+  - Public-facing fields rewritten in R03, R05, R06, R07, R09, R10 and R11. R01, R02, R04, R08 and R12 were checked: they name no text and need no change.
+  - Claim fixes:
+    - "Enter Flow" is kept out of public copy (it never appeared).
+    - R10 no longer quotes "Make room for one uninterrupted hour."
+    - R11 "you choose what reaches you" became "you choose which apps can wait".
+    - R07's missed-day research line is framed as third-party habit research, not a product result.
+    - R09 "Shanivar starts with…" became "is being built to begin with…".
+  - Supporting edits:
+    - The positioning page gets a Naming rule section.
+    - Creator briefs (all creators, plus CB5's source pack marked internal) are updated.
+    - The UGC template QC gate is updated.
+    - Calendar: the Day 9 carousel and the R06 pinned comment no longer name a text.
+    - Internal labels added on Phases, Territories and Research.
+  - The bio was checked and is compliant.
+  - Nothing published.
+- **v1 · 17 Oct 2026:** first full campaign.
