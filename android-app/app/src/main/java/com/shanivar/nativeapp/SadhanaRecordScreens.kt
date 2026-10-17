@@ -23,11 +23,12 @@ import androidx.compose.ui.unit.sp
     HorizontalDivider(color = Sad.Line)
 }
 
-@Composable fun RecordScreen(c: SadhanaController, today: java.time.LocalDate) {
+@Composable fun RecordScreen(c: SadhanaController, today: java.time.LocalDate, sync: com.shanivar.nativeapp.sync.AppSync = com.shanivar.nativeapp.sync.AppSync.current) {
     val r = c.record
     STop("←", "PRACTICE RECORD", "", onLeft = { c.go(SadhanaView.HOME) })
     SHead("FACTUAL HISTORY", "What you gave\nyour practice.", "Active time, attempts and independent reports stay separate.")
     SStats(r.attemptCount, r.activeMinutes, r.independentCount, listOf("ATTEMPTS", "ACTIVE MIN", "SELF-REPORTED"))
+    com.shanivar.nativeapp.sync.SyncStatusLine(sync) // DEV-47: renders nothing when sync is off
     if (r.attempts.isEmpty()) Text("No app-observed attempts yet.", style = Sad.Body)
     r.attempts.reversed().forEach { a ->
         val d = java.time.Instant.ofEpochMilli(a.startedAtUtc).atZone(java.time.ZoneId.of(a.zoneId)).toLocalDate()

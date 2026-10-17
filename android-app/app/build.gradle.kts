@@ -16,6 +16,8 @@ android {
         buildConfigField("String", "API_URL", "\"https://api.thehybridmonk.com/api\"")
         // Supabase sync flag: empty URL = sync off (default). Set -PsupabaseUrl / -PsupabaseAnonKey for local E2E only.
         buildConfigField("String", "SUPABASE_URL", "\"${(project.findProperty("supabaseUrl") as String?) ?: ""}\"")
+        // DEV-47: single sync switch. Debug only until DEV-44 flavours; sync also stays off when the URL is empty.
+        buildConfigField("boolean", "SYNC_ENABLED", "false")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${(project.findProperty("supabaseAnonKey") as String?) ?: ""}\"")
         // MVP streamline task (package 1, 2026-09-18): the one explicit switch between the
         // simplified single-Home launch surface (ShanivarApp's `HomeScreen`) and the earlier
@@ -44,6 +46,7 @@ android {
         debug {
             buildConfigField("boolean", "INITIATION_V1", "true")
             buildConfigField("boolean", "SADHANA_V1", "true")
+            buildConfigField("boolean", "SYNC_ENABLED", "true")
             applicationIdSuffix = ".dev"
             val debugApi = providers.gradleProperty("shanivarApiUrl").getOrElse("http://10.0.2.2:5000/api")
             require(debugApi.matches(Regex("https?://[a-zA-Z0-9.\\-:/]+"))) { "Invalid shanivarApiUrl" }

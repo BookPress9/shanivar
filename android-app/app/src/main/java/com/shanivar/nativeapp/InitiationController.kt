@@ -127,6 +127,8 @@ class InitiationController(
     private val uiStore: DraftStore,
     private val ports: InitiationPorts,
     private val auth: InitiationAuthCoordinator = InitiationAuthCoordinator(draftRepo),
+    /** DEV-47: leaving Proposition as a guest starts the silent guest sign-in (AppSync.onGuestChosen). Never blocks. */
+    private val onGuestReady: () -> Unit = {},
 ) {
     /** Compose-observable: every assignment notifies (neverEqualPolicy), so screens recompose after any action. */
     private var uiState by mutableStateOf(InitiationUi(), neverEqualPolicy())
@@ -193,7 +195,10 @@ class InitiationController(
         UnconfiguredEmailCodeAuth.requestCode(email).onFailure { fail(it.message ?: "Email sign-in is not available yet.") }
     }
 
-    fun ready() = reach(InitiationScreen.ANCHORS)
+    fun ready() {
+        if (draftRepo.draft.identityMode == IdentityMode.GUEST) runCatching { onGuestReady() }
+        reach(InitiationScreen.ANCHORS)
+    }
 
     // ---- Anchors ----
     suspend fun saveAnchors(wake: LocalTime?, sleep: LocalTime?) {
