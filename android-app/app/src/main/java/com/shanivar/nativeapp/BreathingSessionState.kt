@@ -183,6 +183,7 @@ data class BreathingRecord(
     val practisedAtEpochMillis: Long? = null,
 )
 
+/** [BLOCK_OVERLAY] is no longer opened by any host (DEV-89); it stays so older journal rows still parse. */
 enum class BreathingEntry { HOME, BEFORE_FOCUS, BLOCK_OVERLAY, AFTER_ALARM, PREVIEW }
 
 enum class BreathingFeedback { HELPED, NEUTRAL, FELT_WORSE }
