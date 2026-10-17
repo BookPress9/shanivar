@@ -97,4 +97,6 @@ dependencies {
 tasks.withType<Test>().configureEach {
     (project.findProperty("supabaseE2eUrl") as String?)?.let { systemProperty("supabase.e2e.url", it) }
     (project.findProperty("supabaseE2eAnonKey") as String?)?.let { systemProperty("supabase.e2e.anon", it) }
+    // DEV-54 AC5: the payload/SQL contract test reads the migrations, so a schema change reruns it
+    inputs.dir(rootProject.file("../supabase/migrations")).withPropertyName("supabaseMigrations").withPathSensitivity(PathSensitivity.RELATIVE)
 }

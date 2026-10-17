@@ -25,7 +25,8 @@ import java.util.Properties
  *
  * Wire contract (handoffs/backend-to-frontend-dev45-contract.md, agreed):
  * - Every request: `apikey: <anon key>` + `Authorization: Bearer <user access token>`. Nothing else.
- * - Upsert: POST /rest/v1/<table>?on_conflict=user_id,id, Prefer resolution=merge-duplicates, body = the
+ * - Upsert: POST /rest/v1/<table>?on_conflict=user_id,id (reflection: user_id,attempt_id), Prefer
+ *   resolution=merge-duplicates (orbit, append-only since DEV-54: resolution=ignore-duplicates), body = the
  *   outbox payload plus "client_updated_at" (ISO-8601 UTC, stamped at enqueue). The client never sends user_id.
  * - Delete: POST /rest/v1/tombstones?on_conflict=user_id,kind,id with {kind,id,client_updated_at}; the
  *   server deletes the row (supabase/migrations/20261018090000_dev45_sync_conflicts.sql).
@@ -36,16 +37,49 @@ import java.util.Properties
 object SupabaseTables {
     fun forKind(kind: String): String? = when (kind) {
         "attempt" -> "practice_attempts"; "self_report" -> "self_reports"; "routine" -> "routine_plans"
-        "window" -> "protection_windows"; "orbit" -> "orbit_events"; else -> null
+        "window" -> "protection_windows"; "orbit" -> "orbit_events"; "reflection" -> "practice_reflections"; else -> null
     }
-    /** Kinds the tombstones table accepts (supabase check constraint). Routine is never deleted. */
-    val tombstoneKinds = setOf("attempt", "self_report", "window", "orbit")
+    /** PostgREST on_conflict target per kind: the table's primary key minus nothing (reflections key on attempt_id). */
+    fun conflictTarget(kind: String): String = if (kind == "reflection") "user_id,attempt_id" else "user_id,id"
+    /** DEV-54: orbit_events is append-only (no update privilege), so a replay is ignored, never merged. */
+    fun appendOnly(kind: String): Boolean = kind == "orbit"
+    /**
+     * Kinds the tombstones table accepts (supabase check constraint). Routine is never deleted; DEV-54 made orbit
+     * append-only (delete only via account cascade) and added reflection (cleared reflection = tombstone by attempt id).
+     */
+    val tombstoneKinds = setOf("attempt", "self_report", "window", "reflection")
 }
 
 object SyncPayloads {
-    private fun q(s: String?) = if (s == null) "null" else "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
+    private fun q(s: String?): String {
+        if (s == null) return "null"
+        val b = StringBuilder(s.length + 2).append('"')
+        for (c in s) when {
+            c == '"' -> b.append("\\\""); c == '\\' -> b.append("\\\\")
+            c == '\n' -> b.append("\\n"); c == '\r' -> b.append("\\r"); c == '\t' -> b.append("\\t")
+            c < ' ' -> b.append(String.format("\\u%04x", c.code))
+            else -> b.append(c)
+        }
+        return b.append('"').toString()
+    }
     private fun ts(ms: Long?) = q(ms?.let { Instant.ofEpochMilli(it).toString() })
-    fun attempt(a: SadhanaAttempt) = """{"id":${q(a.id)},"practice_id":${q(a.practiceId)},"content_version":${q(a.contentVersion)},"started_at":${ts(a.startedAtUtc)},"zone_id":${q(a.zoneId)},"intended_seconds":${a.intendedSeconds},"active_ms":${a.activeMillis},"outcome":${q(a.outcome.name)},"ended_at":${ts(a.endedAtUtc)}}"""
+
+    /** Server cap on practice_attempts.events (octet_length(events::text) <= 32768); keep a margin for jsonb spacing. */
+    const val EVENTS_MAX_BYTES = 32_000
+    fun attempt(a: SadhanaAttempt) = """{"id":${q(a.id)},"practice_id":${q(a.practiceId)},"content_version":${q(a.contentVersion)},"started_at":${ts(a.startedAtUtc)},"zone_id":${q(a.zoneId)},"intended_seconds":${a.intendedSeconds},"active_ms":${a.activeMillis},"outcome":${q(a.outcome.name)},"ended_at":${ts(a.endedAtUtc)},"anchor":${q(a.anchor.name)},"anchor_changes":${a.anchorChanges},"events":${events(a.events)}}"""
+
+    /**
+     * DEV-54: attempt events as a JSON array of {type, at, active_seconds, detail}, written with jsonb's own spacing
+     * so the byte count here is the byte count the server checks. Over the cap, the oldest middle events are
+     * dropped: the first (start) and the most recent events are kept.
+     */
+    fun events(list: List<SadhanaEvent>): String {
+        val items = list.map { """{"type": ${q(it.type.name)}, "at": ${ts(it.atUtcMillis)}, "active_seconds": ${it.activeSeconds}, "detail": ${q(it.detail)}}""" }.toMutableList()
+        fun size() = 2 + items.sumOf { it.toByteArray(Charsets.UTF_8).size } + 2 * maxOf(0, items.size - 1)
+        while (items.size > 2 && size() > EVENTS_MAX_BYTES) items.removeAt(1)
+        while (items.isNotEmpty() && size() > EVENTS_MAX_BYTES) items.removeAt(0)
+        return items.joinToString(", ", "[", "]")
+    }
     /** DEV-38: a deleted row, queued under the same kind:id key as its upsert (op = DELETE in the outbox). */
     fun tombstone(id: String) = """{"id":${q(id)},"deleted":true}"""
     fun isTombstone(payload: String) = payload.startsWith("{\"id\":") && payload.endsWith(",\"deleted\":true}")
@@ -57,7 +91,11 @@ object SyncPayloads {
         val json = org.json.JSONObject(RoutinePlanCodec.encode(plan)).apply { remove("protectedPackages") }
         return """{"id":"current","schema_version":${RoutinePlanV1.SCHEMA_VERSION},"plan":$json}"""
     }
-    fun selfReport(r: IndependentPracticeRecord) = """{"id":${q(r.id)},"local_date":${q(r.localDate.toString())},"intended_minutes":${r.intendedMinutes ?: "null"},"actual_minutes":${r.actualMinutes ?: "null"},"practice_id":${q(r.practiceId)}}"""
+    fun selfReport(r: IndependentPracticeRecord) = """{"id":${q(r.id)},"local_date":${q(r.localDate.toString())},"intended_minutes":${r.intendedMinutes ?: "null"},"actual_minutes":${r.actualMinutes ?: "null"},"practice_id":${q(r.practiceId)},"private_by_default":${r.privateByDefault}}"""
+    /** DEV-54 orbit_events row (append-only). local_date carries the app's OrbitEvent.occurrenceDate. */
+    fun orbit(e: OrbitEvent) = """{"id":${q(e.id)},"type":${q(e.type.name)},"local_date":${q(e.occurrenceDate.toString())},"source":${q(e.source.name)},"entity_id":${q(e.entityId)}}"""
+    /** DEV-54 practice_reflections row, keyed by attempt_id (outbox kind "reflection", id = attemptId). */
+    fun reflection(r: PracticeReflectionRecord) = """{"attempt_id":${q(r.attemptId)},"usefulness":${q(r.usefulness?.name?.lowercase())},"note":${q(r.note)}}"""
 
     internal fun quote(s: String) = q(s)
     internal fun isoUtc(ms: Long) = Instant.ofEpochMilli(ms).toString()
@@ -326,8 +364,9 @@ class SupabaseOutboxSender(
             when {
                 item.op == OutboxOp.DELETE -> deleteViaTombstone(item, bearer)
                 item.kind == "routine" -> putRoutine(item, bearer)
-                else -> classify(http.call("POST", "/rest/v1/$table?on_conflict=user_id,id",
-                    SyncPayloads.withClientTime(item.payload, item.clientUpdatedAtMs), bearer, UPSERT))
+                else -> classify(http.call("POST", "/rest/v1/$table?on_conflict=${SupabaseTables.conflictTarget(item.kind)}",
+                    SyncPayloads.withClientTime(item.payload, item.clientUpdatedAtMs), bearer,
+                    if (SupabaseTables.appendOnly(item.kind)) APPEND else UPSERT))
             }
         } catch (e: IOException) {
             SendResult.Retry(null)
@@ -366,6 +405,7 @@ class SupabaseOutboxSender(
         const val PARK_RPC_MISSING = "put_routine_missing"
         const val PARK_CONFLICT = "revision_conflict"
         private val UPSERT = mapOf("Prefer" to "resolution=merge-duplicates,return=minimal")
+        private val APPEND = mapOf("Prefer" to "resolution=ignore-duplicates,return=minimal")
 
         /** AC4 error classes. Codes only, never payloads. */
         fun classify(r: HttpReply): SendResult = when {

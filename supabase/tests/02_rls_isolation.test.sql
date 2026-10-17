@@ -2,7 +2,7 @@
 -- User A acts through role authenticated with a JWT sub; user B's rows are seeded by postgres.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(43);
+select plan(44);
 
 insert into auth.users (id, email) values
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@test.local'),
@@ -45,14 +45,14 @@ select is_empty($$ update public.routine_plans set plan = '{"hacked":1}' where u
 select is_empty($$ update public.protection_windows set enabled = false where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot update B protection_windows');
 select is_empty($$ update public.practice_attempts set active_ms = 1 where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot update B practice_attempts');
 select is_empty($$ update public.self_reports set note = 'x' where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot update B self_reports');
-select is_empty($$ update public.orbit_events set source = 'x' where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot update B orbit_events');
+select throws_ok($$ update public.orbit_events set source = 'x' where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, '42501', null, 'A cannot update B orbit_events (append-only, DEV-54)');
 
 -- A cannot delete B's rows
 select is_empty($$ delete from public.routine_plans where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot delete B routine_plans');
 select is_empty($$ delete from public.protection_windows where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot delete B protection_windows');
 select is_empty($$ delete from public.practice_attempts where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot delete B practice_attempts');
 select is_empty($$ delete from public.self_reports where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot delete B self_reports');
-select is_empty($$ delete from public.orbit_events where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, 'A cannot delete B orbit_events');
+select throws_ok($$ delete from public.orbit_events where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' returning 1 $$, '42501', null, 'A cannot delete B orbit_events (cascade only, DEV-54)');
 
 -- user_id cannot be changed (neither to B nor to an unknown id)
 select throws_ok($$ update public.routine_plans set user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' $$, '42501', null, 'A cannot move own routine_plan to B');
@@ -106,7 +106,7 @@ update public.routine_plans set plan = '{"v":2}', created_at = '2030-01-01', upd
 -- PostgREST-style upsert (merge-duplicates) of an existing self_report
 insert into public.self_reports (id, local_date, note) values ('sr1', current_date, 'second write')
   on conflict (user_id, id) do update set note = excluded.note, local_date = excluded.local_date;
-update public.orbit_events set created_at = '2030-01-01';
+select throws_ok($$ update public.orbit_events set created_at = '2030-01-01' $$, '42501', null, 'orbit_events cannot be updated at all (DEV-54)');
 select results_eq($$ select created_at, updated_at from public.routine_plans $$, $$ values ('2001-01-01'::timestamptz, now()) $$, 'update bumps updated_at and keeps created_at');
 select results_eq($$ select created_at, updated_at, note from public.self_reports $$, $$ values ('2001-01-01'::timestamptz, now(), 'second write'::text) $$, 'upsert bumps updated_at and keeps created_at');
 select results_eq($$ select created_at from public.orbit_events $$, $$ values ('2001-01-01'::timestamptz) $$, 'orbit_events created_at cannot be rewritten');

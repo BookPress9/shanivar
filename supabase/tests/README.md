@@ -19,13 +19,16 @@ Run against the LOCAL stack only: `supabase start && supabase db reset && supaba
 items 1-4, so a new table cannot ship without the baseline.
 
 Items 5-7 are only partly guarded automatically:
-- Item 5: `03_client_updated_at.test.sql` checks `client_updated_at` on the five sync tables it names
-  (routine_plans, protection_windows, practice_attempts, self_reports, orbit_events). A new synced table
+- Item 5: `03_client_updated_at.test.sql` checks `client_updated_at` on the sync tables it names
+  (routine_plans, protection_windows, practice_attempts, self_reports, orbit_events, practice_reflections). A new synced table
   must be added to that list by hand.
-- Item 6, size caps: `04_size_caps.test.sql` tests the specific DEV-42 caps on those five tables only. It
+- Item 6, size caps: `04_size_caps.test.sql` tests the specific DEV-42 caps on the five DEV-42 tables only
+  (DEV-54 caps: `07_sadhana_record.test.sql`). It
   does not detect a new table without caps; each new table needs its own cap tests.
 - Item 6, privileges: `05_privileges.test.sql` iterates over every table in `public`: anon has no
   privilege on any table, and authenticated has no TRUNCATE/REFERENCES/TRIGGER on any table. That
-  authenticated keeps select/insert/update/delete is checked for the five named tables only.
+  authenticated keeps select/insert/update/delete is checked for the tables it names (routine_plans,
+  protection_windows, practice_attempts, self_reports, practice_reflections); orbit_events is append-only
+  since DEV-54 and is checked for select + insert only.
 - Item 7: no guard; each new table needs its own isolation test file (as `02_rls_isolation.test.sql`
-  does for the five tables).
+  does for the five DEV-42 tables and `07_sadhana_record.test.sql` for practice_reflections).
