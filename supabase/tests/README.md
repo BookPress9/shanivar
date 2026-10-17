@@ -16,4 +16,16 @@ Run against the LOCAL stack only: `supabase start && supabase db reset && supaba
 7. A pgTAP file here proving cross-user isolation for the new table.
 
 `01_baseline_guard.test.sql` iterates over every table in `public` and fails while any table misses
-items 1-4, so a new table cannot ship without the baseline. Items 5-6 have their own guard files.
+items 1-4, so a new table cannot ship without the baseline.
+
+Items 5-7 are only partly guarded automatically:
+- Item 5: `03_client_updated_at.test.sql` checks `client_updated_at` on the five sync tables it names
+  (routine_plans, protection_windows, practice_attempts, self_reports, orbit_events). A new synced table
+  must be added to that list by hand.
+- Item 6, size caps: `04_size_caps.test.sql` tests the specific DEV-42 caps on those five tables only. It
+  does not detect a new table without caps; each new table needs its own cap tests.
+- Item 6, privileges: `05_privileges.test.sql` iterates over every table in `public`: anon has no
+  privilege on any table, and authenticated has no TRUNCATE/REFERENCES/TRIGGER on any table. That
+  authenticated keeps select/insert/update/delete is checked for the five named tables only.
+- Item 7: no guard; each new table needs its own isolation test file (as `02_rls_isolation.test.sql`
+  does for the five tables).
