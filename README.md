@@ -1,6 +1,6 @@
 # Shanivar daily GitHub checkpoint
 
-Generated Saturday, 17 October 2026 at 23:17:22 CEST (Europe/Berlin); UTC 2026-10-17T21:17:22.063Z.
+Generated Saturday, 17 October 2026 at 23:29:33 CEST (Europe/Berlin); UTC 2026-10-17T21:29:33.178Z.
 
 Start here: [current Codex handoff](https://github.com/BookPress9/shanivar/blob/codex/continuity-2026-10-17/docs/HANDOFF_NEXT.md).
 Agent-box archive: [box-backup status](https://github.com/BookPress9/shanivar/blob/box-backup/SHANIVAR_STATUS.md).
@@ -18,7 +18,9 @@ Contained in main does not establish that tests passed or a feature was released
 | Branch | Commit | Ahead | Behind | Git relationship |
 |---|---|---|---|---|
 | backup/dev-54-sadhana-record-schema-20261017 | a2a9e23737903a94999a0e7b44380af6f36872d8 | 13 | 0 | review / integration pending |
+| backup/windows-local-2026-10-17 | bd6bb1c45b6642e78305670367fd9c17553b3de3 | 1 | 83 | review / integration pending |
 | box-backup | 89b935bbb8b2a8d23f679f8f36cc4d6a8f3415ec | n/a | n/a | separate history (archive/status) |
+| codex/continuity-2026-10-17 | 7cf3aba82a7b1adbf9f07750860cfb84221882a1 | 22 | 0 | review / integration pending |
 | dev-38-outbox-gaps | 20fb519c943c125b6b0d11c2bd41d4d3d443db68 | 2 | 0 | review / integration pending |
 | dev-39-techniques-safety | 8e122a80caea6fa3e5ed567e588e1b681600632b | 1 | 0 | review / integration pending |
 | dev-42-schema-hygiene | 7e9c524aa8c42e340784f2ccc0e34248fd6669c3 | 5 | 0 | review / integration pending |
@@ -43,7 +45,7 @@ Other cloud computers are represented only by their pushed refs above.
 | Folder | Branch | HEAD | Published | Dirty entries |
 |---|---|---|---|---|
 | TheHybridMonk | main | 92ee655f3c3e5e83449180ef9bd101586411cd31 | NO: push exact branch after review | 10 |
-| shanivar-continuity | codex/continuity-2026-10-17 | 776f8b306d89a766c41c41d2c0195fe3ebcf1e26 | NO: push exact branch after review | 4 |
+| shanivar-continuity | codex/continuity-2026-10-17 | 7cf3aba82a7b1adbf9f07750860cfb84221882a1 | yes | 0 |
 
 ## Required end-of-session handoff
 
