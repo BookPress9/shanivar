@@ -49,6 +49,8 @@ Unregister-ScheduledTask -TaskName Shanivar-Daily-GitHub-Status -Confirm:$false
 Nonzero LastTaskResult and ok:false in runs.jsonl report local failure. The remote checkpoint timestamp exposes staleness.
 This Windows job sends no external failure message. The founder's separate agent-box backup/notification claim is unverified here.
 Do not call the Windows job active until installation and a task run are verified in the report.
+Verified here: both a manual task run and the actual 17 October 23:30 Berlin trigger completed successfully
+with LastTaskResult 0; the scheduled run published `536d2c18`. See the CONT-001 report for UTC timestamps.
 
 ## Restore accurately
 

@@ -76,6 +76,9 @@ Windows task Shanivar-Daily-GitHub-Status installed with a daily 23:30 Berlin/DS
 user, limited privileges, missed-start handling and a ten-minute runtime cap. First manual task run succeeded:
 Windows LastTaskResult = 0; runs.jsonl records ok:true, UTC finish 2026-10-17T21:18:40.320Z,
 verified status branch SHA `64cfdc99ab9352eac6ee8eacbdf0b96ba8029839`.
+The actual daily trigger also fired at 23:30 Berlin on 17 October: LastTaskResult = 0,
+run finished 2026-10-17T21:30:16.271Z, remote status SHA `536d2c18cd269d971355431ee7f34fbfd70bde1a`.
+Next scheduled run: 18 October at 23:30 Berlin. Trigger, workspace, credentials, run history and local failure reporting verified.
 It requires this computer on, user logged in and working credentials.
 Local git continuity/runs.jsonl and Windows LastTaskResult report failures; no external alert is sent.
 The separate agent-box 30-minute job is reported, not independently verified.

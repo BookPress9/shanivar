@@ -85,6 +85,13 @@
                       "berlinTime":  "23:30",
                       "externalFailureAlerts":  false,
                       "name":  "Shanivar-Daily-GitHub-Status",
-                      "firstStatusCommit":  "64cfdc99ab9352eac6ee8eacbdf0b96ba8029839"
+                      "firstStatusCommit":  "64cfdc99ab9352eac6ee8eacbdf0b96ba8029839",
+                      "verifiedAutomaticRun":  {
+                                                   "berlinStart":  "2026-10-17 23:30:00",
+                                                   "utcFinish":  "2026-10-17T21:30:16.271Z",
+                                                   "lastTaskResult":  0,
+                                                   "statusCommit":  "536d2c18cd269d971355431ee7f34fbfd70bde1a",
+                                                   "nextBerlinRun":  "2026-10-18 23:30:00"
+                                               }
                   }
 }
