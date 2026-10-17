@@ -1,7 +1,7 @@
 (function(root){"use strict";
 const KEY="shanivar.web.v2",DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 function uid(){return globalThis.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
-function initial(){return{version:2,onboarded:false,profile:{mode:"local"},routine:{wakeTime:"",intendedSleepTime:"",activities:[],windows:[]},attempts:[],reports:[],orbit:[],outbox:[],settings:{guidance:"FULL"},sync:{revision:0,lastAt:null,error:null}}}
+function initial(){return{version:2,onboarded:false,onboardingStep:0,profile:{mode:"local"},routine:{wakeTime:"",intendedSleepTime:"",activities:[],windows:[]},attempts:[],reports:[],orbit:[],outbox:[],settings:{guidance:"FULL",notifications:false},sync:{revision:0,lastAt:null,error:null}}}
 function normalize(v){const d=initial(),x=v&&typeof v==="object"?v:{};return Object.assign(d,x,{profile:Object.assign(d.profile,x.profile),routine:Object.assign(d.routine,x.routine),settings:Object.assign(d.settings,x.settings),sync:Object.assign(d.sync,x.sync),attempts:Array.isArray(x.attempts)?x.attempts:[],reports:Array.isArray(x.reports)?x.reports:[],orbit:Array.isArray(x.orbit)?x.orbit:[],outbox:Array.isArray(x.outbox)?x.outbox:[]})}
 class Store{constructor(storage){this.storage=storage;this.memory=null;this.state=this.read()}read(){try{return normalize(JSON.parse(this.storage.getItem(KEY)))}catch(e){return normalize(this.memory)}}save(){const raw=JSON.stringify(this.state);this.memory=raw;try{this.storage.setItem(KEY,raw)}catch(e){}return this.state}update(fn){fn(this.state);return this.save()}reset(){this.state=initial();try{this.storage.removeItem(KEY)}catch(e){}return this.state}}
 function clientTime(){return new Date().toISOString()}

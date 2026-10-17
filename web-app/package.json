@@ -1,0 +1,11 @@
+{
+  "name": "shanivar-web-app",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:e2e": "node test/e2e.js"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}
