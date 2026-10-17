@@ -84,19 +84,20 @@ class SyncOutboxGapsTest {
         assertEquals("invalid plan is not queued", item.payload, pending().single().payload)
     }
 
-    @Test fun senderDeletesTombstonesAndUpsertsTheRest() {
+    /** DEV-45 contract change: a tombstone is a tombstones-table upsert carrying client_updated_at, never a bare DELETE. */
+    @Test fun senderSendsTombstonesAsUpsertsAndUpsertsTheRest() {
         MockWebServer().use { server ->
-            server.enqueue(MockResponse().setBody("""{"access_token":"t","user":{"id":"00000000-0000-0000-0000-000000000000"}}"""))
-            server.enqueue(MockResponse().setResponseCode(201)); server.enqueue(MockResponse().setResponseCode(204))
-            val client = SupabaseClient(server.url("/").toString(), "anon")
-            assertTrue(client.signInAnonymously())
-            val box = SyncOutbox(MemDraftStore())
+            server.enqueue(MockResponse().setResponseCode(201)); server.enqueue(MockResponse().setResponseCode(201))
+            val rig = SyncRig(server)
+            val box = rig.outbox
             box.enqueue("self_report", "s1", """{"id":"s1","local_date":"2026-10-17"}""")
             box.enqueue("self_report", "s2", SyncPayloads.tombstone("s2"))
-            assertEquals(2, box.drain(client.sender()))
-            server.takeRequest()
-            server.takeRequest().let { assertEquals("POST", it.method); assertTrue(it.path!!.startsWith("/rest/v1/self_reports?on_conflict")) }
-            server.takeRequest().let { assertEquals("DELETE", it.method); assertEquals("/rest/v1/self_reports?id=eq.s2", it.path) }
+            assertEquals(FlushOutcome.Done(2, 0, 0), rig.flusher.flush())
+            server.takeRequest().let { assertEquals("POST", it.method); assertTrue(it.path!!.startsWith("/rest/v1/self_reports?on_conflict=user_id,id")) }
+            server.takeRequest().let {
+                assertEquals("POST", it.method); assertEquals("/rest/v1/tombstones?on_conflict=user_id,kind,id", it.path)
+                assertTrue(it.body.readUtf8().startsWith("""{"kind":"self_report","id":"s2","client_updated_at":"""))
+            }
         }
     }
 
