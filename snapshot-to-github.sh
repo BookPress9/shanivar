@@ -28,7 +28,7 @@ echo "=== snapshot-to-github $NOW ==="
 gitp(){ git -c credential.helper= -c 'credential.helper=!/usr/local/bin/gh auth git-credential' "$@"; }
 push(){ if [ $DRY = 1 ]; then echo "DRY: git $*"; return 0; fi; gitp "$@"; }
 note(){ echo "$*" >> "$STATE/$1.tsv.tmp"; }   # unused helper kept simple
-HARD='eyJhb[G]ci|sb_secre[t]_|gh[p]_[A-Za-z0-9]{20,}|github_pat_|-----BEGIN [A-Z ]*PRIVATE KEY'
+HARD='eyJhb[G]ci|sb_secre[t]_|gh[p]_[A-Za-z0-9]{20,}|github_pa[t]_|-----BEGIN [A-Z ]*PRIVATE KEY'
 SOFT='(service_role|api_key|apikey|password|secret|token)["'"'"']?[[:space:]]*[=:][[:space:]]*["'"'"']?[A-Za-z0-9_./+-]{16,}'
 EXCL_RE='(^|/)(\.env(\..*)?|.*\.keystore|.*\.jks|local\.properties|\.netrc|id_rsa.*|.*\.pem|.*\.p12)$|(^|/)(build|\.gradle|\.kotlin|node_modules|venv|\.venv|__pycache__|\.cache|\.idea|captures|\.cxx)/|(^|/)supabase/\.temp/'
 is_env_example(){ [[ "$1" =~ \.env\.(example|template)$ ]]; }
@@ -142,7 +142,7 @@ else
   python3 - "$BK/box-backup" "$STATE/excluded.tsv" "$EXCL_RE" $MAXB "${SOURCES[@]}" <<'PY'
 import os, re, shutil, sys, zipfile
 dst, excl, exre, maxb, srcs = sys.argv[1], sys.argv[2], re.compile(sys.argv[3]), int(sys.argv[4]), sys.argv[5:]
-hard = re.compile(rb'eyJhb[G]ci|sb_secre[t]_|gh[p]_[A-Za-z0-9]{20,}|github_pat_|-----BEGIN [A-Z ]*PRIVATE KEY')
+hard = re.compile(rb'eyJhb[G]ci|sb_secre[t]_|gh[p]_[A-Za-z0-9]{20,}|github_pa[t]_|-----BEGIN [A-Z ]*PRIVATE KEY')
 soft = re.compile(rb'(service_role|api_key|apikey|password|secret|token)["\']?\s*[=:]\s*["\']?(?!mock|test|example|your|xxx|changeme)[A-Za-z0-9_./+-]{16,}', re.I)
 SKIP_NAMES = {'store.db','store.db-shm','store.db-wal','.git'}
 out = open(excl, 'a')
@@ -156,7 +156,7 @@ def scan(p):
                 if hard.search(d) or soft.search(d): return 'secret-like pattern inside archive member ' + n
             return None
         with open(p, 'rb') as f: d = f.read()
-        if hard.search(d): return 'secret-like pattern (' + hard.search(d).group(0)[:10].decode(errors="replace") + '…)'
+        if hard.search(d): return 'secret-like token pattern'
         if soft.search(d): return 'secret-like assignment (' + soft.search(d).group(1).decode() + '=…)'
         if p.endswith('gradle.properties') and re.search(rb'(?i)key|secret|token|password', d): return 'gradle.properties with key-like entries'
     except Exception as e: return 'unreadable: %s' % e
@@ -164,6 +164,7 @@ def scan(p):
 def consider(src, rel):
     if os.path.islink(src): return
     if exre.search(rel) and not re.search(r'\.env\.(example|template)$', rel): out.write(f'{src}\tsecret/build/cache exclusion rule\n'); return
+    if '/workspace/logs/' in src and src.endswith('.tsv'): return
     if re.search(r'emulator', os.path.basename(src), re.I): out.write(f'{src}\temulator file (emulator setup cancelled)\n'); return
     if src.endswith(('.apk', '.aab')): out.write(f'{src}\tAndroid build artifact (reproducible from commit in filename)\n'); return
     sz = os.path.getsize(src)
@@ -182,6 +183,8 @@ for s in srcs:
             full = os.path.join(root, d)
             if os.path.isfile(os.path.join(full, '.git')):   # nested git worktree: covered by the wip/ snapshots
                 out.write(f'{full}/\tgit worktree, backed up via wip/ ref instead\n'); continue
+            if re.match(r'build-[0-9a-f]{7}$', d):
+                out.write(f'{full}/\texported source tree of a commit (already in git)\n'); continue
             if re.search(r'emulator|\.android|avd', d, re.I):
                 out.write(f'{full}/\temulator files (emulator setup cancelled)\n'); continue
             if d in SKIP_NAMES or exre.search(full + '/'):

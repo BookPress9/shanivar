@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Shanivar</string>
-    <string name="usage_access_permission_rationale">Lets Shanivar detect when a blocked app opens during an active practice session. Only checked while a session you schedule is running.</string>
-    <string name="alarm_title">Session Time</string>
-    <string name="alarm_instruction_placeholder">TODO(discipline-engine): real physical-verification instruction (scan / puzzle / movement) replaces this placeholder.</string>
-</resources>

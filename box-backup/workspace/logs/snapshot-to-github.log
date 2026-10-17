@@ -38,3 +38,25 @@ remote: Create a pull request for 'wip/shanivar-app-main' on GitHub by visiting:
 remote:      https://github.com/BookPress9/shanivar/pull/new/wip/shanivar-app-main        
 remote: 
 wip/shanivar-app-main: pushed 03c962b9b0b1ade58030dbe751a8d18d2337472e
+remote: 
+remote: Create a pull request for 'box-backup' on GitHub by visiting:        
+remote:      https://github.com/BookPress9/shanivar/pull/new/box-backup        
+remote: 
+box-backup: pushed 5dbf01e (117M)
+=== done ===
+=== snapshot-to-github 2026-10-17 22:56 CEST ===
+visibility: PRIVATE
+branch dev-38-outbox-gaps: up-to-date
+branch dev-39-techniques-safety: up-to-date
+branch dev-42-schema-hygiene: up-to-date
+branch dev-45-sync-engine: up-to-date
+branch dev-47-sync-wiring: up-to-date
+branch dev-54-sadhana-record-schema: non-ff -> backup/dev-54-sadhana-record-schema-20261017
+branch dev-65-event-dictionary-wiac: up-to-date
+branch dev-89-breathing-safety: up-to-date
+tag backup/dev39-3471087: up-to-date
+tag sadhana-visual-v1: up-to-date
+wip/detached-wt-dev47m: pushed 2127ea79d3423a9c1b269d0b85ccbc4212c80ced
+wip/detached-scratch-dev47x45: unchanged
+wip/dev-89-breathing-safety: unchanged
+wip/shanivar-app-main: unchanged
