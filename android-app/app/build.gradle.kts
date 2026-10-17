@@ -99,4 +99,6 @@ tasks.withType<Test>().configureEach {
     (project.findProperty("supabaseE2eAnonKey") as String?)?.let { systemProperty("supabase.e2e.anon", it) }
     // DEV-54 AC5: the payload/SQL contract test reads the migrations, so a schema change reruns it
     inputs.dir(rootProject.file("../supabase/migrations")).withPropertyName("supabaseMigrations").withPathSensitivity(PathSensitivity.RELATIVE)
+    // DEV-65: the analytics contract tests read the dictionary doc, JSON and sample event log
+    inputs.dir(rootProject.file("../docs/analytics")).withPropertyName("analyticsDocs").withPathSensitivity(PathSensitivity.RELATIVE)
 }
