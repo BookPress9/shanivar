@@ -1,86 +1,40 @@
-=== snapshot-to-github 2026-10-17 22:54 CEST ===
+=== snapshot-to-github 2026-10-17 22:55 CEST ===
 visibility: PRIVATE
-DRY: git push -q origin refs/heads/dev-38-outbox-gaps:refs/heads/dev-38-outbox-gaps
-branch dev-38-outbox-gaps: pushed
+branch dev-38-outbox-gaps: up-to-date
 branch dev-39-techniques-safety: up-to-date
-DRY: git push -q origin refs/heads/dev-42-schema-hygiene:refs/heads/dev-42-schema-hygiene
-branch dev-42-schema-hygiene: pushed
-DRY: git push -q origin refs/heads/dev-45-sync-engine:refs/heads/dev-45-sync-engine
-branch dev-45-sync-engine: pushed
-DRY: git push -q origin refs/heads/dev-47-sync-wiring:refs/heads/dev-47-sync-wiring
-branch dev-47-sync-wiring: pushed
-DRY: git push -q origin refs/heads/dev-54-sadhana-record-schema:refs/heads/dev-54-sadhana-record-schema
-branch dev-54-sadhana-record-schema: pushed
-DRY: git push -q origin refs/heads/dev-89-breathing-safety:refs/heads/dev-89-breathing-safety
-branch dev-89-breathing-safety: pushed
-DRY: git push -q origin refs/tags/backup/dev39-3471087:refs/tags/backup/dev39-3471087
-tag backup/dev39-3471087: pushed
+branch dev-42-schema-hygiene: up-to-date
+branch dev-45-sync-engine: up-to-date
+branch dev-47-sync-wiring: up-to-date
+remote: 
+remote: Create a pull request for 'backup/dev-54-sadhana-record-schema-20261017' on GitHub by visiting:        
+remote:      https://github.com/BookPress9/shanivar/pull/new/backup/dev-54-sadhana-record-schema-20261017        
+remote: 
+branch dev-54-sadhana-record-schema: non-ff -> backup/dev-54-sadhana-record-schema-20261017
+remote: 
+remote: Create a pull request for 'dev-65-event-dictionary-wiac' on GitHub by visiting:        
+remote:      https://github.com/BookPress9/shanivar/pull/new/dev-65-event-dictionary-wiac        
+remote: 
+branch dev-65-event-dictionary-wiac: pushed
+branch dev-89-breathing-safety: up-to-date
+tag backup/dev39-3471087: up-to-date
 tag sadhana-visual-v1: up-to-date
-Author identity unknown
-
-*** Please tell me who you are.
-
-Run
-
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
-
-to set your account's default identity.
-Omit --global to set the identity only in this repository.
-
-fatal: unable to auto-detect email address (got 'box@grok-bot-vm-456952129.(none)')
-DRY: git -C /workspace/qa/wt-dev47m push -q origin +:refs/heads/wip/detached-wt-dev47m
-fatal: : not a valid SHA1
-fatal: Needed a single revision
-wip/detached-wt-dev47m: pushed 
-Author identity unknown
-
-*** Please tell me who you are.
-
-Run
-
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
-
-to set your account's default identity.
-Omit --global to set the identity only in this repository.
-
-fatal: unable to auto-detect email address (got 'box@grok-bot-vm-456952129.(none)')
-DRY: git -C /workspace/scratch-dev47x45 push -q origin +:refs/heads/wip/detached-scratch-dev47x45
-fatal: : not a valid SHA1
-fatal: Needed a single revision
-wip/detached-scratch-dev47x45: pushed 
-Author identity unknown
-
-*** Please tell me who you are.
-
-Run
-
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
-
-to set your account's default identity.
-Omit --global to set the identity only in this repository.
-
-fatal: unable to auto-detect email address (got 'box@grok-bot-vm-456952129.(none)')
-DRY: git -C /workspace/shanivar-v3-dev89 push -q origin +:refs/heads/wip/dev-89-breathing-safety
-fatal: : not a valid SHA1
-fatal: Needed a single revision
-wip/dev-89-breathing-safety: pushed 
-Author identity unknown
-
-*** Please tell me who you are.
-
-Run
-
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
-
-to set your account's default identity.
-Omit --global to set the identity only in this repository.
-
-fatal: unable to auto-detect email address (got 'box@grok-bot-vm-456952129.(none)')
-DRY: git -C /workspace/shanivar-app push -q origin +:refs/heads/wip/shanivar-app-main
-fatal: : not a valid SHA1
-fatal: Needed a single revision
-wip/shanivar-app-main: pushed 
+remote: 
+remote: Create a pull request for 'wip/detached-wt-dev47m' on GitHub by visiting:        
+remote:      https://github.com/BookPress9/shanivar/pull/new/wip/detached-wt-dev47m        
+remote: 
+wip/detached-wt-dev47m: pushed 08d3dfb44427b5f53d54fbc63b9a92fbcda0ba21
+remote: 
+remote: Create a pull request for 'wip/detached-scratch-dev47x45' on GitHub by visiting:        
+remote:      https://github.com/BookPress9/shanivar/pull/new/wip/detached-scratch-dev47x45        
+remote: 
+wip/detached-scratch-dev47x45: pushed 247adbed53965e6effdb8ae5fe1fa654be5950ae
+remote: 
+remote: Create a pull request for 'wip/dev-89-breathing-safety' on GitHub by visiting:        
+remote:      https://github.com/BookPress9/shanivar/pull/new/wip/dev-89-breathing-safety        
+remote: 
+wip/dev-89-breathing-safety: pushed 93102abd70774fb04e0ee5389ce636566a7b959c
+remote: 
+remote: Create a pull request for 'wip/shanivar-app-main' on GitHub by visiting:        
+remote:      https://github.com/BookPress9/shanivar/pull/new/wip/shanivar-app-main        
+remote: 
+wip/shanivar-app-main: pushed 03c962b9b0b1ade58030dbe751a8d18d2337472e

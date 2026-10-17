@@ -11,7 +11,7 @@ Last updated: 2026-10-17 22:49 (Europe/Berlin, CEST). Edit this file when assign
 | Shanivar Tester | DEV-82, then the alignment review, then re-QA of DEV-45 and DEV-47 (at b502776) |
 | Shanivar Customer Success | Market research (`/workspace/shanivar-cs`) |
 | Sana (marketing) | Rewriting the reels per decision F-07: Shani/Saturn framing is OK, no classical texts or teachers (`/workspace/campaign`) |
-| Shanivar PM | Setting up the emulator (`/workspace/bin/start-emulator.sh`, AVD `shanivar_qa`) |
+| Shanivar PM | Emulator setup CANCELLED (17 Oct, 22:54); emulator files are not backed up |
 
 ## Check at end (in-progress items)
 
@@ -24,7 +24,7 @@ Last updated: 2026-10-17 22:49 (Europe/Berlin, CEST). Edit this file when assign
 - [ ] Re-QA DEV-45 and DEV-47 (b502776): pass/fail recorded in Jira
 - [ ] Sana: reels 01-12 rewritten per F-07 in `/workspace/campaign/md` and Notion; nothing published
 - [ ] CS market research: final version in `/workspace/shanivar-cs`
-- [ ] PM: emulator `shanivar_qa` boots via `/workspace/bin/start-emulator.sh`
+- [x] PM emulator setup: cancelled
 - [ ] `scratch-dev47x45` (detached, staged DEV-47 x DEV-45 merge experiment): decide keep or drop
 - [ ] `/workspace/shanivar-app` (old clone on main 33d0ce4, uncommitted routine-plan work): decide keep or drop
 - [ ] PR #1: still open; do not merge without the founder

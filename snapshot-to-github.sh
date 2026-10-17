@@ -28,7 +28,7 @@ echo "=== snapshot-to-github $NOW ==="
 gitp(){ git -c credential.helper= -c 'credential.helper=!/usr/local/bin/gh auth git-credential' "$@"; }
 push(){ if [ $DRY = 1 ]; then echo "DRY: git $*"; return 0; fi; gitp "$@"; }
 note(){ echo "$*" >> "$STATE/$1.tsv.tmp"; }   # unused helper kept simple
-HARD='eyJhbGci|sb_secret_|ghp_[A-Za-z0-9]{20,}|github_pat_|-----BEGIN [A-Z ]*PRIVATE KEY'
+HARD='eyJhb[G]ci|sb_secre[t]_|gh[p]_[A-Za-z0-9]{20,}|github_pat_|-----BEGIN [A-Z ]*PRIVATE KEY'
 SOFT='(service_role|api_key|apikey|password|secret|token)["'"'"']?[[:space:]]*[=:][[:space:]]*["'"'"']?[A-Za-z0-9_./+-]{16,}'
 EXCL_RE='(^|/)(\.env(\..*)?|.*\.keystore|.*\.jks|local\.properties|\.netrc|id_rsa.*|.*\.pem|.*\.p12)$|(^|/)(build|\.gradle|\.kotlin|node_modules|venv|\.venv|__pycache__|\.cache|\.idea|captures|\.cxx)/|(^|/)supabase/\.temp/'
 is_env_example(){ [[ "$1" =~ \.env\.(example|template)$ ]]; }
@@ -95,14 +95,14 @@ snapshot(){ # $1 = worktree path
   if [ "$tree" = "$(git -C "$w" rev-parse "HEAD^{tree}")" ]; then echo -e "$name\t$w\tonly ignored/excluded changes\t-" >> "$STATE/wip.tsv"; return; fi
   if [ "$tree" = "$rtree" ] && [ "$rpar" = "$head" ]; then
     echo -e "$name\t$w\tunchanged since last snapshot\t$(git -C "$w" rev-parse --short "refs/remotes/origin/wip/$name")" >> "$STATE/wip.tsv"; echo "wip/$name: unchanged"; return; fi
-  commit=$(git -C "$w" commit-tree "$tree" -p HEAD -m "WIP snapshot ${br:-detached@$(git -C "$w" rev-parse --short HEAD)} $NOW
+  commit=$(git -C "$w" -c user.name="Shanivar box backup" -c user.email="box-backup@shanivar.invalid" commit-tree "$tree" -p HEAD -m "WIP snapshot ${br:-detached@$(git -C "$w" rev-parse --short HEAD)} $NOW
 
 Worktree: $w
 Base: $head
 Uncommitted + untracked (non-ignored) changes captured with a temporary index; the worktree was not touched.
 Restore: git checkout <branch> && git cherry-pick --no-commit origin/wip/$name  (or: git diff $head origin/wip/$name | git apply)")
   if push -C "$w" push -q origin "+$commit:refs/heads/wip/$name"; then
-    git -C "$w" update-ref "refs/remotes/origin/wip/$name" "$commit"
+    [ $DRY = 0 ] && git -C "$w" update-ref "refs/remotes/origin/wip/$name" "$commit"
     echo -e "$name\t$w\tsnapshot pushed\t$(git -C "$w" rev-parse --short "$commit")" >> "$STATE/wip.tsv"; echo "wip/$name: pushed $commit"
   else echo -e "wip/$name\tpush failed" >> "$STATE/failures.tsv"; echo -e "$name\t$w\tPUSH FAILED\t-" >> "$STATE/wip.tsv"; fi
 }
@@ -142,7 +142,7 @@ else
   python3 - "$BK/box-backup" "$STATE/excluded.tsv" "$EXCL_RE" $MAXB "${SOURCES[@]}" <<'PY'
 import os, re, shutil, sys, zipfile
 dst, excl, exre, maxb, srcs = sys.argv[1], sys.argv[2], re.compile(sys.argv[3]), int(sys.argv[4]), sys.argv[5:]
-hard = re.compile(rb'eyJhbGci|sb_secret_|ghp_[A-Za-z0-9]{20,}|github_pat_|-----BEGIN [A-Z ]*PRIVATE KEY')
+hard = re.compile(rb'eyJhb[G]ci|sb_secre[t]_|gh[p]_[A-Za-z0-9]{20,}|github_pat_|-----BEGIN [A-Z ]*PRIVATE KEY')
 soft = re.compile(rb'(service_role|api_key|apikey|password|secret|token)["\']?\s*[=:]\s*["\']?(?!mock|test|example|your|xxx|changeme)[A-Za-z0-9_./+-]{16,}', re.I)
 SKIP_NAMES = {'store.db','store.db-shm','store.db-wal','.git'}
 out = open(excl, 'a')
@@ -164,6 +164,7 @@ def scan(p):
 def consider(src, rel):
     if os.path.islink(src): return
     if exre.search(rel) and not re.search(r'\.env\.(example|template)$', rel): out.write(f'{src}\tsecret/build/cache exclusion rule\n'); return
+    if re.search(r'emulator', os.path.basename(src), re.I): out.write(f'{src}\temulator file (emulator setup cancelled)\n'); return
     if src.endswith(('.apk', '.aab')): out.write(f'{src}\tAndroid build artifact (reproducible from commit in filename)\n'); return
     sz = os.path.getsize(src)
     if sz > maxb: out.write(f'{src}\tover 50 MB ({sz/1048576:.0f} MB) — raw/large media not uploaded\n'); return
@@ -178,7 +179,12 @@ for s in srcs:
     for root, dirs, files in os.walk(s):
         keep = []
         for d in dirs:
-            if d in SKIP_NAMES or exre.search(os.path.join(root, d) + '/'):
+            full = os.path.join(root, d)
+            if os.path.isfile(os.path.join(full, '.git')):   # nested git worktree: covered by the wip/ snapshots
+                out.write(f'{full}/\tgit worktree, backed up via wip/ ref instead\n'); continue
+            if re.search(r'emulator|\.android|avd', d, re.I):
+                out.write(f'{full}/\temulator files (emulator setup cancelled)\n'); continue
+            if d in SKIP_NAMES or exre.search(full + '/'):
                 if d != '.git': out.write(f'{os.path.join(root, d)}/\tdirectory excluded (build/cache/secret rule)\n')
             else: keep.append(d)
         dirs[:] = keep
@@ -223,7 +229,7 @@ gen_status(){
   echo "- Notion thesis page: https://app.notion.com/p/3fc10ae18c9f8158abd7e59528eee0a6"
   echo "- Notion launch campaign (Sana): https://app.notion.com/p/3fc10ae18c9f81a09007dbbd63dd8c99"
   echo "- Supabase project ref: \`katleeaentaugfszpmus\` (keys are NOT in git; get them from the Supabase dashboard)"
-  echo "- Local helpers: \`box-backup/workspace/bin/\` (start-emulator.sh, start-local-supabase.sh, snapshot-to-github.sh)"
+  echo "- Local helpers: \`box-backup/workspace/bin/\` (start-local-supabase.sh, snapshot-to-github.sh)"
   echo; echo "## Restore after a box reset"; echo
   cat <<'EOF'
 ```bash

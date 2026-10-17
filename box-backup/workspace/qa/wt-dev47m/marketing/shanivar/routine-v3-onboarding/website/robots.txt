@@ -1,6 +1,0 @@
-# Shanivar pre-launch site. Draft; not deployed.
-User-agent: *
-Allow: /
-Disallow: /404.html
-
-Sitemap: https://shanivar.com/sitemap.xml
