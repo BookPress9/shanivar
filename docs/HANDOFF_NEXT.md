@@ -1,4 +1,58 @@
-# HANDOFF_NEXT: continue from a phone session (13 Oct 2026)
+# Continue Shanivar — 17 October 2026
+
+Owner: Codex. Task: CONT-001. **Resume branch: `codex/continuity-2026-10-17`**.
+
+```powershell
+git fetch origin --prune
+git switch codex/continuity-2026-10-17
+git pull --ff-only origin codex/continuity-2026-10-17
+git status --short --branch
+```
+
+For a dirty checkout, preserve it and create a separate worktree from
+`origin/codex/continuity-2026-10-17`. Read AGENTS.md, SHANIVAR_STANCE.md and the task first.
+The original Windows checkout remains untouched, including its untracked wireframes, research and marketing.
+
+## Current checkpoint
+
+- Private GitHub fetched. Original local main was 83 commits behind remote main `b372079`.
+- Reviewed box-backup `89b935b`, saved assignments, sync contracts and QA alignment evidence.
+- Review branch integrates DEV-45 `d699ee0` (includes DEV-38 `20fb519` and DEV-42 `7e9c524` history),
+  DEV-39 `8e122a8`, and DEV-47 `9806c99`. Main and source agent branches remain unchanged.
+- Resolved shared contract/outbox conflicts using DEV-45's extended contract and DEV-47's lifecycle wiring.
+  Replaced reflection with typed factory/scheduler/session/suspend-reset calls, preserved the enqueue hook,
+  and added an AppSync-to-real-engine reset regression test.
+- Added daily GitHub metadata checkpoints and a session handoff protocol. Exact fresh test results and
+  schedule verification are in [CONT-001 report](../ai_org/collaboration/reports/CONT-001-codex.md).
+- No production migration, deployment, release or new stance acceptance.
+
+## Next actions, in order
+
+| Priority | Owner | Action / required evidence |
+|---|---|---|
+| 1 | Codex / Tester | Use CONT-001 report for integrated JVM/lint/APK outcomes. Complete any failed/NOT RUN checks; record tested SHA. Run pgTAP and live sync E2E only on a local Supabase stack. |
+| 2 | Backend / Codex | Resolve DEV-54 `d1d482c` versus `a2a9e23` (rebased on DEV-45). Both saved; confirm intended history before integration, then verify payload/schema agreement. Reflection builder exists there but enqueue is not wired. |
+| 3 | Frontend / Codex | Review DEV-89 WIP `93102ab` and current ownership, then integrate and run every breathing-surface safety test. DEV-39 catalogue fixes alone do not clear DEV-89. |
+| 4 | Codex / Tester | Verify DEV-45/47 together with local Supabase, including cross-user isolation (DEV-79), reset, token loss, offline/reconnect and routine parking. DEV-52 conflict UI / put_routine remain dependencies. |
+| 5 | Analytics owner | Review DEV-65 WIP `dd2579a`. Normal DEV-65 branch points at DEV-54 `a2a9e23`; its name does not establish analytics completion. Validate DEV-83 before WIAC/effectiveness claims. |
+| 6 | Founder + Tester | Resume Pixel/OEM alarm, reboot, Doze, revoked-access, process-death, timezone/DST, TalkBack and large-font checks. Berlin DST changes 25 October 2026. Emulator setup was cancelled; none run here. |
+| 7 | Founder / operations | Restore Shanivar Jira access; verify credential rotation (DEV-8), staging (DEV-41), signing/Play (DEV-17), review manifests (DEV-34). Review cloud migration-history repair plan before any apply. |
+| 8 | Sana / CS | Resume campaign/CS artifacts from box-backup/workspace after checking ownership and F-07 restrictions. Nothing published by this checkpoint. |
+
+PR #1 remains pending founder merge approval. Retain detached scratch and old-clone WIP until reviewed.
+The box status has stale "uncommitted" checklist entries: compare actual refs and evidence.
+The QA alignment report calls `20fb519` "main", but fetched main is `b372079`; treat its 518-test claim as
+historical branch evidence, not proof of this integration or current main.
+
+[Access matrix](continuity/ACCESS.md) · [Daily protocol / restore](continuity/README.md).
+The reported 30-minute agent-box backup is not independently verified from this Windows session.
+
+---
+
+## Archived phone handoff — 13 October 2026
+
+The text below is historical and contains outdated/internally conflicting pending lists and test counts.
+Use the current checkpoint and task report above for resumption.
 
 > 13 Oct: Sadhana vagal layer/self-check/voice copy shipped (18437eb). B1–B8 done (ad984d0, bbd2042, ba56e76, 2828ccd, 5048af5, 1e4879c, a024596, f6ec0b7; DEV-35). Full suite 496/0 failures. Phone-test debug APK (draft release): https://github.com/BookPress9/shanivar/releases/tag/untagged-620bd070cac9d2285653. Note: release builds launch no practice until founder review manifests are recorded. Full status: docs/FINALIZATION_CHECKLIST.md. Remaining: founder / services / device items only.
 
