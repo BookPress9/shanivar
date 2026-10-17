@@ -15,6 +15,7 @@ PRD section 3: preserve delivery of Routine and Sadhana while making work recove
 - `README.md`, `docs/HANDOFF_NEXT.md`, `docs/continuity/`
 - `scripts/continuity/`
 - Integration-only merge resolutions in the isolated `codex/continuity-2026-10-17` worktree. Source agent branches remain untouched.
+- `android-app/scripts/compile-content.cjs` and `android-app/app/src/test/java/com/shanivar/nativeapp/TechniqueContentSafetyTest.kt`: normalize checkout line endings after integrated verification exposed a Windows-only mirror mismatch; no prose changes.
 
 ## Inputs
 

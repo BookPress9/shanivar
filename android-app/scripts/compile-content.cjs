@@ -11,7 +11,8 @@ const section = (text, name) => {
   return text.slice(start + marker.length).split(/\r?\n## /)[0].trim();
 };
 const techniques = fs.readdirSync(source).filter(name => /^technique-\d+.*\.md$/.test(name)).sort().map(name => {
-  const text = fs.readFileSync(path.join(source, name), 'utf8');
+  // Git may check Markdown out as CRLF on Windows. Keep the shipped text identical across hosts.
+  const text = fs.readFileSync(path.join(source, name), 'utf8').replace(/\r\n/g, '\n');
   const primary = section(text, 'Primary Source');
   const verse = primary.split(/\r?\n/).find(line => line.includes('**Verse'));
   const edition = primary.split(/\r?\n/).find(line => line.includes('**Translation cited'));

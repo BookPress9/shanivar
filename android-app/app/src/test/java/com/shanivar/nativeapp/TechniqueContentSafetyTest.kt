@@ -134,7 +134,7 @@ class TechniqueContentSafetyTest {
             return text.substring(start + marker.length).split(Regex("\\r?\\n## "))[0].trim()
         }
         return dir.listFiles()!!.map { it.name }.filter { Regex("^technique-\\d+.*\\.md$").matches(it) }.sorted().map { name ->
-            val text = File(dir, name).readText()
+            val text = File(dir, name).readText().replace("\r\n", "\n")
             val primary = section(text, "Primary Source").split(Regex("\\r?\\n"))
             val verse = primary.first { it.contains("**Verse") }
             val edition = primary.first { it.contains("**Translation cited") }
