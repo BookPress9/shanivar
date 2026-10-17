@@ -1,6 +1,6 @@
 # SHANIVAR_STATUS
 
-Generated: **2026-10-17 22:56 CEST** (Europe/Berlin) by `/workspace/bin/snapshot-to-github.sh` on the agent box. Repo visibility: **PRIVATE**.
+Generated: **2026-10-17 23:04 CEST** (Europe/Berlin) by `/workspace/bin/snapshot-to-github.sh` on the agent box. Repo visibility: **PRIVATE**.
 
 ## Branches
 
@@ -11,31 +11,31 @@ Generated: **2026-10-17 22:56 CEST** (Europe/Berlin) by `/workspace/bin/snapshot
 | `dev-42-schema-hygiene` | DEV-42 | `7e9c524` 2026-10-17 22:34 DEV-42 docs: tests README states what the guard files actually cover | yes | none (clean -) | /workspace/shanivar-v3-dev42 |
 | `dev-45-sync-engine` | DEV-45 | `d699ee0` 2026-10-17 22:53 DEV-45 follow-ups (DEV-47 integration, QA): contract surface without reflection, la | yes | none (clean -) | /workspace/shanivar-v3-dev45 |
 | `dev-47-sync-wiring` | DEV-47 | `9806c99` 2026-10-17 22:52 DEV-47: logout does a bounded best-effort flush before sign-out; guest sign-in retr | yes | none (clean -) | /workspace/shanivar-v3-dev47 |
-| `dev-54-sadhana-record-schema` | DEV-54 | `a2a9e23` 2026-10-17 22:55 DEV-54 (PM): length caps on practice_id, content_version, zone_id, attempt_id, orbi | as backup/dev-54-sadhana-record-schema-* | none (clean -) | /workspace/shanivar-v3-dev54 |
-| `dev-65-event-dictionary-wiac` | DEV-65 | `a2a9e23` 2026-10-17 22:55 DEV-54 (PM): length caps on practice_id, content_version, zone_id, attempt_id, orbi | yes | none (clean -) | /workspace/shanivar-v3-dev65 |
+| `dev-54-sadhana-record-schema-on-d699ee0` | DEV-54 | `a2a9e23` 2026-10-17 22:55 DEV-54 (PM): length caps on practice_id, content_version, zone_id, attempt_id, orbi | yes | none (clean -) | /workspace/shanivar-v3-dev54 |
+| `dev-65-event-dictionary-wiac` | DEV-65 | `a2a9e23` 2026-10-17 22:55 DEV-54 (PM): length caps on practice_id, content_version, zone_id, attempt_id, orbi | yes | wip/dev-65-event-dictionary-wiac exists (snapshot pushed dd2579a) | /workspace/shanivar-v3-dev65 |
 | `dev-89-breathing-safety` | DEV-89 | `b372079` 2026-10-15 14:40 site: founder landing page (shanivar.com) — Netlify Forms signup w/ honeypot + th | yes | wip/dev-89-breathing-safety exists (unchanged since last snapshot 93102ab) | /workspace/shanivar-v3-dev89 |
 | `main` | - | `b372079` 2026-10-15 14:40 site: founder landing page (shanivar.com) — Netlify Forms signup w/ honeypot + th | yes | none (-) | - |
 
 Other snapshots / remote refs:
 
-- `wip/detached-wt-dev47b` from `/workspace/qa/wt-dev47b`: clean -
-- `wip/detached-wt-dev47m` from `/workspace/qa/wt-dev47m`: snapshot pushed 2127ea7
 - `wip/detached-scratch-dev47x45` from `/workspace/scratch-dev47x45`: unchanged since last snapshot 247adbe
 - `wip/shanivar-app-main` from `/workspace/shanivar-app`: unchanged since last snapshot 03c962b
 - remote `origin` `b372079` site: founder landing page (shanivar.com) — Netlify Forms signup w/ honeypot + thank-you, mobile/desktop layou
 - remote `origin/backup/dev-54-sadhana-record-schema-20261017` `a2a9e23` DEV-54 (PM): length caps on practice_id, content_version, zone_id, 
-- remote `origin/box-backup` `5dbf01e` box-backup snapshot 2026-10-17 22:55 CEST
+- remote `origin/box-backup` `44cec64` box-backup snapshot 2026-10-17 22:56 CEST
 - remote `origin/dev-38-outbox-gaps` `20fb519` DEV-38: backfill onboarding attempts imported by older builds; AppSyncOutbox test reset
 - remote `origin/dev-39-techniques-safety` `8e122a8` DEV-39: remove breath pacing and body claims from technique content
 - remote `origin/dev-42-schema-hygiene` `7e9c524` DEV-42 docs: tests README states what the guard files actually cover
 - remote `origin/dev-45-sync-engine` `d699ee0` DEV-45 follow-ups (DEV-47 integration, QA): contract surface without reflection, lazy factory
 - remote `origin/dev-47-sync-wiring` `9806c99` DEV-47: logout does a bounded best-effort flush before sign-out; guest sign-in retried once w
 - remote `origin/dev-54-sadhana-record-schema` `d1d482c` DEV-54 (PM): length caps on practice_id, content_version, zone_id, attempt_id, orbi
+- remote `origin/dev-54-sadhana-record-schema-on-d699ee0` `a2a9e23` DEV-54 (PM): length caps on practice_id, content_version, zone_id, attem
 - remote `origin/dev-65-event-dictionary-wiac` `a2a9e23` DEV-54 (PM): length caps on practice_id, content_version, zone_id, attempt_id, orbi
 - remote `origin/dev-89-breathing-safety` `b372079` site: founder landing page (shanivar.com) — Netlify Forms signup w/ honeypot + thank-y
 - remote `origin/main` `b372079` site: founder landing page (shanivar.com) — Netlify Forms signup w/ honeypot + thank-you, mobile/desktop 
 - remote `origin/wip/detached-scratch-dev47x45` `247adbe` WIP snapshot detached@1e69cba 2026-10-17 22:55 CEST
 - remote `origin/wip/detached-wt-dev47m` `2127ea7` WIP snapshot detached@9806c99 2026-10-17 22:56 CEST
+- remote `origin/wip/dev-65-event-dictionary-wiac` `dd2579a` WIP snapshot dev-65-event-dictionary-wiac 2026-10-17 23:04 CEST
 - remote `origin/wip/dev-89-breathing-safety` `93102ab` WIP snapshot dev-89-breathing-safety 2026-10-17 22:55 CEST
 - remote `origin/wip/shanivar-app-main` `03c962b` WIP snapshot main 2026-10-17 22:55 CEST
 - tags: `backup/dev39-3471087`,`sadhana-visual-v1`
@@ -77,15 +77,13 @@ Last updated: 2026-10-17 22:49 (Europe/Berlin, CEST). Edit this file when assign
 | wip ref | Worktree | State | Commit |
 |---|---|---|---|
 | `wip/dev-38-outbox-gaps` | `/workspace/shanivar-v3` | clean | - |
-| `wip/detached-wt-dev47b` | `/workspace/qa/wt-dev47b` | clean | - |
-| `wip/detached-wt-dev47m` | `/workspace/qa/wt-dev47m` | snapshot pushed | 2127ea7 |
 | `wip/detached-scratch-dev47x45` | `/workspace/scratch-dev47x45` | unchanged since last snapshot | 247adbe |
 | `wip/dev-39-techniques-safety` | `/workspace/shanivar-v3-dev39` | clean | - |
 | `wip/dev-42-schema-hygiene` | `/workspace/shanivar-v3-dev42` | clean | - |
 | `wip/dev-45-sync-engine` | `/workspace/shanivar-v3-dev45` | clean | - |
 | `wip/dev-47-sync-wiring` | `/workspace/shanivar-v3-dev47` | clean | - |
-| `wip/dev-54-sadhana-record-schema` | `/workspace/shanivar-v3-dev54` | clean | - |
-| `wip/dev-65-event-dictionary-wiac` | `/workspace/shanivar-v3-dev65` | clean | - |
+| `wip/dev-54-sadhana-record-schema-on-d699ee0` | `/workspace/shanivar-v3-dev54` | clean | - |
+| `wip/dev-65-event-dictionary-wiac` | `/workspace/shanivar-v3-dev65` | snapshot pushed | dd2579a |
 | `wip/dev-89-breathing-safety` | `/workspace/shanivar-v3-dev89` | unchanged since last snapshot | 93102ab |
 | `wip/shanivar-app-main` | `/workspace/shanivar-app` | unchanged since last snapshot | 03c962b |
 
@@ -132,8 +130,6 @@ cp -a /tmp/box-backup/box-backup/home/box/. /home/box/     # agent attachments (
 - `/workspace/logs/emulator-debug.log`: emulator file (emulator setup cancelled)
 - `/workspace/logs/emulator.log`: emulator file (emulator setup cancelled)
 - `/workspace/qa/build-20fb519/`: exported source tree of a commit (already in git)
-- `/workspace/qa/wt-dev47b/`: git worktree, backed up via wip/ ref instead
-- `/workspace/qa/wt-dev47m/`: git worktree, backed up via wip/ ref instead
 - `/workspace/shanivar-v3.broken/android-app/scripts/mock-api.cjs`: secret-like assignment (token=…)
 - `/workspace/shanivar-v3.broken/backend/scripts/smoke-supabase.js`: secret-like assignment (token=…)
 - `/workspace/shanivar-v3.broken/backend/src/db.js`: secret-like assignment (Password=…)
@@ -150,7 +146,7 @@ cp -a /tmp/box-backup/box-backup/home/box/. /home/box/     # agent attachments (
 - `/workspace/shanivar-v3.broken/backend/tests/reflectionGeneration.test.js`: secret-like assignment (API_KEY=…)
 - `/workspace/shanivar-v3.broken/backend/tests/whatsapp.test.js`: secret-like assignment (SECRET=…)
 - `/workspace/shanivar-v3.broken/supabase/.temp/`: directory excluded (build/cache/secret rule)
-- build/cache dirs skipped: `/workspace/shanivar-cs/.venv/`,`/workspace/shanivar-v3.broken/android-app/local.properties`
+- build/cache dirs skipped: `/workspace/qa/dev82/__pycache__/`,`/workspace/shanivar-cs/.venv/`,`/workspace/shanivar-v3.broken/android-app/local.properties`
 - Not copied by design: agent internal `store.db` files under /home/box/sand-data/agents, unrelated projects on the box (Mahi, Hybrid Monk, BookPress, paathshala, ShopApotheke), classical-text scrapes (/workspace/src, /workspace/sweep1017, root *.txt/*.html), the Android AVD.
 
 ## Failures this run
@@ -160,8 +156,8 @@ cp -a /tmp/box-backup/box-backup/home/box/. /home/box/     # agent attachments (
 ## Check at end
 
 See the hand-maintained list above, plus:
-- [ ] `/workspace/qa/wt-dev47m` has uncommitted work (snapshot `wip/detached-wt-dev47m`): commit it on its branch
 - [ ] `/workspace/scratch-dev47x45` has uncommitted work (snapshot `wip/detached-scratch-dev47x45`): commit it on its branch
+- [ ] `/workspace/shanivar-v3-dev65` has uncommitted work (snapshot `wip/dev-65-event-dictionary-wiac`): commit it on its branch
 - [ ] `/workspace/shanivar-v3-dev89` has uncommitted work (snapshot `wip/dev-89-breathing-safety`): commit it on its branch
 - [ ] `/workspace/shanivar-app` has uncommitted work (snapshot `wip/shanivar-app-main`): commit it on its branch
 - [ ] `dev-38-outbox-gaps` not merged into main yet
@@ -169,5 +165,5 @@ See the hand-maintained list above, plus:
 - [ ] `dev-42-schema-hygiene` not merged into main yet
 - [ ] `dev-45-sync-engine` not merged into main yet
 - [ ] `dev-47-sync-wiring` not merged into main yet
-- [ ] `dev-54-sadhana-record-schema` not merged into main yet
+- [ ] `dev-54-sadhana-record-schema-on-d699ee0` not merged into main yet
 - [ ] `dev-65-event-dictionary-wiac` not merged into main yet

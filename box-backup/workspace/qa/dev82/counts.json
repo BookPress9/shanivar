@@ -3,8 +3,7 @@
   "MO": 65,
   "GAP": 132,
   "AP": 76,
-  "RD": 37,
-  "EMU": 21,
+  "RD": 62,
   "PEND": 12
  },
  "per_epic": {
@@ -14,18 +13,16 @@
   },
   "B \u2014 Protection": {
    "AP": 19,
-   "RD": 17,
+   "RD": 32,
    "MO": 7,
-   "GAP": 11,
-   "EMU": 12
+   "GAP": 11
   },
   "C \u2014 Routine": {
    "AP": 13,
-   "RD": 8,
+   "RD": 18,
    "GAP": 23,
    "MO": 6,
-   "PEND": 2,
-   "EMU": 9
+   "PEND": 2
   },
   "D \u2014 Sadhana": {
    "MO": 10,

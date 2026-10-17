@@ -1,0 +1,36 @@
+package com.shanivar.nativeapp
+
+import com.shanivar.nativeapp.sync.*
+import kotlinx.coroutines.*
+import org.junit.Assert.*
+import org.junit.Test
+
+class QaDev47GuestTest {
+    private class SlowSession : SyncSession {
+        override var userId: String? = null
+        var calls = 0; val gate = CompletableDeferred<Unit>()
+        override suspend fun ensureGuest(): GuestResult { calls++; gate.await(); userId = "g"; return GuestResult.Ok("g") }
+        override suspend fun signOut() { userId = null }
+    }
+    private fun sync(s: SyncSession) = AppSync.create(true, "u", "k", CoroutineScope(Dispatchers.Unconfined)) {
+        object : SyncEngine { override val session = s; override val scheduler = FakeSyncScheduler(); override val status = FakeSyncStatus() } }
+
+    @Test fun completionSkippedWhileGuestStepInFlight() {
+        val s = SlowSession(); val a = sync(s)
+        a.onGuestChosen(); assertEquals(1, s.calls)
+        a.onInitiationCompleteAsGuest(); assertEquals("in flight: no second call", 1, s.calls)
+        s.gate.complete(Unit)
+        a.onInitiationCompleteAsGuest(); assertEquals("session exists: no call", 1, s.calls)
+    }
+    @Test fun completionRetriesExactlyOnceAfterOfflineGuestStep() {
+        val e = FakeSyncEngine(session = FakeSyncSession(result = GuestResult.Offline)); val a = enabledSync(e)
+        a.onGuestChosen(); a.onInitiationCompleteAsGuest()
+        assertEquals(2, e.session.ensureGuestCalls)
+    }
+    @Test fun freshInstallAppStartDefaultAndRealRuleNeverSignIn() {
+        val e = FakeSyncEngine(); val a = enabledSync(e)
+        a.onAppStart()
+        a.onAppStart { InitiationGuestRetry.allowed(java.io.File(createTempDir(), InitiationGuestRetry.DRAFT_PATH)) }
+        assertEquals(0, e.session.ensureGuestCalls); assertEquals(2, e.scheduler.periodic)
+    }
+}

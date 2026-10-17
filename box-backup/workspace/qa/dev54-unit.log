@@ -1,0 +1,55 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.9/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig
+> Task :app:generateDebugResValues
+> Task :app:checkDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:parseDebugLocalResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:processDebugResources
+> Task :app:packageDebugUnitTestForUnitTest
+> Task :app:generateDebugUnitTestConfig
+
+> Task :app:compileDebugKotlin
+w: file:///workspace/qa/wt-dev54/android-app/app/src/main/java/com/shanivar/nativeapp/AlarmRinger.kt:145:19 'fun vibrate(p0: VibrationEffect!, p1: AudioAttributes!): Unit' is deprecated. Deprecated in Java.
+w: file:///workspace/qa/wt-dev54/android-app/app/src/main/java/com/shanivar/nativeapp/FocusGuardService.kt:88:54 'static field MOVE_TO_FOREGROUND: Int' is deprecated. Deprecated in Java.
+w: file:///workspace/qa/wt-dev54/android-app/app/src/main/java/com/shanivar/nativeapp/FocusGuardService.kt:89:54 'static field MOVE_TO_BACKGROUND: Int' is deprecated. Deprecated in Java.
+w: file:///workspace/qa/wt-dev54/android-app/app/src/main/java/com/shanivar/nativeapp/InitiationApp.kt:100:17 'val LocalLifecycleOwner: ProvidableCompositionLocal<LifecycleOwner>' is deprecated. Moved to lifecycle-runtime-compose library in androidx.lifecycle.compose package.
+w: file:///workspace/qa/wt-dev54/android-app/app/src/main/java/com/shanivar/nativeapp/SadhanaApp.kt:82:17 'val LocalLifecycleOwner: ProvidableCompositionLocal<LifecycleOwner>' is deprecated. Moved to lifecycle-runtime-compose library in androidx.lifecycle.compose package.
+
+> Task :app:compileDebugJavaWithJavac
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:processDebugJavaRes
+
+> Task :app:compileDebugUnitTestKotlin
+w: file:///workspace/qa/wt-dev54/android-app/app/src/test/java/com/shanivar/nativeapp/SadhanaLoadingTest.kt:23:9 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+w: file:///workspace/qa/wt-dev54/android-app/app/src/test/java/com/shanivar/nativeapp/SadhanaLoadingTest.kt:23:29 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+w: file:///workspace/qa/wt-dev54/android-app/app/src/test/java/com/shanivar/nativeapp/SadhanaLoadingTest.kt:24:9 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+w: file:///workspace/qa/wt-dev54/android-app/app/src/test/java/com/shanivar/nativeapp/SadhanaLoadingTest.kt:24:29 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+w: file:///workspace/qa/wt-dev54/android-app/app/src/test/java/com/shanivar/nativeapp/SadhanaLoadingTest.kt:44:9 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+w: file:///workspace/qa/wt-dev54/android-app/app/src/test/java/com/shanivar/nativeapp/SadhanaLoadingTest.kt:44:31 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:testDebugUnitTest
+
+BUILD SUCCESSFUL in 50s
+28 actionable tasks: 28 executed

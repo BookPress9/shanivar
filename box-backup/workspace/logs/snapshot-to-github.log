@@ -60,3 +60,25 @@ wip/detached-wt-dev47m: pushed 2127ea79d3423a9c1b269d0b85ccbc4212c80ced
 wip/detached-scratch-dev47x45: unchanged
 wip/dev-89-breathing-safety: unchanged
 wip/shanivar-app-main: unchanged
+box-backup: pushed 44cec64 (93M)
+=== done ===
+=== snapshot-to-github 2026-10-17 23:04 CEST ===
+visibility: PRIVATE
+branch dev-38-outbox-gaps: up-to-date
+branch dev-39-techniques-safety: up-to-date
+branch dev-42-schema-hygiene: up-to-date
+branch dev-45-sync-engine: up-to-date
+branch dev-47-sync-wiring: up-to-date
+branch dev-54-sadhana-record-schema-on-d699ee0: up-to-date
+branch dev-65-event-dictionary-wiac: up-to-date
+branch dev-89-breathing-safety: up-to-date
+tag backup/dev39-3471087: up-to-date
+tag sadhana-visual-v1: up-to-date
+wip/detached-scratch-dev47x45: unchanged
+remote: 
+remote: Create a pull request for 'wip/dev-65-event-dictionary-wiac' on GitHub by visiting:        
+remote:      https://github.com/BookPress9/shanivar/pull/new/wip/dev-65-event-dictionary-wiac        
+remote: 
+wip/dev-65-event-dictionary-wiac: pushed dd2579a8dafa6133c0cec8f219bc1e9fc09b9292
+wip/dev-89-breathing-safety: unchanged
+wip/shanivar-app-main: unchanged

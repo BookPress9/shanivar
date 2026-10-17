@@ -1,0 +1,99 @@
+# Wording scan @20fb519 (2026-10-17 22:56 CEST)
+## Q1 absolute protection claims
+android-app/app/src/main/java/com/shanivar/nativeapp/ShanivarShell.kt:24: * break enforcement, and the cheapest way to guarantee that is to give it no access to enforcement.
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmRinger.kt:53:        // cannot be stopped is the single most harmful failure this product can ship, so the
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmRinger.kt:54:        // guarantee that it ends does not depend on the logic that normally ends it.
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmRinger.kt:95:     * The screen is turned on by AlarmActivity's setTurnScreenOn; this only guarantees the CPU
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmRecurrence.kt:30:        // 0..7 (8 candidate days) rather than 0..6: guarantees every day-of-week is tried at least
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmForegroundService.kt:14: * This is a reinforcing layer, not a guarantee: per the research doc's flagged limitations, a user
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmFireReceiver.kt:35:        channel.description = "Shanivar's non-dismissible wake-up alarm."
+android-app/app/src/main/java/com/shanivar/nativeapp/MotionDismissal.kt:22: *   figures), sustained continuously step after step.
+android-app/app/src/main/java/com/shanivar/nativeapp/MotionDismissal.kt:24: *   above [magnitudeThresholdMetersPerSecondSquared] continuously for at least
+android-app/app/src/main/java/com/shanivar/nativeapp/MainActivity.kt:12:        // The only thing this extra can do is open a screen. It cannot dismiss an alarm, cancel a
+android-app/app/src/main/java/com/shanivar/nativeapp/RoutineOnboardingFlow.kt:468:    Text("You already know which apps take more than they give. Select them once. Protection is voluntary and stoppable — never unbreakable.")
+android-app/app/src/main/java/com/shanivar/nativeapp/FocusWindowRecurrence.kt:23: *   `00:00-23:59` (which leaves a one-minute hole and must never be marketed as continuous).
+android-app/app/src/main/assets/techniques.json:31:    "script": "Sit where you can hear clearly, ideally somewhere quiet. Have your sound source ready — strike it, pluck it, or play the recording once you're settled.\n\nClose your eyes. Produce the tone (or start the recording), and let your attention land fully on the sound the moment it begins.\n\nFollow the tone continuously as it changes — don't just note \"there's a sound\" and drift off. Track how it shifts: from full and bright, to softer, to thinner, all the way down to the quietest edge where you're not sure anymore whether you're still hearing it or just remembering it.\n\nWhen the tone fades below hearing, stay with that edge for a moment — the point where sound and silence are hard to tell apart.\n\nProduce the tone again (or replay it), and repeat the same close tracking, start to finish.\n\nDo this for four or five rounds. Each time, try to catch the tone a little earlier in its decay and follow it a little further than before.\n\nOn the last round, after the tone has fully faded, stay seated in the resulting quiet for another thirty seconds before opening your eyes — see if the surrounding silence sounds any different than it did before you started.",
+## Q2 breath pacing / medical in protection+alarm surfaces
+android-app/app/src/main/java/com/shanivar/nativeapp/LocalPauseScreen.kt:29: * one of four hardcoded lines picked at random, one of which told people to breathe out slower than
+android-app/app/src/main/java/com/shanivar/nativeapp/LocalPauseScreen.kt:30: * they breathe in - unreviewed breath advice, which decision 0011 does not allow anywhere in the app.
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmActivity.kt:72:        // An alarm outranks every breathing host: stop the practice's cues and record it truthfully as
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmActivity.kt:76:        runCatching { BreathingSessionOwner.interrupt(this) }
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmActivity.kt:88:                        onQuietMinute = { openShanivar(breathing = true) },
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmActivity.kt:105:     * [breathing] only chooses which screen the app opens on. It runs strictly after
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmActivity.kt:108:     * outcome, not a finished one. Breathing never gates or delays silencing anything.
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmActivity.kt:110:    private fun openShanivar(breathing: Boolean = false) {
+android-app/app/src/main/java/com/shanivar/nativeapp/AlarmActivity.kt:114:                .putExtra(MainActivity.EXTRA_OPEN_BREATHING, breathing)
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:49:                    "breathe" -> BreathingHost(BreathingEntry.BLOCK_OVERLAY, rememberProtectionSnapshot(), onExit = ::goHome)
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:53:                        onBreathe = { inline = "breathe" },
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:80:private fun rememberProtectionSnapshot(): BreathingProtectionSnapshot {
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:86:        endsAt <= 0L -> BreathingProtectionSnapshot(ProtectionState.UNAVAILABLE, null)
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:87:        endsAt > System.currentTimeMillis() -> BreathingProtectionSnapshot(ProtectionState.ACTIVE, endsAt)
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:88:        else -> BreathingProtectionSnapshot(ProtectionState.OFF, null)
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:97:    onBreathe: () -> Unit,
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:114:            OutlinedButton(onClick = onBreathe, modifier = Modifier.fillMaxWidth()) { Text("Choose a short practice") }
+## Q3 snooze / bargaining
+android-app/app/src/main/java/com/shanivar/nativeapp/BlockOverlayActivity.kt:28: * app" from the task spec. There is still no snooze/bypass affordance: ending a session early
+## Q4 store/site copy present in repo?
+site
+./marketing/shanivar/routine-v3-onboarding/website/index.html
+./marketing/shanivar/routine-v3-onboarding/website/about.html
+## Q5 site + marketing copy
+marketing/shanivar/audience-research.md:23:endation and Trial-Reels results are directional platform evidence; they do not guarantee reach for Shanivar.
+marketing/shanivar/engagement-reels-playbook.md:10:be checked; neither a fixed duration nor a fixed posting time is an algorithmic guarantee.
+marketing/shanivar/engagement-reels-playbook.md:16:Weekly reviews should protect one active hypothesis rather than continuously changing creative. Hold when evidence is insufficient. Give the Creative Writer
+marketing/shanivar/engagement-reels-playbook.md:24: saw increased non-follower Reel reach. Meta explicitly says performance is not guaranteed. Use Trial Reels for creative-risk testing when the account has access; record 
+marketing/shanivar/engagement-reels-playbook.md:28:inal-content prevalence. This is a US platform-level result, not an India reach guarantee, but it supports making original Shanivar work rather than recycled watermarked
+marketing/shanivar/audience-direction.md:60:f-realization is the purpose of the journey, not an outcome the AI can force or guarantee. The desired relationship builds the user's judgment and agency over time.
+marketing/shanivar/brand/tagline.md:30:ine-sadhana-shell-and-routine-v3.md`) has no text on "voluntary", "stoppable", "unbreakable" or "shame" (grep found none), so I could not verify those rules against it. Tr
+marketing/shanivar/brand/tagline.md:30:eated here as the user's description: voluntary, stoppable, never "unbreakable" language. The tagline is compatible only if it is read as a promise of choice,
+marketing/shanivar/brand/tagline.md:35:1. Never pair it with "unbreakable", "no excuses", "streak" or "no days off" language.
+marketing/shanivar/v1-product-direction-handoff.md:68:ing your approach." It need not appear in onboarding. Do not rank intelligence, guarantee hyperfocus, promise dopamine repair or claim that boredom reliably produces ins
+marketing/shanivar/creative-learning-log.md:17:ed noticing, reflection and choice. It is not a public effectiveness claim or a guaranteed spiritual outcome.
+marketing/shanivar/week-01-calendar.md:11: shape the conversation. Self-realization is the direction of practice, never a guaranteed result.
+marketing/shanivar/week-01-calendar.md:256:aar_agents.md), with original wording. Self-realization is brand purpose, not a guaranteed outcome. **Status:** Copy ready for review; image pending; publication not auth
+marketing/shanivar/week-01-calendar.md:263:ore links, invented testimonials, actual transit readings or clinical/spiritual guarantees. Recheck availability wording if release status changes.
+marketing/shanivar/execution-2026-09-30/operations.md:19:Role documents are instructions invoked during sessions. They are not continuously running marketing workers. No independently verified recurring trigger, product
+marketing/shanivar/execution-2026-09-30/operations.md:56:Three original feed posts is a capacity target, not a platform rule or guaranteed reach strategy. Existing month-02 paired-language comparisons remain separate; 
+marketing/shanivar/ugc-pilot-2026-09-30/production-queue.json:191:le crowded-list hook invite saves without implying that productivity or calm is guaranteed?",
+marketing/shanivar/routine-v3-onboarding/zero-to-million-playbook.md:17:`, `:46-64`). **Never lock-in:** "Protection is voluntary and stoppable — never unbreakable" (`android-app/app/src/main/java/com/shanivar/nativeapp/RoutineOnboardingFlow.k
+marketing/shanivar/routine-v3-onboarding/zero-to-million-playbook.md:17:t:468`); "Impossible… must never appear in… marketing" (`android-app/ENFORCEMENT_STANCE_2026-09-12.m
+marketing/shanivar/routine-v3-onboarding/zero-to-million-playbook.md:145:| Always | "impossible to bypass", "unbreakable", "can't escape", "no excuses", "detox", "fix your life", clinical/mental-healt
+marketing/shanivar/ugc-pilot-2026-09-30/briefs.md:9:of physiology, therapeutic benefit, spiritual attainment, astrology validity or guaranteed attention change.
+marketing/shanivar/ugc-pilot-2026-09-30/briefs.md:151:le crowded-list hook invite saves without implying that productivity or calm is guaranteed?
+marketing/shanivar/routine-v3-onboarding/social-presence-from-scratch.md:34:ADME.md:14`). **Never** lock-in. Protection is "voluntary and stoppable — never unbreakable" (`android-app/app/src/main/java/com/shanivar/nativeapp/RoutineOnboardingFlow.k
+marketing/shanivar/routine-v3-onboarding/social-presence-from-scratch.md:96:| Honest | Saved vs Active, "voluntary and stoppable — never unbreakable", AI-disclosure policy |
+marketing/shanivar/month-02/operations.md:31:These are documented roles and a repeatable review procedure. They are not continuously running workers. Reopen this workflow when the founder brings Insights or when 
+marketing/shanivar/month-02/operations.md:83:for next cycle while keeping concept/language/duration otherwise comparable. No guarantee of improved ranking.
+marketing/shanivar/month-02/operations.md:101: broader sharing based on the first 72 hours. This is a product workflow, not a guaranteed uplift.
+marketing/shanivar/routine-v3-onboarding/website/index.html:115:              <li>An accessible way out, with no physical task, is always on screen.</li>
+marketing/shanivar/routine-v3-onboarding/website/index.html:127:              <li>Hard to undo from bed. Not impossible.</li>
+marketing/shanivar/routine-v3-onboarding/website/README.md:51:**Why.** `android-app/ENFORCEMENT_STANCE_2026-09-12.md` ("never promise the impossible", "write as if anyone could", no Device Admin, no fee to unlock early), decisio
+marketing/shanivar/routine-v3-onboarding/website/README.md:51:access) and the shipped UI copy ("Protection is voluntary and stoppable — never unbreakable") all rule out lock-in language. The site therefore has no "can't escape", "unb
+marketing/shanivar/routine-v3-onboarding/website/README.md:116:| "Voluntary and stoppable. Never unbreakable." / "You already know which apps take more than they give. Select them once." |
+marketing/shanivar/routine-v3-onboarding/website/README.md:119:| Hard to undo from bed, not impossible; bypass via Settings, browser, second device | `ENFORCEMENT_STANCE_2026-09-12.m
+marketing/shanivar/routine-v3-onboarding/website/README.md:159:- "unbreakable", "impossible to bypass", "can't escape", "we won't let you", "no excuses" or any lock-in fra
+marketing/shanivar/routine-v3-onboarding/website/REDESIGN_NOTES.md:14:| Wake alarm accessible way out; protection voluntary, stoppable, never unbreakable; Saved is not Active | `docs/blueprint/PRD.md:20,34-35,40-42`, `docs/blueprint/
+marketing/shanivar/routine-v3-onboarding/website/REDESIGN_NOTES.md:57:- "An accessible way out, with no physical task, is always on screen.": `0003:27-28`, `android-app/ENFORCEMENT_STANCE_2026-09-12.md:51,73-75`
+marketing/shanivar/routine-v3-onboarding/website/REDESIGN_NOTES.md:65:- "Hard to undo from bed. Not impossible.": `android-app/ENFORCEMENT_STANCE_2026-09-12.md:26-27`
+marketing/shanivar/routine-v3-onboarding/source/ui-copy-inventory.md:116:than they give. Select them once. Protection is voluntary and stoppable — never unbreakable." | RoutineOnboardingFlow.kt:468 |
+marketing/shanivar/routine-v3-onboarding/source/ui-copy-inventory.md:274:than they give. Select them once. Protection is voluntary and stoppable — never unbreakable." — RoutineOnboardingFlow.kt:468
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:43:eans lock-in.** The product says "Protection is voluntary and stoppable — never unbreakable" (`RoutineOnboardingFlow.kt:468`) and "Stop protection anytime — no waiting, no
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:43:nt limitations" (`docs/decisions/0014-…md:56-57`). The enforcement stance bans "impossible" in marketing and requires us to "write as if anyone could" bypass it (`android
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:93:* that Shanivar schedules or runs your day now; productivity gains; "discipline guaranteed".
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:113:ices are not blocked; `android-app/ENFORCEMENT_STANCE_2026-09-12.md:108-113`); "impossible to bypass"; that multiple windows work on your phone (pending DEV-7 §2, §6); de
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:115:### A4 — "Voluntary and stoppable — never unbreakable" (strict but honest)
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:117:- **Source lines:** "Protection is voluntary and stoppable — never unbreakable." (`RoutineOnboardingFlow.kt:468`); "Shanivar will say Needs device access — no
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:118:- **Insight:** strict apps usually lie, either about being unbreakable or about being on. Shanivar's stance is high standards plus honesty about its o
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:133:- **Must NOT claim:** "set and forget, guaranteed"; that alarms fire reliably or survive reboots (pending DEV-7 §5, §8); a hard p
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:171:"blocks", "on your phone tonight", Play Store, iOS, any user count or outcome, "impossible to bypass", streaks/levels, detox, circadian/cortisol/dosha.
+marketing/shanivar/routine-v3-onboarding/routine-onboarding-marketing-plan.md:201:- **Claims banned:** "impossible to bypass" (forever); guaranteed productivity or transformation; clinical or mental-health benefits; Sadhana pro
+marketing/shanivar/marketing-operating-system.md:52: are operating deadlines, **not a running service**. Sessions act when invoked. Continuous execution can be claimed only after a real trigger, credentials, always-on host
+marketing/shanivar/routine-v3-onboarding/instagram/first-9-posts.md:87:ser. A second phone. Someone determined to get around it. We will never call it impossible to bypass. |
+marketing/shanivar/routine-v3-onboarding/instagram/first-9-posts.md:88:| 5 | Protection is voluntary and stoppable — never unbreakable. You set every boundary. You can stop it, inside Shanivar. · Shanivar · in deve
+marketing/shanivar/routine-v3-onboarding/instagram/first-9-posts.md:90:-113`, `:137-138` and the website FAQ (`website/index.html`, "Is app protection impossible to get around?").
+marketing/shanivar/routine-v3-onboarding/instagram/first-9-posts.md:95:o you, and when. It's voluntary. You can stop it from inside Shanivar. It isn't unbreakable, and we won't pretend it is.
+marketing/shanivar/routine-v3-onboarding/instagram/first-9-posts.md:100: second phone, or someone determined to get around it, and will never be called impossible to bypass. (5) Black slide: "Protection is voluntary and stoppable, never unbre
+marketing/shanivar/routine-v3-onboarding/instagram/first-9-posts.md:112:| 3–8 s | A strict app can fail you two ways: pretend it's unbreakable, or pretend it's on. |
+marketing/shanivar/routine-v3-onboarding/instagram/first-9-posts.md:128:th you. Honest about itself." "A strict app can fail you two ways: pretend it's unbreakable, or pretend it's on." "Saved is not Active." "Missing access? It's built to say
+marketing/shanivar/routine-v3-onboarding/instagram/first-9-posts.md:157:**Guard:** no "set and forget, guaranteed" and no reliability claim about alarms (`routine-onboarding-marketing-plan.md:1
+marketing/shanivar/routine-v3-onboarding/source/CLAUDE_ROUTINE_V3_BUILD_HANDOFF_2026-09-30.md:235:n earlier END release protection owned by another active window. This should be impossible while overlap is rejected, but still test ownership explicitly;

@@ -1,5 +1,5 @@
 <callout icon="🧪" color="yellow_bg">
-	**Live: the founder confirmed DEV-82 on 17 Oct 2026.** Shanivar Tester, 2026-10-17 (Europe/Berlin). Source files are on the QA box at `/workspace/qa/dev82/` (test_plan.md, ac_test_matrix.md, defect_register.md, release_readiness_template.md, device_case_plan_dev71_dev75.md, alignment_review.md). No source code was changed, no tests were written for unconfirmed tickets, and no Jira status was changed.
+	**Live: the founder confirmed DEV-82 on 17 Oct 2026.** Shanivar Tester, 2026-10-17 (Europe/Berlin). Source files are on the QA box at `/workspace/qa/dev82/` (test_plan.md, ac_test_matrix.md, defect_register.md, release_readiness_template.md, device_case_plan_dev71_dev75.md, alignment_review.md). DEV-71 and DEV-75 test cases and phone checklists are child pages below. No source code was changed, no tests were written for unconfirmed tickets, and no Jira status was changed.
 </callout>
 Part of <mention-page url="https://app.notion.com/p/3fc10ae18c9f81c1b877d676061428dd"/> · Jira [DEV-82](https://shanivar.atlassian.net/browse/DEV-82) · Epic F [DEV-61](https://shanivar.atlassian.net/browse/DEV-61)
 # Alignment review (QA)
@@ -16,7 +16,7 @@ Part of <mention-page url="https://app.notion.com/p/3fc10ae18c9f81c1b877d6760614
 - Device protocol docs (8-check stance, Routine V3 guide, device QA checklist). Retest history with evidence in /workspace/qa/.
 
 **3) What's missing?**
-- No real-device run yet: all 37 real-device rows are NOT RUN, and there's no OEM phone (DEV-7/71/75). 21 DEV-71/75 cases are planned for the emulator first (emulator-pending); they never replace the phone rows.
+- No real-device run yet: all 62 real-device rows (incl. the 32 DEV-71/75 phone cases) are NOT RUN, pending the founder's phone. There's no OEM phone (DEV-7/71/75), and no emulator (cancelled).
 - No analytics at all: the intervention choice isn't recorded (DEV-69) and there is no event contract (DEV-65). So WIAC can't be verified (DEV-83).
 - No CI gate (DEV-15/43), no staging (DEV-41), so no E2E (DEV-55). No crash reporting (DEV-14). No cross-user tests for RPCs or Edge Functions (DEV-79).
 - No E2E protect → act → reflect suite (DEV-84). Completion idempotency (DEV-72) and missed-day recovery (DEV-74) aren't built.
@@ -41,35 +41,35 @@ Part of <mention-page url="https://app.notion.com/p/3fc10ae18c9f81c1b877d6760614
 
 # Coverage summary and top gaps
 
-Generated 2026-10-17 (Europe/Berlin) by Shanivar Tester from Jira JQL `project = DEV ORDER BY key ASC` (89 issues) and the repo worktrees. No source code changed; no tests written for unconfirmed tickets.
+Generated 2026-10-17 (Europe/Berlin) by Shanivar Tester from Jira JQL `project = DEV ORDER BY key ASC` (DEV-1..DEV-89) and the repo worktrees. DEV-90..DEV-96 are bugs QA filed from this matrix (22:5x); they are tracked in `defect_register.md`, not as AC rows. **The emulator was cancelled by the founder (22:55):** every DEV-71/75 device case is real-device NOT RUN, pending his phone; see the phone checklists in /workspace/qa/dev71 and /workspace/qa/dev75. No source code changed; no tests written for unconfirmed tickets.
 
 **Builds referenced:** `main@20fb519` = /workspace/shanivar-v3 (dev-38-outbox-gaps, 518 unit tests, 0 fail, 1 skipped = SupabaseSyncTest.e2eGuestPushReadBack, run 21:55); `dev39@8e122a8` (512/0/1, 21:59); `dev42@ba38de6` (507/0/0 Android + pgTAP 01–05 on local stack); `dev45@2fce42d` (in QA now); `dev47@1e69cba` (548/0/1 developer run 22:36, not QA-reviewed); `dev54@7a56cf6` + uncommitted work. Android test paths are under `android-app/app/src/test/java/com/shanivar/nativeapp/`; pgTAP under `supabase/tests/`.
 
-**Status key:** automated-pass · manual-only (needs a human check; result noted) · real-device-only (needs a physical phone; NOT RUN) · emulator-pending (DEV-71/75 cases planned for the emulator; run when PM confirms it is booted — emulator results never replace the real-device rows) · no test (gap) · pending (in QA now, DEV-45 only). `(derived)` = Jira has no AC section; AC inferred from the description and **returned to the owner to confirm** (DEV-82 edge case). `[DoD]` = row added by QA under the new definition of done (real-device proof for alarms/protection).
+**Status key:** automated-pass · manual-only (needs a human check; result noted) · real-device-only (needs a physical phone; NOT RUN, pending the founder's phone) · no test (gap) · pending (in QA now, DEV-45 only). `(derived)` = Jira has no AC section; AC inferred from the description and **returned to the owner to confirm** (DEV-82 edge case). `[DoD]` = row added by QA under the new definition of done (real-device proof for alarms/protection).
 
 
 ## Summary counts
 
 <table fit-page-width="true" header-row="true">
-	<tr><td>Epic</td><td>ACs</td><td>automated-pass</td><td>manual-only</td><td>real-device-only (NOT RUN)</td><td>emulator-pending</td><td>no test (gap)</td><td>pending</td></tr>
-	<tr><td>A — Strategy & measurement</td><td>4</td><td>0</td><td>3</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-	<tr><td>B — Protection</td><td>66</td><td>19</td><td>7</td><td>17</td><td>12</td><td>11</td><td>0</td></tr>
-	<tr><td>C — Routine</td><td>61</td><td>13</td><td>6</td><td>8</td><td>9</td><td>23</td><td>2</td></tr>
-	<tr><td>D — Sadhana</td><td>59</td><td>24</td><td>10</td><td>3</td><td>0</td><td>22</td><td>0</td></tr>
-	<tr><td>E — Security, privacy & reliability</td><td>117</td><td>20</td><td>29</td><td>3</td><td>0</td><td>55</td><td>10</td></tr>
-	<tr><td>F — QA & release</td><td>23</td><td>0</td><td>6</td><td>6</td><td>0</td><td>11</td><td>0</td></tr>
-	<tr><td>G — CS & growth</td><td>12</td><td>0</td><td>3</td><td>0</td><td>0</td><td>9</td><td>0</td></tr>
-	<tr><td>No epic</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-	<tr><td>**Total**</td><td>**343**</td><td>**76**</td><td>**65**</td><td>**37**</td><td>**21**</td><td>**132**</td><td>**12**</td></tr>
+	<tr><td>Epic</td><td>ACs</td><td>automated-pass</td><td>manual-only</td><td>real-device-only (NOT RUN)</td><td>no test (gap)</td><td>pending</td></tr>
+	<tr><td>A — Strategy & measurement</td><td>4</td><td>0</td><td>3</td><td>0</td><td>1</td><td>0</td></tr>
+	<tr><td>B — Protection</td><td>69</td><td>19</td><td>7</td><td>32</td><td>11</td><td>0</td></tr>
+	<tr><td>C — Routine</td><td>62</td><td>13</td><td>6</td><td>18</td><td>23</td><td>2</td></tr>
+	<tr><td>D — Sadhana</td><td>59</td><td>24</td><td>10</td><td>3</td><td>22</td><td>0</td></tr>
+	<tr><td>E — Security, privacy & reliability</td><td>117</td><td>20</td><td>29</td><td>3</td><td>55</td><td>10</td></tr>
+	<tr><td>F — QA & release</td><td>23</td><td>0</td><td>6</td><td>6</td><td>11</td><td>0</td></tr>
+	<tr><td>G — CS & growth</td><td>12</td><td>0</td><td>3</td><td>0</td><td>9</td><td>0</td></tr>
+	<tr><td>No epic</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+	<tr><td>**Total**</td><td>**347**</td><td>**76**</td><td>**65**</td><td>**62**</td><td>**132**</td><td>**12**</td></tr>
 </table>
 
-Rows: 343 = 315 Jira/derived ACs + 28 planned DEV-71/DEV-75 device cases (17 + 15 rows, minus the 4 umbrella ACs already counted).
+Rows: 347 = 315 Jira/derived ACs + 32 DEV-71/DEV-75 phone cases (20 + 16 rows, minus the 4 umbrella ACs already counted); all phone cases NOT RUN, pending the founder's phone.
 
 Tickets: 89 (82 work tickets + 7 epic containers). Tickets whose ACs were derived because Jira has no AC section: 21.
 
 
 **Top gaps (built or in-flight work with no test, or not run):**
-1. **Real-device proof: all 37 real-device rows are NOT RUN (21 DEV-71/75 cases are emulator-pending).** No Pixel or OEM run for any alarm or protection ticket (DEV-1–6, 10, 21, 69–71, 75). DST fall-back on 25 Oct is an imminent case.
+1. **Real-device proof: all 62 real-device rows are NOT RUN, pending the founder's phone (no emulator: cancelled).** No Pixel or OEM run for any alarm or protection ticket (DEV-1–6, 10, 21, 69–71, 75). DST fall-back on 25 Oct is an imminent case. New from the DEV-75 no-phone checks: **DEV-93** (accessible alarm dismissal hidden) and **DEV-94** (alarm shown as armed after Android dropped it), both High.
 2. **Breath-pacing safety (DEV-89):** TechniqueContentSafetyTest scans only techniques.json/.md. The Breathing\* screens and the block-screen "breathe" path have no test.
 3. **No-snooze on the block screen (DEV-10):** nothing asserts it.
 4. **Analytics / WIAC:** no events exist (DEV-65/69/83). The intervention choice and the "no package name leaves the device" rule are untested.
@@ -80,7 +80,7 @@ Tickets: 89 (82 work tickets + 7 epic containers). Tickets whose ACs were derive
 9. **E2E against staging (DEV-55):** SupabaseSyncTest.e2eGuestPushReadBack is skipped without a stack, and there is no staging yet.
 10. **Branch-only fixes:** DEV-38/39/42/45/47/54 are not on main, and there is no CI (DEV-15).
 # Defect register
-As of 2026-10-17 22:45 (Europe/Berlin). Owner: Shanivar Tester. Evidence holds no personal data (test users are `a@test.local` / `b@test.local`).
+As of 2026-10-17 23:10 (Europe/Berlin). Owner: Shanivar Tester. Evidence holds no personal data (test users are `a@test.local` / `b@test.local`).
 
 **Severity:** Critical = harm/lock-out, security breach or safety-rule breach reachable by users · High = a core promise is wrong (protection, alarm, truthful status, data loss) · Medium = wrong behaviour with a workaround, or latent · Low = hygiene/tooling.
 **QA status:** Open · Fixed – unit-verified (device pending) · Verified fixed (on branch) · Verified fixed (on main) · Pending retest.
@@ -97,9 +97,13 @@ As of 2026-10-17 22:45 (Europe/Berlin). Owner: Shanivar Tester. Evidence holds n
 	<tr><td>[DEV-21](https://shanivar.atlassian.net/browse/DEV-21)</td><td>Reboot catch-up must resume local protection with no session</td><td>High</td><td>Completed</td><td>Passes in tests; real device pending under DEV-7</td><td>dev</td><td>main@20fb519 (fix 88793bd)</td><td>BootRescheduleCatchUpTest (5)</td></tr>
 	<tr><td>[DEV-38](https://shanivar.atlassian.net/browse/DEV-38)</td><td>Sync outbox never queues own self-reports, edits/deletes, onboarding import, routine changes</td><td>Medium</td><td>Open</td><td>Verified fixed (on branch dev-38-outbox-gaps, not on main)</td><td>QA of DEV-35 B3 at b372079</td><td>**20fb519** (failed once at 86b558a: legacy-import gap)</td><td>SyncOutboxGapsTest (11); /workspace/qa/dev38/rerun-\*</td></tr>
 	<tr><td>[DEV-39](https://shanivar.atlassian.net/browse/DEV-39)</td><td>techniques.json has a timed box-breathing script and a nervous-system claim</td><td>High (safety rule; Jira says Medium)</td><td>Open</td><td>Verified fixed (on branch dev-39-techniques-safety)</td><td>QA safety check at b372079</td><td>**8e122a8** (failed once at 3471087: "rounds" still present)</td><td>TechniqueContentSafetyTest (5) + mutation runs /workspace/qa/dev39-mut-\*.log</td></tr>
-	<tr><td>QA-42-01 (not filed)</td><td>DEV-42: commit d9168eb cannot be reverted on its own (later caps/revoke migrations depend on it)</td><td>Low</td><td>—</td><td>Open — rollback hazard</td><td>QA of DEV-42</td><td>dev42@ba38de6</td><td>Feed into DEV-81 runbook: revert the DEV-42 set as a unit or ship a forward fix</td></tr>
-	<tr><td>QA-42-02 (not filed)</td><td>DEV-42: anon request returns a 401/permission hint that names the table</td><td>Low</td><td>—</td><td>Open — information disclosure</td><td>QA of DEV-42</td><td>dev42@ba38de6</td><td>05\_privileges / anon probe. Table names are not secret, but the hint confirms which tables exist</td></tr>
-	<tr><td>QA-42-03 (not filed)</td><td>DEV-42: text columns other than ids and `note` have no length cap</td><td>Medium</td><td>—</td><td>Open — hardening gap</td><td>QA of DEV-42</td><td>dev42@ba38de6</td><td>04\_size\_caps covers plan/packages/drift\_reasons/id/note only. Proposed fix: cap every free text column (follow-up ticket)</td></tr>
+	<tr><td>[DEV-90](https://shanivar.atlassian.net/browse/DEV-90) (QA-42-01)</td><td>DEV-42: commit d9168eb cannot be reverted on its own (later caps/revoke migrations depend on it)</td><td>Low</td><td>Open</td><td>Open — rollback hazard</td><td>QA of DEV-42</td><td>dev42@ba38de6</td><td>Feed into DEV-81 runbook: revert the DEV-42 set as a unit or ship a forward fix</td></tr>
+	<tr><td>[DEV-91](https://shanivar.atlassian.net/browse/DEV-91) (QA-42-02)</td><td>DEV-42: anon request returns a 401/permission hint that names the table</td><td>Low</td><td>Open</td><td>Open — information disclosure</td><td>QA of DEV-42</td><td>dev42@ba38de6</td><td>05\_privileges / anon probe. Table names are not secret, but the hint confirms which tables exist</td></tr>
+	<tr><td>[DEV-92](https://shanivar.atlassian.net/browse/DEV-92) (QA-42-03)</td><td>DEV-42: text columns other than ids and `note` have no length cap</td><td>Medium</td><td>Open</td><td>Open — hardening gap</td><td>QA of DEV-42</td><td>dev42@ba38de6</td><td>04\_size\_caps covers plan/packages/drift\_reasons/id/note only. Proposed fix: cap every free text column (follow-up ticket)</td></tr>
+	<tr><td>[DEV-93](https://shanivar.atlassian.net/browse/DEV-93)</td><td>Wake alarm: accessible dismissal hidden unless pre-selected or no motion sensor (breaks 0003)</td><td>High</td><td>Open</td><td>Open: static FAIL, phone A7 to confirm</td><td>QA static review DEV-75 (N6)</td><td>main@20fb519</td><td>AlarmActivity.AlarmScreen has only "Start moving"; MovementDismissalActivity.kt:64,132</td></tr>
+	<tr><td>[DEV-94](https://shanivar.atlassian.net/browse/DEV-94)</td><td>Alarm card / Routine show "Next: <time>" from prefs after Android dropped the alarm</td><td>High</td><td>Open</td><td>Open: static FAIL, phone A3/A4 to confirm</td><td>QA static review DEV-75 (N5)</td><td>main@20fb519</td><td>AlarmScheduler.scheduleRule keeps a stale next\_trigger\_at; ShanivarApp.kt:305,562,615</td></tr>
+	<tr><td>[DEV-95](https://shanivar.atlassian.net/browse/DEV-95)</td><td>After reboot the alarm is not re-armed until first unlock (no direct boot)</td><td>Medium</td><td>Open</td><td>Open: static finding, phone A10 to confirm</td><td>QA manifest review DEV-75 (N3)</td><td>main@20fb519</td><td>Manifest L115-122: no LOCKED\_BOOT\_COMPLETED / directBootAware</td></tr>
+	<tr><td>[DEV-96](https://shanivar.atlassian.net/browse/DEV-96)</td><td>Alarm channel described as "non-dismissible"; walk-only text shown to everyone</td><td>Low</td><td>Open</td><td>Open: wording scan FAIL</td><td>QA wording scan DEV-75 (N10)</td><td>main@20fb519</td><td>AlarmFireReceiver.kt:35,39-40; AlarmForegroundService.kt:34</td></tr>
 	<tr><td>[DEV-8](https://shanivar.atlassian.net/browse/DEV-8)</td><td>Leaked GitHub PAT and Render key still valid (+ Atlassian token)</td><td>Critical</td><td>Open</td><td>Open — founder action; release blocker</td><td>audit 2026-09-24</td><td>—</td><td>Not testable by QA until rotated</td></tr>
 	<tr><td>[DEV-17](https://shanivar.atlassian.net/browse/DEV-17)</td><td>No release signing; release API host NXDOMAIN</td><td>High</td><td>Open</td><td>Open — blocks any store/release build</td><td>audit 2026-09-24</td><td>—</td><td></td></tr>
 	<tr><td>[DEV-89](https://shanivar.atlassian.net/browse/DEV-89)</td><td>Breathing\* screens and block-screen "breathe" path may pace breath (suspected)</td><td>High (if confirmed)</td><td>Open</td><td>Open — suspected, audit not run</td><td>DEV-39 follow-up</td><td>—</td><td>TechniqueContentSafetyTest does not scan these files</td></tr>
@@ -108,9 +112,9 @@ As of 2026-10-17 22:45 (Europe/Berlin). Owner: Shanivar Tester. Evidence holds n
 	<tr><td>[DEV-45](https://shanivar.atlassian.net/browse/DEV-45)</td><td>Sync engine (Backend half)</td><td>—</td><td>Open</td><td>**Pending — in QA now**</td><td>—</td><td>dev45@2fce42d under test</td><td>No verdict yet</td></tr>
 </table>
 
-**Counts:** 17 entries. Critical 2 (DEV-1 fixed in logic; DEV-8 open). High 8 (DEV-2/3/4/5/21 fixed in logic; DEV-39 verified on branch; DEV-17, DEV-89 open). Medium 4 (DEV-6 fixed; DEV-38 verified on branch; QA-42-03, DEV-36 open). Low 3 (QA-42-01, QA-42-02, DEV-19 open). Plus DEV-45, pending in QA.
-**Open Critical/High with no fix:** DEV-8, DEV-17, DEV-89. Each blocks an RC unless the founder gives documented approval.
-**Action for owners:** file QA-42-01..03 as Jira bugs, if the founder agrees. QA did not file them.
+**Counts:** 21 entries. Critical 2 (DEV-1 fixed in logic; DEV-8 open). High 10 (DEV-2/3/4/5/21 fixed in logic; DEV-39 verified on branch; DEV-17, DEV-89, DEV-93, DEV-94 open). Medium 5 (DEV-6 fixed; DEV-38 verified on branch; DEV-92, DEV-36, DEV-95 open). Low 4 (DEV-90, DEV-91, DEV-96, DEV-19 open). Plus DEV-45, pending in QA.
+**Open Critical/High with no fix:** DEV-8, DEV-17, DEV-89, DEV-93, DEV-94. Each blocks an RC unless the founder gives documented approval.
+**Filed by QA on 2026-10-17 (22:50–23:05 CEST):** DEV-90..92 (DEV-42 findings QA-42-01..03) and DEV-93..96 (DEV-75 no-phone checks). Duplicate check by JQL text search first; none found. DEV-71 no-phone checks found no new bug; the gaps are already DEV-70 (guard notification while not enforcing) and DEV-89 (block-screen practice).
 
 # Test plan
 Owner: Shanivar Tester · Version 0.1, 2026-10-17 (Europe/Berlin) · Jira: [DEV-82](https://shanivar.atlassian.net/browse/DEV-82) (Epic F, [DEV-61](https://shanivar.atlassian.net/browse/DEV-61))
@@ -127,7 +131,7 @@ QA verifies Shanivar independently across normal, failure and recovery cases. A 
 Any part not run is recorded as NOT RUN, never as a pass.
 
 ### 2. Scope
-In: every DEV ticket with ACs, across epics A–G (89 issues, 315 ACs plus 28 planned device cases; see the matrix). First-release work items come from the QA brief: DEV-82, DEV-7/71/75, DEV-84/55, DEV-83, DEV-79, DEV-89, DEV-15.
+In: every DEV ticket with ACs, across epics A–G (89 issues, 315 ACs plus 32 DEV-71/75 phone cases; DEV-90..96 are QA-filed bugs; see the matrix). First-release work items come from the QA brief: DEV-82, DEV-7/71/75, DEV-84/55, DEV-83, DEV-79, DEV-89, DEV-15.
 Out: writing tests for unconfirmed tickets; Later-phase tickets (DEV-13, 16, 22, 23, 51, 77, 78, 87).
 
 ### 3. Test levels and where they live
@@ -137,8 +141,7 @@ Out: writing tests for unconfirmed tickets; Later-phase tickets (DEV-13, 16, 22,
 	<tr><td>Content safety</td><td>`TechniqueContentSafetyTest`, `BreathingCatalogTest`, `SadhanaPracticeTest.noBreathPacingLanguage`</td><td>same</td><td>every RC (extend per DEV-89)</td></tr>
 	<tr><td>DB / RLS (pgTAP)</td><td>`supabase/tests/0*.test.sql`</td><td>`supabase test db` (**local stack only**)</td><td>every `supabase/**` change</td></tr>
 	<tr><td>Integration (phone ↔ Supabase)</td><td>`SupabaseSyncTest.e2eGuestPushReadBack` (needs `-Dsupabase.e2e.url/anon`)</td><td>local stack now; staging after DEV-41</td><td>every RC</td></tr>
-	<tr><td>Emulator pre-run (DEV-71/75)</td><td>`device_case_plan_dev71_dev75.md`, 21 cases</td><td>adb against the PM-booted emulator; `connectedDebugAndroidTest` allowed, managed-device task forbidden</td><td>before each device run; never replaces it</td></tr>
-	<tr><td>Device protocol</td><td>`android-app/ENFORCEMENT_STANCE_2026-09-12.md` (8 checks), `ROUTINE_V3_TEST_GUIDE_2026-09-30.md`, `ROUTINE_V3_DEVICE_QA_2026-10-05.md`</td><td>`connectedDebugAndroidTest` on a physical phone. `pixel2Api34DebugAndroidTest` is forbidden.</td><td>every RC (DEV-7/71/75)</td></tr>
+	<tr><td>Device protocol</td><td>`android-app/ENFORCEMENT_STANCE_2026-09-12.md` (8 checks), `ROUTINE_V3_TEST_GUIDE_2026-09-30.md`, `ROUTINE_V3_DEVICE_QA_2026-10-05.md`</td><td>`connectedDebugAndroidTest` on a physical phone. `pixel2Api34DebugAndroidTest` is forbidden.</td><td>every RC (DEV-7/71/75). Founder phone checklists: `/workspace/qa/dev71/phone_checklist.md` (18), `/workspace/qa/dev75/phone_checklist.md` (14). **No emulator** (cancelled by the founder 17 Oct).</td></tr>
 	<tr><td>E2E journey</td><td>protect → intervention → act → reflect → recover (DEV-84)</td><td>manual script on 2 devices</td><td>before release recommendation</td></tr>
 	<tr><td>Analytics</td><td>scripted session vs emitted events (DEV-83)</td><td>after DEV-65/69</td><td>every RC once events exist</td></tr>
 	<tr><td>Security</td><td>cross-user suite for every table, RPC and Edge Function (DEV-79)</td><td>pgTAP + staging</td><td>release blocker</td></tr>
@@ -172,58 +175,19 @@ Severities and register: `defect_register.md`. Retest after every fix. Record th
 </table>
 
 ### 9. Current coverage snapshot (from the matrix)
-343 rows (315 ACs + 28 planned DEV-71/75 device cases). automated-pass **76** · manual-only **65** · real-device-only **37** (all NOT RUN) · emulator-pending **21** · no test **132** (109 for work not built yet, 23 on built or in-flight work) · pending **12** (DEV-45 in QA, plus DEV-25/52 rows that depend on it).
+347 rows (315 ACs + 32 DEV-71/75 phone cases). automated-pass **76** · manual-only **65** · real-device-only **62** (all NOT RUN, pending the founder's phone) · no test **132** (109 for work not built yet, 23 on built or in-flight work) · pending **12** (DEV-45 in QA, plus DEV-25/52 rows that depend on it).
 
-# DEV-71 / DEV-75 device case plan (emulator-pending)
-Owner: Shanivar Tester · 2026-10-17 (Europe/Berlin) · Status of every emulator case: **emulator-pending**. PM will say when the emulator is booted. Every real-device row stays **NOT RUN** until it runs on a physical phone.
-**Rule:** an emulator pass is integration evidence only. Under the DoD it never replaces the Pixel and OEM rows (DEV-7 AC3, QA brief). Record emulator results as "emulator: PASS/FAIL" next to the case and leave the real-device verdict open.
+# DEV-71 / DEV-75 phone case plan (all NOT RUN, pending the founder's phone)
+Owner: Shanivar Tester · Updated 2026-10-17 23:10 CEST.
+**The founder cancelled the emulator (22:55 CEST).** No case is planned for or run on an emulator. All 32 DEV-71/75 cases are **real-device, NOT RUN, pending the founder's phone**, and they are in his phone checklists. A second phone (other brand or Android version) is still needed to sign off either ticket (DEV-71 scope, DEV-75 "min 2 OEMs, Android 12–15").
 
-### Setup (once the emulator is booted)
-- Use the PM-provided emulator through `adb` (`adb devices` must list it). **Do not run** the Gradle managed-device task `pixel2Api34DebugAndroidTest`: it is forbidden on the dev machine. `./gradlew :app:connectedDebugAndroidTest` may target the attached emulator.
-- Build: `./gradlew :app:assembleDebug` from the RC commit, then `adb install -r app/build/outputs/apk/debug/app-debug.apk` (package `com.shanivar.nativeapp.dev`). Turn ROUTINE\_V3 on for debug only, as the device QA checklist describes. No source change.
-- Record per case: emulator image (API level, ABI), build hash, exact commands, raw `adb logcat` excerpt, screenshot (`adb exec-out screencap -p`), and PASS/FAIL/NOT RUN. Evidence goes in `/workspace/qa/dev71/` and `/workspace/qa/dev75/`, with no personal data.
-- Sync is off, or local stack only. Never the cloud project. Never reset the shared local stack.
-- Restore the emulator clock and time zone after R3/R4/A6 (`adb shell settings put global auto_time 1`).
-
-### DEV-71 — protection (permissions, sessions, reboot, recovery)
 <table fit-page-width="true" header-row="true">
-	<tr><td>ID</td><td>Case</td><td>Steps (emulator)</td><td>Expected</td><td>Emulator</td><td>Real device</td></tr>
-	<tr><td>P1</td><td>Usage access revoked mid-window</td><td>Start a window → `adb shell appops set <pkg> GET_USAGE_STATS ignore` → reopen Routine</td><td>NEEDS\_DEVICE\_ACCESS with repair step; never Active</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>P2</td><td>Overlay revoked</td><td>`appops set <pkg> SYSTEM_ALERT_WINDOW deny` during a window</td><td>Honest state, no false Active, stop still works</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>P3</td><td>Exact alarm denied</td><td>`appops set <pkg> SCHEDULE_EXACT_ALARM deny` → save window</td><td>Not Ready; repair path named</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>S1</td><td>Window START/END on time</td><td>Window now+2 → now+5 min, protected app = a test app</td><td>Overlay at START (brief flash is acceptable and disclosed), release at END</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>S2</td><td>Two windows, one ends inside the other</td><td>Two windows, adjacent and nested (overlap is rejected at save)</td><td>Earlier END does not release the later window (DEV-2)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>S3</td><td>Overnight + full day</td><td>Set clock to 21:58 with a 22:00→06:00 window; set clock past midnight; full calendar day</td><td>Active across midnight, no 1-minute gap (DEV-5/6)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>S4</td><td>Stop offline; no snooze</td><td>Airplane mode (`cmd connectivity airplane-mode enable`), signed out → Stop</td><td>Protection ends immediately; block screen offers no snooze/"5 more min" (DEV-4/10)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>R1</td><td>Reboot inside / after a window</td><td>`adb reboot` inside the window; then again after END</td><td>Resumes inside; does not start after; next boundary re-armed (DEV-21)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>R2</td><td>Process death / force-stop</td><td>`adb shell am kill <pkg>`; separately `am force-stop <pkg>`</td><td>Kill: protection persists and resumes. Force-stop: the documented bypass, shown honestly (DEV-70 gap)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>R3</td><td>Doze, late START</td><td>`adb shell dumpsys deviceidle force-idle` across START; `unforce` after END</td><td>No 24 h session from a stale START (DEV-1)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>R4</td><td>TZ change + DST fall-back</td><td>Zone Europe/Berlin, clock 2026-10-25 02:30 (repeated hour); zone change to Asia/Kolkata</td><td>One boundary per rule; new next-boundary explained (DEV-5 AC4 gap)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>R5</td><td>App update</td><td>`adb install -r` same build during an active window</td><td>Windows and alarms re-armed (B2)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>D1</td><td>OEM battery saver / app killer</td><td>Xiaomi/Realme/Vivo/Samsung with saver ON, 2 h window</td><td>FocusGuardService survives, or failure surfaced</td><td>—</td><td>NOT RUN</td></tr>
-	<tr><td>D2</td><td>Overnight on battery, low-battery mode</td><td>Real phone overnight</td><td>Protection holds until END</td><td>—</td><td>NOT RUN</td></tr>
-	<tr><td>D3</td><td>Repeat on stock Pixel</td><td>Full table above</td><td>As above</td><td>—</td><td>NOT RUN</td></tr>
+	<tr><td>Ticket</td><td>Full test cases</td><td>Founder phone checklist</td><td>Phone cases</td><td>No-phone checks done</td><td>Bugs filed</td></tr>
+	<tr><td>DEV-71 protection</td><td>`/workspace/qa/dev71/test_cases.md`</td><td>`/workspace/qa/dev71/phone_checklist.md`</td><td>18 (P1–P4, S1–S5, R1–R6, D1–D3), all NOT RUN</td><td>9: 7 PASS, 2 observations (→ DEV-70, R6)</td><td>none new (gaps already in DEV-70, DEV-89)</td></tr>
+	<tr><td>DEV-75 alarms</td><td>`/workspace/qa/dev75/test_cases.md`</td><td>`/workspace/qa/dev75/phone_checklist.md`</td><td>14 (A1–A10, D1–D4), all NOT RUN</td><td>11: 8 PASS, 3 FAIL</td><td>DEV-93 (High), DEV-94 (High), DEV-95 (Medium), DEV-96 (Low)</td></tr>
 </table>
 
-### DEV-75 — alarms and notifications
-<table fit-page-width="true" header-row="true">
-	<tr><td>ID</td><td>Case</td><td>Steps (emulator)</td><td>Expected</td><td>Emulator</td><td>Real device</td></tr>
-	<tr><td>A1</td><td>Fires from lock screen</td><td>Alarm now+2 min, lock (`input keyevent 26`)</td><td>Full-screen alarm UI on API 34+; sound</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>A2</td><td>Doze / swipe-away</td><td>force-idle, swipe app from recents</td><td>Fires on time (setAlarmClock)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>A3</td><td>Reboot / update / recurrence</td><td>`adb reboot`; `install -r`; let a repeating alarm fire</td><td>Re-armed; next occurrence recomputed (0008)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>A4</td><td>Exact alarm denied</td><td>`appops set <pkg> SCHEDULE_EXACT_ALARM deny`</td><td>"Permission required" shown, no silent fail</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>A5</td><td>Notifications denied</td><td>`pm revoke <pkg> android.permission.POST_NOTIFICATIONS`</td><td>State shown honestly</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>A6</td><td>DST / TZ</td><td>Alarm 02:30 on 2026-10-25 Europe/Berlin; zone change</td><td>Exactly one ring at local wall-clock time</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>A7</td><td>Dismiss paths</td><td>Accessible path; QR/photo with emulator virtual camera</td><td>Accessible path always reachable (0003)</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>A8</td><td>Alarm during practice</td><td>Start 60 s Sadhana, alarm fires</td><td>Practice interrupted and recorded truthfully</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>A9</td><td>Hard cap</td><td>Leave ringing</td><td>Ends at the cap; no endless ring</td><td>emulator-pending</td><td>NOT RUN</td></tr>
-	<tr><td>D1</td><td>Movement dismissal</td><td>Real step detector / ACTIVITY\_RECOGNITION</td><td>Dismiss by steps; fallback reachable</td><td>—</td><td>NOT RUN</td></tr>
-	<tr><td>D2</td><td>Wakes a person</td><td>Volume, vibration, speaker, DND</td><td>Audible and noticeable</td><td>—</td><td>NOT RUN</td></tr>
-	<tr><td>D3</td><td>OEM killer</td><td>OEM phone, saver ON, overnight</td><td>Alarm not suppressed</td><td>—</td><td>NOT RUN</td></tr>
-	<tr><td>D4</td><td>Powered off across alarm time</td><td>Power off, power on after</td><td>Behaviour documented, no ghost alarm</td><td>—</td><td>NOT RUN</td></tr>
-</table>
-
-Counts: 21 emulator-pending cases (DEV-71: 12, DEV-75: 9). Real-device rows NOT RUN: DEV-71 4 (AC1 + D1–D3), DEV-75 6 (AC1, AC2, D1–D4).
+Evidence rule: phone model, Android version, build hash, local time (CEST), screenshot or recording, PASS/FAIL. No personal app list (the test app is YouTube, signed out). Sync is off or local stack only, never the cloud project.
 
 # Release-readiness report template
 Copy this per RC.
@@ -280,7 +244,7 @@ Rule: no unresolved Critical or High without documented founder approval.
 ### 7. Sign-off
 QA: · Founder (G6):
 
-# AC-to-test matrix (all 89 DEV issues: 315 ACs + 28 planned device cases)
+# AC-to-test matrix (all 89 DEV issues: 315 ACs + 32 phone cases)
 ## Epic A — Strategy & measurement ([DEV-56](https://shanivar.atlassian.net/browse/DEV-56))
 
 <table fit-page-width="true" header-row="true">
@@ -350,26 +314,29 @@ _Epic subtotal:_ 4 ACs — manual-only 3, no test (gap) 1
 	<tr><td>″</td><td></td><td>Revoked permission shows the fix path</td><td>main@20fb519 test/FocusScheduleStatusTest.revoked\* (status only; no detection of runtime revocation while active)</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>Failure appears in crash reporting</td><td>Depends on DEV-14 (not built)</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>[DoD] OEM battery killer / revoke on real phones</td><td>DEV-71</td><td>real-device-only (NOT RUN)</td></tr>
-	<tr><td>[DEV-71](https://shanivar.atlassian.net/browse/DEV-71) QA suite: protection permissions, sessions, reboot and recov</td><td>Open</td><td>AC1 Suite executed on real devices with evidence (umbrella)</td><td>Pixel + OEM run — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>[DEV-71](https://shanivar.atlassian.net/browse/DEV-71) QA suite: protection permissions, sessions, reboot and recov</td><td>Open</td><td>AC1 Suite executed on real devices with evidence (umbrella)</td><td>Phone run — NOT RUN, pending founder phone; no-phone checks 7 PASS + 2 observations (DEV-70, DEV-89)</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>AC2 Defects logged with severity</td><td>Defect register (this deliverable)</td><td>manual-only</td></tr>
-	<tr><td>″</td><td></td><td>P1 Usage access revoked while window active → NEEDS\_DEVICE\_ACCESS + repair path</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md P1 (adb appops set … GET\_USAGE\_STATS ignore)</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>P2 Overlay (SYSTEM\_ALERT\_WINDOW) revoked → honest state, no false Active</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md P2</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>P3 Exact-alarm access denied → protection window not Ready</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md P3 (appops SCHEDULE\_EXACT\_ALARM deny)</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>S1 Window START/END fire on time; blocked app shows overlay (flash disclosed)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md S1</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>S2 Two adjacent/overlapping windows; END of one keeps the other (DEV-2)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md S2</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>S3 Overnight 22:00→06:00 + full calendar day across midnight (DEV-5/6)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md S3 (adb clock set)</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>S4 Local Stop works offline and signed out (DEV-4/10); block screen has no snooze</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md S4 (airplane mode)</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>R1 Reboot inside window resumes; after window does not (DEV-21)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md R1 (adb reboot)</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>R2 Process death / force-stop of FocusGuardService mid-window</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md R2 (am kill / am force-stop)</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>R3 Doze: boundary delivered after deviceidle force-idle (DEV-1 late START)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md R3 (dumpsys deviceidle force-idle)</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>R4 Time-zone change + DST fall-back 25 Oct (Europe/Berlin)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md R4 (settings put global auto\_time\_zone 0; setprop persist.sys.timezone)</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>R5 App update (MY\_PACKAGE\_REPLACED) re-arms windows (B2)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md R5 (adb install -r)</td><td>emulator-pending</td></tr>
+	<tr><td>″</td><td></td><td>P1 Usage access revoked while window active → NEEDS\_DEVICE\_ACCESS + repair path</td><td>Phone case (qa/dev71/dev75/test\_cases.md) P1 (Settings → Usage access off)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>P2 Overlay (SYSTEM\_ALERT\_WINDOW) revoked → honest state, no false Active</td><td>Phone case (qa/dev71/dev75/test\_cases.md) P2</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>P3 Exact-alarm access denied → protection window not Ready</td><td>Phone case (qa/dev71/dev75/test\_cases.md) P3 (Settings → Alarms & reminders off)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>P4 Permission denied at onboarding → saved, not active, fix path shown</td><td>Phone case (qa/dev71/dev75/test\_cases.md) P4</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>S1 Window START/END fire on time; blocked app shows overlay (flash disclosed)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) S1</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>S2 Two adjacent/overlapping windows; END of one keeps the other (DEV-2)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) S2</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>S3 Overnight 22:00→06:00 + full calendar day across midnight (DEV-5/6)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) S3 (manual clock)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>S4 Local Stop works offline and signed out (DEV-4/10); block screen has no snooze</td><td>Phone case (qa/dev71/dev75/test\_cases.md) S4 (airplane mode)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>S5 Overlay choices (return / pause / practice / Back) all land on device home (DEV-69, DEV-89)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) S5</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>R1 Reboot inside window resumes; after window does not (DEV-21)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) R1 (reboot) · static: BootRescheduleCatchUpTest PASS</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>R2 Process death / force-stop of FocusGuardService mid-window</td><td>Phone case (qa/dev71/dev75/test\_cases.md) R2 (swipe away / Force stop)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>R3 Doze: boundary delivered after deviceidle force-idle (DEV-1 late START)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) R3 (screen off, unplugged ≥1 h)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>R4 Time-zone change + DST fall-back 25 Oct (Europe/Berlin)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) R4 (manual zone + DST night)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>R5 App update (MY\_PACKAGE\_REPLACED) re-arms windows (B2)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) R5 (reinstall same build)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>R6 Manual clock change during a window (back 3 h / forward past END)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) R6 · static observation N9</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>D1 OEM battery saver / app killer (Xiaomi/Realme/Vivo/Samsung) keeps FocusGuardService</td><td>Real OEM phone only — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>D2 Long run: protection survives overnight on battery, low-battery mode</td><td>Real phone only — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>D3 Same suite repeated on a stock Pixel</td><td>Real Pixel — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
 </table>
 
-_Epic subtotal:_ 66 ACs — automated-pass 19, manual-only 7, real-device-only (NOT RUN) 17, emulator-pending 12, no test (gap) 11
+_Epic subtotal:_ 69 ACs — automated-pass 19, manual-only 7, real-device-only (NOT RUN) 32, no test (gap) 11
 
 ## Epic C — Routine ([DEV-58](https://shanivar.atlassian.net/browse/DEV-58))
 
@@ -428,24 +395,25 @@ _Epic subtotal:_ 66 ACs — automated-pass 19, manual-only 7, real-device-only (
 	<tr><td>″</td><td></td><td>Failed save never shows success</td><td>main@20fb519 test/RoutineProtectionTest.invalidSaveDoesNotSync; saveMessagesNeverClaimActive (protection only; no generic failed-save test)</td><td>no test (gap)</td></tr>
 	<tr><td>[DEV-74](https://shanivar.atlassian.net/browse/DEV-74) Missed-step recovery and non-punitive return</td><td>Open</td><td>After 1, 3, 7 missed days a clear way back</td><td>Not built</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>Copy reviewed for guilt</td><td>Copy review</td><td>manual-only</td></tr>
-	<tr><td>[DEV-75](https://shanivar.atlassian.net/browse/DEV-75) Verify alarm and notification behaviour on supported real de</td><td>Open</td><td>AC1 All alarm/notification cases pass or have documented defects (umbrella)</td><td>Pixel + OEM run — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
-	<tr><td>″</td><td></td><td>AC2 No unresolved critical</td><td>Defect register gate</td><td>real-device-only (NOT RUN)</td></tr>
-	<tr><td>″</td><td></td><td>A1 Wake alarm fires at set time from locked screen; full-screen intent shown (Android 14+)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A1</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>A2 Alarm fires in Doze (setAlarmClock) and after app swipe-away</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A2</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>A3 Alarm re-armed after reboot and app update; recurrence recomputed after fire (0008)</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A3</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>A4 Exact-alarm permission denied → honest 'permission required', no silent failure</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A4</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>A5 Notification permission (POST\_NOTIFICATIONS) denied → state shown</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A5</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>A6 DST fall-back / TZ change: one alarm, at local wall-clock time</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A6</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>A7 Accessible dismissal path always available; QR/photo path with emulator camera</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A7</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>A8 Alarm during a Sadhana practice interrupts and is recorded truthfully</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A8</td><td>emulator-pending</td></tr>
-	<tr><td>″</td><td></td><td>A9 Hard cap ends a ringing alarm; no endless ring</td><td>Emulator plan device\_case\_plan\_dev71\_dev75.md A9</td><td>emulator-pending</td></tr>
+	<tr><td>[DEV-75](https://shanivar.atlassian.net/browse/DEV-75) Verify alarm and notification behaviour on supported real de</td><td>Open</td><td>AC1 All alarm/notification cases pass or have documented defects (umbrella)</td><td>Phone run — NOT RUN, pending founder phone; no-phone checks 8 PASS / 3 FAIL → DEV-93..96</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>AC2 No unresolved critical</td><td>Defect register gate: 0 Critical, 2 High open (DEV-93, DEV-94)</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A1 Wake alarm fires at set time from locked screen; full-screen intent shown (Android 14+)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A1</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A2 Alarm fires in Doze (setAlarmClock) and after app swipe-away</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A2</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A3 Alarm re-armed after reboot and app update; recurrence recomputed after fire (0008)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A3 · static review: DEV-94, DEV-95</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A4 Exact-alarm permission denied → honest 'permission required', no silent failure</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A4 · static review: DEV-94</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A5 Notification permission (POST\_NOTIFICATIONS) denied → state shown</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A5</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A6 DST fall-back / TZ change: one alarm, at local wall-clock time</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A6</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A7 Accessible dismissal path always available; QR/photo path</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A7 · static review: DEV-93 (FAIL), DEV-96</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A8 Alarm during a Sadhana practice interrupts and is recorded truthfully</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A8</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A9 Hard cap ends a ringing alarm; no endless ring</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A9</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>A10 Reboot without unlock: alarm still rings (direct boot)</td><td>Phone case (qa/dev71/dev75/test\_cases.md) A10 · static review: DEV-95 (expected FAIL)</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>D1 Movement dismissal with real step detector / ACTIVITY\_RECOGNITION</td><td>Real phone sensors — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>D2 Alarm actually wakes a person: volume, vibration, speaker, DND interplay</td><td>Real phone — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>D3 OEM battery killer does not suppress the alarm (Xiaomi/Realme/Vivo/Samsung)</td><td>Real OEM phone — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>D4 Device powered off across alarm time; behaviour on power-on</td><td>Real phone — NOT RUN</td><td>real-device-only (NOT RUN)</td></tr>
 </table>
 
-_Epic subtotal:_ 61 ACs — automated-pass 13, manual-only 6, real-device-only (NOT RUN) 8, emulator-pending 9, no test (gap) 23, pending (in QA) 2
+_Epic subtotal:_ 62 ACs — automated-pass 13, manual-only 6, real-device-only (NOT RUN) 18, no test (gap) 23, pending (in QA) 2
 
 ## Epic D — Sadhana ([DEV-59](https://shanivar.atlassian.net/browse/DEV-59))
 
@@ -590,13 +558,13 @@ _Epic subtotal:_ 59 ACs — automated-pass 24, manual-only 10, real-device-only 
 	<tr><td>″</td><td></td><td>6 /auth/v1/health 200 on mobile data</td><td>Real phone</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>[DEV-42](https://shanivar.atlassian.net/browse/DEV-42) Schema hygiene + RLS hardening on all sync tables: updated\_a</td><td>Open</td><td>1 evidence\_type checks (forward-only)</td><td>dev42@ba38de6 supabase/tests/01\_baseline\_guard ('…evidence\_type has a check'); 02\_rls\_isolation ('self\_report cannot be labelled app\_observed')</td><td>automated-pass</td></tr>
 	<tr><td>″</td><td></td><td>2 created\_at + set\_updated\_at() everywhere; client\_updated\_at</td><td>dev42@ba38de6 supabase/tests/01\_baseline\_guard; 03\_client\_updated\_at</td><td>automated-pass</td></tr>
-	<tr><td>″</td><td></td><td>3 Size caps (plan 64 KiB, packages 200, drift 20, id 128, note 500)</td><td>dev42@ba38de6 supabase/tests/04\_size\_caps (14 asserts) — other text columns uncapped (QA-42-03)</td><td>automated-pass</td></tr>
+	<tr><td>″</td><td></td><td>3 Size caps (plan 64 KiB, packages 200, drift 20, id 128, note 500)</td><td>dev42@ba38de6 supabase/tests/04\_size\_caps (14 asserts) — other text columns uncapped (DEV-92)</td><td>automated-pass</td></tr>
 	<tr><td>″</td><td></td><td>4 revoke all from anon; authenticated minimal</td><td>dev42@ba38de6 supabase/tests/05\_privileges</td><td>automated-pass</td></tr>
 	<tr><td>″</td><td></td><td>5 pgTAP: cross-user CRUD, no session, user\_id immutable, spoofing, oversize</td><td>dev42@ba38de6 supabase/tests/02\_rls\_isolation (43); 04\_size\_caps</td><td>automated-pass</td></tr>
 	<tr><td>″</td><td></td><td>6 Baseline applied to every new table DEV-47..55</td><td>dev42@ba38de6 supabase/tests/01\_baseline\_guard iterates all public tables (fails on new tables missing baseline)</td><td>automated-pass</td></tr>
 	<tr><td>″</td><td></td><td>7 on delete cascade from auth.users verified</td><td>dev42@ba38de6 supabase/tests/01\_baseline\_guard ('…references auth.users on delete cascade') — FK presence only; no delete-and-check test</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>8 Security/Performance Advisor 0 errors after deploy</td><td>Cloud advisors — not deployed; QA must not touch cloud</td><td>manual-only</td></tr>
-	<tr><td>″</td><td></td><td>_Note:_ Passed at ba38de6 (local stack). Findings QA-42-01..03 in defect register.</td><td></td><td></td></tr>
+	<tr><td>″</td><td></td><td>_Note:_ Passed at ba38de6 (local stack). Findings filed as DEV-90, DEV-91, DEV-92 (defect register).</td><td></td><td></td></tr>
 	<tr><td>[DEV-43](https://shanivar.atlassian.net/browse/DEV-43) Apply Supabase migrations and Edge Functions through CI: sta</td><td>Open</td><td>1 migration repair once, output pasted</td><td>Not built (no .github/)</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>2 PR workflow: reset, lint, test db</td><td>Not built (no .github/)</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>3 merge→staging deploy</td><td>Not built (no .github/)</td><td>no test (gap)</td></tr>
@@ -639,7 +607,7 @@ _Epic subtotal:_ 59 ACs — automated-pass 24, manual-only 10, real-device-only 
 	<tr><td>″</td><td></td><td>5 Dead-letter count only in debug diagnostics</td><td>dev47@1e69cba test/SyncStatusUiTest.deadLetterCountOnlyInDebugDiagnostics</td><td>automated-pass</td></tr>
 	<tr><td>″</td><td></td><td>6 Sign-out/reset clears session, no cross-user send</td><td>dev47@1e69cba test/AppSyncTest.signOutClearsSessionThroughEngine; resetUsesDev45ResetAndClearsTheSession</td><td>automated-pass</td></tr>
 	<tr><td>″</td><td></td><td>7 Compose/Robolectric tests listed</td><td>dev47@1e69cba test/SyncStatusUiTest; InitiationSyncTest; AppSyncTest</td><td>automated-pass</td></tr>
-	<tr><td>″</td><td></td><td>8 Manual: attempt + self-report reach tables within 1 min (+airplane)</td><td>Needs device/emulator + staging; cloud off-limits for QA</td><td>real-device-only (NOT RUN)</td></tr>
+	<tr><td>″</td><td></td><td>8 Manual: attempt + self-report reach tables within 1 min (+airplane)</td><td>Needs phone + staging; cloud off-limits for QA</td><td>real-device-only (NOT RUN)</td></tr>
 	<tr><td>″</td><td></td><td>_Note:_ Developer run on branch: 548 tests, 0 fail (22:36). Not yet QA-reviewed; depends on DEV-45.</td><td></td><td></td></tr>
 	<tr><td>[DEV-48](https://shanivar.atlassian.net/browse/DEV-48) Invite-code-gated email signup (Supabase Auth email OTP + se</td><td>Open</td><td>1 invite\_codes table (hash), RLS no client policy</td><td>Not built</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>2 before-user-created hook rejects bad codes</td><td>Not built</td><td>no test (gap)</td></tr>
@@ -662,7 +630,7 @@ _Epic subtotal:_ 59 ACs — automated-pass 24, manual-only 10, real-device-only 
 	<tr><td>″</td><td></td><td>Any failure is a release blocker</td><td>Release gate (template §G4)</td><td>manual-only</td></tr>
 	<tr><td>[DEV-80](https://shanivar.atlassian.net/browse/DEV-80) Sensitive logging, retention, deletion and backup review</td><td>Open</td><td>Audit report (logging, retention, deletion, backups)</td><td>Not started</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>Restore drill on staging</td><td>Needs DEV-41</td><td>no test (gap)</td></tr>
-	<tr><td>[DEV-81](https://shanivar.atlassian.net/browse/DEV-81) Release, rollback and incident-response runbook</td><td>Open</td><td>Rollback rehearsed on staging once</td><td>Needs DEV-41; note d9168eb cannot be reverted alone (QA-42-01)</td><td>no test (gap)</td></tr>
+	<tr><td>[DEV-81](https://shanivar.atlassian.net/browse/DEV-81) Release, rollback and incident-response runbook</td><td>Open</td><td>Rollback rehearsed on staging once</td><td>Needs DEV-41; note d9168eb cannot be reverted alone (DEV-90)</td><td>no test (gap)</td></tr>
 	<tr><td>″</td><td></td><td>Linked to G6</td><td>Doc</td><td>manual-only</td></tr>
 </table>
 

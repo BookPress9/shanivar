@@ -1,27 +1,27 @@
 # DEV-82 — AC-to-test matrix (all DEV tickets)
 
-Generated 2026-10-17 (Europe/Berlin) by Shanivar Tester from Jira JQL `project = DEV ORDER BY key ASC` (89 issues) and the repo worktrees. No source code changed; no tests written for unconfirmed tickets.
+Generated 2026-10-17 (Europe/Berlin) by Shanivar Tester from Jira JQL `project = DEV ORDER BY key ASC` (DEV-1..DEV-89) and the repo worktrees. DEV-90..DEV-96 are bugs QA filed from this matrix (22:5x); they are tracked in `defect_register.md`, not as AC rows. **The emulator was cancelled by the founder (22:55):** every DEV-71/75 device case is real-device NOT RUN, pending his phone; see the phone checklists in /workspace/qa/dev71 and /workspace/qa/dev75. No source code changed; no tests written for unconfirmed tickets.
 
 **Builds referenced:** `main@20fb519` = /workspace/shanivar-v3 (dev-38-outbox-gaps, 518 unit tests, 0 fail, 1 skipped = SupabaseSyncTest.e2eGuestPushReadBack, run 21:55); `dev39@8e122a8` (512/0/1, 21:59); `dev42@ba38de6` (507/0/0 Android + pgTAP 01–05 on local stack); `dev45@2fce42d` (in QA now); `dev47@1e69cba` (548/0/1 developer run 22:36, not QA-reviewed); `dev54@7a56cf6` + uncommitted work. Android test paths are under `android-app/app/src/test/java/com/shanivar/nativeapp/`; pgTAP under `supabase/tests/`.
 
-**Status key:** automated-pass · manual-only (needs a human check; result noted) · real-device-only (needs a physical phone; NOT RUN) · emulator-pending (DEV-71/75 cases planned for the emulator; run when PM confirms it is booted — emulator results never replace the real-device rows) · no test (gap) · pending (in QA now, DEV-45 only). `(derived)` = Jira has no AC section; AC inferred from the description and **returned to the owner to confirm** (DEV-82 edge case). `[DoD]` = row added by QA under the new definition of done (real-device proof for alarms/protection).
+**Status key:** automated-pass · manual-only (needs a human check; result noted) · real-device-only (needs a physical phone; NOT RUN, pending the founder's phone) · no test (gap) · pending (in QA now, DEV-45 only). `(derived)` = Jira has no AC section; AC inferred from the description and **returned to the owner to confirm** (DEV-82 edge case). `[DoD]` = row added by QA under the new definition of done (real-device proof for alarms/protection).
 
 
 ## Summary counts
 
-| Epic | ACs | automated-pass | manual-only | real-device-only (NOT RUN) | emulator-pending | no test (gap) | pending |
-|---|---|---|---|---|---|---|---|
-| A — Strategy & measurement | 4 | 0 | 3 | 0 | 0 | 1 | 0 |
-| B — Protection | 66 | 19 | 7 | 17 | 12 | 11 | 0 |
-| C — Routine | 61 | 13 | 6 | 8 | 9 | 23 | 2 |
-| D — Sadhana | 59 | 24 | 10 | 3 | 0 | 22 | 0 |
-| E — Security, privacy & reliability | 117 | 20 | 29 | 3 | 0 | 55 | 10 |
-| F — QA & release | 23 | 0 | 6 | 6 | 0 | 11 | 0 |
-| G — CS & growth | 12 | 0 | 3 | 0 | 0 | 9 | 0 |
-| No epic | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
-| **Total** | **343** | **76** | **65** | **37** | **21** | **132** | **12** |
+| Epic | ACs | automated-pass | manual-only | real-device-only (NOT RUN) | no test (gap) | pending |
+|---|---|---|---|---|---|---|
+| A — Strategy & measurement | 4 | 0 | 3 | 0 | 1 | 0 |
+| B — Protection | 69 | 19 | 7 | 32 | 11 | 0 |
+| C — Routine | 62 | 13 | 6 | 18 | 23 | 2 |
+| D — Sadhana | 59 | 24 | 10 | 3 | 22 | 0 |
+| E — Security, privacy & reliability | 117 | 20 | 29 | 3 | 55 | 10 |
+| F — QA & release | 23 | 0 | 6 | 6 | 11 | 0 |
+| G — CS & growth | 12 | 0 | 3 | 0 | 9 | 0 |
+| No epic | 1 | 0 | 1 | 0 | 0 | 0 |
+| **Total** | **347** | **76** | **65** | **62** | **132** | **12** |
 
-Rows: 343 = 315 Jira/derived ACs + 28 planned DEV-71/DEV-75 device cases (17 + 15 rows, minus the 4 umbrella ACs already counted).
+Rows: 347 = 315 Jira/derived ACs + 32 DEV-71/DEV-75 phone cases (20 + 16 rows, minus the 4 umbrella ACs already counted); all phone cases NOT RUN, pending the founder's phone.
 
 Tickets: 89 (82 work tickets + 7 epic containers). Tickets whose ACs were derived because Jira has no AC section: 21.
 
@@ -93,25 +93,28 @@ _Epic subtotal:_ 4 ACs — manual-only 3, no test (gap) 1
 | ″ |  | Revoked permission shows the fix path | main@20fb519 test/FocusScheduleStatusTest.revoked* (status only; no detection of runtime revocation while active) | no test (gap) |
 | ″ |  | Failure appears in crash reporting | Depends on DEV-14 (not built) | no test (gap) |
 | ″ |  | [DoD] OEM battery killer / revoke on real phones | DEV-71 | real-device-only (NOT RUN) |
-| [DEV-71](https://shanivar.atlassian.net/browse/DEV-71) QA suite: protection permissions, sessions, reboot and recov | Open | AC1 Suite executed on real devices with evidence (umbrella) | Pixel + OEM run — NOT RUN | real-device-only (NOT RUN) |
+| [DEV-71](https://shanivar.atlassian.net/browse/DEV-71) QA suite: protection permissions, sessions, reboot and recov | Open | AC1 Suite executed on real devices with evidence (umbrella) | Phone run — NOT RUN, pending founder phone; no-phone checks 7 PASS + 2 observations (DEV-70, DEV-89) | real-device-only (NOT RUN) |
 | ″ |  | AC2 Defects logged with severity | Defect register (this deliverable) | manual-only |
-| ″ |  | P1 Usage access revoked while window active → NEEDS_DEVICE_ACCESS + repair path | Emulator plan device_case_plan_dev71_dev75.md P1 (adb appops set … GET_USAGE_STATS ignore) | emulator-pending |
-| ″ |  | P2 Overlay (SYSTEM_ALERT_WINDOW) revoked → honest state, no false Active | Emulator plan device_case_plan_dev71_dev75.md P2 | emulator-pending |
-| ″ |  | P3 Exact-alarm access denied → protection window not Ready | Emulator plan device_case_plan_dev71_dev75.md P3 (appops SCHEDULE_EXACT_ALARM deny) | emulator-pending |
-| ″ |  | S1 Window START/END fire on time; blocked app shows overlay (flash disclosed) | Emulator plan device_case_plan_dev71_dev75.md S1 | emulator-pending |
-| ″ |  | S2 Two adjacent/overlapping windows; END of one keeps the other (DEV-2) | Emulator plan device_case_plan_dev71_dev75.md S2 | emulator-pending |
-| ″ |  | S3 Overnight 22:00→06:00 + full calendar day across midnight (DEV-5/6) | Emulator plan device_case_plan_dev71_dev75.md S3 (adb clock set) | emulator-pending |
-| ″ |  | S4 Local Stop works offline and signed out (DEV-4/10); block screen has no snooze | Emulator plan device_case_plan_dev71_dev75.md S4 (airplane mode) | emulator-pending |
-| ″ |  | R1 Reboot inside window resumes; after window does not (DEV-21) | Emulator plan device_case_plan_dev71_dev75.md R1 (adb reboot) | emulator-pending |
-| ″ |  | R2 Process death / force-stop of FocusGuardService mid-window | Emulator plan device_case_plan_dev71_dev75.md R2 (am kill / am force-stop) | emulator-pending |
-| ″ |  | R3 Doze: boundary delivered after deviceidle force-idle (DEV-1 late START) | Emulator plan device_case_plan_dev71_dev75.md R3 (dumpsys deviceidle force-idle) | emulator-pending |
-| ″ |  | R4 Time-zone change + DST fall-back 25 Oct (Europe/Berlin) | Emulator plan device_case_plan_dev71_dev75.md R4 (settings put global auto_time_zone 0; setprop persist.sys.timezone) | emulator-pending |
-| ″ |  | R5 App update (MY_PACKAGE_REPLACED) re-arms windows (B2) | Emulator plan device_case_plan_dev71_dev75.md R5 (adb install -r) | emulator-pending |
+| ″ |  | P1 Usage access revoked while window active → NEEDS_DEVICE_ACCESS + repair path | Phone case (qa/dev71/dev75/test_cases.md) P1 (Settings → Usage access off) | real-device-only (NOT RUN) |
+| ″ |  | P2 Overlay (SYSTEM_ALERT_WINDOW) revoked → honest state, no false Active | Phone case (qa/dev71/dev75/test_cases.md) P2 | real-device-only (NOT RUN) |
+| ″ |  | P3 Exact-alarm access denied → protection window not Ready | Phone case (qa/dev71/dev75/test_cases.md) P3 (Settings → Alarms & reminders off) | real-device-only (NOT RUN) |
+| ″ |  | P4 Permission denied at onboarding → saved, not active, fix path shown | Phone case (qa/dev71/dev75/test_cases.md) P4 | real-device-only (NOT RUN) |
+| ″ |  | S1 Window START/END fire on time; blocked app shows overlay (flash disclosed) | Phone case (qa/dev71/dev75/test_cases.md) S1 | real-device-only (NOT RUN) |
+| ″ |  | S2 Two adjacent/overlapping windows; END of one keeps the other (DEV-2) | Phone case (qa/dev71/dev75/test_cases.md) S2 | real-device-only (NOT RUN) |
+| ″ |  | S3 Overnight 22:00→06:00 + full calendar day across midnight (DEV-5/6) | Phone case (qa/dev71/dev75/test_cases.md) S3 (manual clock) | real-device-only (NOT RUN) |
+| ″ |  | S4 Local Stop works offline and signed out (DEV-4/10); block screen has no snooze | Phone case (qa/dev71/dev75/test_cases.md) S4 (airplane mode) | real-device-only (NOT RUN) |
+| ″ |  | S5 Overlay choices (return / pause / practice / Back) all land on device home (DEV-69, DEV-89) | Phone case (qa/dev71/dev75/test_cases.md) S5 | real-device-only (NOT RUN) |
+| ″ |  | R1 Reboot inside window resumes; after window does not (DEV-21) | Phone case (qa/dev71/dev75/test_cases.md) R1 (reboot) · static: BootRescheduleCatchUpTest PASS | real-device-only (NOT RUN) |
+| ″ |  | R2 Process death / force-stop of FocusGuardService mid-window | Phone case (qa/dev71/dev75/test_cases.md) R2 (swipe away / Force stop) | real-device-only (NOT RUN) |
+| ″ |  | R3 Doze: boundary delivered after deviceidle force-idle (DEV-1 late START) | Phone case (qa/dev71/dev75/test_cases.md) R3 (screen off, unplugged ≥1 h) | real-device-only (NOT RUN) |
+| ″ |  | R4 Time-zone change + DST fall-back 25 Oct (Europe/Berlin) | Phone case (qa/dev71/dev75/test_cases.md) R4 (manual zone + DST night) | real-device-only (NOT RUN) |
+| ″ |  | R5 App update (MY_PACKAGE_REPLACED) re-arms windows (B2) | Phone case (qa/dev71/dev75/test_cases.md) R5 (reinstall same build) | real-device-only (NOT RUN) |
+| ″ |  | R6 Manual clock change during a window (back 3 h / forward past END) | Phone case (qa/dev71/dev75/test_cases.md) R6 · static observation N9 | real-device-only (NOT RUN) |
 | ″ |  | D1 OEM battery saver / app killer (Xiaomi/Realme/Vivo/Samsung) keeps FocusGuardService | Real OEM phone only — NOT RUN | real-device-only (NOT RUN) |
 | ″ |  | D2 Long run: protection survives overnight on battery, low-battery mode | Real phone only — NOT RUN | real-device-only (NOT RUN) |
 | ″ |  | D3 Same suite repeated on a stock Pixel | Real Pixel — NOT RUN | real-device-only (NOT RUN) |
 
-_Epic subtotal:_ 66 ACs — automated-pass 19, manual-only 7, real-device-only (NOT RUN) 17, emulator-pending 12, no test (gap) 11
+_Epic subtotal:_ 69 ACs — automated-pass 19, manual-only 7, real-device-only (NOT RUN) 32, no test (gap) 11
 
 ## Epic C — Routine ([DEV-58](https://shanivar.atlassian.net/browse/DEV-58))
 
@@ -170,23 +173,24 @@ _Epic subtotal:_ 66 ACs — automated-pass 19, manual-only 7, real-device-only (
 | ″ |  | Failed save never shows success | main@20fb519 test/RoutineProtectionTest.invalidSaveDoesNotSync; saveMessagesNeverClaimActive (protection only; no generic failed-save test) | no test (gap) |
 | [DEV-74](https://shanivar.atlassian.net/browse/DEV-74) Missed-step recovery and non-punitive return | Open | After 1, 3, 7 missed days a clear way back | Not built | no test (gap) |
 | ″ |  | Copy reviewed for guilt | Copy review | manual-only |
-| [DEV-75](https://shanivar.atlassian.net/browse/DEV-75) Verify alarm and notification behaviour on supported real de | Open | AC1 All alarm/notification cases pass or have documented defects (umbrella) | Pixel + OEM run — NOT RUN | real-device-only (NOT RUN) |
-| ″ |  | AC2 No unresolved critical | Defect register gate | real-device-only (NOT RUN) |
-| ″ |  | A1 Wake alarm fires at set time from locked screen; full-screen intent shown (Android 14+) | Emulator plan device_case_plan_dev71_dev75.md A1 | emulator-pending |
-| ″ |  | A2 Alarm fires in Doze (setAlarmClock) and after app swipe-away | Emulator plan device_case_plan_dev71_dev75.md A2 | emulator-pending |
-| ″ |  | A3 Alarm re-armed after reboot and app update; recurrence recomputed after fire (0008) | Emulator plan device_case_plan_dev71_dev75.md A3 | emulator-pending |
-| ″ |  | A4 Exact-alarm permission denied → honest 'permission required', no silent failure | Emulator plan device_case_plan_dev71_dev75.md A4 | emulator-pending |
-| ″ |  | A5 Notification permission (POST_NOTIFICATIONS) denied → state shown | Emulator plan device_case_plan_dev71_dev75.md A5 | emulator-pending |
-| ″ |  | A6 DST fall-back / TZ change: one alarm, at local wall-clock time | Emulator plan device_case_plan_dev71_dev75.md A6 | emulator-pending |
-| ″ |  | A7 Accessible dismissal path always available; QR/photo path with emulator camera | Emulator plan device_case_plan_dev71_dev75.md A7 | emulator-pending |
-| ″ |  | A8 Alarm during a Sadhana practice interrupts and is recorded truthfully | Emulator plan device_case_plan_dev71_dev75.md A8 | emulator-pending |
-| ″ |  | A9 Hard cap ends a ringing alarm; no endless ring | Emulator plan device_case_plan_dev71_dev75.md A9 | emulator-pending |
+| [DEV-75](https://shanivar.atlassian.net/browse/DEV-75) Verify alarm and notification behaviour on supported real de | Open | AC1 All alarm/notification cases pass or have documented defects (umbrella) | Phone run — NOT RUN, pending founder phone; no-phone checks 8 PASS / 3 FAIL → DEV-93..96 | real-device-only (NOT RUN) |
+| ″ |  | AC2 No unresolved critical | Defect register gate: 0 Critical, 2 High open (DEV-93, DEV-94) | real-device-only (NOT RUN) |
+| ″ |  | A1 Wake alarm fires at set time from locked screen; full-screen intent shown (Android 14+) | Phone case (qa/dev71/dev75/test_cases.md) A1 | real-device-only (NOT RUN) |
+| ″ |  | A2 Alarm fires in Doze (setAlarmClock) and after app swipe-away | Phone case (qa/dev71/dev75/test_cases.md) A2 | real-device-only (NOT RUN) |
+| ″ |  | A3 Alarm re-armed after reboot and app update; recurrence recomputed after fire (0008) | Phone case (qa/dev71/dev75/test_cases.md) A3 · static review: DEV-94, DEV-95 | real-device-only (NOT RUN) |
+| ″ |  | A4 Exact-alarm permission denied → honest 'permission required', no silent failure | Phone case (qa/dev71/dev75/test_cases.md) A4 · static review: DEV-94 | real-device-only (NOT RUN) |
+| ″ |  | A5 Notification permission (POST_NOTIFICATIONS) denied → state shown | Phone case (qa/dev71/dev75/test_cases.md) A5 | real-device-only (NOT RUN) |
+| ″ |  | A6 DST fall-back / TZ change: one alarm, at local wall-clock time | Phone case (qa/dev71/dev75/test_cases.md) A6 | real-device-only (NOT RUN) |
+| ″ |  | A7 Accessible dismissal path always available; QR/photo path | Phone case (qa/dev71/dev75/test_cases.md) A7 · static review: DEV-93 (FAIL), DEV-96 | real-device-only (NOT RUN) |
+| ″ |  | A8 Alarm during a Sadhana practice interrupts and is recorded truthfully | Phone case (qa/dev71/dev75/test_cases.md) A8 | real-device-only (NOT RUN) |
+| ″ |  | A9 Hard cap ends a ringing alarm; no endless ring | Phone case (qa/dev71/dev75/test_cases.md) A9 | real-device-only (NOT RUN) |
+| ″ |  | A10 Reboot without unlock: alarm still rings (direct boot) | Phone case (qa/dev71/dev75/test_cases.md) A10 · static review: DEV-95 (expected FAIL) | real-device-only (NOT RUN) |
 | ″ |  | D1 Movement dismissal with real step detector / ACTIVITY_RECOGNITION | Real phone sensors — NOT RUN | real-device-only (NOT RUN) |
 | ″ |  | D2 Alarm actually wakes a person: volume, vibration, speaker, DND interplay | Real phone — NOT RUN | real-device-only (NOT RUN) |
 | ″ |  | D3 OEM battery killer does not suppress the alarm (Xiaomi/Realme/Vivo/Samsung) | Real OEM phone — NOT RUN | real-device-only (NOT RUN) |
 | ″ |  | D4 Device powered off across alarm time; behaviour on power-on | Real phone — NOT RUN | real-device-only (NOT RUN) |
 
-_Epic subtotal:_ 61 ACs — automated-pass 13, manual-only 6, real-device-only (NOT RUN) 8, emulator-pending 9, no test (gap) 23, pending (in QA) 2
+_Epic subtotal:_ 62 ACs — automated-pass 13, manual-only 6, real-device-only (NOT RUN) 18, no test (gap) 23, pending (in QA) 2
 
 ## Epic D — Sadhana ([DEV-59](https://shanivar.atlassian.net/browse/DEV-59))
 
@@ -330,13 +334,13 @@ _Epic subtotal:_ 59 ACs — automated-pass 24, manual-only 10, real-device-only 
 | ″ |  | 6 /auth/v1/health 200 on mobile data | Real phone | real-device-only (NOT RUN) |
 | [DEV-42](https://shanivar.atlassian.net/browse/DEV-42) Schema hygiene + RLS hardening on all sync tables: updated_a | Open | 1 evidence_type checks (forward-only) | dev42@ba38de6 supabase/tests/01_baseline_guard ('…evidence_type has a check'); 02_rls_isolation ('self_report cannot be labelled app_observed') | automated-pass |
 | ″ |  | 2 created_at + set_updated_at() everywhere; client_updated_at | dev42@ba38de6 supabase/tests/01_baseline_guard; 03_client_updated_at | automated-pass |
-| ″ |  | 3 Size caps (plan 64 KiB, packages 200, drift 20, id 128, note 500) | dev42@ba38de6 supabase/tests/04_size_caps (14 asserts) — other text columns uncapped (QA-42-03) | automated-pass |
+| ″ |  | 3 Size caps (plan 64 KiB, packages 200, drift 20, id 128, note 500) | dev42@ba38de6 supabase/tests/04_size_caps (14 asserts) — other text columns uncapped (DEV-92) | automated-pass |
 | ″ |  | 4 revoke all from anon; authenticated minimal | dev42@ba38de6 supabase/tests/05_privileges | automated-pass |
 | ″ |  | 5 pgTAP: cross-user CRUD, no session, user_id immutable, spoofing, oversize | dev42@ba38de6 supabase/tests/02_rls_isolation (43); 04_size_caps | automated-pass |
 | ″ |  | 6 Baseline applied to every new table DEV-47..55 | dev42@ba38de6 supabase/tests/01_baseline_guard iterates all public tables (fails on new tables missing baseline) | automated-pass |
 | ″ |  | 7 on delete cascade from auth.users verified | dev42@ba38de6 supabase/tests/01_baseline_guard ('…references auth.users on delete cascade') — FK presence only; no delete-and-check test | no test (gap) |
 | ″ |  | 8 Security/Performance Advisor 0 errors after deploy | Cloud advisors — not deployed; QA must not touch cloud | manual-only |
-| ″ | | _Note:_ Passed at ba38de6 (local stack). Findings QA-42-01..03 in defect register. | | |
+| ″ | | _Note:_ Passed at ba38de6 (local stack). Findings filed as DEV-90, DEV-91, DEV-92 (defect register). | | |
 | [DEV-43](https://shanivar.atlassian.net/browse/DEV-43) Apply Supabase migrations and Edge Functions through CI: sta | Open | 1 migration repair once, output pasted | Not built (no .github/) | no test (gap) |
 | ″ |  | 2 PR workflow: reset, lint, test db | Not built (no .github/) | no test (gap) |
 | ″ |  | 3 merge→staging deploy | Not built (no .github/) | no test (gap) |
@@ -379,7 +383,7 @@ _Epic subtotal:_ 59 ACs — automated-pass 24, manual-only 10, real-device-only 
 | ″ |  | 5 Dead-letter count only in debug diagnostics | dev47@1e69cba test/SyncStatusUiTest.deadLetterCountOnlyInDebugDiagnostics | automated-pass |
 | ″ |  | 6 Sign-out/reset clears session, no cross-user send | dev47@1e69cba test/AppSyncTest.signOutClearsSessionThroughEngine; resetUsesDev45ResetAndClearsTheSession | automated-pass |
 | ″ |  | 7 Compose/Robolectric tests listed | dev47@1e69cba test/SyncStatusUiTest; InitiationSyncTest; AppSyncTest | automated-pass |
-| ″ |  | 8 Manual: attempt + self-report reach tables within 1 min (+airplane) | Needs device/emulator + staging; cloud off-limits for QA | real-device-only (NOT RUN) |
+| ″ |  | 8 Manual: attempt + self-report reach tables within 1 min (+airplane) | Needs phone + staging; cloud off-limits for QA | real-device-only (NOT RUN) |
 | ″ | | _Note:_ Developer run on branch: 548 tests, 0 fail (22:36). Not yet QA-reviewed; depends on DEV-45. | | |
 | [DEV-48](https://shanivar.atlassian.net/browse/DEV-48) Invite-code-gated email signup (Supabase Auth email OTP + se | Open | 1 invite_codes table (hash), RLS no client policy | Not built | no test (gap) |
 | ″ |  | 2 before-user-created hook rejects bad codes | Not built | no test (gap) |
@@ -402,7 +406,7 @@ _Epic subtotal:_ 59 ACs — automated-pass 24, manual-only 10, real-device-only 
 | ″ |  | Any failure is a release blocker | Release gate (template §G4) | manual-only |
 | [DEV-80](https://shanivar.atlassian.net/browse/DEV-80) Sensitive logging, retention, deletion and backup review | Open | Audit report (logging, retention, deletion, backups) | Not started | no test (gap) |
 | ″ |  | Restore drill on staging | Needs DEV-41 | no test (gap) |
-| [DEV-81](https://shanivar.atlassian.net/browse/DEV-81) Release, rollback and incident-response runbook | Open | Rollback rehearsed on staging once | Needs DEV-41; note d9168eb cannot be reverted alone (QA-42-01) | no test (gap) |
+| [DEV-81](https://shanivar.atlassian.net/browse/DEV-81) Release, rollback and incident-response runbook | Open | Rollback rehearsed on staging once | Needs DEV-41; note d9168eb cannot be reverted alone (DEV-90) | no test (gap) |
 | ″ |  | Linked to G6 | Doc | manual-only |
 
 _Epic subtotal:_ 117 ACs — automated-pass 20, manual-only 29, real-device-only (NOT RUN) 3, no test (gap) 55, pending (in QA) 10

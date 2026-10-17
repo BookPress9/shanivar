@@ -1,0 +1,6 @@
+Oct 17, 2026 11:00:01 PM java.util.prefs.FileSystemPreferences$1 run
+INFO: Created user preferences directory.
+fall-back first ring: 2026-10-25T02:30+02:00[Europe/Berlin] = 2026-10-25T00:30:00Z
+after 15-min cap (2026-10-25T02:45+02:00[Europe/Berlin]): next 2026-10-26T02:30+01:00[Europe/Berlin]
+from repeated hour 2026-10-25T02:40+01:00[Europe/Berlin]: next 2026-10-26T02:30+01:00[Europe/Berlin]
+spring-forward ring: 2027-03-28T03:30+02:00[Europe/Berlin]

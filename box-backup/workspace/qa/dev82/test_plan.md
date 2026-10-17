@@ -14,7 +14,7 @@ QA verifies Shanivar independently across normal, failure and recovery cases. A 
 Any part not run is recorded as NOT RUN, never as a pass.
 
 ## 2. Scope
-In: every DEV ticket with ACs, across epics A–G (89 issues, 315 ACs plus 28 planned device cases; see the matrix). First-release work items come from the QA brief: DEV-82, DEV-7/71/75, DEV-84/55, DEV-83, DEV-79, DEV-89, DEV-15.
+In: every DEV ticket with ACs, across epics A–G (89 issues, 315 ACs plus 32 DEV-71/75 phone cases; DEV-90..96 are QA-filed bugs; see the matrix). First-release work items come from the QA brief: DEV-82, DEV-7/71/75, DEV-84/55, DEV-83, DEV-79, DEV-89, DEV-15.
 Out: writing tests for unconfirmed tickets; Later-phase tickets (DEV-13, 16, 22, 23, 51, 77, 78, 87).
 
 ## 3. Test levels and where they live
@@ -24,8 +24,7 @@ Out: writing tests for unconfirmed tickets; Later-phase tickets (DEV-13, 16, 22,
 | Content safety | `TechniqueContentSafetyTest`, `BreathingCatalogTest`, `SadhanaPracticeTest.noBreathPacingLanguage` | same | every RC (extend per DEV-89) |
 | DB / RLS (pgTAP) | `supabase/tests/0*.test.sql` | `supabase test db` (**local stack only**) | every `supabase/**` change |
 | Integration (phone ↔ Supabase) | `SupabaseSyncTest.e2eGuestPushReadBack` (needs `-Dsupabase.e2e.url/anon`) | local stack now; staging after DEV-41 | every RC |
-| Emulator pre-run (DEV-71/75) | `device_case_plan_dev71_dev75.md`, 21 cases | adb against the PM-booted emulator; `connectedDebugAndroidTest` allowed, managed-device task forbidden | before each device run; never replaces it |
-| Device protocol | `android-app/ENFORCEMENT_STANCE_2026-09-12.md` (8 checks), `ROUTINE_V3_TEST_GUIDE_2026-09-30.md`, `ROUTINE_V3_DEVICE_QA_2026-10-05.md` | `connectedDebugAndroidTest` on a physical phone. `pixel2Api34DebugAndroidTest` is forbidden. | every RC (DEV-7/71/75) |
+| Device protocol | `android-app/ENFORCEMENT_STANCE_2026-09-12.md` (8 checks), `ROUTINE_V3_TEST_GUIDE_2026-09-30.md`, `ROUTINE_V3_DEVICE_QA_2026-10-05.md` | `connectedDebugAndroidTest` on a physical phone. `pixel2Api34DebugAndroidTest` is forbidden. | every RC (DEV-7/71/75). Founder phone checklists: `/workspace/qa/dev71/phone_checklist.md` (18), `/workspace/qa/dev75/phone_checklist.md` (14). **No emulator** (cancelled by the founder 17 Oct). |
 | E2E journey | protect → intervention → act → reflect → recover (DEV-84) | manual script on 2 devices | before release recommendation |
 | Analytics | scripted session vs emitted events (DEV-83) | after DEV-65/69 | every RC once events exist |
 | Security | cross-user suite for every table, RPC and Edge Function (DEV-79) | pgTAP + staging | release blocker |
@@ -57,4 +56,4 @@ Severities and register: `defect_register.md`. Retest after every fix. Record th
 | **Recovery:** retest after a recorded fix | DEV-38 (86b558a ✗ → 20fb519 ✓), DEV-39 (3471087 ✗ → 8e122a8 ✓), DEV-42 (passed at ba38de6). |
 
 ## 9. Current coverage snapshot (from the matrix)
-343 rows (315 ACs + 28 planned DEV-71/75 device cases). automated-pass **76** · manual-only **65** · real-device-only **37** (all NOT RUN) · emulator-pending **21** · no test **132** (109 for work not built yet, 23 on built or in-flight work) · pending **12** (DEV-45 in QA, plus DEV-25/52 rows that depend on it).
+347 rows (315 ACs + 32 DEV-71/75 phone cases). automated-pass **76** · manual-only **65** · real-device-only **62** (all NOT RUN, pending the founder's phone) · no test **132** (109 for work not built yet, 23 on built or in-flight work) · pending **12** (DEV-45 in QA, plus DEV-25/52 rows that depend on it).

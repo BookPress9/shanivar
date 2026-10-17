@@ -3,7 +3,7 @@ from to_notion import convert
 r=lambda f: open(f).read()
 mat=convert(r('ac_test_matrix.md'))
 content = f'''<callout icon="🧪" color="yellow_bg">
-	**Live: the founder confirmed DEV-82 on 17 Oct 2026.** Shanivar Tester, 2026-10-17 (Europe/Berlin). Source files are on the QA box at `/workspace/qa/dev82/` (test_plan.md, ac_test_matrix.md, defect_register.md, release_readiness_template.md, device_case_plan_dev71_dev75.md, alignment_review.md). No source code was changed, no tests were written for unconfirmed tickets, and no Jira status was changed.
+	**Live: the founder confirmed DEV-82 on 17 Oct 2026.** Shanivar Tester, 2026-10-17 (Europe/Berlin). Source files are on the QA box at `/workspace/qa/dev82/` (test_plan.md, ac_test_matrix.md, defect_register.md, release_readiness_template.md, device_case_plan_dev71_dev75.md, alignment_review.md). DEV-71 and DEV-75 test cases and phone checklists are child pages below. No source code was changed, no tests were written for unconfirmed tickets, and no Jira status was changed.
 </callout>
 Part of <mention-page url="https://app.notion.com/p/3fc10ae18c9f81c1b877d676061428dd"/> · Jira [DEV-82](https://shanivar.atlassian.net/browse/DEV-82) · Epic F [DEV-61](https://shanivar.atlassian.net/browse/DEV-61)
 # Alignment review (QA)
@@ -11,7 +11,7 @@ Part of <mention-page url="https://app.notion.com/p/3fc10ae18c9f81c1b877d6760614
 # Coverage summary and top gaps
 {mat.split('## Epic',1)[0]}
 **Top gaps (built or in-flight work with no test, or not run):**
-1. **Real-device proof: all 37 real-device rows are NOT RUN (21 DEV-71/75 cases are emulator-pending).** No Pixel or OEM run for any alarm or protection ticket (DEV-1–6, 10, 21, 69–71, 75). DST fall-back on 25 Oct is an imminent case.
+1. **Real-device proof: all 62 real-device rows are NOT RUN, pending the founder's phone (no emulator: cancelled).** No Pixel or OEM run for any alarm or protection ticket (DEV-1–6, 10, 21, 69–71, 75). DST fall-back on 25 Oct is an imminent case. New from the DEV-75 no-phone checks: **DEV-93** (accessible alarm dismissal hidden) and **DEV-94** (alarm shown as armed after Android dropped it), both High.
 2. **Breath-pacing safety (DEV-89):** TechniqueContentSafetyTest scans only techniques.json/.md. The Breathing\\* screens and the block-screen "breathe" path have no test.
 3. **No-snooze on the block screen (DEV-10):** nothing asserts it.
 4. **Analytics / WIAC:** no events exist (DEV-65/69/83). The intervention choice and the "no package name leaves the device" rule are untested.
@@ -25,12 +25,12 @@ Part of <mention-page url="https://app.notion.com/p/3fc10ae18c9f81c1b877d6760614
 {convert(r('defect_register.md').split(chr(10),2)[2])}
 # Test plan
 {convert(r('test_plan.md').split(chr(10),2)[2]).replace(chr(10)+'## ', chr(10)+'### ')}
-# DEV-71 / DEV-75 device case plan (emulator-pending)
+# DEV-71 / DEV-75 phone case plan (all NOT RUN, pending the founder's phone)
 {convert(r('device_case_plan_dev71_dev75.md').split(chr(10),2)[2]).replace(chr(10)+'## ', chr(10)+'### ')}
 # Release-readiness report template
 Copy this per RC.
 {convert(r('release_readiness_template.md')).replace(chr(10)+'## ', chr(10)+'### ')}
-# AC-to-test matrix (all 89 DEV issues: 315 ACs + 28 planned device cases)
+# AC-to-test matrix (all 89 DEV issues: 315 ACs + 32 phone cases)
 {('## Epic'+mat.split('## Epic',1)[1])}
 '''
 content=re.sub(r'`[^`\n]+`', lambda m: m.group(0).replace('\\_','_').replace('\\*','*'), content)

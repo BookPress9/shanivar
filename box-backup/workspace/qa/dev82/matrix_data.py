@@ -1,12 +1,12 @@
 # AC-to-test data for DEV-82. Status codes:
-# AP automated-pass | MO manual-only | RD real-device-only (NOT RUN) | EMU emulator-pending | GAP no test (gap) | PEND pending (in QA now)
+# AP automated-pass | MO manual-only | RD real-device-only (NOT RUN) | GAP no test (gap) | PEND pending (in QA now)
 M  = "main@20fb519 test/"            # android-app/app/src/test/java/com/shanivar/nativeapp/
 B39= "dev39@8e122a8 test/"
 B42= "dev42@ba38de6 supabase/tests/"
 B45= "dev45@2fce42d "
 B47= "dev47@1e69cba test/"
 B54= "dev54@7a56cf6(+uncommitted) supabase/tests/"
-E = "Emulator plan device_case_plan_dev71_dev75.md "
+E = "Phone case (qa/dev71|dev75/test_cases.md) "
 DEV7 = "DEV-7/DEV-71 device protocol (ROUTINE_V3_DEVICE_QA_2026-10-05.md) — NOT RUN"
 D = {}
 def T(k, *rows, note=""): D[k] = (list(rows), note)
@@ -77,20 +77,23 @@ T("DEV-70",
  ("Failure appears in crash reporting", "Depends on DEV-14 (not built)", "GAP"),
  ("[DoD] OEM battery killer / revoke on real phones", "DEV-71", "RD"))
 T("DEV-71",
- ("AC1 Suite executed on real devices with evidence (umbrella)", "Pixel + OEM run — NOT RUN", "RD"),
+ ("AC1 Suite executed on real devices with evidence (umbrella)", "Phone run — NOT RUN, pending founder phone; no-phone checks 7 PASS + 2 observations (DEV-70, DEV-89)", "RD"),
  ("AC2 Defects logged with severity", "Defect register (this deliverable)", "MO"),
- ("P1 Usage access revoked while window active → NEEDS_DEVICE_ACCESS + repair path", E+"P1 (adb appops set … GET_USAGE_STATS ignore)", "EMU"),
- ("P2 Overlay (SYSTEM_ALERT_WINDOW) revoked → honest state, no false Active", E+"P2", "EMU"),
- ("P3 Exact-alarm access denied → protection window not Ready", E+"P3 (appops SCHEDULE_EXACT_ALARM deny)", "EMU"),
- ("S1 Window START/END fire on time; blocked app shows overlay (flash disclosed)", E+"S1", "EMU"),
- ("S2 Two adjacent/overlapping windows; END of one keeps the other (DEV-2)", E+"S2", "EMU"),
- ("S3 Overnight 22:00→06:00 + full calendar day across midnight (DEV-5/6)", E+"S3 (adb clock set)", "EMU"),
- ("S4 Local Stop works offline and signed out (DEV-4/10); block screen has no snooze", E+"S4 (airplane mode)", "EMU"),
- ("R1 Reboot inside window resumes; after window does not (DEV-21)", E+"R1 (adb reboot)", "EMU"),
- ("R2 Process death / force-stop of FocusGuardService mid-window", E+"R2 (am kill / am force-stop)", "EMU"),
- ("R3 Doze: boundary delivered after deviceidle force-idle (DEV-1 late START)", E+"R3 (dumpsys deviceidle force-idle)", "EMU"),
- ("R4 Time-zone change + DST fall-back 25 Oct (Europe/Berlin)", E+"R4 (settings put global auto_time_zone 0; setprop persist.sys.timezone)", "EMU"),
- ("R5 App update (MY_PACKAGE_REPLACED) re-arms windows (B2)", E+"R5 (adb install -r)", "EMU"),
+ ("P1 Usage access revoked while window active → NEEDS_DEVICE_ACCESS + repair path", E+"P1 (Settings → Usage access off)", "RD"),
+ ("P2 Overlay (SYSTEM_ALERT_WINDOW) revoked → honest state, no false Active", E+"P2", "RD"),
+ ("P3 Exact-alarm access denied → protection window not Ready", E+"P3 (Settings → Alarms & reminders off)", "RD"),
+ ("P4 Permission denied at onboarding → saved, not active, fix path shown", E+"P4", "RD"),
+ ("S1 Window START/END fire on time; blocked app shows overlay (flash disclosed)", E+"S1", "RD"),
+ ("S2 Two adjacent/overlapping windows; END of one keeps the other (DEV-2)", E+"S2", "RD"),
+ ("S3 Overnight 22:00→06:00 + full calendar day across midnight (DEV-5/6)", E+"S3 (manual clock)", "RD"),
+ ("S4 Local Stop works offline and signed out (DEV-4/10); block screen has no snooze", E+"S4 (airplane mode)", "RD"),
+ ("S5 Overlay choices (return / pause / practice / Back) all land on device home (DEV-69, DEV-89)", E+"S5", "RD"),
+ ("R1 Reboot inside window resumes; after window does not (DEV-21)", E+"R1 (reboot) · static: BootRescheduleCatchUpTest PASS", "RD"),
+ ("R2 Process death / force-stop of FocusGuardService mid-window", E+"R2 (swipe away / Force stop)", "RD"),
+ ("R3 Doze: boundary delivered after deviceidle force-idle (DEV-1 late START)", E+"R3 (screen off, unplugged ≥1 h)", "RD"),
+ ("R4 Time-zone change + DST fall-back 25 Oct (Europe/Berlin)", E+"R4 (manual zone + DST night)", "RD"),
+ ("R5 App update (MY_PACKAGE_REPLACED) re-arms windows (B2)", E+"R5 (reinstall same build)", "RD"),
+ ("R6 Manual clock change during a window (back 3 h / forward past END)", E+"R6 · static observation N9", "RD"),
  ("D1 OEM battery saver / app killer (Xiaomi/Realme/Vivo/Samsung) keeps FocusGuardService", "Real OEM phone only — NOT RUN", "RD"),
  ("D2 Long run: protection survives overnight on battery, low-battery mode", "Real phone only — NOT RUN", "RD"),
  ("D3 Same suite repeated on a stock Pixel", "Real Pixel — NOT RUN", "RD"))
@@ -151,17 +154,18 @@ T("DEV-74",
  ("After 1, 3, 7 missed days a clear way back", "Not built", "GAP"),
  ("Copy reviewed for guilt", "Copy review", "MO"))
 T("DEV-75",
- ("AC1 All alarm/notification cases pass or have documented defects (umbrella)", "Pixel + OEM run — NOT RUN", "RD"),
- ("AC2 No unresolved critical", "Defect register gate", "RD"),
- ("A1 Wake alarm fires at set time from locked screen; full-screen intent shown (Android 14+)", E+"A1", "EMU"),
- ("A2 Alarm fires in Doze (setAlarmClock) and after app swipe-away", E+"A2", "EMU"),
- ("A3 Alarm re-armed after reboot and app update; recurrence recomputed after fire (0008)", E+"A3", "EMU"),
- ("A4 Exact-alarm permission denied → honest 'permission required', no silent failure", E+"A4", "EMU"),
- ("A5 Notification permission (POST_NOTIFICATIONS) denied → state shown", E+"A5", "EMU"),
- ("A6 DST fall-back / TZ change: one alarm, at local wall-clock time", E+"A6", "EMU"),
- ("A7 Accessible dismissal path always available; QR/photo path with emulator camera", E+"A7", "EMU"),
- ("A8 Alarm during a Sadhana practice interrupts and is recorded truthfully", E+"A8", "EMU"),
- ("A9 Hard cap ends a ringing alarm; no endless ring", E+"A9", "EMU"),
+ ("AC1 All alarm/notification cases pass or have documented defects (umbrella)", "Phone run — NOT RUN, pending founder phone; no-phone checks 8 PASS / 3 FAIL → DEV-93..96", "RD"),
+ ("AC2 No unresolved critical", "Defect register gate: 0 Critical, 2 High open (DEV-93, DEV-94)", "RD"),
+ ("A1 Wake alarm fires at set time from locked screen; full-screen intent shown (Android 14+)", E+"A1", "RD"),
+ ("A2 Alarm fires in Doze (setAlarmClock) and after app swipe-away", E+"A2", "RD"),
+ ("A3 Alarm re-armed after reboot and app update; recurrence recomputed after fire (0008)", E+"A3 · static review: DEV-94, DEV-95", "RD"),
+ ("A4 Exact-alarm permission denied → honest 'permission required', no silent failure", E+"A4 · static review: DEV-94", "RD"),
+ ("A5 Notification permission (POST_NOTIFICATIONS) denied → state shown", E+"A5", "RD"),
+ ("A6 DST fall-back / TZ change: one alarm, at local wall-clock time", E+"A6", "RD"),
+ ("A7 Accessible dismissal path always available; QR/photo path", E+"A7 · static review: DEV-93 (FAIL), DEV-96", "RD"),
+ ("A8 Alarm during a Sadhana practice interrupts and is recorded truthfully", E+"A8", "RD"),
+ ("A9 Hard cap ends a ringing alarm; no endless ring", E+"A9", "RD"),
+ ("A10 Reboot without unlock: alarm still rings (direct boot)", E+"A10 · static review: DEV-95 (expected FAIL)", "RD"),
  ("D1 Movement dismissal with real step detector / ACTIVITY_RECOGNITION", "Real phone sensors — NOT RUN", "RD"),
  ("D2 Alarm actually wakes a person: volume, vibration, speaker, DND interplay", "Real phone — NOT RUN", "RD"),
  ("D3 OEM battery killer does not suppress the alarm (Xiaomi/Realme/Vivo/Samsung)", "Real OEM phone — NOT RUN", "RD"),
@@ -267,13 +271,13 @@ T("DEV-41", ("1 shanivar-staging exists (ap-south-1)", "Backend/founder (QA must
 T("DEV-42",
  ("1 evidence_type checks (forward-only)", B42+"01_baseline_guard ('…evidence_type has a check'); 02_rls_isolation ('self_report cannot be labelled app_observed')", "AP"),
  ("2 created_at + set_updated_at() everywhere; client_updated_at", B42+"01_baseline_guard; 03_client_updated_at", "AP"),
- ("3 Size caps (plan 64 KiB, packages 200, drift 20, id 128, note 500)", B42+"04_size_caps (14 asserts) — other text columns uncapped (QA-42-03)", "AP"),
+ ("3 Size caps (plan 64 KiB, packages 200, drift 20, id 128, note 500)", B42+"04_size_caps (14 asserts) — other text columns uncapped (DEV-92)", "AP"),
  ("4 revoke all from anon; authenticated minimal", B42+"05_privileges", "AP"),
  ("5 pgTAP: cross-user CRUD, no session, user_id immutable, spoofing, oversize", B42+"02_rls_isolation (43); 04_size_caps", "AP"),
  ("6 Baseline applied to every new table DEV-47..55", B42+"01_baseline_guard iterates all public tables (fails on new tables missing baseline)", "AP"),
  ("7 on delete cascade from auth.users verified", B42+"01_baseline_guard ('…references auth.users on delete cascade') — FK presence only; no delete-and-check test", "GAP"),
  ("8 Security/Performance Advisor 0 errors after deploy", "Cloud advisors — not deployed; QA must not touch cloud", "MO"),
- note="Passed at ba38de6 (local stack). Findings QA-42-01..03 in defect register.")
+ note="Passed at ba38de6 (local stack). Findings filed as DEV-90, DEV-91, DEV-92 (defect register).")
 T("DEV-43", *[(a, "Not built (no .github/)", "GAP") for a in ["1 migration repair once, output pasted","2 PR workflow: reset, lint, test db","3 merge→staging deploy","4 prod via dispatch + founder reviewer","5 drift check fails job","6 forward-only; destructive label","7 secrets only in GH env","8 seed.sql fixed","9 broken migration fails CI"]])
 T("DEV-44", *[(a, "Not built", "GAP") for a in ["1 env flavours staging/prod side by side","2 URL/key from properties only","3 release fails without https URL/key","4 cleartext debug-only","5 CI secret scan (gitleaks)","6 env name shown on non-prod","7 API_URL removed/flavour-aware","8 docs per flavour"]])
 T("DEV-45",
@@ -298,7 +302,7 @@ T("DEV-47",
  ("5 Dead-letter count only in debug diagnostics", B47+"SyncStatusUiTest.deadLetterCountOnlyInDebugDiagnostics", "AP"),
  ("6 Sign-out/reset clears session, no cross-user send", B47+"AppSyncTest.signOutClearsSessionThroughEngine; resetUsesDev45ResetAndClearsTheSession", "AP"),
  ("7 Compose/Robolectric tests listed", B47+"SyncStatusUiTest; InitiationSyncTest; AppSyncTest", "AP"),
- ("8 Manual: attempt + self-report reach tables within 1 min (+airplane)", "Needs device/emulator + staging; cloud off-limits for QA", "RD"),
+ ("8 Manual: attempt + self-report reach tables within 1 min (+airplane)", "Needs phone + staging; cloud off-limits for QA", "RD"),
  note="Developer run on branch: 548 tests, 0 fail (22:36). Not yet QA-reviewed; depends on DEV-45.")
 T("DEV-48", *[(a, "Not built", "GAP") for a in ["1 invite_codes table (hash), RLS no client policy","2 before-user-created hook rejects bad codes","3 atomic redemption","4 guest→email gated, same user_id","5 email OTP; custom SMTP in prod","6 founder mint/revoke snippet","7 rate limits","8 pgTAP+integration incl. 2-signup race","9 invite-code field, plain copy"]])
 T("DEV-49", *[(a, "Not built", "GAP") for a in ["1 feedback table","2 RLS insert/select own; no update/delete; no anon","3 submit_feedback RPC 10/day","4 via outbox, idempotent","5 no auto diagnostics","6 founder SQL query","7 pgTAP list","8 Settings entry, no ratings"]])
@@ -306,7 +310,7 @@ T("DEV-50", *[(a, "Not built", "GAP") for a in ["1 profiles table","2 auth.users
 T("DEV-79", ("Every table/RPC/Edge Function has a passing isolation test", B42+"02_rls_isolation covers 5 tables; "+B45+"06 tombstones; no RPC/Edge Function yet", "GAP"),
  ("Any failure is a release blocker", "Release gate (template §G4)", "MO"))
 T("DEV-80", ("Audit report (logging, retention, deletion, backups)", "Not started", "GAP"), ("Restore drill on staging", "Needs DEV-41", "GAP"))
-T("DEV-81", ("Rollback rehearsed on staging once", "Needs DEV-41; note d9168eb cannot be reverted alone (QA-42-01)", "GAP"), ("Linked to G6", "Doc", "MO"))
+T("DEV-81", ("Rollback rehearsed on staging once", "Needs DEV-41; note d9168eb cannot be reverted alone (DEV-90)", "GAP"), ("Linked to G6", "Doc", "MO"))
 
 # ---------------- Epic F — QA & release ----------------
 T("DEV-14", ("Forced crash → retrievable local report", "Not built", "GAP"), ("Export needs explicit user action", "Not built", "GAP"),

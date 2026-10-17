@@ -13,7 +13,7 @@ Shanivar Tester, 2026-10-17 (Europe/Berlin). Sources: the QA delegation brief an
 - Device protocol docs (8-check stance, Routine V3 guide, device QA checklist). Retest history with evidence in /workspace/qa/.
 
 **3) What's missing?**
-- No real-device run yet: all 37 real-device rows are NOT RUN, and there's no OEM phone (DEV-7/71/75). 21 DEV-71/75 cases are planned for the emulator first (emulator-pending); they never replace the phone rows.
+- No real-device run yet: all 62 real-device rows (incl. the 32 DEV-71/75 phone cases) are NOT RUN, pending the founder's phone. There's no OEM phone (DEV-7/71/75), and no emulator (cancelled).
 - No analytics at all: the intervention choice isn't recorded (DEV-69) and there is no event contract (DEV-65). So WIAC can't be verified (DEV-83).
 - No CI gate (DEV-15/43), no staging (DEV-41), so no E2E (DEV-55). No crash reporting (DEV-14). No cross-user tests for RPCs or Edge Functions (DEV-79).
 - No E2E protect → act → reflect suite (DEV-84). Completion idempotency (DEV-72) and missed-day recovery (DEV-74) aren't built.
