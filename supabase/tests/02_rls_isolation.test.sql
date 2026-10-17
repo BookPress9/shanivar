@@ -80,9 +80,10 @@ select is_empty($$ select 1 from public.routine_plans union all select 1 from pu
 reset role;
 set local role anon;
 set local request.jwt.claims = '{"role":"anon"}';
-select is_empty($$ select 1 from public.routine_plans union all select 1 from public.protection_windows union all
-                   select 1 from public.practice_attempts union all select 1 from public.self_reports union all
-                   select 1 from public.orbit_events $$, 'no session (anon) sees no rows');
+-- anon has no table privileges at all (DEV-42 AC4): reading is refused, so no rows come back
+select throws_ok($$ select 1 from public.routine_plans union all select 1 from public.protection_windows union all
+                    select 1 from public.practice_attempts union all select 1 from public.self_reports union all
+                    select 1 from public.orbit_events $$, '42501', null, 'no session (anon) gets no rows: permission denied');
 select throws_ok($$ insert into public.self_reports (user_id, id, local_date) values ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'anon', current_date) $$, '42501', null, 'no session (anon) cannot insert');
 
 -- ── Back as postgres: B untouched, timestamps on update, cascade ───────────────────────────
