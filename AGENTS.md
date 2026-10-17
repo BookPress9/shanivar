@@ -60,6 +60,23 @@ Honest limit: this is a written working agreement. Agents follow it only when th
 
 Added 12 October 2026. The founder's Sadhak and Hybrid Monk definitions are core product ideology for every feature, copy and practice: `SHANIVAR_STANCE.md` ST-010 and `docs/decisions/0015-sadhak-and-hybrid-monk-core-ideology.md`. Safety and claims rules still bind. The main app, the website and all marketing speak only as Shanivar and name no teacher, lineage or tradition (Osho, Paramahansa Yogananda, Kriya Yoga or any other). Single exception (founder, 12 Oct 2026, decision 0017): the in-app deep-study section MAY name traditions, texts and passages as sources. Chakra waypoints outside deep study use plain labels (for example "Base", "Crown"); tradition attribution and names appear only in deep study. Private founder influences (ST-011) stay internal and are never named anywhere, including deep study (founder, 12 Oct 2026; ST-011). ST-011 is internal and never public copy.
 
+## Daily GitHub handoff
+
+Founder direction, 17 October 2026: keep daily changes, pending items and next actions in private GitHub so another
+person or agent can resume. For assigned work, this supplies ongoing authority to commit and push owned changes
+to task/review branches. It does not authorize main merges, force pushes, production changes, public release,
+spending or messages to others. SOP-08 still applies to path ownership, secrets and review.
+
+At the start of each session, read `docs/HANDOFF_NEXT.md`, the latest `docs/continuity/` session note and the
+assigned task. Before ending, record the branch/tested SHA, owner/state, actual commands/results, blockers and
+the next executable action. Stage explicit owned paths, inspect the staged diff, commit, push the task branch,
+and verify the remote SHA. Follow `docs/continuity/README.md`; refresh the metadata checkpoint with
+`node scripts/continuity/daily-status.mjs --publish` when that tool is available. Never describe dirty files,
+unsaved buffers or a metadata checkpoint as backed-up code. Record missing credentials or failed pushes honestly.
+
+The Windows daily task only publishes branch/worktree metadata; the agent-box 30-minute job is a separate system.
+Do not claim either runs on another machine without verified trigger, credentials, run history and failure evidence.
+
 ## Documentation map
 
 Added 11 October 2026. Baseline documentation system following "The Vibe Coding Blueprint"; it extends, and does not replace or weaken, any rule above. Index and "which doc answers which question": [`docs/README.md`](docs/README.md).
