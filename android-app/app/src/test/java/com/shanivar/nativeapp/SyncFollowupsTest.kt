@@ -179,6 +179,20 @@ class SyncFactoryLazyTest {
         assertEquals(UID_A, e.session.userId)
     }
 
+    @Test fun appWiringResetClearsTheRealEngineQueueAndSession() = runBlocking {
+        server.enqueue(authReply())
+        val e = Dev45SyncEngineFactory.build(ctx, server.url("/").toString(), "anon", cipher = XorCipher()).awaitReady()
+        val app = com.shanivar.nativeapp.sync.AppSync.create(true, server.url("/").toString(), "anon") { e }
+        assertEquals(GuestResult.Ok(UID_A), e.session.ensureGuest())
+        e.outbox.enqueue("attempt", "a1", "{}")
+        assertTrue(e.outbox.pending.isNotEmpty())
+        app.reset()
+        assertFalse(app.hasSession)
+        assertTrue(e.outbox.pending.isEmpty())
+        assertTrue(e.outbox.deadLetters.isEmpty())
+        assertEquals(0, e.status.pendingCount.value)
+    }
+
     @Test fun contractSurfaceNeedsNoReflection() {
         assertSame(Dev45SyncEngineFactory, SyncEngines.dev45)
         server.enqueue(authReply()); server.enqueue(MockResponse().setResponseCode(401).setBody("""{"error":"invalid_grant"}"""))
