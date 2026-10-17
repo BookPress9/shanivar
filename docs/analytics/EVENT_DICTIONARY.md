@@ -120,7 +120,7 @@ Each metric id below is implemented in `Metrics.kt`, and its events are listed i
 | Backend | Shanivar Backend | Authored 17 Oct 2026 |
 | Frontend (emission points, occasion_id minting, app_category mapping) | Shanivar Frontend | **Pending** |
 | Tester (test cases above, DEV-83 verification later) | Tester | **Pending** |
-| Customer Success (metric definitions, DEV-66 baselines) | CS | **Pending** |
+| Customer Success (metric definitions, DEV-66 baselines) | Shanivar Customer Success | **Changes requested** (2026-10-17): WIAC, effectiveness and activation A count `return` (must be excluded and reported separately); also missing OEM/battery-optimisation state, never-armed windows and missed alarms, uninstall/lapse proxy, `pricing` feedback category, DEV-76/DEV-87 event names. Full gap list: CS review `dev65-dictionary-review.md`. |
 | Privacy / data-minimisation review (SOP-09; founder approves any new collection) | Founder + privacy reviewer | **Pending: not signed** |
 
 Privacy checklist for the reviewer: (1) every property is an enum, bounded number, boolean or app-generated id; (2) no protected-app package or list leaves the device; (3) no free text or self-report value is sent; (4) consent is opt-in and revocation deletes unsent events; (5) `user_id` is the pseudonymous auth uid only; (6) retention period for stored events (open); (7) the privacy notice is updated before any collection (0016).
