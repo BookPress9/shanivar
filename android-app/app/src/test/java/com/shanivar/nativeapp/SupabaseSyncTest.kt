@@ -87,4 +87,46 @@ class SupabaseSyncTest {
         assertEquals("[]", get(other, "/rest/v1/practice_attempts?select=id").second.trim())
         assertEquals("[]", get(other, "/rest/v1/tombstones?select=id").second.trim())
     }
+
+    /**
+     * DEV-54 E2E against a LOCAL Supabase only: the new attempt fields, a reflection (owner-only, cleared by a
+     * tombstone), a self-report private by default, and an append-only orbit event (a replay is ignored).
+     */
+    @Test fun e2eDev54SadhanaRecord() {
+        val url = System.getProperty("supabase.e2e.url"); val anon = System.getProperty("supabase.e2e.anon")
+        assumeTrue("local Supabase not configured", !url.isNullOrBlank() && !anon.isNullOrBlank())
+        val rig = SyncRig(url!!, anon!!, signedInAs = null, clock = FakeNow(System.currentTimeMillis()))
+        assertTrue(rig.session.ensureGuestBlocking() is GuestResult.Ok)
+        val box = rig.outbox
+        val events = (0 until 3000).map { SadhanaEvent(SadhanaEventType.PRACTICE_PAUSED, 1_760_300_000_000 + it * 1000L, it.toLong(), "pause $it") }
+        val a = SadhanaAttempt("e2e54-a1", "natural", "v1", 1_760_300_000_000, "Europe/Berlin", 60, 60_000, SadhanaOutcome.COMPLETED, 1_760_300_060_000,
+            SadhanaAnchor.ROOM, 2, events)
+        box.enqueue("attempt", a.id, SyncPayloads.attempt(a))
+        box.enqueue("self_report", "e2e54-s1", SyncPayloads.selfReport(IndependentPracticeRecord("e2e54-s1", LocalDate.of(2026, 10, 13), 3, 4)))
+        box.enqueue("reflection", a.id, SyncPayloads.reflection(PracticeReflectionRecord(a.id, Usefulness.UNCOMFORTABLE, "noted", 0L)))
+        val o = OrbitEvent("e2e54-o1", OrbitEventType.PRACTICE_ATTEMPTED, LocalDate.of(2026, 10, 14), OrbitSource.DEVICE_OBSERVED, a.id)
+        box.enqueue("orbit", o.id, SyncPayloads.orbit(o))
+        assertEquals(FlushOutcome.Done(4, 0, 0), rig.flusher.flush())
+        box.enqueue("orbit", o.id, SyncPayloads.orbit(o.copy(source = OrbitSource.SELF_REPORTED)))
+        assertEquals("orbit replay is acked and ignored", FlushOutcome.Done(1, 0, 0), rig.flusher.flush())
+
+        val at = get(rig, "/rest/v1/practice_attempts?id=eq.e2e54-a1&select=anchor,anchor_changes,events").second
+        assertTrue(at, at.contains("\"anchor\":\"ROOM\"") && at.contains("\"anchor_changes\":2") && at.contains("pause 0") && at.contains("pause 2999"))
+        assertTrue(get(rig, "/rest/v1/self_reports?id=eq.e2e54-s1&select=private_by_default").second.contains("\"private_by_default\":true"))
+        val r = get(rig, "/rest/v1/practice_reflections?select=attempt_id,usefulness,note").second
+        assertTrue(r, r.contains("e2e54-a1") && r.contains("uncomfortable") && r.contains("noted"))
+        val ob = get(rig, "/rest/v1/orbit_events?id=eq.e2e54-o1&select=source,entity_id,local_date").second
+        assertTrue(ob, ob.contains("DEVICE_OBSERVED") && ob.contains("\"entity_id\":\"e2e54-a1\"") && ob.contains("2026-10-14"))
+
+        rig.clock.ms += 1_000
+        box.enqueue("reflection", a.id, SyncPayloads.tombstone(a.id))
+        assertEquals(FlushOutcome.Done(1, 0, 0), rig.flusher.flush())
+        assertEquals("[]", get(rig, "/rest/v1/practice_reflections?select=attempt_id").second.trim())
+
+        // a second guest sees none of it
+        val other = SyncRig(url, anon, signedInAs = null)
+        assertTrue(other.session.ensureGuestBlocking() is GuestResult.Ok)
+        assertEquals("[]", get(other, "/rest/v1/orbit_events?select=id").second.trim())
+        assertEquals("[]", get(other, "/rest/v1/practice_attempts?select=id").second.trim())
+    }
 }

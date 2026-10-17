@@ -2,7 +2,7 @@
 -- SELECT/INSERT/UPDATE/DELETE. Iterates over every public table, so new tables are covered too.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(4);
+select plan(5);
 
 select is(
   (select coalesce(array_agg(distinct c.relname::text), '{}')
@@ -24,10 +24,15 @@ select is(
 
 select is(
   (select coalesce(array_agg(t order by t), '{}')
-     from unnest(array['routine_plans','protection_windows','practice_attempts','self_reports','orbit_events']) t
+     from unnest(array['routine_plans','protection_windows','practice_attempts','self_reports','practice_reflections']) t
     where not (has_table_privilege('authenticated', 'public.' || t, 'SELECT') and has_table_privilege('authenticated', 'public.' || t, 'INSERT')
            and has_table_privilege('authenticated', 'public.' || t, 'UPDATE') and has_table_privilege('authenticated', 'public.' || t, 'DELETE'))),
   '{}'::text[], 'authenticated keeps select/insert/update/delete the own-row policies need');
+
+-- DEV-54: orbit_events is append-only: select + insert, no update, no delete (cascade only)
+select ok(has_table_privilege('authenticated', 'public.orbit_events', 'SELECT') and has_table_privilege('authenticated', 'public.orbit_events', 'INSERT')
+          and not has_table_privilege('authenticated', 'public.orbit_events', 'UPDATE') and not has_table_privilege('authenticated', 'public.orbit_events', 'DELETE'),
+          'orbit_events: authenticated has select and insert only');
 
 set local role anon;
 select throws_ok($$ insert into public.orbit_events (user_id, id, type, local_date, source)

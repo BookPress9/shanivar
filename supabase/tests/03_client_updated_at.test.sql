@@ -5,7 +5,7 @@ select plan(6);
 
 select is(
   (select coalesce(array_agg(t order by t), '{}')
-     from unnest(array['routine_plans','protection_windows','practice_attempts','self_reports','orbit_events']) t
+     from unnest(array['routine_plans','protection_windows','practice_attempts','self_reports','orbit_events','practice_reflections']) t
     where not exists (select 1 from information_schema.columns k
                        where k.table_schema = 'public' and k.table_name = t and k.column_name = 'client_updated_at'
                          and k.data_type = 'timestamp with time zone' and k.is_nullable = 'YES')),
