@@ -48,8 +48,13 @@ class SyncEngineErrorClassTest {
         assertEquals(5_000L, RetryAfter.parseMs(" 5 ", now)); assertNull(RetryAfter.parseMs("soon", now)); assertNull(RetryAfter.parseMs(null, now))
         assertEquals(0L, RetryAfter.parseMs("-3", now))
     }
-    @Test fun missingTableRetriesInsteadOfDropping() {
-        assertEquals(FlushOutcome.RetryLater(null, 0), retryClass(MockResponse().setResponseCode(404).setBody("""{"code":"42P01"}""")).first)
+    @Test fun missingTableRetriesInsteadOfDropping() = MockWebServer().use { server ->
+        // follow-up: a 404 is item-level, so the rest of the queue is still sent (head-of-line fix); the 404 item stays queued
+        server.enqueue(MockResponse().setResponseCode(404).setBody("""{"code":"42P01"}""")); repeat(2) { server.enqueue(MockResponse().setResponseCode(201)) }
+        val rig = SyncRig(server); rig.three()
+        assertEquals(FlushOutcome.RetryLater(null, 2), rig.flusher.flush())
+        assertEquals(listOf("attempt:a1"), rig.outbox.pending.map { it.key }); assertEquals(1, rig.outbox.pending.single().failures)
+        assertTrue(rig.outbox.deadLetters.isEmpty())
     }
 
     @Test fun unauthorizedRefreshesThenRetriesOnce() = MockWebServer().use { server ->
@@ -93,7 +98,7 @@ class SyncEngineErrorClassTest {
         assertEquals(SendResult.Rejected(400, "http_400"), SupabaseOutboxSender.classify(HttpReply(400, """{"code":"has spaces; drop"}""")))
         assertEquals(SendResult.Acked, SupabaseOutboxSender.classify(HttpReply(204, "")))
         assertEquals(SendResult.Unauthorized, SupabaseOutboxSender.classify(HttpReply(401, "")))
-        assertEquals(SendResult.Retry(7_000), SupabaseOutboxSender.classify(HttpReply(502, "", 7_000)))
+        assertEquals(SendResult.Retry(7_000, 502), SupabaseOutboxSender.classify(HttpReply(502, "", 7_000)))
     }
 
     @Test fun unknownKindIsDeadLetteredWithoutARequest() = MockWebServer().use { server ->

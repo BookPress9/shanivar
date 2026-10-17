@@ -124,7 +124,7 @@ class SyncWorkManagerTest {
         val d = e as Dev45SyncEngine
         d.outbox.enqueue("attempt", "a1", "{}")
         assertTrue(java.io.File(ctx.filesDir, "sync/session.enc").readText().let { !it.contains("acc-1") && !it.contains("ref-1") })
-        d.reset()
+        runBlocking { d.reset() }
         assertNull(e.session.userId); assertTrue(d.outbox.pending.isEmpty())
         assertFalse(java.io.File(ctx.filesDir, "sync/session.enc").exists())
         assertEquals(SyncUiState.LocalOnly, e.status.state.value)

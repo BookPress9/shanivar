@@ -17,6 +17,7 @@ import java.util.UUID
  *   stamped once by [stampOwner] on the first session). An owned item is never sent under another user.
  * - [OutboxItem.idemKey]: routine only; kept while the payload is identical, a new UUID otherwise.
  * - [OutboxItem.seq] / [OutboxItem.parked]: send bookkeeping (see [ack], [park]).
+ * - [OutboxItem.failures]: item-level failed sends of this version ([recordFailure]); a re-enqueue resets it.
  *
  * Locking (DEV-45 G1): enqueue never waits on the network. The engine takes a [snapshot] under the lock,
  * sends outside it, and then [ack]s / [deadLetter]s an item only if its key still holds the same `seq`;
@@ -35,6 +36,7 @@ data class OutboxItem(
     val idemKey: String? = null,
     val seq: Long = 0L,
     val parked: String? = null,
+    val failures: Int = 0,
 ) { val key get() = "$kind:$id" }
 
 /** DEV-45 AC4: what is kept about a rejected item. Never the payload. */
@@ -102,6 +104,12 @@ class SyncOutbox(
         save()
     }
 
+    /** Counts an item-level failed send of this version; returns the new count (0 if it was re-enqueued). */
+    fun recordFailure(sent: OutboxItem): Int = synchronized(lock) {
+        val cur = items[sent.key]?.takeIf { it.seq == sent.seq } ?: return@synchronized 0
+        val next = cur.copy(failures = cur.failures + 1); items[sent.key] = next; save(); next.failures
+    }
+
     /** Keeps the item queued but marks why it is held (routine conflict / missing RPC). A re-enqueue clears it. */
     fun park(sent: OutboxItem, reason: String) = synchronized(lock) {
         val cur = items[sent.key]
@@ -113,7 +121,7 @@ class SyncOutbox(
         val changed = synchronized(lock) {
             val cur = items[key] ?: return@synchronized false
             items.remove(key)
-            items[key] = cur.copy(parked = null, seq = nextSeq++, clientUpdatedAtMs = clock(), idemKey = if (cur.kind == "routine") newKey() else cur.idemKey)
+            items[key] = cur.copy(parked = null, failures = 0, seq = nextSeq++, clientUpdatedAtMs = clock(), idemKey = if (cur.kind == "routine") newKey() else cur.idemKey)
             save(); true
         }
         if (changed) runCatching { listener?.invoke() }
@@ -153,7 +161,8 @@ class SyncOutbox(
                     ownerUserId = p.getProperty("u$i")?.takeIf { it.isNotEmpty() },
                     idemKey = p.getProperty("i$i")?.takeIf { it.isNotEmpty() } ?: if (parts[0] == "routine") newKey() else null,
                     seq = nextSeq++,
-                    parked = p.getProperty("x$i")?.takeIf { it.isNotEmpty() })
+                    parked = p.getProperty("x$i")?.takeIf { it.isNotEmpty() },
+                    failures = p.getProperty("f$i")?.toIntOrNull() ?: 0)
             }
         }
         p.getProperty("dn")?.toIntOrNull()?.let { n ->
@@ -172,6 +181,7 @@ class SyncOutbox(
         items.values.forEachIndexed { i, it ->
             p["k$i"] = it.key; p["p$i"] = it.payload; p["o$i"] = it.op.name; p["t$i"] = it.clientUpdatedAtMs.toString()
             p["u$i"] = it.ownerUserId.orEmpty(); p["i$i"] = it.idemKey.orEmpty(); p["x$i"] = it.parked.orEmpty()
+            if (it.failures > 0) p["f$i"] = it.failures.toString()
         }
         p["dn"] = dead.size.toString()
         dead.forEachIndexed { i, d -> p["d$i"] = "${d.status}|${d.code.replace("|", "/")}|${d.atMs}|${d.key}" }

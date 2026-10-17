@@ -207,7 +207,7 @@ class SupabaseSession(
 
     override val userId: String? get() = current?.takeUnless { it.lost }?.userId
     /** Diagnostics: true when the refresh token was rejected (shown as session_lost, never to end users). */
-    val sessionLost: Boolean get() = current?.lost == true
+    override val sessionLost: Boolean get() = current?.lost == true
     /** True while a refresh token is stored (lost or not). */
     val hasRefreshToken: Boolean get() = current != null
 
@@ -287,7 +287,8 @@ class SupabaseSession(
 
 sealed interface SendResult {
     data object Acked : SendResult
-    data class Retry(val afterMs: Long?) : SendResult
+    /** [status]: HTTP status that caused it (0 = transport / offline). */
+    data class Retry(val afterMs: Long?, val status: Int = 0) : SendResult
     data object Unauthorized : SendResult
     data class Rejected(val status: Int, val code: String) : SendResult
     data class Park(val reason: String) : SendResult
@@ -371,9 +372,10 @@ class SupabaseOutboxSender(
         fun classify(r: HttpReply): SendResult = when {
             r.code in 200..299 -> SendResult.Acked
             r.code == 401 -> SendResult.Unauthorized
-            r.code == 429 || r.code >= 500 -> SendResult.Retry(r.retryAfterMs)
-            // 404: table/RPC missing = server not migrated yet; 408: request timeout. Retry, never drop.
-            r.code == 404 || r.code == 408 -> SendResult.Retry(r.retryAfterMs)
+            r.code == 429 || r.code >= 500 -> SendResult.Retry(r.retryAfterMs, r.code)
+            // 404: table/RPC missing = server not migrated yet; 408: request timeout. Item-level retry: the
+            // flusher skips past it and dead-letters it after OutboxFlusher.MAX_ITEM_RETRIES (head-of-line fix).
+            r.code == 404 || r.code == 408 -> SendResult.Retry(r.retryAfterMs, r.code)
             else -> SendResult.Rejected(r.code, MiniJson.str(r.body, "code")?.takeIf { it.matches(Regex("[A-Za-z0-9_]{1,32}")) } ?: "http_${r.code}")
         }
     }
@@ -405,9 +407,10 @@ class OutboxFlusher(
         val uid = session.userId ?: return FlushOutcome.NoSession
         outbox.stampOwner(uid)
         var acked = 0; var dead = 0; var parked = 0
+        var deferred: SendResult.Retry? = null
         for (item in outbox.snapshot()) {
             if (item.ownerUserId != uid) continue
-            if (item.parked == SupabaseOutboxSender.PARK_CONFLICT) continue
+            if (item.parked == SupabaseOutboxSender.PARK_CONFLICT || item.parked == PARK_RETRY_LIMIT) continue
             var token = when (val t = session.accessToken()) {
                 is TokenResult.Valid -> t.token
                 is TokenResult.Offline -> return FlushOutcome.RetryLater(t.retryAfterMs, acked)
@@ -433,11 +436,34 @@ class OutboxFlusher(
                     outbox.park(item, SupabaseOutboxSender.PARK_CONFLICT); parked++
                     runCatching { onConflict(c) }
                 }
-                is SendResult.Retry -> return FlushOutcome.RetryLater(r.afterMs, acked)
+                is SendResult.Retry -> {
+                    // Server-wide (5xx / 429 / transport): stop and back off; later items would fail the same way.
+                    if (r.status !in ITEM_RETRY_STATUSES) return FlushOutcome.RetryLater(r.afterMs, acked)
+                    // Item-level (404 / 408): never block the queue behind it; give up after MAX_ITEM_RETRIES.
+                    if (outbox.recordFailure(item) >= MAX_ITEM_RETRIES) {
+                        if (item.kind == "routine") { outbox.park(item, PARK_RETRY_LIMIT); parked++ }
+                        else { outbox.deadLetter(item, r.status, DEAD_RETRY_LIMIT); dead++ }
+                    } else if (deferred == null) deferred = r
+                }
                 SendResult.Unauthorized -> return FlushOutcome.RetryLater(null, acked)
             }
         }
+        deferred?.let { return FlushOutcome.RetryLater(it.afterMs, acked) }
         FlushOutcome.Done(acked, dead, parked)
+    }
+
+    /** Items of this user held back by [SyncOutbox.park] (counted as pending for status: never Synced while > 0). */
+    fun parkedCount(): Int {
+        val uid = session.userId
+        return outbox.pending.count { (it.ownerUserId == null || it.ownerUserId == uid) && it.parked != null }
+    }
+
+    companion object {
+        /** Per-item limit for item-level retries (404 / 408) before the item is dead-lettered (routine: parked). */
+        const val MAX_ITEM_RETRIES = 5
+        val ITEM_RETRY_STATUSES = setOf(404, 408)
+        const val DEAD_RETRY_LIMIT = "retry_limit"
+        const val PARK_RETRY_LIMIT = "retry_limit"
     }
 
     /** Items this user could still send now (dead letters and parked items excluded). */
@@ -469,33 +495,50 @@ class SyncBackoff(
 // ── Status (DEV-47 AC4 source) ────────────────────────────────────────────────────────────────
 
 /** Quiet status: no counts shown to users; deadLetterCount is for the diagnostics view only. */
+/** The status flows (a [SyncStatusSource]); the engine owns them so they exist before the tracker is built. */
+class SyncStatusFlows : SyncStatusSource {
+    internal val stateMut = MutableStateFlow<SyncUiState>(SyncUiState.LocalOnly)
+    internal val deadMut = MutableStateFlow(0)
+    internal val pendingMut = MutableStateFlow(0)
+    internal val parkedMut = MutableStateFlow(0)
+    override val state: StateFlow<SyncUiState> = stateMut.asStateFlow()
+    override val deadLetterCount: StateFlow<Int> = deadMut.asStateFlow()
+    override val pendingCount: StateFlow<Int> = pendingMut.asStateFlow()
+    override val parkedCount: StateFlow<Int> = parkedMut.asStateFlow()
+}
+
+/**
+ * Status line (DEV-47 AC4, contract D6): Synced only when nothing is pending AND nothing is parked; with
+ * pending or parked items it is WaitingForNetwork offline, LocalOnly online ("Saved on this device").
+ */
 class SyncStatusTracker(
     private val store: DraftStore,
     private val hasSession: () -> Boolean,
     private val sendable: () -> Int,
     private val deadLetters: () -> Int,
     private val online: () -> Boolean,
-) : SyncStatusSource {
+    private val parked: () -> Int = { 0 },
+    val flows: SyncStatusFlows = SyncStatusFlows(),
+) : SyncStatusSource by flows {
     @Volatile private var lastSyncedAtMs: Long? = store.read()?.trim()?.toLongOrNull()
-    private val _state = MutableStateFlow<SyncUiState>(SyncUiState.LocalOnly)
-    private val _dead = MutableStateFlow(0)
-    override val state: StateFlow<SyncUiState> = _state.asStateFlow()
-    override val deadLetterCount: StateFlow<Int> = _dead.asStateFlow()
     init { refresh() }
 
-    /** End of a flush that left nothing sendable. */
+    /** End of a flush that left nothing sendable and nothing parked. */
     fun markSynced(atMs: Long) { lastSyncedAtMs = atMs; runCatching { store.write(atMs.toString()) }; refresh() }
     fun clear() { lastSyncedAtMs = null; runCatching { store.clear() }; refresh() }
 
     fun refresh() {
         val pending = runCatching { sendable() }.getOrDefault(0)
+        val held = runCatching { parked() }.getOrDefault(0)
         val last = lastSyncedAtMs
-        _state.value = when {
+        flows.stateMut.value = when {
             !hasSession() -> SyncUiState.LocalOnly
-            pending > 0 && !online() -> SyncUiState.WaitingForNetwork
-            pending == 0 && last != null -> SyncUiState.Synced(Instant.ofEpochMilli(last))
+            pending + held > 0 && !online() -> SyncUiState.WaitingForNetwork
+            pending == 0 && held == 0 && last != null -> SyncUiState.Synced(Instant.ofEpochMilli(last))
             else -> SyncUiState.LocalOnly
         }
-        _dead.value = runCatching { deadLetters() }.getOrDefault(0)
+        flows.deadMut.value = runCatching { deadLetters() }.getOrDefault(0)
+        flows.pendingMut.value = pending
+        flows.parkedMut.value = held
     }
 }

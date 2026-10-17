@@ -12,6 +12,8 @@ import java.time.Instant
  * install, encrypted tokens, refresh), SyncScheduler (WorkManager unique work "outbox-flush", CONNECTED
  * constraint, backoff, reset on reconnect/foreground) and SyncStatusSource. DEV-45 plugs them in by
  * setting [SyncEngines.dev45]. DEV-47 (app wiring, AppSync) builds only against what is in this file.
+ * DEV-45 follow-up (DEV-47 integration): flushNow, reset, sessionLost, pendingCount/parkedCount and the bound
+ * factory moved here so the app needs no reflection (handoffs/dev45-synccontracts-diff.patch).
  * Keep this surface minimal; change it only by agreement with Backend.
  */
 
@@ -30,6 +32,8 @@ interface SyncSession {
     suspend fun ensureGuest(): GuestResult
     /** Clears tokens. Queued items stay stamped to the old user and are never sent under another (DEV-45 AC2). */
     suspend fun signOut()
+    /** Diagnostics only (DEV-47 AC5): the refresh token was rejected; shown as session_lost, never to end users. */
+    val sessionLost: Boolean
 }
 
 interface SyncScheduler {
@@ -37,15 +41,17 @@ interface SyncScheduler {
     fun requestFlush()
     /** Idempotent; called once per process start. */
     fun schedulePeriodic()
+    /** Foreground / network regained: resets the backoff and flushes now. Main-thread safe, no I/O. */
+    fun flushNow()
 }
 
 /** The quiet status line (DEV-47 AC4). */
 sealed interface SyncUiState {
     /** Nothing sent yet, sync waiting for a session, or sending/backing off while online. */
     data object LocalOnly : SyncUiState
-    /** Last flush that left nothing sendable (dead-letters excluded). */
+    /** Last flush that left nothing pending and nothing parked (dead-letters excluded). Never while [SyncStatusSource.parkedCount] > 0. */
     data class Synced(val at: Instant) : SyncUiState
-    /** Items pending and no network. */
+    /** Items pending or parked and no network. */
     data object WaitingForNetwork : SyncUiState
 }
 
@@ -53,6 +59,10 @@ interface SyncStatusSource {
     val state: StateFlow<SyncUiState>
     /** Diagnostics only (DEV-47 AC5); never shown to end users. */
     val deadLetterCount: StateFlow<Int>
+    /** Items of this user waiting to be sent (parked and dead-lettered excluded). */
+    val pendingCount: StateFlow<Int>
+    /** Items held back (routine conflict / put_routine not deployed / retry limit); they keep the state off Synced. */
+    val parkedCount: StateFlow<Int>
 }
 
 /** What DEV-45 hands to the app. */
@@ -60,16 +70,21 @@ interface SyncEngine {
     val session: SyncSession
     val scheduler: SyncScheduler
     val status: SyncStatusSource
+    /** Wipe this device's sync state (DEV-47 AC6): cancel work, clear tokens, queue, dead letters, lastSyncedAt. */
+    suspend fun reset()
 }
 
-/** DEV-45 builds its engine from the app context and BuildConfig values. */
+/**
+ * DEV-45 builds its engine from the app context and BuildConfig values. [create] is main-thread safe: it
+ * returns at once and does the Keystore decrypt and the outbox read on an IO dispatcher.
+ */
 fun interface SyncEngineFactory {
     fun create(context: android.content.Context, supabaseUrl: String, anonKey: String): SyncEngine
 }
 
-/** Binding point. DEV-45 replaces `null` with its factory; until then sync stays off even in debug. */
+/** Binding point: the DEV-45 engine. The app still decides (BuildConfig) whether to create it. */
 object SyncEngines {
-    val dev45: SyncEngineFactory? = null
+    val dev45: SyncEngineFactory? = com.shanivar.nativeapp.Dev45SyncEngineFactory
 }
 
 /** Sync-off implementation: no session, no network, no status line. */
@@ -80,8 +95,13 @@ object DisabledSync : SyncEngine, SyncSession, SyncScheduler, SyncStatusSource {
     override val userId: String? get() = null
     override suspend fun ensureGuest(): GuestResult = GuestResult.Disabled
     override suspend fun signOut() {}
+    override val sessionLost: Boolean get() = false
+    override suspend fun reset() {}
     override fun requestFlush() {}
     override fun schedulePeriodic() {}
+    override fun flushNow() {}
     override val state: StateFlow<SyncUiState> = MutableStateFlow(SyncUiState.LocalOnly)
     override val deadLetterCount: StateFlow<Int> = MutableStateFlow(0)
+    override val pendingCount: StateFlow<Int> = MutableStateFlow(0)
+    override val parkedCount: StateFlow<Int> = MutableStateFlow(0)
 }

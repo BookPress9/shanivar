@@ -21,9 +21,13 @@ import com.shanivar.nativeapp.sync.SyncEngineFactory
 import com.shanivar.nativeapp.sync.SyncScheduler
 import com.shanivar.nativeapp.sync.SyncSession
 import com.shanivar.nativeapp.sync.SyncStatusSource
+import com.shanivar.nativeapp.sync.GuestResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.security.KeyStore
 import java.util.concurrent.Executors
@@ -109,7 +113,7 @@ class WorkSyncScheduler(
     }
 
     /** Foreground / reconnect: reset backoff and flush immediately (contract C7). */
-    fun flushNow() {
+    override fun flushNow() {
         backoff.reset(); dirty.set(true)
         if (!running.get()) runCatching { wm().enqueueUniqueWork(UNIQUE, ExistingWorkPolicy.REPLACE, request(0)) }
     }
@@ -151,70 +155,104 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
     }
 }
 
+/** The parts that need disk / Keystore to build: made once, on an IO thread ([Dev45SyncEngineFactory]). */
+internal class Dev45Core(
+    val outbox: SyncOutbox,
+    val session: SupabaseSession,
+    val flusher: OutboxFlusher,
+    val routine: RoutineSyncStore,
+    val tracker: SyncStatusTracker,
+)
+
 /**
- * The DEV-45 engine handed to DEV-47 (implements the agreed [SyncEngine]). Extra surface for DEV-47/52:
- * [flushNow] (foreground), [reset] (wipe), [routineConflict] + [keepMineRoutine] / [takeServerRoutine].
+ * The DEV-45 engine handed to DEV-47 (implements the agreed [SyncEngine]). It is usable the moment the
+ * factory returns: the Keystore session decrypt and the outbox read run on an IO dispatcher, never the
+ * main thread. Until they finish, [session] has no user, [status] shows LocalOnly, and flush requests go to
+ * WorkManager (the worker waits for the engine). Extra surface for DEV-52: [routineConflict] +
+ * [keepMineRoutine] / [takeServerRoutine]; [outbox] / [deadLetters] block until ready (not on main).
  */
 class Dev45SyncEngine internal constructor(
-    val outbox: SyncOutbox,
-    private val supabaseSession: SupabaseSession,
-    private val flusher: OutboxFlusher,
-    private val routineStore: RoutineSyncStore,
+    private val ready: java.util.concurrent.CompletableFuture<Dev45Core>,
     private val workScheduler: WorkSyncScheduler,
     private val backoff: SyncBackoff,
-    private val tracker: SyncStatusTracker,
+    private val flows: SyncStatusFlows,
     private val nowMs: () -> Long,
 ) : SyncEngine {
-    override val session: SyncSession get() = supabaseSession
-    override val scheduler: SyncScheduler get() = workScheduler
-    override val status: SyncStatusSource get() = tracker
-    private val _conflict = MutableStateFlow(routineStore.conflict)
+    private val _conflict = MutableStateFlow<RoutineConflictInfo?>(null)
     val routineConflict: StateFlow<RoutineConflictInfo?> = _conflict.asStateFlow()
-    val deadLetters: List<DeadLetter> get() = outbox.deadLetters
-    val sessionLost: Boolean get() = supabaseSession.sessionLost
+
+    private fun core(): Dev45Core = ready.get()
+    private fun coreOrNull(): Dev45Core? = if (ready.isDone && !ready.isCompletedExceptionally) ready.getNow(null) else null
+    /** True once the IO-side build finished (diagnostics / tests). */
+    val isReady: Boolean get() = coreOrNull() != null
+    /** Blocks until built; never call on the main thread. */
+    fun awaitReady(): Dev45SyncEngine { core(); return this }
+
+    val outbox: SyncOutbox get() = core().outbox
+    val deadLetters: List<DeadLetter> get() = core().outbox.deadLetters
+    /** Same as [SyncSession.sessionLost] (kept for pre-follow-up callers). */
+    val sessionLost: Boolean get() = lazySession.sessionLost
+
+    private val lazySession = object : SyncSession {
+        override val userId: String? get() = coreOrNull()?.session?.userId
+        override val sessionLost: Boolean get() = coreOrNull()?.session?.sessionLost == true
+        override suspend fun ensureGuest(): GuestResult = withContext(Dispatchers.IO) {
+            runCatching { core() }.fold({ it.session.ensureGuestBlocking() }, { GuestResult.Failed("engine_init") })
+        }
+        override suspend fun signOut() { runCatching { withContext(Dispatchers.IO) { core() } }.getOrNull()?.session?.signOut() }
+    }
+    override val session: SyncSession get() = lazySession
+    override val scheduler: SyncScheduler get() = workScheduler
+    override val status: SyncStatusSource get() = flows
 
     internal fun publishConflict(c: RoutineConflictInfo?) { _conflict.value = c }
 
     fun flushNow() = workScheduler.flushNow()
 
-    /** Worker body: flush until nothing is dirty; on a retryable failure schedule the backoff run. */
+    /** Worker body (background thread): flush until nothing is dirty; on a retryable failure schedule the backoff run. */
     internal fun runFlushes() {
+        val c = runCatching { core() }.getOrNull() ?: return
         if (!workScheduler.running.compareAndSet(false, true)) { workScheduler.dirty.set(true); return }
         try {
             while (true) {
                 workScheduler.dirty.set(false)
-                when (val o = flusher.flush()) {
+                when (val o = c.flusher.flush()) {
                     is FlushOutcome.RetryLater -> { workScheduler.scheduleRetry(backoff.next(o.afterMs)); break }
                     FlushOutcome.NoSession -> break
                     is FlushOutcome.Done -> {
                         backoff.reset()
-                        if (flusher.sendableCount() == 0) tracker.markSynced(nowMs())
+                        // D6: never Synced while anything is parked
+                        if (c.flusher.sendableCount() == 0 && c.flusher.parkedCount() == 0) c.tracker.markSynced(nowMs())
                         if (!workScheduler.dirty.get()) break
                     }
                 }
             }
-        } finally { workScheduler.running.set(false); tracker.refresh() }
+        } finally { workScheduler.running.set(false); c.tracker.refresh() }
     }
 
     /** DEV-52 keepMine: re-send the local routine against the server's revision with a new idempotency key. */
     fun keepMineRoutine() {
-        val c = routineStore.conflict ?: return
-        routineStore.serverRevision = c.revision; routineStore.conflict = null; publishConflict(null)
-        outbox.requeue("routine:current")
+        val c = core(); val conflict = c.routine.conflict ?: return
+        c.routine.serverRevision = conflict.revision; c.routine.conflict = null; publishConflict(null)
+        c.outbox.requeue("routine:current")
     }
 
     /** DEV-52 takeServer: the caller saves [RoutineConflictInfo.planJson] locally without enqueueing. */
     fun takeServerRoutine(): RoutineConflictInfo? {
-        val c = routineStore.conflict ?: return null
-        routineStore.serverRevision = c.revision; routineStore.conflict = null; publishConflict(null)
-        outbox.drop("routine:current"); tracker.refresh()
-        return c
+        val c = core(); val conflict = c.routine.conflict ?: return null
+        c.routine.serverRevision = conflict.revision; c.routine.conflict = null; publishConflict(null)
+        c.outbox.drop("routine:current"); c.tracker.refresh()
+        return conflict
     }
 
     /** Reset (wipe this device): cancel work, clear tokens, drop queue + dead letters + lastSyncedAt. */
-    fun reset() {
-        workScheduler.cancel(); supabaseSession.clear(); outbox.clearAll(); routineStore.clear()
-        publishConflict(null); tracker.clear()
+    override suspend fun reset() = withContext(Dispatchers.IO) { resetBlocking() }
+
+    internal fun resetBlocking() {
+        workScheduler.cancel()
+        val c = core()
+        c.session.clear(); c.outbox.clearAll(); c.routine.clear()
+        publishConflict(null); c.tracker.clear()
     }
 }
 
@@ -225,8 +263,9 @@ object Dev45Sync {
 }
 
 /**
- * DEV-47 binds this as `SyncEngines.dev45`. Builds the engine over the shared [AppSyncOutbox]; tokens are
- * encrypted with [KeystoreTokenCipher]. [cipher] is a test seam (Robolectric has no AndroidKeyStore).
+ * Bound as `SyncEngines.dev45` (sync/SyncContracts.kt). [build] returns at once on any thread; the engine's
+ * disk / Keystore work (session decrypt, outbox and routine reads, lastSyncedAt) runs on [io].
+ * [cipher], [outbox] and [io] are test seams (Robolectric has no AndroidKeyStore).
  */
 object Dev45SyncEngineFactory : SyncEngineFactory {
     override fun create(context: Context, supabaseUrl: String, anonKey: String): SyncEngine =
@@ -235,30 +274,41 @@ object Dev45SyncEngineFactory : SyncEngineFactory {
     fun build(
         context: Context, supabaseUrl: String, anonKey: String,
         cipher: TokenCipher = KeystoreTokenCipher(),
-        outbox: SyncOutbox = AppSyncOutbox.get(context),
+        outbox: () -> SyncOutbox = { AppSyncOutbox.get(context) },
         nowMs: () -> Long = System::currentTimeMillis,
+        io: java.util.concurrent.Executor = Dispatchers.IO.asExecutor(),
     ): Dev45SyncEngine {
-        val dir = File(context.applicationContext.filesDir, "sync")
-        val http = SupabaseHttp(supabaseUrl, anonKey, nowMs = nowMs)
-        val session = SupabaseSession(http, EncryptedSessionStore(FileDraftStore(File(dir, "session.enc")), cipher), nowMs)
-        val routine = RoutineSyncStore(FileDraftStore(File(dir, "routine.properties")))
+        val app = context.applicationContext
         val backoff = SyncBackoff()
-        val scheduler = WorkSyncScheduler(context, backoff)
-        var engineRef: Dev45SyncEngine? = null
-        val flusher = OutboxFlusher(outbox, session, SupabaseOutboxSender(http, routine), routine) { engineRef?.publishConflict(it) }
-        var trackerRef: SyncStatusTracker? = null
-        val network = AndroidNetworkMonitor(context) { scheduler.flushNow(); trackerRef?.refresh() }
-        val tracker = SyncStatusTracker(FileDraftStore(File(dir, "last_synced_at")), { session.userId != null },
-            { flusher.sendableCount() }, { outbox.deadLetters.size }, { network.online })
-        trackerRef = tracker
-        val engine = Dev45SyncEngine(outbox, session, flusher, routine, scheduler, backoff, tracker, nowMs)
-        engineRef = engine
-        outbox.ownerProvider = { session.userId }
-        outbox.listener = { scheduler.requestFlush(); tracker.refresh() }
-        session.onSignedIn = { uid -> outbox.stampOwner(uid); tracker.refresh(); scheduler.requestFlush() }
-        session.onSignedOut = { scheduler.cancel(); tracker.refresh() }
-        tracker.refresh()
+        val scheduler = WorkSyncScheduler(app, backoff)
+        val flows = SyncStatusFlows()
+        val ready = java.util.concurrent.CompletableFuture<Dev45Core>()
+        val engine = Dev45SyncEngine(ready, scheduler, backoff, flows, nowMs)
         Dev45Sync.current = engine
+        io.execute {
+            runCatching {
+                val dir = File(app.filesDir, "sync")
+                val http = SupabaseHttp(supabaseUrl, anonKey, nowMs = nowMs)
+                val session = SupabaseSession(http, EncryptedSessionStore(FileDraftStore(File(dir, "session.enc")), cipher), nowMs)
+                val box = outbox()
+                val routine = RoutineSyncStore(FileDraftStore(File(dir, "routine.properties")))
+                val flusher = OutboxFlusher(box, session, SupabaseOutboxSender(http, routine), routine) { engine.publishConflict(it) }
+                var trackerRef: SyncStatusTracker? = null
+                val network = AndroidNetworkMonitor(app) { scheduler.flushNow(); trackerRef?.refresh() }
+                val tracker = SyncStatusTracker(FileDraftStore(File(dir, "last_synced_at")), { session.userId != null },
+                    { flusher.sendableCount() }, { box.deadLetters.size }, { network.online }, { flusher.parkedCount() }, flows)
+                trackerRef = tracker
+                box.ownerProvider = { session.userId }
+                box.listener = { scheduler.requestFlush(); tracker.refresh() }
+                session.onSignedIn = { uid -> box.stampOwner(uid); tracker.refresh(); scheduler.requestFlush() }
+                session.onSignedOut = { scheduler.cancel(); tracker.refresh() }
+                engine.publishConflict(routine.conflict)
+                tracker.refresh()
+                Dev45Core(box, session, flusher, routine, tracker)
+            }.fold({ ready.complete(it) }, { ready.completeExceptionally(it) })
+            // queued before the engine was ready (e.g. offline edits at cold start): flush once it is
+            if (ready.isDone && !ready.isCompletedExceptionally && runCatching { ready.get().flusher.sendableCount() }.getOrDefault(0) > 0) scheduler.requestFlush()
+        }
         return engine
     }
 }
