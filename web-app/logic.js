@@ -1,79 +1,20 @@
-/* Pure logic, no DOM. Mirrors BreathingSessionState.kt (90 s rule), SankalpStore.kt, lastPractisedLabel. */
-(function (root) {
-"use strict";
-var MIN_PRACTISED_SECONDS = 90, MAX_LINE = 60, MAX_RECORDS = 100;
-var KEYS = { history: "shanivar.history.v1", sankalp: "shanivar.sankalp.v1" };
-var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-function countsAsPractised(rec) {
-  return !!rec && (rec.outcome === "timer" || rec.outcome === "user") && rec.activeSeconds >= MIN_PRACTISED_SECONDS;
-}
-function codePoints(s) { return Array.from(String(s)); }
-function limitInput(t) {
-  var single = String(t).replace(/[\r\n]/g, " ");
-  var cp = codePoints(single);
-  return cp.length <= MAX_LINE ? single : cp.slice(0, MAX_LINE).join("");
-}
-function isAcceptable(t) { return String(t).trim() !== "" && codePoints(t).length <= MAX_LINE; }
-
-function dayNumber(ms) { var d = new Date(ms); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000; }
-/* "Last practised today / yesterday / 3 Oct" (with year when not this year); null when nothing. */
-function lastPractisedLabel(ms, nowMs) {
-  if (ms == null) return null;
-  var diff = dayNumber(nowMs) - dayNumber(ms);
-  if (diff === 0) return "Last practised today";
-  if (diff === 1) return "Last practised yesterday";
-  var d = new Date(ms), n = new Date(nowMs);
-  var s = d.getDate() + " " + MONTHS[d.getMonth()];
-  if (d.getFullYear() !== n.getFullYear()) s += " " + d.getFullYear();
-  return "Last practised " + s;
-}
-function lastPractisedMs(records, practiceId) {
-  var best = null;
-  records.forEach(function (r) {
-    if (r.practiceId === practiceId && countsAsPractised(r) && typeof r.startedAt === "number" && (best === null || r.startedAt > best)) best = r.startedAt;
-  });
-  return best;
-}
-function trimHistory(list) { return list.length <= MAX_RECORDS ? list : list.slice(list.length - MAX_RECORDS); }
-
-/* Which steady-practice stage the clock points at. Stage ids as in the catalogue. */
-function stageAt(elapsed, total, sleep) {
-  var closing = sleep ? 0 : 10, practiceEnd = total - closing;
-  if (elapsed < 10) return "arrival";
-  if (elapsed < 30) return "instruction";
-  if (elapsed < practiceEnd || closing === 0) return "practice";
-  return "closing";
-}
-function sittingStepAt(elapsed) { return elapsed >= 120 ? "stay" : elapsed >= 30 ? "scan" : "settle"; }
-function formatClock(sec) { sec = Math.max(0, Math.ceil(sec)); return Math.floor(sec / 60) + ":" + ("0" + (sec % 60)).slice(-2); }
-
-/* localStorage wrapper. Never throws; falls back to memory when storage is unavailable. */
-function Store(storage) {
-  var mem = {}, ok = !!storage;
-  function safe(fn, fallback) { try { return fn(); } catch (e) { ok = false; return fallback; } }
-  this.available = function () { return ok; };
-  this.getJSON = function (key, dflt) {
-    var raw = ok ? safe(function () { return storage.getItem(key); }, null) : (key in mem ? mem[key] : null);
-    if (raw == null) return dflt;
-    try { return JSON.parse(raw); } catch (e) { return dflt; }
-  };
-  this.setJSON = function (key, val) {
-    var raw = JSON.stringify(val);
-    if (ok) { var done = safe(function () { storage.setItem(key, raw); return true; }, false); if (done) return true; }
-    mem[key] = raw; return false;
-  };
-  this.remove = function (key) { delete mem[key]; if (ok) safe(function () { storage.removeItem(key); }, null); };
-  this.history = function () { var h = this.getJSON(KEYS.history, []); return Array.isArray(h) ? h : []; };
-  this.addRecord = function (rec) { var h = this.history(); h.push(rec); this.setJSON(KEYS.history, trimHistory(h)); };
-  this.sankalp = function () { var s = this.getJSON(KEYS.sankalp, null); return typeof s === "string" && s.trim() ? s : null; };
-  this.saveSankalp = function (t) { if (!isAcceptable(t)) return false; this.setJSON(KEYS.sankalp, t); return true; };
-  this.clearSankalp = function () { this.remove(KEYS.sankalp); };
-  this.deleteAll = function () { this.remove(KEYS.history); this.remove(KEYS.sankalp); };
-}
-
-var api = { MIN_PRACTISED_SECONDS: MIN_PRACTISED_SECONDS, MAX_LINE: MAX_LINE, KEYS: KEYS, countsAsPractised: countsAsPractised,
-  limitInput: limitInput, isAcceptable: isAcceptable, lastPractisedLabel: lastPractisedLabel, lastPractisedMs: lastPractisedMs,
-  trimHistory: trimHistory, stageAt: stageAt, sittingStepAt: sittingStepAt, formatClock: formatClock, Store: Store, codePoints: codePoints };
-if (typeof module !== "undefined" && module.exports) module.exports = api; else root.SHLogic = api;
-})(typeof self !== "undefined" ? self : this);
+(function(root){"use strict";
+const KEY="shanivar.web.v2",DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function uid(){return globalThis.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
+function initial(){return{version:2,onboarded:false,profile:{mode:"local"},routine:{wakeTime:"",intendedSleepTime:"",activities:[],windows:[]},attempts:[],reports:[],orbit:[],outbox:[],settings:{guidance:"FULL"},sync:{revision:0,lastAt:null,error:null}}}
+function normalize(v){const d=initial(),x=v&&typeof v==="object"?v:{};return Object.assign(d,x,{profile:Object.assign(d.profile,x.profile),routine:Object.assign(d.routine,x.routine),settings:Object.assign(d.settings,x.settings),sync:Object.assign(d.sync,x.sync),attempts:Array.isArray(x.attempts)?x.attempts:[],reports:Array.isArray(x.reports)?x.reports:[],orbit:Array.isArray(x.orbit)?x.orbit:[],outbox:Array.isArray(x.outbox)?x.outbox:[]})}
+class Store{constructor(storage){this.storage=storage;this.memory=null;this.state=this.read()}read(){try{return normalize(JSON.parse(this.storage.getItem(KEY)))}catch(e){return normalize(this.memory)}}save(){const raw=JSON.stringify(this.state);this.memory=raw;try{this.storage.setItem(KEY,raw)}catch(e){}return this.state}update(fn){fn(this.state);return this.save()}reset(){this.state=initial();try{this.storage.removeItem(KEY)}catch(e){}return this.state}}
+function clientTime(){return new Date().toISOString()}
+function queue(state,kind,id,payload,op="UPSERT"){const item={key:kind+":"+id,kind,id,op,payload,clientUpdatedAt:clientTime(),idemKey:uid()};state.outbox=state.outbox.filter(x=>x.key!==item.key);state.outbox.push(item);return item}
+function minute(t){if(!/^\d\d:\d\d$/.test(t||""))return null;const [h,m]=t.split(":").map(Number);return h<24&&m<60?h*60+m:null}
+function intervals(w){const s=minute(w.startTime),e=minute(w.endTime);if(s===null||e===null||!w.days?.length)return[];const dur=s===e&&s===0?1440:(e-s+1440)%1440;if(!dur)return[];return w.days.flatMap(d=>{const a=d*1440+s,b=a+dur;return b<=10080?[[a,b]]:[[a,10080],[0,b-10080]]})}
+function windowsOverlap(a,b){return intervals(a).some(x=>intervals(b).some(y=>x[0]<y[1]&&y[0]<x[1]))}
+function validateRoutine(r){if(r.wakeTime&&r.intendedSleepTime&&r.wakeTime===r.intendedSleepTime)return"Wake and intended sleep cannot be the same time.";if(r.activities.length>12)return"At most 12 personal activities.";for(const a of r.activities){if(!a.title.trim())return"Every activity needs a name.";if(a.durationMinutes<1||a.durationMinutes>1440)return"Activity duration must be between 1 and 1440 minutes.";if(!a.days.length)return"Pick at least one activity day."}if(r.windows.length>8)return"At most 8 protection windows.";for(const w of r.windows){if(minute(w.startTime)===null||minute(w.endTime)===null)return"Every protection window needs valid times.";if(w.startTime===w.endTime&&w.startTime!=="00:00")return"Only 00:00 to 00:00 represents a full calendar day.";if(!w.days.length)return"Pick at least one window day."}for(let i=0;i<r.windows.length;i++)for(let j=i+1;j<r.windows.length;j++)if(r.windows[i].enabled&&r.windows[j].enabled&&windowsOverlap(r.windows[i],r.windows[j]))return"Enabled protection windows cannot overlap.";return null}
+function routinePayload(r){return{wakeTime:r.wakeTime||null,intendedSleepTime:r.intendedSleepTime||null,activities:r.activities.map(a=>({...a})),windows:r.windows.map(w=>({id:w.id,startTime:w.startTime,endTime:w.endTime,startDays:w.days,enabled:w.enabled}))}}
+function attemptPayload(a){return{id:a.id,practice_id:a.practiceId,content_version:a.contentVersion,started_at:new Date(a.startedAt).toISOString(),zone_id:a.zoneId,intended_seconds:a.intendedSeconds,active_ms:a.activeMs,outcome:a.outcome,ended_at:a.endedAt?new Date(a.endedAt).toISOString():null}}
+function reportPayload(r){return{id:r.id,local_date:r.localDate,intended_minutes:r.intendedMinutes||null,actual_minutes:r.actualMinutes||null,practice_id:r.practiceId||null}}
+function orbitPayload(o){return{id:o.id,type:o.type,local_date:o.localDate,source:o.source}}
+function capabilities(s){const done=new Set(),finished=s.attempts.filter(a=>a.outcome==="COMPLETED"||a.outcome==="ENDED");if(finished.length)done.add("Arrive");if(finished.some(a=>a.practiceId==="room"&&a.activeMs>0))done.add("Return");if(finished.some(a=>a.practiceId==="threshold"&&a.outcome==="COMPLETED"))done.add("See");if(s.routine.windows.some(w=>w.enabled)&&finished.some(a=>a.practiceId==="oneaction"&&a.outcome==="COMPLETED"))done.add("Choose");if(s.reports.length||s.settings.guidance!=="FULL")done.add("Carry");return done}
+function clock(ms){const n=Math.max(0,Math.ceil(ms/1000));return Math.floor(n/60)+":"+String(n%60).padStart(2,"0")}
+const api={KEY,DAYS,Store,initial,uid,queue,clientTime,intervals,windowsOverlap,validateRoutine,routinePayload,attemptPayload,reportPayload,orbitPayload,capabilities,clock};if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.SHLogic=api;
+})(typeof self!=="undefined"?self:this);

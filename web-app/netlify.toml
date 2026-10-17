@@ -1,4 +1,4 @@
-# Static site, no build. Do NOT create or deploy a site from this yet (see README).
+# Static PWA, no build step. Runtime Supabase configuration is provided by config.js.
 [build]
   publish = "."
 
@@ -7,5 +7,5 @@
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "no-referrer"
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; connect-src 'self' https://*.supabase.co; form-action 'none'; base-uri 'none'; frame-ancestors 'none'"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"

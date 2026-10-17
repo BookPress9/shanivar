@@ -1,236 +1,27 @@
-(function () {
-"use strict";
-var C = SHContent, L = SHLogic, COPY = C.COPY;
-var store;
-try { store = new L.Store(window.localStorage); } catch (e) { store = new L.Store(null); }
-var main = document.getElementById("main"), live = document.getElementById("live");
-document.getElementById("notice").textContent = COPY.internalNotice;
-document.getElementById("storage-warning").hidden = store.available();
-
-var S = null; /* running session */
-var timerId = null;
-
-function el(tag, attrs, kids) {
-  var n = document.createElement(tag);
-  Object.keys(attrs || {}).forEach(function (k) {
-    if (k === "text") n.textContent = attrs[k]; else if (k === "onclick") n.addEventListener("click", attrs[k]);
-    else if (k === "oninput") n.addEventListener("input", attrs[k]); else if (attrs[k] !== false && attrs[k] != null) n.setAttribute(k, attrs[k] === true ? "" : attrs[k]);
-  });
-  (kids || []).forEach(function (c) { n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
-  return n;
-}
-function p(text, cls) { return el("p", { text: text, class: cls || false }); }
-function h1(text) { return el("h1", { id: "view-title", text: text }); }
-function btn(label, fn, primary, disabled) { return el("button", { type: "button", text: label, onclick: fn, class: primary ? "primary" : false, disabled: disabled ? true : false }); }
-function show(nodes, announce) {
-  main.replaceChildren.apply(main, nodes);
-  if (announce) { live.textContent = ""; live.textContent = announce; }
-}
-function focusMain() { main.focus({ preventScroll: true }); }
-function practiceById(id) { return C.PRACTICES.filter(function (x) { return x.id === id; })[0]; }
-function minLabel(s) { return s / 60 + " min"; }
-
-/* ---------- Home ---------- */
-function home() {
-  stopTimer(); S = null;
-  var now = Date.now(), hist = store.history();
-  var nodes = [h1("Sadhana"),
-    p("Two ways in. Nothing here is counted or scored.", "muted"),
-    el("section", { class: "card", "aria-labelledby": "first-h" }, [
-      el("h2", { id: "first-h", text: COPY.entryTitle }), p(COPY.entryBody),
-      lastLine(L.lastPractisedLabel(L.lastPractisedMs(hist, C.SITTING_ID), now)),
-      btn("Start your first sitting", function () { sittingStop(); }, true)]),
-    el("section", { class: "card", "aria-labelledby": "steady-h" }, [
-      el("h2", { id: "steady-h", text: "Steady practices" }),
-      p("Eight unpaced practices. None of them guides your breath. Choose one, then 1, 3 or 5 minutes where offered (3 is the default).", "muted"),
-      el("ul", { class: "list" }, C.PRACTICES.map(function (pr) {
-        var li = el("li", {}, [el("h3", { text: pr.title })]);
-        if (pr.source) li.appendChild(p(pr.source, "src"));
-        li.appendChild(lastLine(L.lastPractisedLabel(L.lastPractisedMs(hist, pr.id), now)));
-        li.appendChild(btn("Choose " + pr.title, function () { prepare(pr); }));
-        return li;
-      }))]),
-    historyBlock(hist)];
-  show(nodes, "Sadhana home"); focusMain();
-}
-function lastLine(t) { return t ? p(t, "last") : document.createTextNode(""); }
-function outcomeText(o) { return o === "timer" ? "Timer finished" : o === "user" ? "Ended by you" : "Interrupted"; }
-function historyBlock(hist) {
-  var d = el("details", { class: "card" }, [el("summary", { text: "History on this device" })]);
-  if (!hist.length) { d.appendChild(p("Nothing yet.", "muted")); return d; }
-  var ul = el("ul", { class: "list" });
-  hist.slice().reverse().slice(0, 20).forEach(function (r) {
-    var pr = practiceById(r.practiceId), title = r.practiceId === C.SITTING_ID ? COPY.entryTitle : (pr ? pr.title : r.practiceId);
-    var when = new Date(r.startedAt).toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
-    var s = r.activeSeconds, len = Math.floor(s / 60) + " min " + (s % 60) + " s";
-    ul.appendChild(el("li", { text: when + " · " + title + " · " + len + " · " + outcomeText(r.outcome) + (L.countsAsPractised(r) ? "" : " · saved, not counted as practised (under 90 s or interrupted)") }));
-  });
-  d.appendChild(ul); return d;
-}
-
-/* ---------- Steady practice: prepare ---------- */
-function safeChip(onChange) {
-  var cb = el("input", { type: "checkbox", id: "safe" });
-  cb.addEventListener("change", function () { onChange(cb.checked); });
-  return el("label", { class: "opt", for: "safe" }, [cb, COPY.safeChip]);
-}
-function prepare(pr) {
-  var chosen = pr.defaultSeconds;
-  var start = btn("Begin", function () { startSession(pr, chosen, false); }, true, true);
-  var group = el("fieldset", {}, [el("legend", { text: "How long?" })]);
-  pr.allowed.forEach(function (sec) {
-    var rb = el("input", { type: "radio", name: "dur", id: "d" + sec, value: sec });
-    if (sec === pr.defaultSeconds) rb.checked = true;
-    rb.addEventListener("change", function () { chosen = sec; });
-    group.appendChild(el("label", { class: "opt", for: "d" + sec }, [rb, minLabel(sec)]));
-  });
-  var nodes = [h1(pr.title)];
-  if (pr.source) nodes.push(p(pr.source, "src"));
-  nodes.push(p(COPY.globalGuidance), p(COPY.safeSetting, "muted"), group);
-  if (pr.allowed.indexOf(60) >= 0) nodes.push(p("A 1 minute session is saved but is under the 90 seconds needed to count as practised.", "fine"));
-  if (pr.id === "sound_listen") nodes.push(p("This web version plays no tone. Choose Notice the room, or listen to the sounds already around you.", "fine"));
-  nodes.push(safeChip(function (v) { start.disabled = !v; }), el("div", { class: "row" }, [start, btn("Back", home)]));
-  show(nodes, pr.title + ". Choose a length."); focusMain();
-}
-
-/* ---------- Session engine ---------- */
-function startSession(pr, seconds, sitting) {
-  S = { pr: pr, total: seconds, sitting: sitting, active: 0, last: performance.now(), paused: false, hostPaused: false,
-    startedAt: Date.now(), shown: null, manual: 0, done: false };
-  tick(true); stopTimer(); timerId = setInterval(function () { tick(false); }, 250);
-}
-function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
-function accrue() {
-  var now = performance.now();
-  if (!S.paused) S.active += (now - S.last) / 1000;
-  S.last = now;
-}
-function currentKey() {
-  var e = S.active;
-  if (S.sitting) {
-    var order = ["settle", "scan", "stay"], byClock = L.sittingStepAt(e);
-    return order[Math.max(order.indexOf(byClock), S.manual)];
-  }
-  var ord = S.pr.sleep ? ["arrival", "instruction", "practice"] : ["arrival", "instruction", "practice", "closing"];
-  var clock = L.stageAt(e, S.total, S.pr.sleep);
-  return ord[Math.max(ord.indexOf(clock), S.manual)];
-}
-function tick(first) {
-  if (!S || S.done) return;
-  accrue();
-  if (S.active >= S.total) { finish("timer"); return; }
-  var key = currentKey();
-  if (first || key !== S.shown) { S.shown = key; renderSession(true); }
-  var t = document.getElementById("timer");
-  if (t) t.textContent = L.formatClock(S.total - S.active);
-}
-function label(key) { return key === "arrival" ? "Arrive" : key === "closing" ? "Close" : "Practice"; }
-function renderSession(announce) {
-  var key = S.shown, nodes = [], title, lines = [];
-  if (S.sitting) {
-    var f = COPY[key]; title = f.title; lines = f.lines.slice();
-  } else {
-    title = label(key); lines = [S.pr.stages[key]];
-  }
-  nodes.push(h1(title));
-  if (!S.sitting) nodes.push(p(S.pr.title, "src"));
-  lines.forEach(function (l) { if (l) nodes.push(p(l)); });
-  if (S.sitting && key === "stay") nodes.push(p(COPY.stayOptional, "muted"));
-  nodes.push(el("p", { class: "timer", id: "timer", role: "timer", "aria-label": "Time left" , text: L.formatClock(S.total - S.active) }));
-  if (S.hostPaused) nodes.push(p("Paused when this page went to the background. Nothing was missed.", "fine"));
-  nodes.push(p(COPY.safeSetting, "fine"));
-  nodes.push(el("div", { class: "row" }, [
-    btn(S.paused ? "Resume" : "Pause", togglePause), btn("Skip", skip), btn("End", function () { finish("user"); })]));
-  show(nodes, announce ? title + (lines[0] ? ". " + lines[0] : "") : null);
-  if (announce) focusMain();
-}
-function togglePause() { accrue(); S.paused = !S.paused; S.hostPaused = false; renderSession(false); live.textContent = S.paused ? "Paused" : "Resumed"; }
-function skip() {
-  accrue();
-  var maxIdx = S.sitting ? 2 : (S.pr.sleep ? 2 : 3);
-  var idx = (S.sitting ? ["settle", "scan", "stay"] : (S.pr.sleep ? ["arrival", "instruction", "practice"] : ["arrival", "instruction", "practice", "closing"])).indexOf(S.shown);
-  if (idx >= maxIdx) { finish("user", S.sitting); return; } /* last step: Skip ends the timer, as on Android */
-  S.manual = idx + 1; S.shown = null; tick(true);
-}
-function finish(outcome, toAsk) {
-  if (S.done) return;
-  accrue(); S.done = true; stopTimer();
-  var rec = { id: String(S.startedAt), practiceId: S.pr.id, startedAt: S.startedAt, activeSeconds: Math.floor(S.active),
-    durationSeconds: S.total, outcome: outcome };
-  store.addRecord(rec);
-  if (S.sitting && (outcome === "timer" || toAsk)) sittingAsk(); else endScreen(outcome);
-}
-function endScreen(outcome) {
-  lastEnd = function () { endScreen(outcome); };
-  var title = outcome === "timer" ? COPY.closeTitle : outcome === "interrupted" ? COPY.interruptedTitle : COPY.stoppedTitle;
-  var nodes = [h1(title), p(COPY.endedHelp)];
-  addSankalpEcho(nodes);
-  nodes.push(el("div", { class: "row" }, [btn("Done", home, true)]));
-  show(nodes, title); focusMain();
-}
-function addSankalpEcho(nodes) {
-  var line = store.sankalp();
-  if (!line) return;
-  nodes.push(p(COPY.readyLead, "muted"), el("p", { class: "echo", text: line }),
-    el("div", { class: "row" }, [btn("Clear", function () { store.clearSankalp(); live.textContent = "Cleared"; rerenderEnd(); })]));
-}
-var lastEnd = null;
-function rerenderEnd() { if (lastEnd) lastEnd(); }
-
-/* Interruptions: page hidden pauses (nothing lost); page closing mid-session saves an interrupted row. */
-document.addEventListener("visibilitychange", function () {
-  if (!S || S.done) return;
-  if (document.hidden && !S.paused) { accrue(); S.paused = true; S.hostPaused = true; }
-});
-document.addEventListener("visibilitychange", function () { if (S && !S.done && !document.hidden && S.hostPaused) { S.last = performance.now(); renderSession(false); } });
-window.addEventListener("pagehide", function () {
-  if (S && !S.done && S.active > 0) { accrue(); S.done = true; store.addRecord({ id: String(S.startedAt), practiceId: S.pr.id, startedAt: S.startedAt, activeSeconds: Math.floor(S.active), durationSeconds: S.total, outcome: "interrupted" }); }
-});
-
-/* ---------- First sitting ---------- */
-function sittingStop() {
-  var f = COPY.stop, begin = btn(f.primary, begin1, true, true), skipB = btn("Skip", begin1, false, true);
-  function begin1() { startSession({ id: C.SITTING_ID, title: COPY.entryTitle, sleep: false }, C.SITTING_SECONDS, true); }
-  var nodes = [h1(f.title)];
-  f.lines.forEach(function (l) { nodes.push(p(l)); });
-  nodes.push(p(COPY.safeSetting, "muted"), safeChip(function (v) { begin.disabled = !v; skipB.disabled = !v; }),
-    el("div", { class: "row" }, [begin, skipB, btn(f.endLabel, home)]));
-  show(nodes, f.title); focusMain();
-}
-function sittingAsk() {
-  var input = el("input", { type: "text", id: "line", maxlength: "120", autocomplete: "off", value: store.sankalp() || "" });
-  var count = el("p", { class: "fine", id: "count", "aria-live": "off" });
-  var keep = btn("Keep", function () { if (store.saveSankalp(input.value)) sittingClose(); }, true);
-  function refresh() {
-    var v = L.limitInput(input.value); if (v !== input.value) input.value = v;
-    count.textContent = L.codePoints(v).length + "/" + L.MAX_LINE; keep.disabled = !L.isAcceptable(v);
-  }
-  input.addEventListener("input", refresh);
-  var nodes = [h1(COPY.askTitle), p(COPY.askHelp),
-    el("label", { for: "line", text: COPY.lineHint, class: "fine" }), input, count, p(COPY.linePrivacy, "fine"),
-    el("div", { class: "row" }, [keep,
-      btn("Clear", function () { store.clearSankalp(); input.value = ""; refresh(); input.focus(); }),
-      btn("Skip", sittingClose), btn("End", function () { endScreen("user"); })])];
-  show(nodes, COPY.askTitle); refresh(); input.focus();
-}
-function sittingClose() {
-  lastEnd = sittingClose;
-  var nodes = [h1(COPY.closeTitle)]; addSankalpEcho(nodes);
-  nodes.push(el("div", { class: "row" }, [btn("Done", home, true)]));
-  show(nodes, COPY.closeTitle); focusMain();
-}
-/* ---------- Data ---------- */
-function dataControls() {
-  var box = document.getElementById("data-controls");
-  function idle() {
-    box.replaceChildren(btn("Delete all my data on this device", function () {
-      box.replaceChildren(p("This removes your history and your Sankalp line from this browser. It cannot be undone."),
-        el("div", { class: "row" }, [el("button", { type: "button", class: "danger", text: "Yes, delete everything", onclick: function () { store.deleteAll(); idle(); live.textContent = "All data deleted"; if (!S) home(); } }),
-          btn("Cancel", idle)]));
-    }));
-  }
-  idle();
-}
-dataControls();
-home();
+(function(){"use strict";const L=SHLogic,C=SHContent,store=new L.Store(localStorage),sync=new SHSync.Client(window.SHANIVAR_CONFIG||{},localStorage),main=document.querySelector("main"),toast=document.querySelector("#toast");let view="home",session=null,timer=null;
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today=()=>new Date().toLocaleDateString("en-CA");
+function say(s){toast.textContent=s;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),2400)}
+function orbit(type,id,source="DEVICE_OBSERVED"){if(store.state.orbit.some(x=>x.id===id))return;const o={id,type,localDate:today(),source};store.state.orbit.push(o);L.queue(store.state,"orbit",id,L.orbitPayload(o))}
+function persist(message){store.save();status();if(message)say(message);if(sync.session)sync.flush(store).then(()=>status())}
+function status(){const p=document.querySelector("#sync-pill"),n=store.state.outbox.length;if(!sync.configured())p.textContent=n?`${n} local`:"Local";else if(!sync.session)p.textContent=n?`${n} on device`:"Not signed in";else p.textContent=store.state.sync.error?"Sync needs attention":n?`${n} pending`:"Synced";document.querySelector("#offline-banner").hidden=navigator.onLine;document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===view))}
+function shell(html,title){main.innerHTML=html;main.focus({preventScroll:true});document.title=(title||"Shanivar")+" · Shanivar";status()}
+function go(v){if(session&&v!=="practice")endPractice("INTERRUPTED");view=v;if(v==="home")home();if(v==="routine")routine();if(v==="sadhana")sadhana();if(v==="records")records();if(v==="settings")settings()}
+function button(label,attrs=""){return `<button ${attrs}>${esc(label)}</button>`}
+function days(name,selected=[0,1,2,3,4,5,6]){return `<div class="days">${L.DAYS.map((d,i)=>`<label><input type="checkbox" name="${name}" value="${i}" ${selected.includes(i)?"checked":""}><span>${d}</span></label>`).join("")}</div>`}
+function home(){const s=store.state,done=L.capabilities(s),next=C.CAPABILITIES.find(x=>!done.has(x[0]))||C.CAPABILITIES[4],up=s.routine.activities.filter(a=>a.enabled).slice(0,3);shell(`<section class="hero"><p class="eyebrow">TODAY · ${esc(new Date().toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long"}))}</p><h1>Return to what you chose.</h1><p>Your record is descriptive. Nothing here becomes a score.</p><div class="hero-actions">${button("Begin a practice",'class="primary" data-go="sadhana"')}${button("Open Routine",'data-go="routine"')}</div></section><div class="grid"><section class="card"><p class="eyebrow">CURRENT INVITATION</p><h2>${esc(next[0])}</h2><p>${esc(next[1])}</p><div class="cap-row">${C.CAPABILITIES.map(c=>`<span class="cap ${done.has(c[0])?"present":""}">${esc(c[0])}</span>`).join("")}</div></section><section class="card"><p class="eyebrow">ROUTINE</p><h2>${s.routine.wakeTime?`Wake ${esc(s.routine.wakeTime)}`:"Shape the day"}</h2>${up.length?`<ul class="plain">${up.map(a=>`<li><strong>${esc(a.startTime)}</strong> ${esc(a.title)}</li>`).join("")}</ul>`:"<p>Add anchors, chosen activities, and protection windows.</p>"}${button("Edit Routine",'data-go="routine"')}</section></div><section class="orbit-card"><div class="orbit ${s.routine.wakeTime||s.routine.activities.length?"ring":""}">${store.state.orbit.slice(0,4).map((_,i)=>`<i style="--i:${i}"></i>`).join("")}</div><div><p class="eyebrow">LIVING ORBIT</p><h2>${s.orbit.length?"Your record has begun":"Quiet until something happens"}</h2><p>${s.orbit.length} factual ${s.orbit.length===1?"event":"events"}; missed days remove nothing.</p></div></section>`,"Today")}
+function routine(){const r=store.state.routine;shell(`<header class="page-head"><p class="eyebrow">ROUTINE</p><h1>Give the day a shape.</h1><p>Times and boundaries stay useful in the browser. Device alarms and app blocking require the Android app.</p></header><form id="routine-form"><section class="card"><h2>Daily anchors</h2><div class="fields two"><label>Wake time<input type="time" name="wake" value="${esc(r.wakeTime)}"></label><label>Intended sleep<input type="time" name="sleep" value="${esc(r.intendedSleepTime)}"></label></div></section><section class="card"><div class="section-title"><div><p class="eyebrow">CHOSEN ACTIONS</p><h2>Personal activities</h2></div>${button("Add activity",'type="button" data-add-activity')}</div><div id="activities">${r.activities.map(activityRow).join("")||'<p class="empty">No activities yet.</p>'}</div></section><section class="card"><div class="section-title"><div><p class="eyebrow">BOUNDARIES</p><h2>Protection windows</h2></div>${button("Add window",'type="button" data-add-window')}</div><p class="browser-note">The web app saves and syncs desired windows. Browsers cannot block other installed apps.</p><div id="windows">${r.windows.map(windowRow).join("")||'<p class="empty">No protection windows yet.</p>'}</div></section><div class="sticky-actions"><span id="form-error" class="error"></span>${button("Save Routine",'class="primary" type="submit"')}</div></form>`,"Routine");bindRoutine()}
+function activityRow(a){return `<fieldset class="editor" data-activity="${esc(a.id)}"><legend>Activity</legend><div class="fields three"><label>Name<input name="title" value="${esc(a.title)}" maxlength="60" required></label><label>Starts<input name="start" type="time" value="${esc(a.startTime)}" required></label><label>Minutes<input name="duration" type="number" min="1" max="1440" value="${a.durationMinutes}" required></label></div>${days("ad-"+a.id,a.days)}<label class="check"><input type="checkbox" name="enabled" ${a.enabled?"checked":""}> Included</label>${button("Remove",'type="button" class="text danger" data-remove')}</fieldset>`}
+function windowRow(w){return `<fieldset class="editor" data-window="${esc(w.id)}"><legend>Protection window</legend><div class="fields two"><label>Starts<input name="start" type="time" value="${esc(w.startTime)}" required></label><label>Ends<input name="end" type="time" value="${esc(w.endTime)}" required></label></div>${days("wd-"+w.id,w.days)}<label class="check"><input type="checkbox" name="enabled" ${w.enabled?"checked":""}> Desired enabled</label>${button("Remove",'type="button" class="text danger" data-remove')}</fieldset>`}
+function bindRoutine(){const form=document.querySelector("#routine-form"),value=(node,name)=>node.querySelector(`[name="${name}"]`);document.querySelector("[data-add-activity]").onclick=()=>{store.state.routine.activities.push({id:L.uid(),title:"",startTime:"09:00",durationMinutes:30,days:[0,1,2,3,4,5,6],enabled:true});store.save();routine()};document.querySelector("[data-add-window]").onclick=()=>{store.state.routine.windows.push({id:L.uid(),startTime:"09:00",endTime:"10:00",days:[1,2,3,4,5],enabled:true});store.save();routine()};document.querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{const e=b.closest("fieldset");if(e.dataset.activity)store.state.routine.activities=store.state.routine.activities.filter(x=>x.id!==e.dataset.activity);else{store.state.routine.windows=store.state.routine.windows.filter(x=>x.id!==e.dataset.window);L.queue(store.state,"window",e.dataset.window,{id:e.dataset.window,deleted:true},"DELETE")}store.save();routine()});form.onsubmit=e=>{e.preventDefault();const activities=[...form.querySelectorAll("[data-activity]")].map(x=>({id:x.dataset.activity,title:value(x,"title").value.trim(),startTime:value(x,"start").value,durationMinutes:Number(value(x,"duration").value),days:[...x.querySelectorAll('.days input:checked')].map(i=>Number(i.value)),enabled:value(x,"enabled").checked})),windows=[...form.querySelectorAll("[data-window]")].map(x=>({id:x.dataset.window,startTime:value(x,"start").value,endTime:value(x,"end").value,days:[...x.querySelectorAll('.days input:checked')].map(i=>Number(i.value)),enabled:value(x,"enabled").checked}));const next={wakeTime:value(form,"wake").value,intendedSleepTime:value(form,"sleep").value,activities,windows},err=L.validateRoutine(next);if(err){document.querySelector("#form-error").textContent=err;return}store.state.routine=next;L.queue(store.state,"routine","current",L.routinePayload(next));windows.forEach(w=>L.queue(store.state,"window",w.id,{id:w.id,start_time:w.startTime,end_time:w.endTime,start_days:w.days,enabled:w.enabled,packages:[]}));orbit("ROUTINE_CREATED","routine-current","CONFIGURED");if(windows.some(w=>w.enabled))orbit("BOUNDARY_SAVED","boundary-first","CONFIGURED");persist("Routine saved on this device");home()}}
+function sadhana(){shell(`<header class="page-head"><p class="eyebrow">SADHANA</p><h1>Practise without a score.</h1><p>Choose a bounded practice. Pause, change anchor, or end at any time.</p></header><div class="practice-grid">${C.PRACTICES.map(p=>`<article class="practice-card"><span class="cap">${p.capability}</span><h2>${esc(p.title)}</h2><p>${esc(p.effort)}</p><p class="muted">${esc(p.boundary)}</p>${button("Choose",`data-practice="${p.id}"`)}</article>`).join("")}</div>`,"Sadhana");document.querySelectorAll("[data-practice]").forEach(b=>b.onclick=()=>prepare(b.dataset.practice))}
+function prepare(id){const p=C.PRACTICES.find(x=>x.id===id);shell(`<button class="back" data-go="sadhana">← Practices</button><section class="practice-focus"><p class="eyebrow">${esc(p.capability)} · ${esc(p.source)}</p><h1>${esc(p.title)}</h1><p class="lead">${esc(p.prompt)}</p><p>${esc(p.boundary)}</p><form id="practice-form"><fieldset><legend>Choose a length</legend><div class="choice-row">${p.minutes.map((m,i)=>`<label><input type="radio" name="minutes" value="${m}" ${i===0?"checked":""}><span>${m} min</span></label>`).join("")}</div></fieldset><label class="safety"><input type="checkbox" name="safe" required><span>I am somewhere safe and still. I can stop whenever I choose.</span></label>${button("Begin",'class="primary wide" type="submit"')}</form></section>`,p.title);document.querySelector("#practice-form").onsubmit=e=>{e.preventDefault();startPractice(p,Number(e.target.minutes.value))}}
+function startPractice(p,minutes){const now=Date.now();session={p,total:minutes*60000,active:0,last:performance.now(),running:true,startedAt:now,id:L.uid(),anchor:p.id==="room"?"ROOM":"BREATH"};view="practice";renderPractice();timer=setInterval(tick,250)}
+function accrue(){if(!session)return;const now=performance.now();if(session.running)session.active+=now-session.last;session.last=now}
+function tick(){accrue();if(session.active>=session.total){session.active=session.total;endPractice("COMPLETED");return}const c=document.querySelector("#clock");if(c)c.textContent=L.clock(session.total-session.active)}
+function renderPractice(){shell(`<section class="session"><p class="eyebrow">${esc(session.p.title)}</p><div id="clock" class="clock" role="timer">${L.clock(session.total-session.active)}</div><h1>${session.running?"Stay with the practice.":"Paused."}</h1><p class="lead">${esc(session.p.prompt)}</p><p>Current anchor: <strong>${session.anchor==="BREATH"?"natural breath":"the room"}</strong></p><div class="session-actions">${button(session.running?"Pause":"Resume",'data-pause')}${button("Change anchor",'data-anchor')}${button("End",'class="danger" data-end')}</div></section>`,"Practice");document.querySelector("[data-pause]").onclick=()=>{accrue();session.running=!session.running;renderPractice()};document.querySelector("[data-anchor]").onclick=()=>{accrue();session.running=false;session.anchor=session.anchor==="BREATH"?"ROOM":"BREATH";renderPractice()};document.querySelector("[data-end]").onclick=()=>endPractice("ENDED")}
+function endPractice(outcome){if(!session)return;accrue();clearInterval(timer);const a={id:session.id,practiceId:session.p.id,contentVersion:C.VERSION,startedAt:session.startedAt,zoneId:Intl.DateTimeFormat().resolvedOptions().timeZone,intendedSeconds:session.total/1000,activeMs:Math.min(Math.round(session.active),session.total),outcome,endedAt:Date.now()};store.state.attempts.push(a);L.queue(store.state,"attempt",a.id,L.attemptPayload(a));orbit("PRACTICE_ATTEMPTED","sadhana-"+a.id);session=null;persist();view="records";records(outcome==="COMPLETED"?"Practice complete":"Practice ended")}
+function records(note){const s=store.state,mins=Math.round(s.attempts.reduce((n,a)=>n+a.activeMs,0)/60000);shell(`<header class="page-head"><p class="eyebrow">RECORD</p><h1>What happened, plainly.</h1><p>${note?esc(note)+". ":""}Attempts and independent practice remain separate.</p></header><div class="stat-grid"><div><strong>${s.attempts.length}</strong><span>attempts</span></div><div><strong>${mins}</strong><span>active minutes</span></div><div><strong>${s.reports.length}</strong><span>independent records</span></div></div><section class="card"><div class="section-title"><div><p class="eyebrow">OWN PRACTICE</p><h2>Add an independent record</h2></div></div><form id="report-form" class="fields three"><label>Date<input name="date" type="date" value="${today()}" required></label><label>Intended minutes<input name="intended" type="number" min="1" max="180"></label><label>Actual minutes<input name="actual" type="number" min="1" max="180"></label>${button("Save record",'class="primary" type="submit"')}</form></section><section class="card"><h2>Recent practice</h2>${s.attempts.length?`<ul class="timeline">${s.attempts.slice().reverse().slice(0,20).map(a=>`<li><time>${esc(new Date(a.startedAt).toLocaleDateString())}</time><div><strong>${esc(C.PRACTICES.find(p=>p.id===a.practiceId)?.title||a.practiceId)}</strong><span>${Math.round(a.activeMs/1000)} seconds · ${a.outcome.toLowerCase()}</span></div></li>`).join("")}</ul>`:'<p class="empty">No practice recorded yet.</p>'}</section>`,"Record");document.querySelector("#report-form").onsubmit=e=>{e.preventDefault();const r={id:L.uid(),localDate:e.target.date.value,intendedMinutes:Number(e.target.intended.value)||null,actualMinutes:Number(e.target.actual.value)||null,practiceId:null};if(!r.intendedMinutes&&!r.actualMinutes){say("Add intended or actual minutes");return}s.reports.push(r);L.queue(s,"self_report",r.id,L.reportPayload(r));orbit("INDEPENDENT_RECORD","own-"+r.id,"SELF_REPORTED");persist("Independent practice saved");records()}}
+function settings(){const configured=sync.configured(),signed=!!sync.session,s=store.state;shell(`<header class="page-head"><p class="eyebrow">SETTINGS</p><h1>Account and this device.</h1></header><section class="card"><h2>Cloud sync</h2>${!configured?'<p class="callout">This build is ready for Supabase, but no live project URL and public anon key are configured. All features continue locally.</p>':signed?`<p>Signed in. ${s.outbox.length?s.outbox.length+" change(s) are waiting.":"This device is up to date."}</p>${s.sync.error?`<p class="error">${esc(s.sync.error)}</p>`:""}${button("Sync now",'class="primary" data-sync')}${button("Sign out",'data-signout')}`:`<p>Choose guest for a private Supabase account, or continue with an existing account.</p><div class="row">${button("Continue as guest",'class="primary" data-guest')}${button("Continue with Google",'data-google')}</div><form id="email-form" class="inline-form"><label>Email<input type="email" name="email" autocomplete="email" required></label>${button("Email me a sign-in code",'type="submit"')}</form>`}</section><section class="card"><h2>Guidance</h2><label>Instruction detail<select id="guidance"><option value="FULL">Full</option><option value="REDUCED">Reduced</option><option value="MINIMAL">Minimal</option></select></label><p class="muted">Changing this is your choice. It does not unlock or remove practice.</p></section><section class="card"><h2>Browser capabilities</h2><ul><li>Routine planning, practice timing, records, offline use and cloud sync are supported.</li><li>Installed-app blocking, exact device alarms and background enforcement require the Android app.</li><li>Browser notifications depend on browser and operating-system permission and are not used as enforcement evidence.</li></ul></section><section class="card danger-zone"><h2>Data on this device</h2><p>Delete the local Routine, practice record, queue and account session from this browser.</p>${button("Delete local data",'class="danger" data-delete')}</section>`,"Settings");const g=document.querySelector("#guidance");g.value=s.settings.guidance;g.onchange=()=>{s.settings.guidance=g.value;persist("Guidance preference saved")};document.querySelector("[data-sync]")?.addEventListener("click",async()=>{await sync.flush(store);settings();say(store.state.sync.error?"Sync needs attention":"Sync complete")});document.querySelector("[data-signout]")?.addEventListener("click",()=>{sync.signOut();settings()});document.querySelector("[data-guest]")?.addEventListener("click",async()=>{try{await sync.anonymous();await sync.flush(store);settings();say("Guest account ready")}catch(e){say(e.message)}});document.querySelector("[data-google]")?.addEventListener("click",()=>sync.google());document.querySelector("#email-form")?.addEventListener("submit",async e=>{e.preventDefault();try{await sync.email(e.target.email.value);say("Check your email for the sign-in link")}catch(x){say(x.message)}});document.querySelector("[data-delete]").onclick=()=>{if(confirm("Delete all Shanivar data stored in this browser?")){sync.signOut();store.reset();go("home")}}}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-go],[data-tab]");if(b)go(b.dataset.go||b.dataset.tab)});window.addEventListener("online",()=>{status();sync.flush(store).then(status)});window.addEventListener("offline",status);document.addEventListener("visibilitychange",()=>{if(session&&document.hidden&&session.running){accrue();session.running=false}});window.addEventListener("pagehide",()=>{if(session)endPractice("INTERRUPTED")});if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js");sync.consumeHash();if(!store.state.onboarded){store.state.onboarded=true;orbit("RETURN_DAY","return-"+today());store.save()}else orbit("RETURN_DAY","return-"+today());persist();go("home");
 })();

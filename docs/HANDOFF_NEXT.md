@@ -3,6 +3,12 @@
 Owner: Codex. Task: CONT-001. **Resume branch: `codex/continuity-2026-10-17`**.
 Draft review: https://github.com/BookPress9/shanivar/pull/2 (do not merge until outstanding gates pass).
 
+Web parity review branch: `codex/web-parity-2026-10-17`. Task and evidence:
+[`WEB-001`](../ai_org/collaboration/tasks/WEB-001-web-app-parity.md) and
+[`WEB-001 Codex report`](../ai_org/collaboration/reports/WEB-001-codex.md). The responsive PWA now covers
+Routine, Sadhana, records, Orbit, offline use and the Android Supabase sync contract. Live sync still needs
+an active Shanivar Supabase URL/public anon key, Auth redirect configuration and `put_routine` verification.
+
 ```powershell
 git fetch origin --prune
 git switch codex/continuity-2026-10-17
@@ -34,6 +40,7 @@ so restore individual files after comparison; do not merge it as the latest app.
 
 | Priority | Owner | Action / required evidence |
 |---|---|---|
+| 0 | Codex / Founder | Review WEB-001 on `codex/web-parity-2026-10-17`. Supply the active Shanivar Supabase public client configuration, then verify guest/email/Google auth, RLS sync, offline reconnect and `put_routine`. Run Chrome/Firefox/Safari, iOS standalone and accessibility QA before release. No backend changes are part of WEB-001. |
 | 1 | Codex / Tester | JVM at 848de256: 608 pass, 16 native UI failures, 1 stack-dependent skip. Windows antivirus blocks Robolectric's native DLL; rerun the four UI suites/full suite in a trusted supported test environment. Do not disable protection or weaken tests. Use CONT-001 for lint/APK outcomes. Run pgTAP and sync E2E on a local Supabase stack. |
 | 2 | Backend / Codex | Resolve DEV-54 `d1d482c` versus `a2a9e23` (rebased on DEV-45). Both saved; confirm intended history before integration, then verify payload/schema agreement. Reflection builder exists there but enqueue is not wired. |
 | 3 | Frontend / Codex | Review DEV-89 WIP `93102ab` and current ownership, then integrate and run every breathing-surface safety test. DEV-39 catalogue fixes alone do not clear DEV-89. |
