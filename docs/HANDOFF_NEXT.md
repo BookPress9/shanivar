@@ -1,6 +1,7 @@
 # Continue Shanivar — 17 October 2026
 
 Owner: Codex. Task: CONT-001. **Resume branch: `codex/continuity-2026-10-17`**.
+Draft review: https://github.com/BookPress9/shanivar/pull/2 (do not merge until outstanding gates pass).
 
 ```powershell
 git fetch origin --prune
@@ -12,6 +13,9 @@ git status --short --branch
 For a dirty checkout, preserve it and create a separate worktree from
 `origin/codex/continuity-2026-10-17`. Read AGENTS.md, SHANIVAR_STANCE.md and the task first.
 The original Windows checkout remains untouched, including its untracked wireframes, research and marketing.
+All 37 saved untracked files are also preserved on `backup/windows-local-2026-10-17` at `bd6bb1c4`;
+the [blob manifest](continuity/windows-local-snapshot.json) records the exact snapshot. It uses the older original baseline,
+so restore individual files after comparison; do not merge it as the latest app.
 
 ## Current checkpoint
 
@@ -30,7 +34,7 @@ The original Windows checkout remains untouched, including its untracked wirefra
 
 | Priority | Owner | Action / required evidence |
 |---|---|---|
-| 1 | Codex / Tester | Use CONT-001 report for integrated JVM/lint/APK outcomes. Complete any failed/NOT RUN checks; record tested SHA. Run pgTAP and live sync E2E only on a local Supabase stack. |
+| 1 | Codex / Tester | JVM at 848de256: 608 pass, 16 native UI failures, 1 stack-dependent skip. Windows antivirus blocks Robolectric's native DLL; rerun the four UI suites/full suite in a trusted supported test environment. Do not disable protection or weaken tests. Use CONT-001 for lint/APK outcomes. Run pgTAP and sync E2E on a local Supabase stack. |
 | 2 | Backend / Codex | Resolve DEV-54 `d1d482c` versus `a2a9e23` (rebased on DEV-45). Both saved; confirm intended history before integration, then verify payload/schema agreement. Reflection builder exists there but enqueue is not wired. |
 | 3 | Frontend / Codex | Review DEV-89 WIP `93102ab` and current ownership, then integrate and run every breathing-surface safety test. DEV-39 catalogue fixes alone do not clear DEV-89. |
 | 4 | Codex / Tester | Verify DEV-45/47 together with local Supabase, including cross-user isolation (DEV-79), reset, token loss, offline/reconnect and routine parking. DEV-52 conflict UI / put_routine remain dependencies. |

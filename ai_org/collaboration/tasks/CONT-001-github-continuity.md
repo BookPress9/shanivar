@@ -1,6 +1,6 @@
 # CONT-001 — GitHub continuity and integration checkpoint
 
-- State: `IN_PROGRESS`
+- State: `REVIEW`
 - Owner: Codex
 - Date: 2026-10-17 (Europe/Berlin)
 - Founder input: pull the private repository, assess progress, continue here, keep GitHub current with daily changes and actionable handoffs, and verify connected-system access.
@@ -28,3 +28,11 @@ AGENTS.md; SHANIVAR_STANCE.md; ai_org/collaboration/README.md; docs/blueprint/{P
 3. Publish a concise resume page, ownership/next-action queue, daily session protocol and access matrix with concrete evidence.
 4. Implement and test daily GitHub status capture without staging arbitrary code, secrets, rewriting agent refs or touching main. Verify any configured local trigger and run history before describing it as running.
 5. Push the review branch and verify its remote SHA. No main merge, production deploy, cloud migration, messages, stance acceptance or release.
+
+## Checkpoint outcome
+
+Review branch and original-file archive published. Daily Windows job verified successful. Debug APK built;
+lint has zero errors / 16 warnings. JVM: 608 pass, 16 native UI failures because Windows blocks the
+Robolectric graphics DLL, one live-stack skip. The content newline mismatch was fixed without changing prose.
+Remain in REVIEW until native UI and local Supabase/isolation checks can be completed; no main merge or release.
+Full evidence and next owners: `reports/CONT-001-codex.md` and `docs/HANDOFF_NEXT.md`.

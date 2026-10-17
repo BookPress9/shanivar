@@ -61,3 +61,8 @@ DEV-54 remains ambiguous: d1d482c versus a2a9e23. The latter includes DEV-45 fol
 Do not select by branch name alone. Restore only required campaign/docs/QA artifacts from box-backup/workspace;
 never copy all secrets/home directories into a working branch. Recreate credentials through owning services.
 APKs are rebuildable; excluded large videos and agent internal state require original storage.
+
+The original Windows checkout's 37 saved untracked files are separately preserved on
+`backup/windows-local-2026-10-17` at `bd6bb1c4`, on the older `92ee655` baseline.
+[Manifest](windows-local-snapshot.json) lists every path/blob. Compare and restore only needed files;
+do not replace newer integrated code with this older archive. Unsaved editor buffers were not inspected.

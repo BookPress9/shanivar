@@ -2,6 +2,10 @@
 
 Checked from this Codex session. Configuration, role files and backups do not establish live access.
 
+Founder explicitly reaffirmed: use only Shanivar-linked apps/resources; never use RoboMQ-linked resources.
+The accessible-resources inventory was the only Atlassian access check. No RoboMQ content was queried or changed;
+the wrong-site connector will not be used for this work.
+
 | System | Verified result | Implication / next action |
 |---|---|---|
 | Windows repository | Read/write; original main at `92ee655` has unrelated untracked work. Git, Node 24, JDK 17 and Android SDK present. | Work isolated in sibling `shanivar-continuity`, branch `codex/continuity-2026-10-17`. Original files preserved. |

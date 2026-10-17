@@ -62,6 +62,11 @@ Added 12 October 2026. The founder's Sadhak and Hybrid Monk definitions are core
 
 ## Daily GitHub handoff
 
+Founder restriction, 17 October 2026: use only apps and resources linked to Shanivar. Never use resources linked
+to the RoboMQ organization. GitHub for this project is `https://github.com/BookPress9/shanivar`;
+Atlassian must be `https://shanivar.atlassian.net`. If a connector exposes only another organization,
+stop using it and record the missing Shanivar connection. Do not inspect that organization's content.
+
 Founder direction, 17 October 2026: keep daily changes, pending items and next actions in private GitHub so another
 person or agent can resume. For assigned work, this supplies ongoing authority to commit and push owned changes
 to task/review branches. It does not authorize main merges, force pushes, production changes, public release,
