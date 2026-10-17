@@ -2,12 +2,12 @@
 
 ## Primary Source
 - **Verse:** Vijñāna-bhairava-tantra, verse 76.
-- **Translation cited:** Christopher Wallis ("Hareesh"), *A Translation of the Vijñāna-bhairava-tantra* (2017, rev. 2018, hareesh.org): "Let the gaze come to rest on a space that is dappled with the light of the sun or a lamp or suchlike; in that very [experience], the nature of one's innate being may manifest."
+- **Translation cited:** Christopher Wallis ("Hareesh"), *A Translation of the Vijñāna-bhairava-tantra* (2017, rev. 2018, hareesh.org).
 - **Cross-checked against:** An independently-phrased rendering of the same verse found via secondary sourcing: "By setting one's gaze on the space that appears variegated from the glow of the Sun or some other light, the essence of one's true Self is revealed" — different translator's wording, same content, confirming the verse's subject and placement in the text.
 - **What the verse says:** Rest the gaze on a patch of light that is broken up or textured — light and shadow mixed together, such as sunlight scattered by moving leaves, rather than a single flat source of light.
 
 ## Essence
-Where Technique 05 (sky gazing) uses total visual blankness to quiet the eyes, this technique uses the opposite: a busy, shifting, but non-demanding pattern of light and shadow. There's nothing to identify or track — no object, no shape holding still long enough to name — just movement and contrast. The attention has something to rest *on* without having anything to *solve*.
+Where Technique 05 (sky gazing) lets the eyes rest on total visual blankness, this technique uses the opposite: a busy, shifting, but non-demanding pattern of light and shadow. There's nothing to identify or track — no object, no shape holding still long enough to name — just movement and contrast. The attention has something to rest *on* without having anything to *solve*.
 
 ## Guided Session Script
 *(Adaptation — modern secular framing. Approximately 4 minutes. Needs a patch of dappled light — sunlight through tree leaves or a patterned blind, light through moving water, or a candle flame's flicker on a nearby wall.)*
@@ -20,9 +20,9 @@ Notice the movement without naming it. You don't need to describe what's happeni
 
 If you catch yourself narrating ("that leaf moved," "that's a bright spot"), that's fine — just let the narration fade and return to watching without commentary.
 
-Stay with this for a few minutes. If your mind drifts entirely away from the light and into unrelated thoughts, gently bring your eyes and attention back to the pattern whenever you notice.
+Stay with this for a while. If your mind drifts entirely away from the light and into unrelated thoughts, gently bring your eyes and attention back to the pattern whenever you notice.
 
-In the last minute, notice whether your overall state feels any different — looser, quieter, more spread out — without needing it to.
+Toward the end, notice whether your overall state feels any different — looser, quieter, more spread out — without needing it to.
 
 When you're ready, look away and blink a few times before continuing your day.
 
