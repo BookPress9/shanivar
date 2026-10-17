@@ -31,27 +31,46 @@ class AppSyncTest {
 
     @Test fun disabledGuestResultIsDisabled() = runBlocking { assertEquals(GuestResult.Disabled, DisabledSync.ensureGuest()) }
 
-    @Test fun appStartWithNoSessionCallsEnsureGuestOnceAndSchedulesPeriodic() {
+    @Test fun appStartWithNoSessionNeverSignsIn() {
         val s = enabledSync(engine)
         s.onAppStart()
-        assertEquals(1, engine.session.ensureGuestCalls); assertEquals(1, engine.scheduler.periodic)
-        assertTrue(s.hasSession)
-        s.onAppStart() // session exists now: no second sign-in
-        assertEquals(1, engine.session.ensureGuestCalls)
+        assertEquals(0, engine.session.ensureGuestCalls); assertFalse(s.hasSession)
+        assertEquals(1, engine.scheduler.periodic) // other start work still runs
     }
 
-    @Test fun appStartWithSessionDoesNotCallEnsureGuest() {
+    @Test fun appStartWithSessionSchedulesAndDoesNotSignIn() {
         engine.session.userId = "existing"
-        enabledSync(engine).onAppStart()
+        val s = enabledSync(engine)
+        s.onAppStart { true }; s.onForeground()
+        assertEquals(0, engine.session.ensureGuestCalls)
+        assertEquals(1, engine.scheduler.periodic); assertEquals(1, engine.scheduler.flushRequests)
+    }
+
+    @Test fun failedGuestStepRetriesAtStartOnlyWhenInitiationIsComplete() {
+        engine.session.result = GuestResult.Offline
+        val s = enabledSync(engine)
+        s.onGuestChosen(); assertEquals(1, engine.session.ensureGuestCalls); assertFalse(s.hasSession)
+        engine.session.result = GuestResult.Ok("g2")
+        s.onAppStart { false } // Initiation not complete: continue locally, no sign-in
+        assertEquals(1, engine.session.ensureGuestCalls)
+        s.onAppStart { true } // completed as a guest on an earlier run: retry
+        assertEquals(2, engine.session.ensureGuestCalls); assertTrue(s.hasSession)
+        s.onAppStart { true } // session now exists: nothing more
+        assertEquals(2, engine.session.ensureGuestCalls)
+    }
+
+    @Test fun throwingRetryCheckNeverSignsInOrThrows() {
+        enabledSync(engine).onAppStart { error("draft unreadable") }
         assertEquals(0, engine.session.ensureGuestCalls)
     }
 
-    @Test fun offlineGuestRetriesAtNextStartAndNeverThrows() {
-        engine.session.result = GuestResult.Offline
-        val s = enabledSync(engine)
-        s.onAppStart(); assertFalse(s.hasSession)
-        engine.session.result = GuestResult.Ok("g2")
-        s.onAppStart(); assertEquals(2, engine.session.ensureGuestCalls); assertTrue(s.hasSession)
+    @Test fun guestRetryRuleNeedsCompleteInitiationAsGuest() {
+        val done = OnboardingDraft(checkpoint = InitiationCheckpoint.COMPLETE, identityMode = IdentityMode.GUEST)
+        assertTrue(InitiationGuestRetry.allowed(done))
+        assertFalse(InitiationGuestRetry.allowed(done.copy(checkpoint = InitiationCheckpoint.FOUNDATION)))
+        assertFalse(InitiationGuestRetry.allowed(done.copy(identityMode = IdentityMode.GOOGLE)))
+        assertFalse(InitiationGuestRetry.allowed(OnboardingDraft()))
+        assertFalse(InitiationGuestRetry.allowed(java.io.File("/nonexistent/initiation/draft.properties")))
     }
 
     @Test fun enqueueTriggersRequestFlush() {
@@ -73,7 +92,7 @@ class AppSyncTest {
     }
 
     @Test fun signOutClearsSessionThroughEngine() = runBlocking {
-        val s = enabledSync(engine); s.onAppStart(); assertTrue(s.hasSession)
+        val s = enabledSync(engine); s.onGuestChosen(); assertTrue(s.hasSession)
         s.signOut()
         assertEquals(1, engine.session.signOutCalls); assertFalse(s.hasSession)
     }

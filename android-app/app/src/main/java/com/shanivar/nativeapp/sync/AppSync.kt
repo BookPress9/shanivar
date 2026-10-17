@@ -23,15 +23,20 @@ class AppSync internal constructor(
     val status: SyncStatusSource? get() = if (enabled) engine.status else null
     val hasSession: Boolean get() = enabled && engine.session.userId != null
 
-    /** App start: periodic flush, and a silent guest sign-in whenever there is no session (PM decision 3). */
-    fun onAppStart() {
+    /**
+     * App start: periodic flush. Never a first sign-in (AC2: the guest step in Initiation does that).
+     * The only sign-in here is a retry of an earlier failed guest step: [guestRetryAllowed] must say
+     * Initiation is complete as a guest. It is evaluated off the main thread, and only when there is
+     * no session.
+     */
+    fun onAppStart(guestRetryAllowed: () -> Boolean = { false }) {
         if (!enabled) return
         runCatching { engine.scheduler.schedulePeriodic() }
-        requestGuest()
+        requestGuest(guestRetryAllowed)
     }
 
-    /** The person left Proposition as a guest (PM decision 2). Never blocks Initiation. */
-    fun onGuestChosen() = requestGuest()
+    /** The person left Proposition as a guest (the Initiation guest step). Never blocks Initiation. */
+    fun onGuestChosen() = requestGuest { true }
 
     /** App foreground: DEV-45 `flushNow()` (resets backoff, flushes now); plain requestFlush if the engine lacks it. */
     fun onForeground() {
@@ -45,6 +50,9 @@ class AppSync internal constructor(
     /** Sign-out hook (AC6): clears tokens; the engine parks the old user's items, never sends them under a new user. */
     suspend fun signOut() { if (enabled) runCatching { engine.session.signOut() } }
 
+    /** Non-suspending [signOut] for UI callers (AccountState.logout); runs on [scope], never the main thread. */
+    fun requestSignOut() { if (enabled) scope.launch { signOut() } }
+
     /** Reset / wipe this device (AC6): DEV-45 `reset()` (cancel work, clear tokens, drop queue); else sign-out. */
     suspend fun reset() {
         if (!enabled) return
@@ -54,11 +62,13 @@ class AppSync internal constructor(
     /** Diagnostics only: the engine lost its refresh token (contract Q3). Null when unknown. */
     val sessionLost: Boolean? get() = if (enabled) Dev45Bridge.flag(engine, "getSessionLost") else null
 
-    private fun requestGuest() {
+    private fun requestGuest(allowed: () -> Boolean) {
         if (!enabled || engine.session.userId != null) return
         if (!guestInFlight.compareAndSet(false, true)) return
         scope.launch {
-            try { runCatching { engine.session.ensureGuest() } } finally { guestInFlight.set(false) }
+            try {
+                if (runCatching(allowed).getOrDefault(false)) runCatching { engine.session.ensureGuest() }
+            } finally { guestInFlight.set(false) }
         }
     }
 

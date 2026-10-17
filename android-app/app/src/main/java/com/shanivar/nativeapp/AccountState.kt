@@ -10,7 +10,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /** Survives activity recreation; logout invalidates pending personal-data responses. */
-class AccountState : ViewModel() {
+class AccountState(
+    /** DEV-47 AC6: process sync; logout signs the sync session out. */
+    private val sync: () -> com.shanivar.nativeapp.sync.AppSync = { com.shanivar.nativeapp.sync.AppSync.current },
+) : ViewModel() {
     private var savedSession: ReflectionStore? = null
     private var restored = false
     /** Separate encrypted file/key from reflection content; never persist passwords. */
@@ -52,6 +55,9 @@ class AccountState : ViewModel() {
         savedSession?.clear()
         account = null
         ShanivarSession.api = null
+        // DEV-47 AC6: logout clears the sync session (signOut), not a reset: it keeps the person's local
+        // records, and the engine keeps queued items stamped to this user so none go out under a new one.
+        runCatching { sync().requestSignOut() }
     }
     private fun invalidate() {
         revision++

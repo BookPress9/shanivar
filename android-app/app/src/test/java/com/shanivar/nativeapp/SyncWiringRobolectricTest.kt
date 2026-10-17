@@ -40,6 +40,8 @@ class SyncWiringRobolectricTest {
         // onCreate built the one AppSync from the factory and ran the start path (periodic is synchronous;
         // ensureGuest is dispatched to IO, covered inline by AppSyncTest.appStartWithNoSession...).
         assertEquals(1, FakeEngineApplication.ENGINE.scheduler.periodic)
+        Thread.sleep(300) // the retry check runs on IO; no Initiation draft here, so no sign-in
+        assertEquals(0, FakeEngineApplication.ENGINE.session.ensureGuestCalls)
         // The foreground hook is registered and requests a flush.
         val before = FakeEngineApplication.ENGINE.scheduler.flushRequests
         FakeEngineApplication.FOREGROUND!!.invoke()

@@ -3,6 +3,7 @@ package com.shanivar.nativeapp
 import android.app.Application
 import android.app.Activity
 import android.os.Bundle
+import java.io.File
 import com.shanivar.nativeapp.sync.AppSync
 import com.shanivar.nativeapp.sync.SyncEngineFactory
 import com.shanivar.nativeapp.sync.Dev45Bridge
@@ -26,7 +27,7 @@ open class ShanivarApplication : Application() {
         AppSync.install(sync)
         if (!sync.enabled) return
         watchForeground(sync::onForeground)
-        sync.onAppStart()
+        sync.onAppStart { InitiationGuestRetry.allowed(File(filesDir, InitiationGuestRetry.DRAFT_PATH)) }
     }
 
     /**
@@ -48,4 +49,17 @@ internal class ForegroundCounter(private val onForeground: () -> Unit) : Applica
     override fun onActivityPaused(activity: Activity) {}
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
     override fun onActivityDestroyed(activity: Activity) {}
+}
+
+/**
+ * AC2 retry rule: an app-start guest sign-in only retries an earlier guest step, i.e. only when the
+ * Initiation draft says it is complete and the person chose "continue on this device".
+ */
+object InitiationGuestRetry {
+    /** Same file InitiationApp's controller uses. */
+    const val DRAFT_PATH = "initiation/draft.properties"
+    fun allowed(draft: OnboardingDraft): Boolean =
+        draft.checkpoint == InitiationCheckpoint.COMPLETE && draft.identityMode == IdentityMode.GUEST
+    fun allowed(draftFile: File): Boolean =
+        runCatching { allowed(OnboardingDraftRepository(FileDraftStore(draftFile)).draft) }.getOrDefault(false)
 }
