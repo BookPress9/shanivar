@@ -93,7 +93,8 @@ class SadhanaController(
         }
         runCatching { initiationAttempt() }.getOrNull()?.let { InitiationImport.toSadhana(it, clock.zone()) }
             ?.takeIf { a -> recordState.attempts.none { it.id == a.id } }
-            ?.let { recordState = recordState.withAttempt(it) }
+            ?.let { a -> recordState = recordState.withAttempt(a)
+                if (recordState.attempts.any { it.id == a.id }) outbox?.enqueue("attempt", a.id, SyncPayloads.attempt(a)) }
         runCatching { focusLock?.release() } // never left on after process death
         uiState = ui0.copy(view = if (ui0.view == SadhanaView.PLAYER) SadhanaView.HOME else ui0.view, message = null, stationary = false)
         persist(null)
@@ -172,14 +173,24 @@ class SadhanaController(
     fun setOwnMinutes(m: Int) = set(ui.copy(ownMinutes = m))
     /** "I'll practise now · hide guidance": chooses minimal guidance; records nothing (nothing happened yet). */
     fun leaveToPractise() { recordState = record.setGuidance(GuidanceDetail.MINIMAL); set(ui.copy(view = SadhanaView.HOME, message = null)) }
-    fun recordOwn() { recordState = record.addIndependent(clock.today(), ui.ownMinutes); set(ui.copy(view = SadhanaView.RECORD, message = null)) }
+    fun recordOwn() {
+        recordState = record.addIndependent(clock.today(), ui.ownMinutes)
+        queueOwn(record.independent.last().id)
+        set(ui.copy(view = SadhanaView.RECORD, message = null))
+    }
+    private fun queueOwn(id: String) { record.independent.firstOrNull { it.id == id }?.let { outbox?.enqueue("self_report", it.id, SyncPayloads.selfReport(it)) } }
     /** B7: edit actual minutes of a self-report (1..180). Stays a self-report, never app-observed. */
     fun adjustOwnActual(id: String, delta: Int) {
         val o = record.independent.firstOrNull { it.id == id } ?: return
         val now = (o.actualMinutes ?: o.intendedMinutes ?: 0) + delta
-        recordState = record.editIndependent(id, now.coerceIn(1, 180)); set(ui)
+        recordState = record.editIndependent(id, now.coerceIn(1, 180)); queueOwn(id); set(ui)
     }
-    fun deleteOwn(id: String) { recordState = record.deleteIndependent(id); set(ui) }
+    fun deleteOwn(id: String) {
+        if (record.independent.none { it.id == id }) return
+        recordState = record.deleteIndependent(id)
+        outbox?.enqueue("self_report", id, SyncPayloads.tombstone(id))
+        set(ui)
+    }
     fun fewerPrompts(on: Boolean) { recordState = record.setGuidance(if (on) GuidanceDetail.MINIMAL else GuidanceDetail.FULL); set(ui) }
     fun inspectSource(text: String? = null) = set(ui.copy(message = text ?: "The source reader is not available yet. No unreviewed text is shown."))
 

@@ -22,6 +22,11 @@ object SyncPayloads {
     private fun q(s: String?) = if (s == null) "null" else "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
     private fun ts(ms: Long?) = q(ms?.let { Instant.ofEpochMilli(it).toString() })
     fun attempt(a: SadhanaAttempt) = """{"id":${q(a.id)},"practice_id":${q(a.practiceId)},"content_version":${q(a.contentVersion)},"started_at":${ts(a.startedAtUtc)},"zone_id":${q(a.zoneId)},"intended_seconds":${a.intendedSeconds},"active_ms":${a.activeMillis},"outcome":${q(a.outcome.name)},"ended_at":${ts(a.endedAtUtc)}}"""
+    /** DEV-38: a deleted row, queued under the same kind:id key as its upsert. */
+    fun tombstone(id: String) = """{"id":${q(id)},"deleted":true}"""
+    fun isTombstone(payload: String) = payload.startsWith("{\"id\":") && payload.endsWith(",\"deleted\":true}")
+    /** DEV-38: routine_plans row. One plan per user (id "current"); plan is the local RoutinePlanCodec JSON. */
+    fun routine(plan: RoutinePlanV1) = """{"id":"current","schema_version":${RoutinePlanV1.SCHEMA_VERSION},"plan":${RoutinePlanCodec.encode(plan)}}"""
     fun selfReport(r: IndependentPracticeRecord) = """{"id":${q(r.id)},"local_date":${q(r.localDate.toString())},"intended_minutes":${r.intendedMinutes ?: "null"},"actual_minutes":${r.actualMinutes ?: "null"},"practice_id":${q(r.practiceId)}}"""
 }
 
@@ -57,7 +62,13 @@ class SupabaseClient(private val baseUrl: String, private val anonKey: String) {
     fun upsert(table: String, json: String): Boolean = accessToken != null &&
         call("POST", "/rest/v1/$table?on_conflict=user_id,id", json, mapOf("Prefer" to "resolution=merge-duplicates,return=minimal")).first in 200..299
 
+    /** DEV-38: tombstone delivery. RLS own_delete limits it to the caller's rows; deleting a missing row is a success. */
+    fun delete(table: String, id: String): Boolean = accessToken != null &&
+        call("DELETE", "/rest/v1/$table?id=eq." + java.net.URLEncoder.encode(id, "UTF-8"), null, mapOf("Prefer" to "return=minimal")).first in 200..299
+
     fun select(table: String, query: String = "select=*"): Pair<Int, String> = call("GET", "/rest/v1/$table?$query", null)
 
-    fun sender() = SyncSender { item -> SupabaseTables.forKind(item.kind)?.let { upsert(it, item.payload) } ?: false }
+    fun sender() = SyncSender { item ->
+        SupabaseTables.forKind(item.kind)?.let { if (SyncPayloads.isTombstone(item.payload)) delete(it, item.id) else upsert(it, item.payload) } ?: false
+    }
 }

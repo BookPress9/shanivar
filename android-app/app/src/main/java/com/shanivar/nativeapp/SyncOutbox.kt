@@ -6,6 +6,11 @@ import java.util.Properties
  * B3: local-first sync outbox. Attempts, self-reports and routine changes are queued on device with an
  * idempotency key (kind:id); re-enqueueing the same key replaces the payload. Nothing is sent until a
  * real [SyncSender] exists (DEV-25: backend not built yet). No network here.
+ *
+ * DEV-38 deletes: a delete re-enqueues the same key with a tombstone payload ([SyncPayloads.tombstone],
+ * `{"id":..,"deleted":true}`), so it supersedes any still-pending upsert of that row and the sender
+ * issues a delete instead of an upsert. Every writer in the process must share one instance per file
+ * ([AppSyncOutbox]); two instances over the same file would overwrite each other's entries.
  */
 data class OutboxItem(val kind: String, val id: String, val payload: String) { val key get() = "$kind:$id" }
 
@@ -25,15 +30,15 @@ class SyncOutbox(private val store: DraftStore) {
         }
     }
 
-    val pending: List<OutboxItem> get() = items.values.toList()
+    val pending: List<OutboxItem> @Synchronized get() = items.values.toList()
 
-    fun enqueue(kind: String, id: String, payload: String) {
+    @Synchronized fun enqueue(kind: String, id: String, payload: String) {
         val item = OutboxItem(kind, id, payload)
         items.remove(item.key); items[item.key] = item; save()
     }
 
     /** Sends in order; stops at the first failure so ordering is kept. Returns the count acknowledged. */
-    fun drain(sender: SyncSender): Int {
+    @Synchronized fun drain(sender: SyncSender): Int {
         var sent = 0
         for (item in pending) {
             if (!runCatching { sender.send(item) }.getOrDefault(false)) break
@@ -47,5 +52,13 @@ class SyncOutbox(private val store: DraftStore) {
         p["n"] = items.size.toString()
         items.values.forEachIndexed { i, it -> p["k$i"] = it.key; p["p$i"] = it.payload }
         val w = java.io.StringWriter(); p.store(w, null); store.write(w.toString())
+    }
+}
+
+/** DEV-38: the one process-wide device outbox (Sadhana record and Routine plan changes share it). */
+object AppSyncOutbox {
+    @Volatile private var instance: SyncOutbox? = null
+    fun get(context: android.content.Context): SyncOutbox = instance ?: synchronized(this) {
+        instance ?: SyncOutbox(FileDraftStore(java.io.File(context.applicationContext.filesDir, "sadhana/outbox.properties"))).also { instance = it }
     }
 }

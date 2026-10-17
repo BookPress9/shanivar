@@ -22,7 +22,11 @@ interface RoutinePlanRepository {
     suspend fun save(plan: RoutinePlanV1): Result<Unit>
 }
 
-class SharedPrefsRoutinePlanRepository(context: Context) : RoutinePlanRepository {
+class SharedPrefsRoutinePlanRepository(
+    context: Context,
+    /** DEV-38: every successful save queues the plan for sync. Null = local only. */
+    private val outbox: SyncOutbox? = AppSyncOutbox.get(context),
+) : RoutinePlanRepository {
     private val app = context.applicationContext
     private val prefs = app.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
     private val state = MutableStateFlow(RoutinePlanV1())
@@ -50,6 +54,7 @@ class SharedPrefsRoutinePlanRepository(context: Context) : RoutinePlanRepository
         prefs.edit().putInt(KEY_VERSION, RoutinePlanV1.SCHEMA_VERSION).putString(KEY_PLAN, json).apply()
         healthy = true
         state.value = plan
+        outbox?.enqueue("routine", "current", SyncPayloads.routine(plan))
         // Keep breathing schedule readers coherent until they also switch to RoutinePlan.
         mirrorAnchorsToBreathing(plan)
         return Result.success(Unit)

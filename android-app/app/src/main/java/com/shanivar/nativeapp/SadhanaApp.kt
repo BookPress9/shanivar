@@ -47,7 +47,7 @@ object SystemSadhanaClock : SadhanaClock {
             routineBoundaryLinked = { RoutineBoundaryLink.linked(plans.current()) },
             initiationAttempt = { InitiationUiCodec.decode(FileDraftStore(File(ctx.filesDir, "initiation/ui.properties")).read())?.attempt },
             focusLock = AndroidSadhanaFocusLock(ctx),
-            outbox = SyncOutbox(FileDraftStore(File(ctx.filesDir, "sadhana/outbox.properties"))))
+            outbox = AppSyncOutbox.get(ctx))
     },
     reduceMotionOverride: Boolean? = null,
     onRoutine: (() -> Unit)? = null,
