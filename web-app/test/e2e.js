@@ -5,6 +5,7 @@ const path = require("node:path");
 const { chromium } = require("playwright-core");
 
 const root = path.resolve(__dirname, "..");
+const externalBase = process.env.E2E_BASE_URL;
 const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json" };
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, "http://localhost").pathname;
@@ -16,15 +17,16 @@ const server = http.createServer((req, res) => {
     res.end(body);
   });
 });
+let browser, page;
 
 (async () => {
-  await new Promise(resolve => server.listen(8092, "127.0.0.1", resolve));
-  const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH || "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" });
+  if (!externalBase) await new Promise(resolve => server.listen(8092, "127.0.0.1", resolve));
+  browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH || "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" });
   const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-  const page = await context.newPage();
+  page = await context.newPage();
   const errors = [];
   page.on("pageerror", error => errors.push(error.message));
-  await page.goto("http://127.0.0.1:8092/", { waitUntil: "networkidle" });
+  await page.goto(externalBase || "http://127.0.0.1:8092/", { waitUntil: "networkidle" });
   await page.getByRole("heading", { name: "A place to return." }).waitFor();
   assert.equal(await page.locator("nav.tabbar").isHidden(), true);
   await page.getByRole("button", { name: "Continue" }).click();
@@ -32,7 +34,8 @@ const server = http.createServer((req, res) => {
   await page.locator("#ob-sleep").fill("22:45");
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("heading", { name: "Keep this device connected." }).waitFor();
-  await page.getByRole("button", { name: "Begin locally" }).click();
+  if (process.env.E2E_AUTH === "1") await page.getByRole("button", { name: "Continue as guest" }).click();
+  else await page.getByRole("button", { name: "Begin locally" }).click();
   await page.getByRole("heading", { name: "Return to what you chose." }).waitFor();
   assert.equal(await page.locator("nav.tabbar").isVisible(), true);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true);
@@ -52,6 +55,13 @@ const server = http.createServer((req, res) => {
   await page.getByRole("button", { name: "End" }).click();
   await page.getByRole("heading", { name: "What happened, plainly." }).waitFor();
   assert.match(await page.locator("main").innerText(), /1\s+attempt/);
+  if (process.env.E2E_AUTH === "1") {
+    await page.waitForTimeout(2500);
+    const syncState = await page.evaluate(() => { const state=JSON.parse(localStorage.getItem("shanivar.web.v2")); return {pending:state.outbox.map(item => item.kind),error:state.sync.error}; });
+    console.log("Authenticated sync state:", syncState);
+    const pending = syncState.pending;
+    assert.deepEqual([...new Set(pending)], ["routine"]);
+  }
 
   await page.reload({ waitUntil: "networkidle" });
   await page.getByRole("heading", { name: "Return to what you chose." }).waitFor();
@@ -62,6 +72,6 @@ const server = http.createServer((req, res) => {
   assert.equal(await page.locator("#offline-banner").isVisible(), true);
   assert.deepEqual(errors, []);
   await browser.close();
-  server.close();
+  if (!externalBase) server.close();
   console.log("E2E passed: onboarding, mobile layout, Routine, Sadhana, record, persistence, offline reopen.");
-})().catch(error => { console.error(error); server.close(); process.exitCode = 1; });
+})().catch(async error => { console.error(error); try { console.error("PAGE:", await page?.locator("body").innerText()); } catch (_) {} try { await browser?.close(); } catch (_) {} if (!externalBase) server.close(); process.exitCode = 1; });

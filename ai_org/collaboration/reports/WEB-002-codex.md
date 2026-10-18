@@ -21,13 +21,17 @@
 
 ## Deployment state
 
-- Netlify login ticket `759b682748b21f88093fcfaab8bcdab0` is pending authorization.
-- `app.shanivar.com` has no DNS record.
-- No production deploy or DNS change has occurred yet.
+- Public production site: `https://shanivar-app.netlify.app`, Netlify site id `2661df83-5332-4d2f-940b-c9755dbfa359`.
+- Current deploy: `6ad438a33131079d5e7e6540`.
+- Netlify SSO protection was disabled for this app site so production is publicly reachable.
+- Authenticated Chrome E2E passes against production. Supported attempt and Orbit records leave the outbox; Routine stays queued because `put_routine` is missing.
+- The production Auth callback currently uses the reachable Netlify URL. Google is visibly pending because the provider is disabled.
+- `app.shanivar.com` remains blocked: it has no DNS record and Netlify says the hostname is already reserved on existing site `b3437357-9883-451b-b902-20140f08139a`, which the authorized Book Press account cannot access.
+- The landing login change was pushed to `main` at `531d40d9`, but the live landing site has not auto-deployed that commit.
 
 ## Validation
 
-- `npm test`: 10 passing.
+- `npm test`: 12 passing.
 - `npm run test:e2e`: passing in installed Chrome at 390×844.
 - Production build: 12 static files, configured project reference present, no service-role claim present.
 - Landing-page diff check: clean.

@@ -1,6 +1,6 @@
 # SOP-03 — Web app (app.shanivar.com) deploy
 
-**Purpose:** Publish the static Sadhana web app when the founder decides. **Not deployed; no Netlify site exists** (`web-app/README.md`, "Deploy (later, not done)").
+**Purpose:** Publish and operate the Shanivar web application. A production Netlify site now exists at `https://shanivar-app.netlify.app` (site id `2661df83-5332-4d2f-940b-c9755dbfa359`).
 **Owner:** Founder decides; Web Developer/Codex executes.
 
 ## Preconditions
@@ -11,11 +11,11 @@
 
 ## Steps
 1. Run `node --test test/` and open locally (`python -m http.server 8091`).
-2. Founder approves creating a **separate** Netlify site: base dir `web-app`, publish `.`, no build; `netlify.toml` already sets security headers and CSP `connect-src 'none'`.
+2. Use the separate Netlify site `shanivar-app`; build from `web-app` with `npm run build` and deploy `web-app/dist`.
 3. Deploy with the CLI to that site (`--dir web-app`), draft first, then production on approval.
-4. Add DNS `CNAME app -> <new site>.netlify.app` and set `app.shanivar.com` as the domain; confirm HTTPS.
-5. Verify: no network requests, localStorage works, Delete-all works, internal-test notice shown if still unreviewed.
-6. Record the new site id in this SOP.
+4. Add DNS `CNAME app -> shanivar-app.netlify.app` and set `app.shanivar.com` as the domain; confirm HTTPS. As of 18 October 2026, Netlify reports that hostname is reserved on landing-site id `b3437357-9883-451b-b902-20140f08139a`; use the account owning that site to move the hostname before changing DNS.
+5. Verify guest/email authentication, authenticated record sync, localStorage, offline reopening, Delete-all and browser capability copy. Routine revision sync and tombstone deletion remain pending until their existing Supabase contracts are deployed.
+6. Record each production deploy id in the WEB task report.
 
 ## Approval gates
 Founder: creating the site, DNS change, removing the internal-test notice, announcing it.
