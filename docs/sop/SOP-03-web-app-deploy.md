@@ -1,6 +1,6 @@
 # SOP-03 — Web app (app.shanivar.com) deploy
 
-**Purpose:** Publish and operate the Shanivar web application. A production Netlify site now exists at `https://shanivar-app.netlify.app` (site id `2661df83-5332-4d2f-940b-c9755dbfa359`).
+**Purpose:** Publish and operate the Shanivar web application. The Shanivar-owned production site is `https://shanivar-web-app.netlify.app` (site id `80e33eaa-6ade-4659-9eea-1fedc1e498ea`).
 **Owner:** Founder decides; Web Developer/Codex executes.
 
 ## Preconditions
@@ -11,9 +11,9 @@
 
 ## Steps
 1. Run `node --test test/` and open locally (`python -m http.server 8091`).
-2. Use the separate Netlify site `shanivar-app`; build from `web-app` with `npm run build` and deploy `web-app/dist`.
+2. Use the separate Netlify site `shanivar-web-app`; build from `web-app` with `npm run build` and deploy `web-app/dist`.
 3. Deploy with the CLI to that site (`--dir web-app`), draft first, then production on approval.
-4. Add DNS `CNAME app -> shanivar-app.netlify.app` and set `app.shanivar.com` as the domain; confirm HTTPS. As of 18 October 2026, Netlify reports that hostname is reserved on landing-site id `b3437357-9883-451b-b902-20140f08139a`; use the account owning that site to move the hostname before changing DNS.
+4. Add DNS `CNAME app -> shanivar-web-app.netlify.app` and confirm HTTPS. The custom domain is already assigned in Netlify; Hostinger DNS is the remaining cutover step as of 18 October 2026.
 5. Verify guest/email authentication, authenticated record sync, localStorage, offline reopening, Delete-all and browser capability copy. Routine revision sync and tombstone deletion remain pending until their existing Supabase contracts are deployed.
 6. Record each production deploy id in the WEB task report.
 
