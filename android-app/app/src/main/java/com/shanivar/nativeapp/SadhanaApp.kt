@@ -47,7 +47,7 @@ object SystemSadhanaClock : SadhanaClock {
             routineBoundaryLinked = { RoutineBoundaryLink.linked(plans.current()) },
             initiationAttempt = { InitiationUiCodec.decode(FileDraftStore(File(ctx.filesDir, "initiation/ui.properties")).read())?.attempt },
             focusLock = AndroidSadhanaFocusLock(ctx),
-            outbox = SyncOutbox(FileDraftStore(File(ctx.filesDir, "sadhana/outbox.properties"))))
+            outbox = AppSyncOutbox.get(ctx))
     },
     reduceMotionOverride: Boolean? = null,
     onRoutine: (() -> Unit)? = null,
@@ -55,6 +55,8 @@ object SystemSadhanaClock : SadhanaClock {
     sourcePort: suspend (lane: String) -> String? = { null },
     hydrateDispatcher: kotlinx.coroutines.CoroutineDispatcher = Dispatchers.IO,
     gateFactory: (() -> Boolean) -> SadhanaLoadingGate = { active -> SadhanaLoadingGate(practiceActive = active) },
+    /** DEV-47: process AppSync; the Record view shows its quiet status line only when sync is on. */
+    sync: com.shanivar.nativeapp.sync.AppSync = com.shanivar.nativeapp.sync.AppSync.current,
 ) {
     val context = LocalContext.current
     val reduceMotion = reduceMotionOverride ?: remember { initiationReduceMotion(context) }
@@ -68,7 +70,7 @@ object SystemSadhanaClock : SadhanaClock {
     }
     Box(Modifier.fillMaxSize().background(Sad.Void)) {
         controller?.let { c ->
-            SadhanaContent(c, reduceMotion, onRoutine) { lane ->
+            SadhanaContent(c, reduceMotion, onRoutine, sync) { lane ->
                 scope.launch { gate.run("Opening source context") { sourcePort(lane) }.onSuccess { c.inspectSource(it) } }
             }
         }
@@ -78,7 +80,7 @@ object SystemSadhanaClock : SadhanaClock {
     }
 }
 
-@Composable private fun SadhanaContent(c: SadhanaController, reduceMotion: Boolean, onRoutine: (() -> Unit)?, onInspect: (String) -> Unit) {
+@Composable private fun SadhanaContent(c: SadhanaController, reduceMotion: Boolean, onRoutine: (() -> Unit)?, sync: com.shanivar.nativeapp.sync.AppSync, onInspect: (String) -> Unit) {
     val owner = LocalLifecycleOwner.current
     DisposableEffect(owner) {
         val obs = LifecycleEventObserver { _, e -> if (e == Lifecycle.Event.ON_STOP) c.background() }
@@ -97,7 +99,7 @@ object SystemSadhanaClock : SadhanaClock {
                 SadhanaView.PREPARE -> PrepareScreen(c)
                 SadhanaView.PLAYER -> PlayerScreen(c)
                 SadhanaView.COMPLETE -> ReturnScreen(c, reduceMotion)
-                SadhanaView.RECORD -> RecordScreen(c, c.today())
+                SadhanaView.RECORD -> RecordScreen(c, c.today(), sync)
                 SadhanaView.INDEPENDENT -> IndependentScreen(c, reduceMotion)
                 SadhanaView.STUDY -> StudyScreen(c, onInspect)
             }

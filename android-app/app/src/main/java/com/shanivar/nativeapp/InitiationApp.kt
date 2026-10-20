@@ -82,7 +82,9 @@ fun initiationReduceMotion(context: Context): Boolean =
 fun InitiationApp(
     controllerFactory: (Context) -> InitiationController = { ctx ->
         val dir = File(ctx.filesDir, "initiation")
-        InitiationController(OnboardingDraftRepository(FileDraftStore(File(dir, "draft.properties"))), FileDraftStore(File(dir, "ui.properties")), AndroidInitiationPorts(ctx))
+        InitiationController(OnboardingDraftRepository(FileDraftStore(File(dir, "draft.properties"))), FileDraftStore(File(dir, "ui.properties")), AndroidInitiationPorts(ctx),
+            onGuestReady = { com.shanivar.nativeapp.sync.AppSync.current.onGuestChosen() },
+            onGuestComplete = { com.shanivar.nativeapp.sync.AppSync.current.onInitiationCompleteAsGuest() })
     },
     reduceMotionOverride: Boolean? = null,
     sadhanaV1: Boolean = BuildConfig.SADHANA_V1,

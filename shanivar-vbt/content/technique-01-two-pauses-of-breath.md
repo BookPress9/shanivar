@@ -7,7 +7,7 @@
 - **What the verse says:** The verse describes the breath as the Goddess's own continuous utterance — exhale rising, inhale descending — and instructs the practitioner to pause at "the two places where they arise" and rest there with awareness, in what Wallis translates as a state of "inner fullness." Verse 25 adds: don't turn back from that pause too quickly.
 
 ## Essence
-This is the closing gap at the top of the inhale and the bottom of the exhale — the two brief, naturally-occurring stillnesses that every breath already contains, whether or not anyone notices them. The technique is not a breathing exercise in the sense of controlling the breath; it's a noticing exercise aimed at the space breath leaves behind twice a minute. The premise is that attention placed in an already-still point steadies faster than attention placed on movement.
+This is the closing gap at the top of the inhale and the bottom of the exhale — the two brief, naturally-occurring stillnesses that every breath already contains, whether or not anyone notices them. The technique is not a breathing exercise in the sense of controlling the breath; it's a noticing exercise aimed at the space breath leaves behind. The invitation is to notice whether attention placed in an already-still point feels any different from attention placed on movement.
 
 ## Guided Session Script
 *(Adaptation — written for a modern, secular guided-audio format. Approximately 4 minutes.)*
@@ -16,11 +16,11 @@ Find a position where your spine can be upright without effort — seated is fin
 
 For a few breaths, just breathe normally. Don't change anything yet. Notice the air moving in, and the air moving out.
 
-Now bring your attention to the very top of the inhale — that half-second after the in-breath finishes and before the out-breath begins. There's a small pause there. Most of the time we breathe right through it without noticing. This time, when you reach it, let your attention rest there. Don't hold your breath on purpose — just notice the pause that's already happening.
+Now bring your attention to the very top of the inhale — that brief moment after the in-breath finishes and before the out-breath begins. There's a small pause there. Most of the time we breathe right through it without noticing. This time, when you reach it, let your attention rest there. Don't hold your breath on purpose — just notice the pause that's already happening.
 
 Breathe out. And now find the other pause — the one at the bottom of the exhale, right before the next inhale starts. Rest your attention there too, for as long as it naturally lasts.
 
-Keep going like this for the next few minutes: breathe normally, and each time you arrive at one of the two pauses, let your attention settle into it rather than rushing past it toward the next breath.
+Keep going like this: breathe normally, and each time you arrive at one of the two pauses, let your attention settle into it rather than rushing past it toward the next breath.
 
 If your mind wanders to something else entirely, that's fine — just come back to the next pause, whichever one arrives first.
 

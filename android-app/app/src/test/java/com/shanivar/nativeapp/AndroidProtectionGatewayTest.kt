@@ -16,6 +16,7 @@ import java.time.ZonedDateTime
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class AndroidProtectionGatewayTest {
+    @get:org.junit.Rule val outboxReset = AppSyncOutboxReset()
     private val now = ZonedDateTime.of(2026, 9, 14, 8, 0, 0, 0, ZoneId.of("UTC"))
 
     @Test fun savingThePlanReplacesTheRegistryAndActivitiesDoNot() = runBlocking {

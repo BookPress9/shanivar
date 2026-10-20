@@ -2,7 +2,7 @@
 
 ## Primary Source
 - **Verse:** Vijñāna-bhairava-tantra, verse 101 (the text itself cross-references verse 103 as related).
-- **Translation cited:** Christopher Wallis ("Hareesh"), *A Translation of the Vijñāna-bhairava-tantra* (2017, rev. 2018, hareesh.org): "When in the field of craving, anger, greed, confusion, intoxicated excitement, or jealousy, make the mind still & soft [right in the middle of the emotion]: reality is that which remains [when the feeling has passed through]."
+- **Translation cited:** Christopher Wallis ("Hareesh"), *A Translation of the Vijñāna-bhairava-tantra* (2017, rev. 2018, hareesh.org).
 - **Cross-checked against:** The same verse content and number appear consistently across multiple secondary sources describing this practice as directly observing strong emotion (desire, anger, greed, and similar states) "without projection or resistance," softening around it rather than suppressing or acting on it — consistent phrasing and consistent verse attribution across sources checked.
 - **What the verse says:** When caught in a strong emotional state — the verse names craving, anger, greed, confusion, intoxicated excitement, and jealousy specifically — the instruction is not to suppress the feeling or act on it, but to soften and steady the mind in the middle of it, and notice what's still there once the feeling itself has moved through.
 
@@ -18,11 +18,11 @@ Without trying to change or fix the feeling, just notice where it shows up in yo
 
 Now, instead of pushing the feeling away or fully giving in to whatever it's telling you to do, try softening around it slightly — not the feeling itself, but the muscles around it. If your jaw is tight, soften it by ten percent, not to zero. If your shoulders are up, let them drop slightly, without forcing full relaxation.
 
-Stay with the feeling at this slightly softer intensity for a minute or two. You're not trying to make it disappear — you're staying present while it's here, rather than either suppressing it or acting from it immediately.
+Stay with the feeling at this slightly softer intensity for a while. You're not trying to make it disappear — you're staying present while it's here, rather than either suppressing it or acting from it immediately.
 
-Notice that the feeling has some shape to it — it rises, it holds, and at some point it will start to shift, even slightly. You don't need to rush that; just notice when it starts to happen.
+Notice whether the feeling has some shape to it — whether it rises, holds, or shifts at all, even slightly. You don't need to rush that; just notice if it starts to happen.
 
-As the intensity eases even a little, ask yourself: what's still here, underneath the feeling, now that it's not as sharp? Often it's just a plain, quiet sense of being present — nothing dramatic, just what's left once the wave has passed through a bit.
+If the intensity eases even a little, ask yourself: what's still here, underneath the feeling, now that it's not as sharp? Often it's just a plain, quiet sense of being present — nothing dramatic, just what's left once the wave has passed through a bit.
 
 You can return to whatever you were doing once you feel steady enough to choose your next action deliberately, rather than reacting automatically.
 

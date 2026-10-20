@@ -81,6 +81,9 @@ class SadhanaController(
     val practiceInProgress: Boolean get() { uiState; return tracker.inProgress }
     val running: Boolean get() { uiState; remainingState; return tracker.isRunning }
 
+    /** Declared before init: initializers run in order, so this must not reset the value init loads. */
+    private var backfilled = false
+
     init {
         val p = Properties().apply { store.read()?.let { load(it.reader()) } }
         recordState = SadhanaCodec.record(p)
@@ -91,12 +94,29 @@ class SadhanaController(
             recordState = recordState.withAttempt(tracker.attempt!!)
             tracker.clear()
         }
+        backfilled = p.getProperty(BACKFILL_KEY) == "done"
+        backfillImportedAttempts()
         runCatching { initiationAttempt() }.getOrNull()?.let { InitiationImport.toSadhana(it, clock.zone()) }
             ?.takeIf { a -> recordState.attempts.none { it.id == a.id } }
-            ?.let { recordState = recordState.withAttempt(it) }
+            ?.let { a -> recordState = recordState.withAttempt(a)
+                if (recordState.attempts.any { it.id == a.id }) outbox?.enqueue("attempt", a.id, SyncPayloads.attempt(a)) }
         runCatching { focusLock?.release() } // never left on after process death
         uiState = ui0.copy(view = if (ui0.view == SadhanaView.PLAYER) SadhanaView.HOME else ui0.view, message = null, stationary = false)
         persist(null)
+    }
+
+    /**
+     * DEV-38 upgrade backfill: builds before DEV-38 imported the onboarding attempt into the record but
+     * queued nothing. Queue every imported onboarding attempt once, keyed attempt:<id> (re-enqueueing
+     * replaces, never duplicates). The persisted flag keeps it from re-queueing after a drain. With no
+     * outbox it does not run and the flag stays unset, so it runs once an outbox is wired.
+     */
+    private fun backfillImportedAttempts() {
+        val box = outbox ?: return
+        if (backfilled) return
+        recordState.attempts.filter { it.id.startsWith(InitiationImport.ID_PREFIX) }
+            .forEach { box.enqueue("attempt", it.id, SyncPayloads.attempt(it)) }
+        backfilled = true
     }
 
     val practice: SadhanaPracticeDefinition get() = SadhanaCatalog.byId(ui.selected) ?: SadhanaCatalog.practices.first()
@@ -172,14 +192,24 @@ class SadhanaController(
     fun setOwnMinutes(m: Int) = set(ui.copy(ownMinutes = m))
     /** "I'll practise now · hide guidance": chooses minimal guidance; records nothing (nothing happened yet). */
     fun leaveToPractise() { recordState = record.setGuidance(GuidanceDetail.MINIMAL); set(ui.copy(view = SadhanaView.HOME, message = null)) }
-    fun recordOwn() { recordState = record.addIndependent(clock.today(), ui.ownMinutes); set(ui.copy(view = SadhanaView.RECORD, message = null)) }
+    fun recordOwn() {
+        recordState = record.addIndependent(clock.today(), ui.ownMinutes)
+        queueOwn(record.independent.last().id)
+        set(ui.copy(view = SadhanaView.RECORD, message = null))
+    }
+    private fun queueOwn(id: String) { record.independent.firstOrNull { it.id == id }?.let { outbox?.enqueue("self_report", it.id, SyncPayloads.selfReport(it)) } }
     /** B7: edit actual minutes of a self-report (1..180). Stays a self-report, never app-observed. */
     fun adjustOwnActual(id: String, delta: Int) {
         val o = record.independent.firstOrNull { it.id == id } ?: return
         val now = (o.actualMinutes ?: o.intendedMinutes ?: 0) + delta
-        recordState = record.editIndependent(id, now.coerceIn(1, 180)); set(ui)
+        recordState = record.editIndependent(id, now.coerceIn(1, 180)); queueOwn(id); set(ui)
     }
-    fun deleteOwn(id: String) { recordState = record.deleteIndependent(id); set(ui) }
+    fun deleteOwn(id: String) {
+        if (record.independent.none { it.id == id }) return
+        recordState = record.deleteIndependent(id)
+        outbox?.enqueue("self_report", id, SyncPayloads.tombstone(id))
+        set(ui)
+    }
     fun fewerPrompts(on: Boolean) { recordState = record.setGuidance(if (on) GuidanceDetail.MINIMAL else GuidanceDetail.FULL); set(ui) }
     fun inspectSource(text: String? = null) = set(ui.copy(message = text ?: "The source reader is not available yet. No unreviewed text is shown."))
 
@@ -188,10 +218,13 @@ class SadhanaController(
         return SadhanaGuidance.line(practice, record.guidance.detail, false, total, total - remainingMillis / 1000)
     }
 
+    private companion object { const val BACKFILL_KEY = "outboxBackfillV1" }
+
     private fun set(next: SadhanaUi) { uiState = next; persist(tracker.attempt) }
     private fun saveCurrent(a: SadhanaAttempt) = persist(a)
     private fun persist(current: SadhanaAttempt?) {
         val p = SadhanaCodec.encode(uiState, recordState, current?.takeIf { it.outcome == SadhanaOutcome.IN_PROGRESS })
+        if (backfilled) p.setProperty(BACKFILL_KEY, "done")
         val w = java.io.StringWriter(); p.store(w, null); store.write(w.toString())
     }
 }
@@ -250,6 +283,7 @@ object SadhanaCodec {
 
 /** B6: maps the onboarding attempt to a Sadhana attempt of the "natural" practice. Unfinished attempts are not imported. */
 object InitiationImport {
+    const val ID_PREFIX = "initiation-"
     fun toSadhana(a: PracticeAttempt, zone: ZoneId): SadhanaAttempt? {
         val outcome = when (a.outcome) {
             AttemptOutcome.COMPLETED -> SadhanaOutcome.COMPLETED
@@ -257,7 +291,7 @@ object InitiationImport {
             AttemptOutcome.IN_PROGRESS -> return null
         }
         return SadhanaAttempt(
-            id = "initiation-" + a.attemptId, practiceId = "natural", contentVersion = a.contentVersion,
+            id = ID_PREFIX + a.attemptId, practiceId = "natural", contentVersion = a.contentVersion,
             startedAtUtc = a.startedAtMillis, zoneId = zone.id, intendedSeconds = 60,
             activeMillis = a.activeMillis, outcome = outcome, endedAtUtc = a.endedAtMillis,
         )

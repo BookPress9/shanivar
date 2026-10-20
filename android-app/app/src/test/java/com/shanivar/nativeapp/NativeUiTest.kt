@@ -24,6 +24,7 @@ import org.junit.Assert.*
 @Config(sdk = [34], qualifiers = "w390dp-h844dp-xhdpi")
 @GraphicsMode(GraphicsMode.Mode.LEGACY)
 class NativeUiTest {
+    @get:org.junit.Rule val outboxReset = AppSyncOutboxReset()
     @get:Rule val compose = createComposeRule()
     private val context get() = ApplicationProvider.getApplicationContext<Context>()
 
