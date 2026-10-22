@@ -24,7 +24,7 @@ select is(
 
 select is(
   (select coalesce(array_agg(t order by t), '{}')
-     from unnest(array['routine_plans','protection_windows','practice_attempts','self_reports','practice_reflections']) t
+     from unnest(array['routine_plans','protection_windows','practice_attempts','self_reports','practice_reflections','routine_step_completions']) t
     where not (has_table_privilege('authenticated', 'public.' || t, 'SELECT') and has_table_privilege('authenticated', 'public.' || t, 'INSERT')
            and has_table_privilege('authenticated', 'public.' || t, 'UPDATE') and has_table_privilege('authenticated', 'public.' || t, 'DELETE'))),
   '{}'::text[], 'authenticated keeps select/insert/update/delete the own-row policies need');
