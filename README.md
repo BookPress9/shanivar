@@ -1,6 +1,6 @@
 # Shanivar daily GitHub checkpoint
 
-Generated Wednesday, 21 October 2026 at 23:30:03 CEST (Europe/Berlin); UTC 2026-10-21T21:30:03.261Z.
+Generated Friday, 23 October 2026 at 21:34:09 CEST (Europe/Berlin); UTC 2026-10-23T19:34:09.818Z.
 
 Start here: [current Codex handoff](https://github.com/BookPress9/shanivar/blob/codex/continuity-2026-10-17/docs/HANDOFF_NEXT.md).
 Agent-box archive: [box-backup status](https://github.com/BookPress9/shanivar/blob/box-backup/SHANIVAR_STATUS.md).
@@ -30,12 +30,16 @@ Contained in main does not establish that tests passed or a feature was released
 | dev-47-sync-wiring | 9806c9995d313cd112e4644c0bddb4ad98f3ed0d | 5 | 3 | review / integration pending |
 | dev-54-sadhana-record-schema | d1d482cdd464890b73c8d69cca950d2a5c00cc1f | 12 | 3 | review / integration pending |
 | dev-54-sadhana-record-schema-on-d699ee0 | a2a9e23737903a94999a0e7b44380af6f36872d8 | 13 | 3 | review / integration pending |
-| dev-65-event-dictionary-wiac | a2a9e23737903a94999a0e7b44380af6f36872d8 | 13 | 3 | review / integration pending |
-| dev-89-breathing-safety | b37207972b638469fdd35c16d88be8dd7c59e20b | 0 | 3 | contained in main |
+| dev-65-event-dictionary-wiac | ecc2fbeb3bae50bdfe6ae56b079e049abcc26597 | 16 | 3 | review / integration pending |
+| dev-72-routine-completion-idempotent | 561ed0a3e55b6c89ee7c8a78247679a1f24ba9a3 | 15 | 3 | review / integration pending |
+| dev-89-breathing-safety | fa1322a219bf39c8706eab74188bd7e0221fc268 | 1 | 3 | review / integration pending |
 | main | 89b4e4712351af638a0f2b4766aa7138eb694d24 | 0 | 0 | contained in main |
+| shanivar-build-log-2026-10-17 | c970cbbe25bd81a28fcbbc43d6389808e0d2f04b | 1 | 0 | review / integration pending |
 | wip/detached-scratch-dev47x45 | 247adbed53965e6effdb8ae5fe1fa654be5950ae | 4 | 3 | review / integration pending |
 | wip/detached-wt-dev47m | 2127ea79d3423a9c1b269d0b85ccbc4212c80ced | 6 | 3 | review / integration pending |
+| wip/detached-wt-dev54b | 4f025d9d0477c236aa5642d113cd21eb1b76698c | 14 | 3 | review / integration pending |
 | wip/dev-65-event-dictionary-wiac | dd2579a8dafa6133c0cec8f219bc1e9fc09b9292 | 14 | 3 | review / integration pending |
+| wip/dev-72-routine-completion-idempotent | e3287f97f241d3646e5180de613f49713939f9c8 | 16 | 3 | review / integration pending |
 | wip/dev-89-breathing-safety | 93102abd70774fb04e0ee5389ce636566a7b959c | 1 | 3 | review / integration pending |
 | wip/shanivar-app-main | 03c962b9b0b1ade58030dbe751a8d18d2337472e | 1 | 88 | review / integration pending |
 
