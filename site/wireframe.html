@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shaniwar — V1 Mobile UI/UX Interactive Prototype</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #090a09;
+      color: #F3F4F6;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .serif { font-family: 'Playfair Display', serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #0c0d0c; }
+    ::-webkit-scrollbar-thumb { background: #262a26; border-radius: 4px; }
+
+    /* Phone Shell Styles */
+    .phone-container {
+      width: 390px;
+      height: 844px;
+      border-radius: 50px;
+      box-shadow: 0 0 0 12px #1f231e, 0 0 0 14px #2b302a, 0 30px 90px rgba(0,0,0,0.85);
+      position: relative;
+      background: #0d0e0d;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Dynamic Island */
+    .dynamic-island {
+      width: 120px;
+      height: 32px;
+      background: #000;
+      border-radius: 20px;
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dynamic-island.active {
+      width: 240px;
+      height: 44px;
+      background: #151815;
+      border: 1px solid #FFB80040;
+    }
+
+    /* Pulsing & Glow animations */
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.03); }
+    }
+    .pulse-glow { animation: pulse-subtle 3s ease-in-out infinite; }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.9); box-shadow: 0 0 20px rgba(255,184,0,0.15); }
+      50% { transform: scale(1.15); box-shadow: 0 0 60px rgba(255,184,0,0.35); }
+    }
+    .breathing-circle { animation: breathe 8s ease-in-out infinite; }
+
+    /* Touch ripples */
+    .tap-effect:active { transform: scale(0.96); opacity: 0.9; }
+  </style>
+</head>
+<body class="min-h-screen bg-[#070807] text-[#ecece5] flex flex-col items-center justify-start p-4 md:p-8">
+
+  <!-- Header & Screen Switcher -->
+  <header class="w-full max-w-5xl flex flex-col md:flex-row items-center justify-between pb-6 mb-6 border-b border-[#212620] gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 rounded-full bg-[#FFB800] shadow-[0_0_12px_#FFB800]"></span>
+        <span class="text-xs uppercase tracking-[0.25em] text-[#FFB800] font-bold">SHANIWAR BY THE HYBRID MONK</span>
+      </div>
+      <h1 class="serif text-2xl md:text-3xl font-normal mt-1 text-[#f3f4f0]">V1 MVP Mobile UI / UX Interactive Walkthrough</h1>
+    </div>
+
+    <!-- Screen Navigation Pills -->
+    <div class="flex flex-wrap items-center gap-1.5 bg-[#131613] p-1.5 rounded-xl border border-[#232922]">
+      <button onclick="setScreen('onboarding')" id="pill-onboarding" class="screen-pill px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-[#FFB800] text-black">1. Onboarding</button>
+      <button onclick="setScreen('dincharya')" id="pill-dincharya" class="screen-pill px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-[#8e958b] hover:text-[#fff]">2. Living Dincharya</button>
+      <button onclick="setScreen('alarm')" id="pill-alarm" class="screen-pill px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-[#8e958b] hover:text-[#fff]">3. Wake Alarm</button>
+      <button onclick="setScreen('shield')" id="pill-shield" class="screen-pill px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-[#8e958b] hover:text-[#fff]">4. Focus Shield</button>
+      <button onclick="setScreen('paywall')" id="pill-paywall" class="screen-pill px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-[#8e958b] hover:text-[#fff]">5. Monk Pass</button>
+    </div>
+  </header>
+
+  <!-- Prototype Stage -->
+  <div class="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-12 w-full max-w-5xl">
+    
+    <!-- Phone Mockup Container -->
+    <div class="phone-container select-none">
+      
+      <!-- Dynamic Island -->
+      <div class="dynamic-island" id="island">
+        <div class="w-2.5 h-2.5 rounded-full bg-[#121212] border border-[#333]"></div>
+        <div class="text-[10px] mono text-[#FFB800] font-bold tracking-wider hidden" id="island-text">SHIELD ACTIVE</div>
+        <div class="w-2.5 h-2.5 rounded-full bg-[#202020]"></div>
+      </div>
+
+      <!-- Top Native Status Bar -->
+      <div class="w-full h-12 pt-3 px-8 flex justify-between items-center text-xs font-medium text-[#7d8479] z-50">
+        <span class="mono font-semibold text-[#ddd]" id="clock-display">07:05</span>
+        <div class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/></svg>
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4z"/></svg>
+          <div class="w-5 h-2.5 rounded-sm border border-current flex items-center p-0.5">
+            <div class="h-full w-full bg-[#39D98A] rounded-2xs"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEWPORT SCREENS CONTAINER -->
+      <div class="flex-1 overflow-y-auto relative" id="screen-viewport">
+
+        <!-- ============================================== -->
+        <!-- SCREEN 1: ONBOARDING & THE MODERN MONK STANCE -->
+        <!-- ============================================== -->
+        <div id="screen-onboarding" class="screen-view p-6 flex flex-col justify-between min-h-full">
+          <div>
+            <div class="text-[10px] uppercase font-bold tracking-[0.25em] text-[#FFB800] mb-2">THE SOVEREIGN RETURN</div>
+            <h2 class="serif text-3xl font-normal leading-tight text-[#f4f4ec] mb-3">
+              The world is loud.<br><em class="text-[#FFB800] not-italic">Be here.</em>
+            </h2>
+            <p class="text-xs leading-relaxed text-[#9ca395] mb-6">
+              Ancient monks left the world behind to find themselves. We are the modern monks—living in the world, mastering the world, staying anchored.
+            </p>
+
+            <div class="text-[11px] font-bold text-[#b49860] uppercase tracking-wider mb-2">Select Your Daily Archetype</div>
+            
+            <!-- Archetype Cards -->
+            <div class="space-y-2 mb-4">
+              <div onclick="selectArchetype('builder', this)" class="arch-card active border-2 border-[#FFB800] bg-[#161a14] p-3 rounded-xl flex items-center gap-3 cursor-pointer tap-effect transition-all">
+                <span class="text-2xl">⚡</span>
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-white flex justify-between">The Builder <span class="text-[10px] text-[#FFB800]">05:45 AM</span></div>
+                  <div class="text-[11px] text-[#8e958a]">High-velocity execution, morning walk ignition, 2 focus shields.</div>
+                </div>
+              </div>
+
+              <div onclick="selectArchetype('student', this)" class="arch-card border border-[#262c24] bg-[#101210] p-3 rounded-xl flex items-center gap-3 cursor-pointer tap-effect transition-all hover:border-[#384234]">
+                <span class="text-2xl">📚</span>
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-[#ccc] flex justify-between">The Student <span class="text-[10px] text-[#8e958a]">06:30 AM</span></div>
+                  <div class="text-[11px] text-[#71796d]">Deep study blocks, social media intercept, night screen cutoff.</div>
+                </div>
+              </div>
+
+              <div onclick="selectArchetype('parent', this)" class="arch-card border border-[#262c24] bg-[#101210] p-3 rounded-xl flex items-center gap-3 cursor-pointer tap-effect transition-all hover:border-[#384234]">
+                <span class="text-2xl">🌿</span>
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-[#ccc] flex justify-between">The Parent <span class="text-[10px] text-[#8e958a]">06:00 AM</span></div>
+                  <div class="text-[11px] text-[#71796d]">Family morning rhythm, dinner phone sanctuary, peaceful sleep.</div>
+                </div>
+              </div>
+
+              <div onclick="selectArchetype('householder', this)" class="arch-card border border-[#262c24] bg-[#101210] p-3 rounded-xl flex items-center gap-3 cursor-pointer tap-effect transition-all hover:border-[#384234]">
+                <span class="text-2xl">🔆</span>
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-[#ccc] flex justify-between">Modern Householder <span class="text-[10px] text-[#8e958a]">06:45 AM</span></div>
+                  <div class="text-[11px] text-[#71796d]">Balanced livelihood, mindful transitions, zero digital pollution.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 pb-6">
+            <button onclick="setScreen('dincharya')" class="w-full bg-[#FFB800] text-black font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-wider tap-effect shadow-[0_8px_25px_rgba(255,184,0,0.25)] flex items-center justify-center gap-2">
+              <span>Lock In Sovereign Dincharya</span>
+              <span>→</span>
+            </button>
+            <div class="text-center text-[10px] text-[#6d7368] mt-2.5">No login required. Fully local-first & offline ready.</div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SCREEN 2: LIVING DINCHARYA (CORE 24H ARC) -->
+        <!-- ============================================== -->
+        <div id="screen-dincharya" class="screen-view p-5 pb-20 hidden">
+          
+          <!-- Sticky Header -->
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#212620]">
+            <div>
+              <div class="text-[9px] uppercase tracking-[0.25em] text-[#FFB800] font-extrabold">SHANIWAR • BY THE HYBRID MONK</div>
+              <div class="serif text-xl font-normal text-[#f4f4ec]">Dincharya • दिनचर्या</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="setScreen('paywall')" class="bg-[#1c221b] border border-[#FFB800] text-[#FFB800] px-2.5 py-1 rounded-lg text-[11px] font-bold tap-effect flex items-center gap-1">
+                <span>👑</span>
+                <span>Pass</span>
+              </button>
+              <button onclick="toggleCalibrateModal(true)" class="bg-[#141713] border border-[#282f25] text-[#b5baa0] px-2.5 py-1 rounded-lg text-[11px] font-semibold tap-effect">
+                ⚙️ Calibrate
+              </button>
+            </div>
+          </div>
+
+          <!-- Real-Time Status Bar -->
+          <div class="bg-[#121512] border border-[#222820] rounded-xl p-3 mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#39D98A] shadow-[0_0_8px_#39D98A]"></span>
+              <span class="text-[11px] font-bold mono text-[#e5e5dc]">LIVE CLOCK: 07:05 AM</span>
+            </div>
+            <span class="text-[10px] text-[#8e958a] bg-[#1a1e19] px-2 py-0.5 rounded-full font-medium">1,428 Monks In Arc</span>
+          </div>
+
+          <!-- Quick Test Triggers Banner -->
+          <div class="bg-gradient-to-r from-[#1c1a12] to-[#141813] border border-[#FFB80040] rounded-xl p-3 mb-5">
+            <div class="text-[10px] font-bold text-[#FFB800] uppercase tracking-wider mb-1">Interactive Simulation Triggers</div>
+            <div class="text-[11px] text-[#a6aca0] mb-2.5">Test how the native hardware shields act in real time:</div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="setScreen('alarm')" class="bg-[#E84545] hover:bg-[#ff5555] text-white text-[10px] font-extrabold py-2 rounded-lg uppercase tracking-wider tap-effect shadow-md flex items-center justify-center gap-1">
+                <span>⏰</span> Trigger Wake Alarm
+              </button>
+              <button onclick="setScreen('shield')" class="bg-[#212720] border border-[#444f41] hover:bg-[#2c342b] text-[#e0e4da] text-[10px] font-extrabold py-2 rounded-lg uppercase tracking-wider tap-effect flex items-center justify-center gap-1">
+                <span>🛡️</span> Tap Instagram
+              </button>
+            </div>
+          </div>
+
+          <!-- Timeline Progression Arc -->
+          <div class="relative pl-6 space-y-4">
+            
+            <!-- Continuous Line -->
+            <div class="absolute left-2.5 top-3 bottom-3 w-0.5 bg-[#232a21]"></div>
+
+            <!-- Block 1: Wake Alarm (Morning Ignition) -->
+            <div class="relative group">
+              <div class="absolute -left-6 top-3 w-4 h-4 rounded-full bg-[#E84545] border-2 border-[#0d0e0d] flex items-center justify-center shadow-[0_0_8px_#E84545]">
+                <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+              </div>
+              <div class="bg-[#171413] border border-[#E8454560] rounded-xl p-3.5 shadow-sm">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[10px] mono text-[#E84545] font-extrabold tracking-wider">05:45 AM • IGNITION</span>
+                  <span class="text-[9px] bg-[#2a1a18] text-[#E84545] px-1.5 py-0.5 rounded font-bold">20 STEPS CHECK</span>
+                </div>
+                <div class="text-sm font-bold text-[#f7f7f0]">Morning Wake Alarm</div>
+                <div class="text-[11px] text-[#9a9e94] mt-0.5">Physical ambulatory verification. Zero snooze button.</div>
+                <button onclick="setScreen('alarm')" class="mt-2.5 bg-[#E8454520] hover:bg-[#E8454530] text-[#E84545] border border-[#E8454550] text-[10px] font-bold py-1 px-2.5 rounded-lg tap-effect">
+                  Test Alarmy Dismissal →
+                </button>
+              </div>
+            </div>
+
+            <!-- Block 2: Deep Work / Focus Window -->
+            <div class="relative group">
+              <div class="absolute -left-6 top-3 w-4 h-4 rounded-full bg-[#FFB800] border-2 border-[#0d0e0d] flex items-center justify-center shadow-[0_0_8px_#FFB800]">
+                <div class="w-1.5 h-1.5 rounded-full bg-black"></div>
+              </div>
+              <div class="bg-[#181712] border border-[#FFB80060] rounded-xl p-3.5 shadow-sm">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[10px] mono text-[#FFB800] font-extrabold tracking-wider">09:00 AM • ACTIVE PHASE</span>
+                  <span class="text-[9px] bg-[#2d2716] text-[#FFB800] px-1.5 py-0.5 rounded font-bold">SHIELD ARMED</span>
+                </div>
+                <div class="text-sm font-bold text-[#f7f7f0]">Obsidian Focus Window</div>
+                <div class="text-[11px] text-[#9a9e94] mt-0.5">Shortcuts automation intercepts Instagram & TikTok.</div>
+                <button onclick="setScreen('shield')" class="mt-2.5 bg-[#FFB80020] hover:bg-[#FFB80030] text-[#FFB800] border border-[#FFB80050] text-[10px] font-bold py-1 px-2.5 rounded-lg tap-effect">
+                  Simulate Instagram Tap →
+                </button>
+              </div>
+            </div>
+
+            <!-- Block 3: Midday Stop -->
+            <div class="relative group">
+              <div class="absolute -left-6 top-3 w-4 h-4 rounded-full bg-[#2a3227] border-2 border-[#0d0e0d]"></div>
+              <div class="bg-[#111411] border border-[#232921] rounded-xl p-3.5">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[10px] mono text-[#7c8376] font-bold">01:30 PM • 60 SECONDS</span>
+                  <span class="text-[9px] text-[#6d7468]">GROUNDING</span>
+                </div>
+                <div class="text-xs font-bold text-[#d2d6cc]">Midday Stillness Pause</div>
+                <div class="text-[11px] text-[#71776c] mt-0.5">Hands off keyboard. 3 deliberate abdominal breaths.</div>
+              </div>
+            </div>
+
+            <!-- Block 4: Evening Transition -->
+            <div class="relative group">
+              <div class="absolute -left-6 top-3 w-4 h-4 rounded-full bg-[#2a3227] border-2 border-[#0d0e0d]"></div>
+              <div class="bg-[#111411] border border-[#232921] rounded-xl p-3.5">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[10px] mono text-[#7c8376] font-bold">07:00 PM • DISCONNECT</span>
+                  <span class="text-[9px] text-[#6d7468]">HOUSEHOLD</span>
+                </div>
+                <div class="text-xs font-bold text-[#d2d6cc]">Digital Sunset Sanctuary</div>
+                <div class="text-[11px] text-[#71776c] mt-0.5">Screen brightness drops. Dinner table blackout armed.</div>
+              </div>
+            </div>
+
+            <!-- Block 5: Sleep Sanctuary -->
+            <div class="relative group">
+              <div class="absolute -left-6 top-3 w-4 h-4 rounded-full bg-[#2a3227] border-2 border-[#0d0e0d]"></div>
+              <div class="bg-[#111411] border border-[#232921] rounded-xl p-3.5">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[10px] mono text-[#7c8376] font-bold">10:30 PM • RECOVERY</span>
+                  <span class="text-[9px] text-[#6d7468]">DEEP REST</span>
+                </div>
+                <div class="text-xs font-bold text-[#d2d6cc]">Sleep Sanctuary Lockout</div>
+                <div class="text-[11px] text-[#71776c] mt-0.5">No notifications. Morning alarm scheduled at direct-boot.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SCREEN 3: WAKE ALARM (MORNING IGNITION MISSION) -->
+        <!-- ============================================== -->
+        <div id="screen-alarm" class="screen-view p-6 flex flex-col justify-between min-h-full bg-[#120a0a] hidden">
+          <div>
+            <div class="flex items-center justify-between pt-2">
+              <span class="text-[10px] uppercase font-bold tracking-widest text-[#E84545]">COREMOTION STEP MISSION</span>
+              <button onclick="setScreen('dincharya')" class="text-xs text-[#888] hover:text-white">✕ Exit</button>
+            </div>
+
+            <div class="text-center mt-8 mb-6">
+              <div class="text-5xl font-extrabold mono text-[#fff] tracking-tight">05:45 <span class="text-xl text-[#E84545]">AM</span></div>
+              <div class="text-xs font-bold text-[#E84545] uppercase tracking-[0.2em] mt-1">WAKE UP, MONK • ZERO SNOOZE</div>
+            </div>
+
+            <!-- Steps Gauge Card -->
+            <div class="bg-[#1f1212] border-2 border-[#E84545] rounded-2xl p-6 text-center my-6 shadow-[0_0_40px_rgba(232,69,69,0.25)]">
+              <div class="text-5xl mb-2">🚶‍♂️</div>
+              <div class="text-4xl font-extrabold mono text-white" id="step-counter">0 / 20</div>
+              <div class="text-xs text-[#E84545] font-bold uppercase tracking-wider mt-1">Genuine Steps Required</div>
+              
+              <!-- Progress Bar -->
+              <div class="w-full bg-[#351a1a] h-2.5 rounded-full mt-4 overflow-hidden">
+                <div id="step-progress" class="bg-[#E84545] h-full w-0 transition-all duration-200"></div>
+              </div>
+
+              <p class="text-[11px] text-[#baa4a4] mt-4 leading-relaxed">
+                The alarm sound cannot be muted until your phone’s accelerometer confirms you are out of bed and walking.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-2 pb-6">
+            <button onclick="takeStep()" class="w-full bg-[#E84545] hover:bg-[#ff5252] text-white font-extrabold text-sm py-4 rounded-xl uppercase tracking-wider tap-effect shadow-lg">
+              👣 Simulate 5 Walking Steps
+            </button>
+            <button onclick="resetSteps()" class="w-full bg-[#201414] text-[#888] text-xs py-2 rounded-lg">Reset Steps</button>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SCREEN 4: OBSIDIAN FOCUS SHIELD (APP INTERCEPT) -->
+        <!-- ============================================== -->
+        <div id="screen-shield" class="screen-view p-6 flex flex-col justify-between min-h-full bg-[#0a0c0a] hidden">
+          <div>
+            <div class="flex items-center justify-between pt-2">
+              <span class="text-[10px] uppercase font-bold tracking-widest text-[#FFB800] bg-[#221c0e] px-2.5 py-1 rounded-full border border-[#FFB80040]">🛡️ OBSIDIAN SHIELD ACTIVE</span>
+              <button onclick="setScreen('dincharya')" class="text-xs text-[#888] hover:text-white">✕ Close</button>
+            </div>
+
+            <!-- Center Breathing Orb -->
+            <div class="flex flex-col items-center justify-center my-8">
+              <div class="w-40 h-40 rounded-full border-2 border-[#FFB800] breathing-circle flex flex-col items-center justify-center bg-radial from-[#FFB80015] to-transparent mb-6">
+                <div class="text-3xl">👁️</div>
+                <div class="text-[10px] uppercase font-bold tracking-widest text-[#FFB800] mt-1">CONSCIOUS PAUSE</div>
+              </div>
+
+              <div class="serif text-xl font-normal text-white text-center">Unconscious Reflex<br>Intercepted.</div>
+              <p class="text-xs text-[#959d90] text-center max-w-[260px] mt-2 leading-relaxed">
+                You tapped Instagram out of habit. Before the algorithmic feed captures you: breathe.
+              </p>
+            </div>
+
+            <!-- 10-Second Breath Countdown Box -->
+            <div class="bg-[#131613] border border-[#2b3327] rounded-xl p-4 text-center">
+              <div class="text-[11px] text-[#a4aca0] mb-1">Take 3 conscious abdominal breaths...</div>
+              <div class="text-2xl font-extrabold mono text-[#FFB800]" id="shield-timer">10s Remaining</div>
+            </div>
+          </div>
+
+          <div class="space-y-2.5 pb-6">
+            <button onclick="setScreen('dincharya')" class="w-full bg-[#39D98A] text-black font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-wider tap-effect shadow-[0_4px_20px_rgba(57,217,138,0.25)]">
+              Stay in Presence (Close App) ✨
+            </button>
+            <button id="proceed-ig-btn" disabled onclick="alert('Instagram opened consciously. Remember your intent.')" class="w-full bg-[#171b16] text-[#555] font-bold text-xs py-3 rounded-xl border border-[#262e24] cursor-not-allowed">
+              I genuinely need this (Unlocks in 10s)
+            </button>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SCREEN 5: MONK PASS (SUBSCRIPTIONS & BILLING) -->
+        <!-- ============================================== -->
+        <div id="screen-paywall" class="screen-view p-5 pb-8 min-h-full bg-[#0d0e0d] hidden">
+          <div class="flex items-center justify-between pb-2 mb-3">
+            <button onclick="setScreen('dincharya')" class="text-xs text-[#888] hover:text-white">✕</button>
+            <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#FFB800]">SHANIWAR MONK PASS</span>
+            <button onclick="alert('Purchases Restored: Free Tier Active')" class="text-[11px] text-[#888] hover:text-[#ddd]">Restore</button>
+          </div>
+
+          <div class="text-center my-3">
+            <div class="serif text-2xl font-normal text-white">Master Your Consciousness</div>
+            <p class="text-xs text-[#9ca395] max-w-[280px] mx-auto mt-1">
+              Step out of the algorithmic trance. Build an unbreakable sovereign day.
+            </p>
+          </div>
+
+          <!-- Billing Period Switcher -->
+          <div class="flex bg-[#161a14] p-1 rounded-xl border border-[#262d23] max-w-[260px] mx-auto my-4">
+            <button onclick="setBilling('annual')" id="tab-annual" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#FFB800] text-black transition-all">Annual (50% OFF)</button>
+            <button onclick="setBilling('monthly')" id="tab-monthly" class="flex-1 py-1.5 rounded-lg text-xs font-semibold text-[#8e9688] transition-all">Monthly</button>
+          </div>
+
+          <!-- 3 Subscription Tier Cards -->
+          <div class="space-y-3 mb-6">
+            
+            <!-- Tier 1: Solitary Monk -->
+            <div onclick="selectTier('solitary', this)" class="tier-card p-3.5 rounded-xl border border-[#242b21] bg-[#121512] cursor-pointer tap-effect transition-all hover:border-[#3a4435]">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="text-xs font-bold text-white">Solitary Monk</div>
+                  <div class="text-[10px] text-[#8e958a]">Individual Focus & Waking Mastery</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-extrabold text-[#FFB800] tier-price" data-monthly="$9.99/mo" data-annual="$59.99/yr">$59.99/yr</div>
+                  <div class="text-[9px] text-[#39D98A] tier-sub" data-monthly="Billed monthly" data-annual="$4.99/mo equivalent">$4.99/mo equivalent</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tier 2: Duo Monks (Featured) -->
+            <div onclick="selectTier('duo', this)" class="tier-card active p-3.5 rounded-xl border-2 border-[#FFB800] bg-[#1a1c15] cursor-pointer tap-effect relative shadow-[0_0_20px_rgba(255,184,0,0.15)]">
+              <div class="absolute -top-2.5 right-4 bg-[#FFB800] text-black text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Most Popular • Couples</div>
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="text-xs font-bold text-white">Duo Monks</div>
+                  <div class="text-[10px] text-[#FFB800]">2 Accounts • Mutual Bedtime Lockout</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-extrabold text-[#FFB800] tier-price" data-monthly="$14.99/mo" data-annual="$89.99/yr">$89.99/yr</div>
+                  <div class="text-[9px] text-[#39D98A] tier-sub" data-monthly="Billed monthly" data-annual="$3.75/person/mo">$3.75/person/mo</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tier 3: Household Monastery -->
+            <div onclick="selectTier('family', this)" class="tier-card p-3.5 rounded-xl border border-[#242b21] bg-[#121512] cursor-pointer tap-effect transition-all hover:border-[#3a4435]">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="text-xs font-bold text-white">Household Monastery</div>
+                  <div class="text-[10px] text-[#8e958a]">Up to 5 Family Members • Dinner Blackout</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-extrabold text-[#FFB800] tier-price" data-monthly="$19.99/mo" data-annual="$119.99/yr">$119.99/yr</div>
+                  <div class="text-[9px] text-[#39D98A] tier-sub" data-monthly="Billed monthly" data-annual="$2.00/person/mo">$2.00/person/mo</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <button onclick="alert('Starting 7-Day Free Trial on selected plan!')" class="w-full bg-[#FFB800] text-black font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-wider tap-effect shadow-[0_6px_25px_rgba(255,184,0,0.3)]">
+            Start 7-Day Free Trial
+          </button>
+          <div class="text-center text-[10px] text-[#6d7368] mt-2">Cancel anytime in App Store / Google Play.</div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Floating Nav Bar (When inside Dincharya) -->
+      <div id="bottom-nav" class="w-full h-16 bg-[#101210] border-t border-[#1e231c] px-8 flex justify-around items-center z-50">
+        <button onclick="setScreen('dincharya')" class="flex flex-col items-center gap-1 text-[#FFB800]">
+          <span class="text-lg">🔥</span>
+          <span class="text-[10px] font-bold tracking-wider">DINCHARYA</span>
+        </button>
+        <button onclick="alert('Cockpit Dashboard is synced with Dincharya Arc!')" class="flex flex-col items-center gap-1 text-[#727a6f] hover:text-[#fff]">
+          <span class="text-lg">🔆</span>
+          <span class="text-[10px] font-bold tracking-wider">COCKPIT</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- UI/UX Architecture Walkthrough Details -->
+    <div class="flex-1 max-w-xl space-y-6 text-sm">
+      
+      <!-- Card: UI/UX Philosophy -->
+      <div class="bg-[#121512] border border-[#232921] rounded-2xl p-6">
+        <div class="text-xs uppercase font-extrabold tracking-widest text-[#FFB800] mb-2">01 / THE CORE UI/UX SHIFT</div>
+        <h3 class="serif text-xl font-normal text-white mb-2">No Databases. Pure Living Arc.</h3>
+        <p class="text-xs text-[#a0a69a] leading-relaxed mb-4">
+          Most habit and routine apps look like spreadsheets or complex medical checklists. Shaniwar replaces tables with a single, high-contrast 24-hour arc that adapts to your life archetype and keeps you physically moving.
+        </p>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-[#181d17] p-3 rounded-xl border border-[#262e24]">
+            <div class="text-xs font-bold text-[#FFB800] mb-1">Morning Ignition</div>
+            <div class="text-[11px] text-[#868d80]">CoreMotion walk detection prevents hitting snooze in bed.</div>
+          </div>
+          <div class="bg-[#181d17] p-3 rounded-xl border border-[#262e24]">
+            <div class="text-xs font-bold text-[#39D98A] mb-1">Obsidian Shield</div>
+            <div class="text-[11px] text-[#868d80]">iOS Shortcuts wrapper pulls users back before mindless scrolling.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Flow Verification & QA Gates -->
+      <div class="bg-[#121512] border border-[#232921] rounded-2xl p-6">
+        <div class="text-xs uppercase font-extrabold tracking-widest text-[#39D98A] mb-2">02 / SANITY & QA VERIFICATION GATES</div>
+        <h3 class="serif text-xl font-normal text-white mb-2">From Onboarding to Retention</h3>
+        <ul class="space-y-2 text-xs text-[#b0b6aa]">
+          <li class="flex items-start gap-2">
+            <span class="text-[#39D98A]">✓</span>
+            <span><strong>Zero-Friction First Run:</strong> User launches app, selects archetype, and their day is calibrated immediately with zero database forms.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-[#39D98A]">✓</span>
+            <span><strong>Offline / Local-First:</strong> Guaranteed operation even in airplane mode. AsyncStorage + Supabase outbox ensure zero network freezes.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-[#39D98A]">✓</span>
+            <span><strong>Jira Traceability:</strong> Aligned with live tickets <code>DEV-10</code>, <code>DEV-11</code>, <code>DEV-57</code>, <code>DEV-71</code>, <code>DEV-75</code>, and <code>DEV-97</code>.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card: Upcoming Feature Lock Screen Wallpaper -->
+      <div class="bg-[#171612] border border-[#FFB80040] rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs uppercase font-extrabold tracking-widest text-[#FFB800]">03 / JIRA DEV-97 READY</span>
+          <span class="text-[9px] bg-[#FFB800] text-black px-2 py-0.5 rounded font-extrabold">SPRINT 2</span>
+        </div>
+        <h3 class="serif text-xl font-normal text-white mb-1">Dynamic Lock Screen Wallpaper</h3>
+        <p class="text-xs text-[#a0a69a] leading-relaxed">
+          The next ticket in queue (DEV-97) will auto-generate a 9:16 high-resolution lock-screen image of today’s calibrated Dincharya arc so user intentions stay visible every time the screen illuminates.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Live Clock Simulation
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, '0');
+      const m = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('clock-display').textContent = `${h}:${m}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Screen Switcher
+    function setScreen(screenId) {
+      document.querySelectorAll('.screen-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.screen-pill').forEach(el => {
+        el.classList.remove('bg-[#FFB800]', 'text-black');
+        el.classList.add('text-[#8e958b]');
+      });
+
+      const activeScreen = document.getElementById(`screen-${screenId}`);
+      const activePill = document.getElementById(`pill-${screenId}`);
+      if (activeScreen) activeScreen.classList.remove('hidden');
+      if (activePill) {
+        activePill.classList.add('bg-[#FFB800]', 'text-black');
+        activePill.classList.remove('text-[#8e958b]');
+      }
+
+      // Handle bottom nav visibility
+      const bottomNav = document.getElementById('bottom-nav');
+      if (screenId === 'onboarding' || screenId === 'alarm') {
+        bottomNav.classList.add('hidden');
+      } else {
+        bottomNav.classList.remove('hidden');
+      }
+
+      // Dynamic Island feedback
+      const island = document.getElementById('island');
+      const islandText = document.getElementById('island-text');
+      if (screenId === 'shield') {
+        island.classList.add('active');
+        islandText.classList.remove('hidden');
+        startShieldCountdown();
+      } else {
+        island.classList.remove('active');
+        islandText.classList.add('hidden');
+      }
+    }
+
+    // Step Mission Simulation
+    let steps = 0;
+    function takeStep() {
+      steps = Math.min(20, steps + 5);
+      document.getElementById('step-counter').textContent = `${steps} / 20`;
+      document.getElementById('step-progress').style.width = `${(steps / 20) * 100}%`;
+      if (steps >= 20) {
+        setTimeout(() => {
+          alert('Wake verified! Welcome to today’s sovereign arc.');
+          setScreen('dincharya');
+          steps = 0;
+          document.getElementById('step-counter').textContent = `0 / 20`;
+          document.getElementById('step-progress').style.width = `0%`;
+        }, 300);
+      }
+    }
+    function resetSteps() {
+      steps = 0;
+      document.getElementById('step-counter').textContent = `0 / 20`;
+      document.getElementById('step-progress').style.width = `0%`;
+    }
+
+    // Focus Shield Countdown
+    let timerInterval = null;
+    function startShieldCountdown() {
+      clearInterval(timerInterval);
+      let count = 10;
+      const timerEl = document.getElementById('shield-timer');
+      const proceedBtn = document.getElementById('proceed-ig-btn');
+      proceedBtn.disabled = true;
+      proceedBtn.classList.remove('bg-[#FFB800]', 'text-black');
+      proceedBtn.classList.add('bg-[#171b16]', 'text-[#555]');
+      timerEl.textContent = `${count}s Remaining`;
+
+      timerInterval = setInterval(() => {
+        count -= 1;
+        if (count > 0) {
+          timerEl.textContent = `${count}s Remaining`;
+        } else {
+          clearInterval(timerInterval);
+          timerEl.textContent = `Mindful Pause Complete ✨`;
+          proceedBtn.disabled = false;
+          proceedBtn.classList.remove('bg-[#171b16]', 'text-[#555]');
+          proceedBtn.classList.add('bg-[#FFB800]', 'text-black');
+          proceedBtn.textContent = 'I consciously choose to open Instagram →';
+        }
+      }, 1000);
+    }
+
+    // Billing Switcher
+    function setBilling(period) {
+      const tabAnnual = document.getElementById('tab-annual');
+      const tabMonthly = document.getElementById('tab-monthly');
+      const prices = document.querySelectorAll('.tier-price');
+      const subs = document.querySelectorAll('.tier-sub');
+
+      if (period === 'annual') {
+        tabAnnual.classList.add('bg-[#FFB800]', 'text-black');
+        tabAnnual.classList.remove('text-[#8e9688]');
+        tabMonthly.classList.remove('bg-[#FFB800]', 'text-black');
+        tabMonthly.classList.add('text-[#8e9688]');
+        prices.forEach(el => el.textContent = el.getAttribute('data-annual'));
+        subs.forEach(el => el.textContent = el.getAttribute('data-annual'));
+      } else {
+        tabMonthly.classList.add('bg-[#FFB800]', 'text-black');
+        tabMonthly.classList.remove('text-[#8e9688]');
+        tabAnnual.classList.remove('bg-[#FFB800]', 'text-black');
+        tabAnnual.classList.add('text-[#8e9688]');
+        prices.forEach(el => el.textContent = el.getAttribute('data-monthly'));
+        subs.forEach(el => el.textContent = el.getAttribute('data-monthly'));
+      }
+    }
+
+    // Selection helpers
+    function selectArchetype(id, el) {
+      document.querySelectorAll('.arch-card').forEach(c => {
+        c.classList.remove('border-2', 'border-[#FFB800]', 'bg-[#161a14]');
+        c.classList.add('border-[#262c24]', 'bg-[#101210]');
+      });
+      el.classList.add('border-2', 'border-[#FFB800]', 'bg-[#161a14]');
+      el.classList.remove('border-[#262c24]', 'bg-[#101210]');
+    }
+
+    function selectTier(id, el) {
+      document.querySelectorAll('.tier-card').forEach(c => {
+        c.classList.remove('border-2', 'border-[#FFB800]', 'bg-[#1a1c15]', 'shadow-[0_0_20px_rgba(255,184,0,0.15)]');
+        c.classList.add('border-[#242b21]', 'bg-[#121512]');
+      });
+      el.classList.add('border-2', 'border-[#FFB800]', 'bg-[#1a1c15]', 'shadow-[0_0_20px_rgba(255,184,0,0.15)]');
+      el.classList.remove('border-[#242b21]', 'bg-[#121512]');
+    }
+
+    function toggleCalibrateModal(open) {
+      if (open) {
+        alert('Calibrate Modal: Allows customized morning ignition time, focus blocks, and bedtime cutoff for your specific archetype.');
+      }
+    }
+  </script>
+</body>
+</html>
