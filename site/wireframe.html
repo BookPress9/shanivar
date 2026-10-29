@@ -5,77 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shaniwar — V1 Mobile UI/UX Interactive Prototype</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js">
-    // 4-Step Interactive Onboarding State (Jobsian Alignment, DEV-98 & DEV-99)
+    // 4-Step Interactive Onboarding State (Jobsian Alignment, DEV-98, DEV-99, DEV-100)
     let obStep = 1;
-    let obWakeH = 5, obWakeM = 30;
-    let obSleepH = 22, obSleepM = 0;
-    let obSelectedLeak = 'dopamine_feeds';
-    let obVertebra01Ignited = false;
+    let obSelectedLeaks = ['dopamine_feeds', 'morning_inertia'];
+    let curWakeH = 8, curWakeM = 15;
+    let curSleepH = 1, curSleepM = 15;
+    let tgtWakeH = 5, tgtWakeM = 30;
+    let tgtSleepH = 22, tgtSleepM = 0;
     let isDecaying = false;
 
-    // AI Energy Diagnostic Profiles (DEV-99: The Three-Sentence Law)
-    const AI_LEAK_DATA = {
-      dopamine_feeds: {
-        text: 'You feed the machine with seconds of your life and wonder why your soul is empty. We will not cage you with child locks. We will hold up the mirror. Stand at the threshold.',
-        focus: 'Obsidian Shield & 7-Second Witness Mirror'
-      },
-      fragmented_work: {
-        text: 'Ten open tabs is not work; it is cowardice running from one difficult thought. When you work, work. When you stop, stop.',
-        focus: 'Deep Work Protection Window & Osho Midday STOP'
-      },
-      morning_inertia: {
-        text: 'The day does not begin when you finally roll out of bed. It begins the instant consciousness returns. Touch your feet to the earth. Ignite the solar arc.',
-        focus: '20-Step CoreMotion Walk & Dawn Kundalini Breath'
-      },
-      restless_mind: {
-        text: 'Your mind is a room full of shouting voices because you believe you are one of them. Sit back into the witness. The breath is your anchor.',
-        focus: '33 Living Spine Sadhana & Resonant Decay Silence'
-      }
-    };
-
-    function selectEnergyLeak(leakId, cardEl) {
-      obSelectedLeak = leakId;
-      document.querySelectorAll('.leak-choice-card').forEach(c => {
-        c.classList.remove('border-[#FFB800]', 'bg-[#181c15]');
-        c.classList.add('border-[#222822]', 'bg-[#101210]');
-      });
-      cardEl.classList.remove('border-[#222822]', 'bg-[#101210]');
-      cardEl.classList.add('border-[#FFB800]', 'bg-[#181c15]');
-      
-      const data = AI_LEAK_DATA[leakId];
-      if (data) {
-        document.getElementById('ob-zen-diagnosis-text').textContent = '"' + data.text + '"';
-        document.getElementById('ob-zen-focus-tag').textContent = data.focus;
-      }
-    }
-
-    // Step 3: 33 Living Spine Vertebra 01 Initiation
-    function igniteVertebra01() {
-      obVertebra01Ignited = true;
-      const card = document.getElementById('ob-spine-card-01');
-      const pulseNode = document.getElementById('ob-spine-pulse-node');
-      const statusText = document.getElementById('ob-spine-status');
-      const banner = document.getElementById('ob-spine-ignited-banner');
-      const prompt = document.getElementById('ob-spine-prompt');
-
-      if (card && pulseNode && statusText && banner && prompt) {
-        card.classList.remove('border-[#262D26]', 'bg-[#121412]');
-        card.classList.add('border-[#FFB800]', 'bg-[#191C15]');
-
-        pulseNode.classList.remove('border-[#444]', 'bg-[#171B17]');
-        pulseNode.classList.add('border-[#FFB800]', 'bg-[#FFB80033]', 'shadow-[0_0_15px_#FFB800]');
-
-        statusText.textContent = 'CURRENT IGNITED • GROUNDING SEALED';
-        statusText.className = 'text-[9px] font-bold text-[#39D98A] mt-0.5';
-
-        prompt.classList.add('hidden');
-        banner.classList.remove('hidden');
-      }
-
-      playVertebraChime();
-    }
-
-    function playVertebraChime() {
+    function playMechanicalThud() {
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!AudioContext) return;
@@ -83,17 +22,162 @@
         const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(144, now);
-        osc.frequency.exponentialRampToValueAtTime(288, now + 0.25);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(80, now);
+        osc.frequency.exponentialRampToValueAtTime(35, now + 0.12);
         gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(0.3, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+        gain.gain.linearRampToValueAtTime(0.4, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.55);
+        osc.stop(now + 0.18);
       } catch (e) {}
+    }
+
+    function toggleEnergyLeak(leakId, cardEl) {
+      if (obSelectedLeaks.includes(leakId)) {
+        obSelectedLeaks = obSelectedLeaks.filter(id => id !== leakId);
+        cardEl.classList.remove('border-[#FFB800]', 'bg-[#181c15]');
+        cardEl.classList.add('border-[#222822]', 'bg-[#101210]');
+        const check = cardEl.querySelector('.leak-check');
+        if (check) check.textContent = '';
+      } else {
+        obSelectedLeaks.push(leakId);
+        cardEl.classList.remove('border-[#222822]', 'bg-[#101210]');
+        cardEl.classList.add('border-[#FFB800]', 'bg-[#181c15]');
+        const check = cardEl.querySelector('.leak-check');
+        if (check) check.textContent = '✓';
+      }
+      playMechanicalThud();
+      updateCompoundDiagnosis();
+    }
+
+    function updateCompoundDiagnosis() {
+      const textEl = document.getElementById('ob-zen-diagnosis-text');
+      const focusEl = document.getElementById('ob-zen-focus-tag');
+      const countEl = document.getElementById('ob-selected-count');
+      if (countEl) countEl.textContent = obSelectedLeaks.length + ' SELECTED';
+
+      if (obSelectedLeaks.length === 0) {
+        textEl.textContent = '"Touch the conduits where your energy bleeds. Sovereign silence requires absolute honesty."';
+        focusEl.textContent = 'Baseline Grounding';
+        return;
+      }
+      const hasMidnight = obSelectedLeaks.includes('dopamine_feeds');
+      const hasMorning = obSelectedLeaks.includes('morning_inertia');
+      const hasWork = obSelectedLeaks.includes('fragmented_work');
+      const hasRestless = obSelectedLeaks.includes('restless_mind');
+
+      if (hasMidnight && hasMorning && hasWork && hasRestless) {
+        textEl.textContent = '"The full siege: mind racing, morning sluggish, work scattered, feeds devouring the night. When everything is chaos, returning to the center is the only choice. We begin at vertebra zero."';
+        focusEl.textContent = 'Complete Sovereign Sanctuary';
+      } else if (hasMidnight && hasMorning) {
+        textEl.textContent = '"You do not wake up exhausted because you slept poorly; you scroll at midnight because you never claimed your dawn. The midnight screen is the revenge of an unlived day. We fix your sleep the instant your heels touch the earth."';
+        focusEl.textContent = 'Dawn Ignition & 10 PM Blackout';
+      } else if (hasMidnight && hasWork) {
+        textEl.textContent = '"You switch between fifty noisy browser tabs all day and self-medicate with algorithmic dopamine at night. Your attention is fractured from dawn until twilight. Choose one single task, take one conscious breath, and step into the circle."';
+        focusEl.textContent = 'Deep Work Obsidian Shield';
+      } else if (hasWork && hasRestless) {
+        textEl.textContent = '"Ten open tabs is not productivity; it is cowardice running from one difficult thought. Your racing thoughts reflect a scattered workspace. Sit back into the witness. Anchor the breath."';
+        focusEl.textContent = 'Single-Point Execution';
+      } else if (hasMorning && hasRestless) {
+        textEl.textContent = '"Your body awakens with a rush of cortisol because you drag yesterday into today. You cannot think your way out of morning fog. Stand upright. Breathe into the belly. Let the noise dissolve."';
+        focusEl.textContent = 'Dawn Kundalini Breath';
+      } else if (hasMidnight) {
+        textEl.textContent = '"You feed the machine with seconds of your life and wonder why your soul is empty. The midnight screen is the revenge of an unlived day. Stand at the threshold."';
+        focusEl.textContent = '7-Second Witness Mirror';
+      } else if (hasMorning) {
+        textEl.textContent = '"The day does not begin when you finally roll out of bed. It begins the instant consciousness returns. Touch your feet to the earth. Ignite the solar arc."';
+        focusEl.textContent = '20-Step CoreMotion Walk';
+      } else if (hasWork) {
+        textEl.textContent = '"Ten open tabs is not work; it is cowardice running from one difficult thought. When you work, work. When you stop, stop."';
+        focusEl.textContent = 'Osho Midday STOP';
+      } else {
+        textEl.textContent = '"Your mind is a room full of shouting voices because you believe you are one of them. Sit back into the witness. The breath is your anchor."';
+        focusEl.textContent = '33 Living Spine Stillness';
+      }
+    }
+
+    function formatTime(h, m) {
+      const p = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      return String(h12).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + p;
+    }
+
+    // Delta Bridge Calculation
+    function updateDeltaBridge() {
+      const curWakeMins = curWakeH * 60 + curWakeM;
+      const tgtWakeMins = tgtWakeH * 60 + tgtWakeM;
+      const lostMorningMins = Math.max(0, curWakeMins - tgtWakeMins);
+      const lostMorningHrs = (lostMorningMins / 60).toFixed(1);
+
+      let curSleepMins = curSleepH * 60 + curSleepM;
+      let tgtSleepMins = tgtSleepH * 60 + tgtSleepM;
+      if (curSleepMins < 12 * 60) curSleepMins += 24 * 60;
+      if (tgtSleepMins < 12 * 60) tgtSleepMins += 24 * 60;
+      const lostNightMins = Math.max(0, curSleepMins - tgtSleepMins);
+      const lostNightHrs = (lostNightMins / 60).toFixed(1);
+
+      const totalLost = (parseFloat(lostMorningHrs) + parseFloat(lostNightHrs)).toFixed(1);
+      const annualWakingDays = Math.round((totalLost * 365) / 16);
+      const annualReclaimedHrs = Math.round(3.25 * 365);
+
+      const elMorning = document.getElementById('delta-morning-lost');
+      if (elMorning) elMorning.textContent = lostMorningHrs + ' hrs / day';
+      const elNight = document.getElementById('delta-night-lost');
+      if (elNight) elNight.textContent = lostNightHrs + ' hrs / night';
+      const elTotal = document.getElementById('delta-total-lost');
+      if (elTotal) elTotal.textContent = totalLost + ' HOURS / DAY';
+      const elDays = document.getElementById('delta-annual-days');
+      if (elDays) elDays.textContent = annualWakingDays + ' FULL WAKING DAYS';
+      const elFocus = document.getElementById('delta-annual-reclaimed');
+      if (elFocus) elFocus.textContent = '+' + annualReclaimedHrs + ' hours';
+
+      const curWakeDisplay = document.getElementById('cur-wake-display');
+      if (curWakeDisplay) curWakeDisplay.textContent = formatTime(curWakeH, curWakeM);
+      const curSleepDisplay = document.getElementById('cur-sleep-display');
+      if (curSleepDisplay) curSleepDisplay.textContent = formatTime(curSleepH, curSleepM);
+      const tgtWakeDisplay = document.getElementById('tgt-wake-display');
+      if (tgtWakeDisplay) tgtWakeDisplay.textContent = formatTime(tgtWakeH, tgtWakeM);
+      const tgtSleepDisplay = document.getElementById('tgt-sleep-display');
+      if (tgtSleepDisplay) tgtSleepDisplay.textContent = formatTime(tgtSleepH, tgtSleepM);
+    }
+
+    function adjustCurWake(delta) {
+      let total = curWakeH * 60 + curWakeM + delta;
+      if (total < 0) total += 24 * 60;
+      total = total % (24 * 60);
+      curWakeH = Math.floor(total / 60);
+      curWakeM = total % 60;
+      updateDeltaBridge();
+    }
+
+    function adjustCurSleep(delta) {
+      let total = curSleepH * 60 + curSleepM + delta;
+      if (total < 0) total += 24 * 60;
+      total = total % (24 * 60);
+      curSleepH = Math.floor(total / 60);
+      curSleepM = total % 60;
+      updateDeltaBridge();
+    }
+
+    function adjustTgtWake(delta) {
+      let total = tgtWakeH * 60 + tgtWakeM + delta;
+      if (total < 0) total += 24 * 60;
+      total = total % (24 * 60);
+      tgtWakeH = Math.floor(total / 60);
+      tgtWakeM = total % 60;
+      updateDeltaBridge();
+    }
+
+    function adjustTgtSleep(delta) {
+      let total = tgtSleepH * 60 + tgtSleepM + delta;
+      if (total < 0) total += 24 * 60;
+      total = total % (24 * 60);
+      tgtSleepH = Math.floor(total / 60);
+      tgtSleepM = total % 60;
+      updateDeltaBridge();
     }
 
     // Step 4: Tibetan Singing Bowl Resonant Decay Synthesis (DEV-98)
@@ -178,6 +262,11 @@
       }, 4500);
     }
 
+    function toggleDincharyaItem(el) {
+      el.classList.toggle('opacity-40');
+      playMechanicalThud();
+    }
+
     function updateObStepUi() {
       for (let s = 1; s <= 4; s++) {
         document.getElementById('ob-step-' + s).classList.toggle('hidden', s !== obStep);
@@ -196,17 +285,18 @@
       const nextBtnText = document.getElementById('ob-btn-next-text');
 
       if (obStep === 1) {
-        label.textContent = 'STEP 1 OF 4 • THE SOVEREIGN THRESHOLD (DEV-99)';
-        nextBtnText.textContent = 'Proceed to Solar Arc';
+        label.textContent = 'STEP 1 OF 4 • THE FRACTURED RESERVOIR (DEV-99)';
+        nextBtnText.textContent = 'Cross the Dial of Truth';
       } else if (obStep === 2) {
-        label.textContent = 'STEP 2 OF 4 • THE SOLAR ARC (DINCHARYA)';
-        nextBtnText.textContent = 'Initiate 33 Living Spine';
+        label.textContent = 'STEP 2 OF 4 • THE DIAL OF TRUTH & DELTA BRIDGE';
+        nextBtnText.textContent = 'Inspect 24/7 Dincharya';
+        updateDeltaBridge();
       } else if (obStep === 3) {
-        label.textContent = 'STEP 3 OF 4 • THE 33 LIVING SPINE (SADHANA)';
-        nextBtnText.textContent = 'Arm Hardware Sensors';
+        label.textContent = 'STEP 3 OF 4 • THE 24/7 LIVING DINCHARYA';
+        nextBtnText.textContent = 'Arm the Three Seals';
       } else if (obStep === 4) {
-        label.textContent = 'STEP 4 OF 4 • HARDWARE AS SPIRIT (DEV-98)';
-        nextBtnText.textContent = 'Enter the Virtual Monastery';
+        label.textContent = 'STEP 4 OF 4 • THE THREE SEALS OF ARMOR (DEV-98)';
+        nextBtnText.textContent = 'Inscribe Sovereign Rhythm';
       }
     }
 
@@ -226,71 +316,10 @@
       }
     }
 
-    function formatTime(h, m) {
-      const p = h >= 12 ? 'PM' : 'AM';
-      const h12 = h % 12 === 0 ? 12 : h % 12;
-      return String(h12).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + p;
-    }
-
-    function updateCircadianRest() {
-      let sleepMins = obSleepH * 60 + obSleepM;
-      let wakeMins = obWakeH * 60 + obWakeM;
-      if (wakeMins <= sleepMins) wakeMins += 24 * 60;
-      const diff = wakeMins - sleepMins;
-      const hours = Math.floor(diff / 60);
-      const mins = diff % 60;
-      document.getElementById('ob-wake-display').textContent = formatTime(obWakeH, obWakeM);
-      document.getElementById('ob-sleep-display').textContent = formatTime(obSleepH, obSleepM);
-      const wakeItem = document.getElementById('ob-wake-item-time');
-      if (wakeItem) wakeItem.textContent = formatTime(obWakeH, obWakeM);
-      const sleepItem = document.getElementById('ob-sleep-item-time');
-      if (sleepItem) sleepItem.textContent = formatTime(obSleepH, obSleepM);
-      document.getElementById('ob-duration-label').textContent = 'Restoration Window: ' + hours + 'h ' + (mins ? mins + 'm' : '');
-    }
-
-    function adjustWake(delta) {
-      let total = obWakeH * 60 + obWakeM + delta;
-      if (total < 0) total += 24 * 60;
-      total = total % (24 * 60);
-      obWakeH = Math.floor(total / 60);
-      obWakeM = total % 60;
-      updateCircadianRest();
-    }
-
-    function setWake(h, m) {
-      obWakeH = h;
-      obWakeM = m;
-      updateCircadianRest();
-    }
-
-    function adjustSleep(delta) {
-      let total = obSleepH * 60 + obSleepM + delta;
-      if (total < 0) total += 24 * 60;
-      total = total % (24 * 60);
-      obSleepH = Math.floor(total / 60);
-      obSleepM = total % 60;
-      updateCircadianRest();
-    }
-
-    function setSleep(h, m) {
-      obSleepH = h;
-      obSleepM = m;
-      updateCircadianRest();
-    }
-
-    function addPrototypeBlock(title, time, tag) {
-      const list = document.getElementById('ob-timeline-list');
-      if (!list) return;
-      const div = document.createElement('div');
-      div.className = 'bg-[#151915] p-2 rounded-lg border border-[#39D98A40] flex items-center justify-between text-xs animate-pulse';
-      div.innerHTML = '<span>⭐ ' + title + ' <em class="text-[9px] text-[#39D98A] not-italic font-bold">[' + tag + ']</em></span><span class="text-[#FFB800] text-[10px] font-bold">' + time + '</span>';
-      list.appendChild(div);
-      setTimeout(() => div.classList.remove('animate-pulse'), 1000);
-    }
-
     function armPermission(type, btn) {
       btn.className = 'w-full bg-[#1c2e1f] border border-[#39D98A] text-[#39D98A] text-[10px] font-bold py-2 rounded-lg uppercase tracking-wider';
-      btn.textContent = type === 'notif' ? '✓ ALERT PERMISSION ARMED' : '✓ MOTION SENSOR CALIBRATED';
+      btn.textContent = type === 'notif' ? '✓ SHIELD ARMED & AUTHORIZED' : '✓ MOTION SENSOR CALIBRATED';
+      playMechanicalThud();
     }
 
 </script>
@@ -431,248 +460,275 @@
                 <div id="ob-bar-3" class="h-1 flex-1 rounded bg-[#202520] transition-all"></div>
                 <div id="ob-bar-4" class="h-1 flex-1 rounded bg-[#202520] transition-all"></div>
               </div>
-              <div class="text-[9px] uppercase font-extrabold tracking-widest text-[#FFB800]" id="ob-step-label">STEP 1 OF 4 • THE SOVEREIGN THRESHOLD (DEV-99)</div>
+              <div class="text-[9px] uppercase font-extrabold tracking-widest text-[#FFB800]" id="ob-step-label">STEP 1 OF 4 • THE FRACTURED RESERVOIR (DEV-99)</div>
             </div>
 
-            <!-- ONBOARDING STEP 1: AI ENERGY DIAGNOSTIC & ARCHETYPE (DEV-99) -->
+            <!-- ONBOARDING STEP 1: MULTI-SELECT CONDUITS & COMPOUND BODHIDHARMA MIRROR -->
             <div id="ob-step-1">
               <div class="text-[10px] uppercase font-bold tracking-[0.25em] text-[#FFB800] mb-1">THE SOVEREIGN RETURN</div>
               <h2 class="serif text-2xl font-normal leading-tight text-[#f4f4ec] mb-1">
                 The world is loud.<br><em class="text-[#FFB800] not-italic">Where does your life force bleed?</em>
               </h2>
               <p class="text-xs leading-relaxed text-[#9ca395] mb-3">
-                Before setting a routine, diagnose where your attention leaks. Shaniwar places a mirror before you, not a cage.
+                Tap every conduit where your vitality drains. Shaniwar places an unsparing mirror before you, not a cage.
               </p>
 
-              <!-- Diagnostic Cards (Jira DEV-99) -->
-              <div class="text-[10px] font-bold text-[#b49860] uppercase tracking-wider mb-2">Identify Your Attention Leak</div>
+              <!-- Multi-Select Conduit Cards (DEV-100) -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-[10px] font-bold text-[#b49860] uppercase tracking-wider">Select All Active Conduits</span>
+                <span class="text-[9px] font-extrabold text-[#39D98A]" id="ob-selected-count">2 SELECTED</span>
+              </div>
+
               <div class="space-y-2 mb-3">
-                <div onclick="selectEnergyLeak('dopamine_feeds', this)" class="leak-choice-card border border-[#FFB800] bg-[#181c15] p-2.5 rounded-xl cursor-pointer tap-effect transition-all">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-base">⚡</span>
-                    <span class="text-xs font-bold text-[#FFB800]">Dopamine Doomscrolling</span>
+                <div onclick="toggleEnergyLeak('dopamine_feeds', this)" class="leak-choice-card border border-[#FFB800] bg-[#181c15] p-2.5 rounded-xl cursor-pointer tap-effect transition-all flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-lg">⚡</span>
+                    <div>
+                      <div class="text-xs font-bold text-[#FFB800]">The Midnight Scroll</div>
+                      <div class="text-[10px] text-[#8e958a]">Shorts, Reels, and feeds devouring the quiet night.</div>
+                    </div>
                   </div>
-                  <div class="text-[10px] text-[#8e958a]">Shorts, Reels, and late-night feed loops sucking attention.</div>
+                  <div class="w-5 h-5 rounded-full border border-[#FFB800] bg-[#FFB80022] flex items-center justify-center">
+                    <span class="leak-check text-[11px] font-extrabold text-[#FFB800]">✓</span>
+                  </div>
                 </div>
 
-                <div onclick="selectEnergyLeak('fragmented_work', this)" class="leak-choice-card border border-[#222822] bg-[#101210] p-2.5 rounded-xl cursor-pointer tap-effect transition-all">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-base">💼</span>
-                    <span class="text-xs font-bold text-[#ddd]">Workday Fragmentation</span>
+                <div onclick="toggleEnergyLeak('morning_inertia', this)" class="leak-choice-card border border-[#FFB800] bg-[#181c15] p-2.5 rounded-xl cursor-pointer tap-effect transition-all flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-lg">🌅</span>
+                    <div>
+                      <div class="text-xs font-bold text-[#FFB800]">The Morning Paralysis</div>
+                      <div class="text-[10px] text-[#8e958a]">Dragging out of bed, hitting snooze, foggy inertia.</div>
+                    </div>
                   </div>
-                  <div class="text-[10px] text-[#8e958a]">Tab switching, urgent pings, and shallow multitasking frenzy.</div>
+                  <div class="w-5 h-5 rounded-full border border-[#FFB800] bg-[#FFB80022] flex items-center justify-center">
+                    <span class="leak-check text-[11px] font-extrabold text-[#FFB800]">✓</span>
+                  </div>
                 </div>
 
-                <div onclick="selectEnergyLeak('morning_inertia', this)" class="leak-choice-card border border-[#222822] bg-[#101210] p-2.5 rounded-xl cursor-pointer tap-effect transition-all">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-base">🌅</span>
-                    <span class="text-xs font-bold text-[#ddd]">Morning Inertia & Snooze</span>
+                <div onclick="toggleEnergyLeak('fragmented_work', this)" class="leak-choice-card border border-[#222822] bg-[#101210] p-2.5 rounded-xl cursor-pointer tap-effect transition-all flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-lg">💼</span>
+                    <div>
+                      <div class="text-xs font-bold text-[#ddd]">The Fractured Workday</div>
+                      <div class="text-[10px] text-[#8e958a]">Forty open tabs, urgent pings, and shallow multitasking.</div>
+                    </div>
                   </div>
-                  <div class="text-[10px] text-[#8e958a]">Dragging out of bed, hitting snooze, morning cognitive fog.</div>
+                  <div class="w-5 h-5 rounded-full border border-[#444] flex items-center justify-center">
+                    <span class="leak-check text-[11px] font-extrabold text-[#FFB800]"></span>
+                  </div>
                 </div>
 
-                <div onclick="selectEnergyLeak('restless_mind', this)" class="leak-choice-card border border-[#222822] bg-[#101210] p-2.5 rounded-xl cursor-pointer tap-effect transition-all">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-base">🌀</span>
-                    <span class="text-xs font-bold text-[#ddd]">Restless Mind & Anxiety</span>
+                <div onclick="toggleEnergyLeak('restless_mind', this)" class="leak-choice-card border border-[#222822] bg-[#101210] p-2.5 rounded-xl cursor-pointer tap-effect transition-all flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-lg">🌀</span>
+                    <div>
+                      <div class="text-xs font-bold text-[#ddd]">The Restless Twilight</div>
+                      <div class="text-[10px] text-[#8e958a]">Racing thoughts, overthinking, anxiety masking fatigue.</div>
+                    </div>
                   </div>
-                  <div class="text-[10px] text-[#8e958a]">Racing thoughts, overthinking, inability to enter stillness.</div>
+                  <div class="w-5 h-5 rounded-full border border-[#444] flex items-center justify-center">
+                    <span class="leak-check text-[11px] font-extrabold text-[#FFB800]"></span>
+                  </div>
                 </div>
               </div>
 
-              <!-- Bodhidharma Zen Mirror Box (Jira DEV-99) -->
-              <div class="bg-[#151713] border border-[#FFB80066] rounded-xl p-3 mb-3">
+              <!-- Compound Bodhidharma Zen Mirror Box (DEV-99 & DEV-100) -->
+              <div class="bg-[#151713] border border-[#FFB80066] rounded-xl p-3 mb-2 shadow-[0_0_20px_rgba(255,184,0,0.1)]">
                 <div class="flex items-center justify-between mb-1.5">
-                  <span class="text-[8px] font-extrabold uppercase tracking-widest text-[#FFB800]">ZEN INTELLIGENCE • BODHIDHARMA MIRROR</span>
-                  <span class="text-[8px] font-bold text-[#39D98A]" id="ob-zen-focus-tag">Obsidian Shield & 7-Second Witness Mirror</span>
+                  <span class="text-[8px] font-extrabold uppercase tracking-widest text-[#FFB800]">COMPOUND BODHIDHARMA SYNTHESIS</span>
+                  <span class="text-[8px] font-bold text-[#39D98A]" id="ob-zen-focus-tag">Dawn Ignition & 10 PM Blackout</span>
                 </div>
                 <div class="serif text-xs italic text-[#e6e8e2] leading-relaxed" id="ob-zen-diagnosis-text">
-                  "You feed the machine with seconds of your life and wonder why your soul is empty. We will not cage you with child locks. We will hold up the mirror. Stand at the threshold."
-                </div>
-              </div>
-
-              <!-- Base Life Archetype Selector -->
-              <div class="text-[10px] font-bold text-[#b49860] uppercase tracking-wider mb-1.5">Base Lifestyle Rhythm</div>
-              <div class="grid grid-cols-2 gap-2 mb-3">
-                <div onclick="selectArchetype('builder', this)" class="arch-card active border-2 border-[#FFB800] bg-[#161a14] p-2 rounded-lg cursor-pointer tap-effect">
-                  <div class="text-xs font-bold text-white flex justify-between">⚡ Builder <span class="text-[9px] text-[#FFB800]">05:30</span></div>
-                  <div class="text-[9px] text-[#8e958a]">High output execution.</div>
-                </div>
-                <div onclick="selectArchetype('student', this)" class="arch-card border border-[#262c24] bg-[#101210] p-2 rounded-lg cursor-pointer tap-effect">
-                  <div class="text-xs font-bold text-[#ccc] flex justify-between">📚 Student <span class="text-[9px] text-[#8e958a]">06:00</span></div>
-                  <div class="text-[9px] text-[#71796d]">Deep study sprints.</div>
-                </div>
-                <div onclick="selectArchetype('parent', this)" class="arch-card border border-[#262c24] bg-[#101210] p-2 rounded-lg cursor-pointer tap-effect">
-                  <div class="text-xs font-bold text-[#ccc] flex justify-between">🌿 Parent <span class="text-[9px] text-[#8e958a]">05:45</span></div>
-                  <div class="text-[9px] text-[#71796d]">Morning quiet & family presence.</div>
-                </div>
-                <div onclick="selectArchetype('householder', this)" class="arch-card border border-[#262c24] bg-[#101210] p-2 rounded-lg cursor-pointer tap-effect">
-                  <div class="text-xs font-bold text-[#ccc] flex justify-between">💼 Householder <span class="text-[9px] text-[#8e958a]">06:30</span></div>
-                  <div class="text-[9px] text-[#71796d]">Career & evening sanctuary.</div>
+                  "You do not wake up exhausted because you slept poorly; you scroll at midnight because you never claimed your dawn. The midnight screen is the revenge of an unlived day. We fix your sleep the instant your heels touch the earth."
                 </div>
               </div>
             </div>
 
-            <!-- ONBOARDING STEP 2: THE SOLAR ARC (DINCHARYA - HORIZONTAL AXIS) -->
+            <!-- ONBOARDING STEP 2: THE DIAL OF TRUTH & DELTA BRIDGE -->
             <div id="ob-step-2" class="hidden">
-              <div class="text-[10px] uppercase font-bold tracking-[0.25em] text-[#FFB800] mb-1">THE CROSS OF EXISTENCE • HORIZONTAL AXIS</div>
-              <h2 class="serif text-xl font-normal leading-tight text-[#f4f4ec] mb-1">The Solar Arc • दिनचर्या</h2>
-              <p class="text-[11px] text-[#9ca395] mb-3">Sun rises, prana surges, twilight settles, body restores. An unbroken arc of light.</p>
+              <div class="text-[10px] uppercase font-bold tracking-[0.25em] text-[#FFB800] mb-1">THE DIAL OF TRUTH</div>
+              <h2 class="serif text-xl font-normal leading-tight text-[#f4f4ec] mb-1">Where You Stand. Where You Plant Your Flag.</h2>
+              <p class="text-[11px] text-[#9ca395] mb-3">We measure the exact territory lost to blue light and inertia to reclaim it.</p>
 
-              <!-- Wake Time Box -->
-              <div class="bg-[#121512] border border-[#222820] rounded-xl p-3 mb-3">
-                <div class="text-[9px] font-bold text-[#FFB800] tracking-wider mb-1">CORE ANCHOR 01 • MORNING IGNITION</div>
-                <div class="flex items-center justify-between mb-2">
-                  <button onclick="adjustWake(-15)" class="bg-[#1c221c] text-[#ccc] px-2 py-1 rounded text-[10px] font-bold">- 15m</button>
-                  <div class="text-center">
-                    <div id="ob-wake-display" class="text-2xl font-bold text-[#FFB800] mono">05:30 AM</div>
-                    <div class="text-[8px] text-[#71796d] uppercase font-bold">20-Step Walk • Zero Snooze</div>
+              <!-- Section A: The Unconscious Drift (Current Reality) -->
+              <div class="bg-[#0F120F] border border-[#222822] rounded-xl p-3 mb-2.5">
+                <div class="text-[8px] font-extrabold text-[#8E958A] tracking-wider uppercase mb-1">CURRENT REALITY • THE UNCONSCIOUS DRIFT</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="bg-[#141814] p-2 rounded-lg border border-[#242D24] text-center">
+                    <div class="text-[8px] font-bold text-[#71796D]">EYES ACTUALLY OPEN</div>
+                    <div id="cur-wake-display" class="text-base font-extrabold text-[#E0E2DC] mono my-0.5">08:15 AM</div>
+                    <div class="flex justify-center gap-1">
+                      <button onclick="adjustCurWake(-15)" class="bg-[#1c221c] text-[#aaa] px-1.5 py-0.5 rounded text-[8px] font-bold">-15m</button>
+                      <button onclick="adjustCurWake(15)" class="bg-[#1c221c] text-[#aaa] px-1.5 py-0.5 rounded text-[8px] font-bold">+15m</button>
+                    </div>
                   </div>
-                  <button onclick="adjustWake(15)" class="bg-[#1c221c] text-[#ccc] px-2 py-1 rounded text-[10px] font-bold">+ 15m</button>
-                </div>
-                <div class="flex flex-wrap gap-1.5 justify-center">
-                  <span onclick="setWake(5,0)" class="cursor-pointer bg-[#181c18] border border-[#262c26] px-2 py-0.5 rounded text-[10px] text-[#aaa]">05:00</span>
-                  <span onclick="setWake(5,30)" class="cursor-pointer bg-[#FFB800] text-black px-2 py-0.5 rounded text-[10px] font-bold">05:30</span>
-                  <span onclick="setWake(6,0)" class="cursor-pointer bg-[#181c18] border border-[#262c26] px-2 py-0.5 rounded text-[10px] text-[#aaa]">06:00</span>
-                  <span onclick="setWake(6,30)" class="cursor-pointer bg-[#181c18] border border-[#262c26] px-2 py-0.5 rounded text-[10px] text-[#aaa]">06:30</span>
-                </div>
-              </div>
-
-              <!-- Sleep Time Box -->
-              <div class="bg-[#121512] border border-[#222820] rounded-xl p-3 mb-3">
-                <div class="text-[9px] font-bold text-[#FFB800] tracking-wider mb-1">CORE ANCHOR 02 • SLEEP SANCTUM</div>
-                <div class="flex items-center justify-between mb-2">
-                  <button onclick="adjustSleep(-15)" class="bg-[#1c221c] text-[#ccc] px-2 py-1 rounded text-[10px] font-bold">- 15m</button>
-                  <div class="text-center">
-                    <div id="ob-sleep-display" class="text-2xl font-bold text-[#FFB800] mono">10:00 PM</div>
-                    <div class="text-[8px] text-[#71796d] uppercase font-bold">Digital Blackout • Recovery</div>
+                  <div class="bg-[#141814] p-2 rounded-lg border border-[#242D24] text-center">
+                    <div class="text-[8px] font-bold text-[#71796D]">PHONE FINALLY DOWN</div>
+                    <div id="cur-sleep-display" class="text-base font-extrabold text-[#E0E2DC] mono my-0.5">01:15 AM</div>
+                    <div class="flex justify-center gap-1">
+                      <button onclick="adjustCurSleep(-15)" class="bg-[#1c221c] text-[#aaa] px-1.5 py-0.5 rounded text-[8px] font-bold">-15m</button>
+                      <button onclick="adjustCurSleep(15)" class="bg-[#1c221c] text-[#aaa] px-1.5 py-0.5 rounded text-[8px] font-bold">+15m</button>
+                    </div>
                   </div>
-                  <button onclick="adjustSleep(15)" class="bg-[#1c221c] text-[#ccc] px-2 py-1 rounded text-[10px] font-bold">+ 15m</button>
-                </div>
-                <div class="flex flex-wrap gap-1.5 justify-center">
-                  <span onclick="setSleep(21,30)" class="cursor-pointer bg-[#181c18] border border-[#262c26] px-2 py-0.5 rounded text-[10px] text-[#aaa]">09:30</span>
-                  <span onclick="setSleep(22,0)" class="cursor-pointer bg-[#FFB800] text-black px-2 py-0.5 rounded text-[10px] font-bold">10:00</span>
-                  <span onclick="setSleep(22,30)" class="cursor-pointer bg-[#181c18] border border-[#262c26] px-2 py-0.5 rounded text-[10px] text-[#aaa]">10:30</span>
-                  <span onclick="setSleep(23,0)" class="cursor-pointer bg-[#181c18] border border-[#262c26] px-2 py-0.5 rounded text-[10px] text-[#aaa]">11:00</span>
                 </div>
               </div>
 
-              <!-- Sleep Duration Pill -->
-              <div class="bg-[#131b14] border border-[#29422d] rounded-xl p-2.5 flex items-center gap-2 mb-3">
-                <span class="text-lg">🌙</span>
-                <div class="text-[11px] text-[#86e09e]">
-                  <strong id="ob-duration-label">Restoration Window: 7h 30m</strong><br>
-                  <span class="text-[10px] text-[#71796d]">Optimal slow-wave NREM and REM brain restoration.</span>
+              <!-- Section B: The Sovereign Target -->
+              <div class="bg-[#161914] border-2 border-[#FFB800] rounded-xl p-3 mb-2.5">
+                <div class="text-[8px] font-extrabold text-[#FFB800] tracking-wider uppercase mb-1">THE SOVEREIGN TARGET • THE STANCE</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="bg-[#1A1E16] p-2 rounded-lg border border-[#FFB80055] text-center">
+                    <div class="text-[8px] font-bold text-[#FFB800]">DAWN IGNITION</div>
+                    <div id="tgt-wake-display" class="text-base font-extrabold text-[#FFB800] mono my-0.5">05:30 AM</div>
+                    <div class="flex justify-center gap-1">
+                      <button onclick="adjustTgtWake(-15)" class="bg-[#26281B] text-[#FFB800] px-1.5 py-0.5 rounded text-[8px] font-bold">-15m</button>
+                      <button onclick="adjustTgtWake(15)" class="bg-[#26281B] text-[#FFB800] px-1.5 py-0.5 rounded text-[8px] font-bold">+15m</button>
+                    </div>
+                  </div>
+                  <div class="bg-[#1A1E16] p-2 rounded-lg border border-[#FFB80055] text-center">
+                    <div class="text-[8px] font-bold text-[#FFB800]">DIGITAL BLACKOUT</div>
+                    <div id="tgt-sleep-display" class="text-base font-extrabold text-[#FFB800] mono my-0.5">10:00 PM</div>
+                    <div class="flex justify-center gap-1">
+                      <button onclick="adjustTgtSleep(-15)" class="bg-[#26281B] text-[#FFB800] px-1.5 py-0.5 rounded text-[8px] font-bold">-15m</button>
+                      <button onclick="adjustTgtSleep(15)" class="bg-[#26281B] text-[#FFB800] px-1.5 py-0.5 rounded text-[8px] font-bold">+15m</button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- Quick Presets -->
-              <div class="text-[9px] font-bold text-[#b49860] uppercase tracking-wider mb-1.5">Quick-Add Daily Routine Blocks</div>
-              <div class="flex gap-2 overflow-x-auto pb-2 mb-2">
-                <div onclick="addPrototypeBlock('🏋️ Gym & Mobility', '07:00 AM – 08:00 AM', 'FITNESS')" class="cursor-pointer bg-[#151915] border border-[#253025] p-2 rounded-lg text-left min-w-[115px] tap-effect">
-                  <div class="text-xs">🏋️ Gym & Mobility</div>
-                  <div class="text-[9px] text-[#FFB800]">07:00 – 08:00 AM</div>
-                  <div class="text-[8px] text-[#39D98A] font-bold mt-1">+ Add</div>
+              <!-- Section C: The Delta Bridge (The Ledger of Stolen Life) -->
+              <div class="bg-[#120F0F] border border-[#E8454566] rounded-xl p-3 mb-2">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[8px] font-extrabold text-[#E84545] uppercase tracking-wider">THE DELTA BRIDGE • LEDGER OF STOLEN LIFE</span>
+                  <span class="text-[8px] font-bold text-[#FFB800]">RECLAIM FOCUS</span>
                 </div>
-                <div onclick="addPrototypeBlock('🥗 Mindful Lunch', '12:30 PM – 01:15 PM', 'NUTRITION')" class="cursor-pointer bg-[#151915] border border-[#253025] p-2 rounded-lg text-left min-w-[115px] tap-effect">
-                  <div class="text-xs">🥗 Mindful Lunch</div>
-                  <div class="text-[9px] text-[#FFB800]">12:30 – 01:15 PM</div>
-                  <div class="text-[8px] text-[#39D98A] font-bold mt-1">+ Add</div>
+                <div class="space-y-1 text-xs">
+                  <div class="flex justify-between text-[#a09898]">
+                    <span>Morning Daylight Lost to Inertia:</span>
+                    <strong class="text-[#FFB800]" id="delta-morning-lost">2.8 hrs / day</strong>
+                  </div>
+                  <div class="flex justify-between text-[#a09898]">
+                    <span>Twilight Surrendered to Blue Light:</span>
+                    <strong class="text-[#FFB800]" id="delta-night-lost">3.3 hrs / night</strong>
+                  </div>
+                  <div class="flex justify-between text-white font-bold pt-1 border-t border-[#331B1B]">
+                    <span>Total Sovereign Territory Lost:</span>
+                    <strong class="text-[#E84545]" id="delta-total-lost">6.1 HOURS / DAY</strong>
+                  </div>
                 </div>
-                <div onclick="addPrototypeBlock('🚶 Sunlight Walk', '02:00 PM – 02:30 PM', 'MOVEMENT')" class="cursor-pointer bg-[#151915] border border-[#253025] p-2 rounded-lg text-left min-w-[115px] tap-effect">
-                  <div class="text-xs">🚶 Sunlight Walk</div>
-                  <div class="text-[9px] text-[#FFB800]">02:00 – 02:30 PM</div>
-                  <div class="text-[8px] text-[#39D98A] font-bold mt-1">+ Add</div>
-                </div>
-                <div onclick="addPrototypeBlock('📖 Deep Reading', '08:30 PM – 09:15 PM', 'STUDY')" class="cursor-pointer bg-[#151915] border border-[#253025] p-2 rounded-lg text-left min-w-[115px] tap-effect">
-                  <div class="text-xs">📖 Deep Reading</div>
-                  <div class="text-[9px] text-[#FFB800]">08:30 – 09:15 PM</div>
-                  <div class="text-[8px] text-[#39D98A] font-bold mt-1">+ Add</div>
+                <div class="bg-[#1E1212] rounded-lg p-2 mt-2 text-[10px] text-[#e0d0d0] leading-snug">
+                  In one year, you surrender <strong class="text-[#E84545]" id="delta-annual-days">68 FULL WAKING DAYS</strong> to the matrix. By planting your flag, you reclaim <strong class="text-[#39D98A]" id="delta-annual-reclaimed">+1186 hours</strong> of conscious creation.
                 </div>
               </div>
             </div>
 
-            <!-- ONBOARDING STEP 3: THE 33 LIVING SPINE (SADHANA - VERTICAL AXIS) -->
+            <!-- ONBOARDING STEP 3: THE 24/7 LIVING DINCHARYA (RIVER STONES) -->
             <div id="ob-step-3" class="hidden">
-              <div class="text-[10px] uppercase font-bold tracking-[0.25em] text-[#FFB800] mb-1">THE CROSS OF EXISTENCE • VERTICAL AXIS</div>
-              <h2 class="serif text-xl font-normal leading-tight text-[#f4f4ec] mb-1">The 33 Living Spine</h2>
-              <p class="text-[11px] text-[#9ca395] mb-3">Your spine is your physical reality right now. 33 thresholds of ascending awareness.</p>
+              <div class="text-[10px] uppercase font-bold tracking-[0.25em] text-[#FFB800] mb-1">RIVER STONES IN A ZEN GARDEN</div>
+              <h2 class="serif text-xl font-normal leading-tight text-[#f4f4ec] mb-1">Your 24/7 Dincharya</h2>
+              <p class="text-[11px] text-[#9ca395] mb-2.5">Generated to bridge your exact delta. Every stone is editable. Tap to toggle or adjust.</p>
 
-              <!-- Vertebra 01 Interactive Initiation Card -->
-              <div id="ob-spine-card-01" onclick="igniteVertebra01()" class="bg-[#121412] border border-[#262D26] rounded-xl p-3 mb-3 cursor-pointer tap-effect transition-all">
-                <div class="flex items-center gap-3">
-                  <div id="ob-spine-pulse-node" class="w-10 h-10 rounded-full border-2 border-[#444] bg-[#171B17] flex items-center justify-center transition-all">
-                    <span class="text-xs font-extrabold text-[#FFB800]">01</span>
+              <!-- Editable Dincharya River Stones -->
+              <div class="space-y-2 mb-3">
+                <div class="bg-[#161914] border-2 border-[#FFB80066] p-2.5 rounded-xl flex items-center justify-between">
+                  <div>
+                    <div class="text-xs font-bold text-[#FFB800] flex items-center gap-1.5">
+                      <span>🔥</span> Dawn Ignition
+                    </div>
+                    <div class="text-[9px] text-[#8e958a]">20-Step CoreMotion Walk • Zero Snooze</div>
+                    <span class="text-[8px] font-extrabold text-[#FFB800] tracking-wider uppercase">CORE ANCHOR</span>
                   </div>
-                  <div class="flex-1">
-                    <div class="text-[10px] font-extrabold text-[#FFB800] tracking-wider">VERTEBRA 01 • MULADHARA (ROOT)</div>
-                    <div id="ob-spine-status" class="text-[9px] font-bold text-[#8E958A] mt-0.5">TOUCH TO IGNITE YOUR NERVOUS SYSTEM</div>
+                  <div class="text-right">
+                    <span class="text-xs font-bold text-[#FFB800] mono">05:30 AM</span>
+                    <div class="text-[8px] bg-[#262418] text-[#FFB800] px-1.5 py-0.5 rounded font-extrabold mt-1">IRON ANCHOR</div>
                   </div>
-                </div>
-                <div id="ob-spine-prompt" class="mt-2.5 pt-2 border-t border-[#202620] text-[10px] text-[#71796d]">
-                  Tap to trigger the synthetic ascension pulse and initiate your spinal journey.
-                </div>
-                <div id="ob-spine-ignited-banner" class="hidden mt-2.5 pt-2 border-t border-[#2b3224] flex items-start gap-2">
-                  <span class="text-[#39D98A] font-bold text-xs">✓</span>
-                  <span class="serif text-[11px] italic text-[#e0e2dc] leading-tight">
-                    "The foundation is sealed. 32 thresholds await above. One conscious breath at a time."
-                  </span>
-                </div>
-              </div>
-
-              <!-- Four Spinal Consciousness Zones -->
-              <div class="text-[9px] font-bold text-[#b49860] uppercase tracking-wider mb-2">The Four Consciousness Zones</div>
-              <div class="space-y-1.5">
-                <div class="bg-[#101210] border border-[#202620] p-2 rounded-lg">
-                  <div class="flex justify-between items-center">
-                    <span class="text-[9px] font-bold text-[#FFB800]">CERVICAL & CRANIAL (25–33)</span>
-                    <span class="text-[8px] text-[#777]">CROWN</span>
-                  </div>
-                  <div class="text-[11px] font-bold text-[#eee]">Sakshi / The Witness State</div>
-                  <div class="text-[9px] text-[#71796d]">Pure awareness looking directly at the matrix untouched.</div>
                 </div>
 
-                <div class="bg-[#101210] border border-[#202620] p-2 rounded-lg">
-                  <div class="flex justify-between items-center">
-                    <span class="text-[9px] font-bold text-[#6C63FF]">THORACIC (17–24)</span>
-                    <span class="text-[8px] text-[#777]">HEART</span>
+                <div onclick="toggleDincharyaItem(this)" class="bg-[#111411] border border-[#202620] p-2.5 rounded-xl flex items-center justify-between cursor-pointer tap-effect">
+                  <div>
+                    <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span>⚡</span> Dawn Kundalini Breath & Spine Check
+                    </div>
+                    <div class="text-[9px] text-[#8e958a]">Ascending Prana Wave • Box Breath 4-4-4-4</div>
+                    <span class="text-[8px] font-extrabold text-[#71796D] tracking-wider uppercase">HYBRID MONK</span>
                   </div>
-                  <div class="text-[11px] font-bold text-[#eee]">Stillness Amidst Chaos</div>
-                  <div class="text-[9px] text-[#71796d]">De-armoring the chest. Witnessing noise without flinching.</div>
+                  <div class="text-right">
+                    <span class="text-xs font-bold text-white mono">06:00 AM</span>
+                    <div class="text-[8px] text-[#39D98A] font-bold mt-1">TAP TO TOGGLE</div>
+                  </div>
                 </div>
 
-                <div class="bg-[#101210] border border-[#202620] p-2 rounded-lg">
-                  <div class="flex justify-between items-center">
-                    <span class="text-[9px] font-bold text-[#E84545]">LUMBAR (09–16)</span>
-                    <span class="text-[8px] text-[#777]">SOLAR</span>
+                <div class="bg-[#161914] border-2 border-[#FFB80066] p-2.5 rounded-xl flex items-center justify-between">
+                  <div>
+                    <div class="text-xs font-bold text-[#FFB800] flex items-center gap-1.5">
+                      <span>🛡️</span> The Golden Forge (Deep Work Shield)
+                    </div>
+                    <div class="text-[9px] text-[#8e958a]">Obsidian Shield Active • Single-Point Execution</div>
+                    <span class="text-[8px] font-extrabold text-[#FFB800] tracking-wider uppercase">CORE ANCHOR</span>
                   </div>
-                  <div class="text-[11px] font-bold text-[#eee]">Solar Plexus / Vital Prana</div>
-                  <div class="text-[9px] text-[#71796d]">90-minute sustained deep focus without dopamine craving.</div>
+                  <div class="text-right">
+                    <span class="text-xs font-bold text-[#FFB800] mono">09:00 AM – 01:00 PM</span>
+                    <div class="text-[8px] bg-[#262418] text-[#FFB800] px-1.5 py-0.5 rounded font-extrabold mt-1">IRON ANCHOR</div>
+                  </div>
                 </div>
 
-                <div class="bg-[#121A13] border border-[#39D98A55] p-2 rounded-lg">
-                  <div class="flex justify-between items-center">
-                    <span class="text-[9px] font-bold text-[#39D98A]">SACRAL & COCCYX (01–08)</span>
-                    <span class="text-[8px] font-bold text-[#39D98A] bg-[#182e1d] px-1.5 py-0.5 rounded">ACTIVE</span>
+                <div onclick="toggleDincharyaItem(this)" class="bg-[#111411] border border-[#202620] p-2.5 rounded-xl flex items-center justify-between cursor-pointer tap-effect">
+                  <div>
+                    <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span>🛑</span> Midday Osho STOP & Nourishment
+                    </div>
+                    <div class="text-[9px] text-[#8e958a]">Freeze Attention • Screen-Free Nutrition</div>
+                    <span class="text-[8px] font-extrabold text-[#71796D] tracking-wider uppercase">HYBRID MONK</span>
                   </div>
-                  <div class="text-[11px] font-bold text-[#eee]">Root / Grounding in Reality</div>
-                  <div class="text-[9px] text-[#71796d]">Circadian ignition. Feet on the earth. Waking without screens.</div>
+                  <div class="text-right">
+                    <span class="text-xs font-bold text-white mono">01:15 PM</span>
+                    <div class="text-[8px] text-[#39D98A] font-bold mt-1">TAP TO TOGGLE</div>
+                  </div>
+                </div>
+
+                <div onclick="toggleDincharyaItem(this)" class="bg-[#111411] border border-[#202620] p-2.5 rounded-xl flex items-center justify-between cursor-pointer tap-effect">
+                  <div>
+                    <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span>📖</span> Analog Wisdom & Reading
+                    </div>
+                    <div class="text-[9px] text-[#8e958a]">Screen-Free Paper Book • Dissolve Agitation</div>
+                    <span class="text-[8px] font-extrabold text-[#71796D] tracking-wider uppercase">STUDY</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-xs font-bold text-white mono">08:30 PM</span>
+                    <div class="text-[8px] text-[#39D98A] font-bold mt-1">TAP TO TOGGLE</div>
+                  </div>
+                </div>
+
+                <div class="bg-[#161914] border-2 border-[#FFB80066] p-2.5 rounded-xl flex items-center justify-between">
+                  <div>
+                    <div class="text-xs font-bold text-[#FFB800] flex items-center gap-1.5">
+                      <span>🌑</span> Digital Blackout (Sleep Sanctum)
+                    </div>
+                    <div class="text-[9px] text-[#8e958a]">Phone Put Down • 7.5h Neural Restoration</div>
+                    <span class="text-[8px] font-extrabold text-[#FFB800] tracking-wider uppercase">CORE ANCHOR</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-xs font-bold text-[#FFB800] mono">10:00 PM</span>
+                    <div class="text-[8px] bg-[#262418] text-[#FFB800] px-1.5 py-0.5 rounded font-extrabold mt-1">IRON ANCHOR</div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- ONBOARDING STEP 4: HARDWARE AS SPIRIT & RESONANT DECAY TEST (DEV-98) -->
+            <!-- ONBOARDING STEP 4: HARDWARE AS SPIRIT & THE THREE SEALS OF ARMOR -->
             <div id="ob-step-4" class="hidden">
               <div class="text-[10px] uppercase font-bold tracking-[0.25em] text-[#FFB800] mb-1">HARDWARE AS SPIRIT</div>
-              <h2 class="serif text-xl font-normal leading-tight text-[#f4f4ec] mb-1">Sensory Engine & Arming</h2>
+              <h2 class="serif text-xl font-normal leading-tight text-[#f4f4ec] mb-1">The Three Seals of Armor</h2>
               <p class="text-[11px] text-[#9ca395] mb-3">Shaniwar treats glass and haptic actuators as a sacred instrument. Zero clipping.</p>
 
-              <!-- Interactive Resonant Decay Test (Jira DEV-98) -->
-              <div class="bg-[#121512] border border-[#262d26] rounded-xl p-3 mb-3">
+              <!-- Resonant Decay Test Card (DEV-98) -->
+              <div class="bg-[#121512] border border-[#262d26] rounded-xl p-3 mb-2.5">
                 <div class="text-[8px] font-extrabold text-[#FFB800] uppercase tracking-widest mb-0.5">JIRA DEV-98 • SENSORY PRECISION</div>
                 <div class="text-xs font-bold text-white mb-1">Resonant Decay to Pure Silence</div>
                 <div class="text-[10px] text-[#8e958a] mb-2.5">
-                  Listen and feel the multi-tier micro-frequency curve mimicking a hand-hammered singing bowl decaying into absolute zero.
+                  Listen and feel the multi-tier micro-frequency curve mimicking a 200-pound bronze Tibetan singing bowl decaying into absolute zero.
                 </div>
 
                 <button onclick="testResonantDecay()" id="ob-decay-btn" class="w-full bg-[#182018] border border-[#FFB800] text-[#FFB800] text-[10px] font-extrabold py-2.5 rounded-lg uppercase tracking-wider tap-effect transition-all mb-2 flex items-center justify-center gap-2">
@@ -690,39 +746,39 @@
                 </div>
               </div>
 
-              <!-- Permission Card 1: Notifications -->
+              <!-- Seal 1: The Shield of Focus -->
               <div class="bg-[#121512] border border-[#222820] rounded-xl p-2.5 mb-2">
                 <div class="flex items-start gap-2 mb-1.5">
                   <span class="text-lg">🛡️</span>
                   <div>
-                    <div class="text-xs font-bold text-white">Focus Shield & Alerts</div>
-                    <div class="text-[10px] text-[#8e958a]">Triggers 7-second witness mirror and routine alerts.</div>
+                    <div class="text-xs font-bold text-white">Seal 01 • The Shield of Focus</div>
+                    <div class="text-[10px] text-[#8e958a]">To silence the machine, Shaniwar must have authority to close the gates.</div>
                   </div>
                 </div>
-                <button onclick="armPermission('notif', this)" id="btn-perm-notif" class="w-full bg-[#FFB800] text-black text-[9px] font-bold py-1.5 rounded-lg uppercase tracking-wider tap-effect">
-                  Arm Alert Permission
+                <button onclick="armPermission('notif', this)" class="w-full bg-[#FFB800] text-black text-[9px] font-bold py-1.5 rounded-lg uppercase tracking-wider tap-effect">
+                  Grant the Shield
                 </button>
               </div>
 
-              <!-- Permission Card 2: CoreMotion Sensor -->
+              <!-- Seal 2: The Grounding Sensor -->
               <div class="bg-[#121512] border border-[#222820] rounded-xl p-2.5 mb-2">
                 <div class="flex items-start gap-2 mb-1.5">
                   <span class="text-lg">🚶</span>
                   <div>
-                    <div class="text-xs font-bold text-white">CoreMotion Walk Sensor</div>
-                    <div class="text-[10px] text-[#8e958a]">Detects 20 genuine steps. Zero snooze in bed.</div>
+                    <div class="text-xs font-bold text-white">Seal 02 • The Grounding Sensor</div>
+                    <div class="text-[10px] text-[#8e958a]">Demands 20 physical paces on the earth to silence your dawn ignition.</div>
                   </div>
                 </div>
-                <button onclick="armPermission('motion', this)" id="btn-perm-motion" class="w-full bg-[#FFB800] text-black text-[9px] font-bold py-1.5 rounded-lg uppercase tracking-wider tap-effect">
-                  Calibrate Motion Sensor
+                <button onclick="armPermission('motion', this)" class="w-full bg-[#FFB800] text-black text-[9px] font-bold py-1.5 rounded-lg uppercase tracking-wider tap-effect">
+                  Arm the Motion Sensor
                 </button>
               </div>
 
-              <!-- Permission Card 3: Audio -->
+              <!-- Seal 3: The Horn of Dawn -->
               <div class="bg-[#121512] border border-[#222820] rounded-xl p-2 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="text-base">🔔</span>
-                  <span class="text-xs font-bold text-white">High-Priority Monastic Audio</span>
+                  <span class="text-xs font-bold text-white">Seal 03 • The Horn of Dawn</span>
                 </div>
                 <span class="text-[9px] bg-[#1a281c] text-[#39D98A] px-2 py-0.5 rounded font-bold">READY ✓</span>
               </div>
@@ -736,7 +792,7 @@
                 ← Back
               </button>
               <button onclick="onboardingStepNext()" id="ob-btn-next" class="flex-1 bg-[#FFB800] text-black font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-wider tap-effect shadow-[0_8px_25px_rgba(255,184,0,0.25)] flex items-center justify-center gap-2">
-                <span id="ob-btn-next-text">Proceed to Solar Arc</span>
+                <span id="ob-btn-next-text">Cross the Dial of Truth</span>
                 <span>→</span>
               </button>
             </div>
