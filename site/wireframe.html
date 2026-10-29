@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shaniwar — V1 Mobile UI/UX Interactive Prototype</title>
+  <title>Shanivar — V1 Mobile UI/UX Interactive Prototype</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js">
     // 4-Step Interactive Onboarding State (Jobsian Alignment, DEV-98, DEV-99, DEV-100)
     let obStep = 1;
@@ -470,7 +470,7 @@
                 The world is loud.<br><em class="text-[#FFB800] not-italic">Where does your life force bleed?</em>
               </h2>
               <p class="text-xs leading-relaxed text-[#9ca395] mb-3">
-                Tap every conduit where your vitality drains. Shaniwar places an unsparing mirror before you, not a cage.
+                Tap every conduit where your vitality drains. Shanivar places an unsparing mirror before you, not a cage.
               </p>
 
               <!-- Multi-Select Conduit Cards (DEV-100) -->
@@ -721,7 +721,7 @@
             <div id="ob-step-4" class="hidden">
               <div class="text-[10px] uppercase font-bold tracking-[0.25em] text-[#FFB800] mb-1">HARDWARE AS SPIRIT</div>
               <h2 class="serif text-xl font-normal leading-tight text-[#f4f4ec] mb-1">The Three Seals of Armor</h2>
-              <p class="text-[11px] text-[#9ca395] mb-3">Shaniwar treats glass and haptic actuators as a sacred instrument. Zero clipping.</p>
+              <p class="text-[11px] text-[#9ca395] mb-3">Shanivar treats glass and haptic actuators as a sacred instrument. Zero clipping.</p>
 
               <!-- Resonant Decay Test Card (DEV-98) -->
               <div class="bg-[#121512] border border-[#262d26] rounded-xl p-3 mb-2.5">
@@ -752,7 +752,7 @@
                   <span class="text-lg">🛡️</span>
                   <div>
                     <div class="text-xs font-bold text-white">Seal 01 • The Shield of Focus</div>
-                    <div class="text-[10px] text-[#8e958a]">To silence the machine, Shaniwar must have authority to close the gates.</div>
+                    <div class="text-[10px] text-[#8e958a]">To silence the machine, Shanivar must have authority to close the gates.</div>
                   </div>
                 </div>
                 <button onclick="armPermission('notif', this)" class="w-full bg-[#FFB800] text-black text-[9px] font-bold py-1.5 rounded-lg uppercase tracking-wider tap-effect">
@@ -807,7 +807,7 @@
           <!-- Sticky Header -->
           <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#212620]">
             <div>
-              <div class="text-[9px] uppercase tracking-[0.25em] text-[#FFB800] font-extrabold">SHANIWAR • BY THE HYBRID MONK</div>
+              <div class="text-[9px] uppercase tracking-[0.25em] text-[#FFB800] font-extrabold">SHANIVAR • BY THE HYBRID MONK</div>
               <div class="serif text-xl font-normal text-[#f4f4ec]">Dincharya • दिनचर्या</div>
             </div>
             <div class="flex items-center gap-2">
@@ -828,6 +828,55 @@
               <span class="text-[11px] font-bold mono text-[#e5e5dc]">LIVE CLOCK: 07:05 AM</span>
             </div>
             <span class="text-[10px] text-[#8e958a] bg-[#1a1e19] px-2 py-0.5 rounded-full font-medium">1,428 Monks In Arc</span>
+          </div>
+
+          <!-- 24-HOUR HORIZONTAL SOLAR ARC (Steve Jobs Sparring Mandate DEV-101) -->
+          <div class="bg-[#0e100e] border border-[#FF950040] rounded-2xl p-4 mb-5 shadow-lg relative overflow-hidden">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <div class="text-[9px] uppercase tracking-[0.2em] text-[#FF9500] font-extrabold">24-HOUR PLANETARY ARC • DEV-101</div>
+                <div class="text-sm font-extrabold text-white mt-0.5">DAWN IGNITION (SUNRISE)</div>
+                <div class="text-[10px] text-[#8e958a] mt-0.5">Light hits retina • 20 grounding paces on earth</div>
+              </div>
+              <span class="text-[9px] bg-[#FF950015] border border-[#FF950040] text-[#FF9500] px-2 py-1 rounded-md font-extrabold tracking-wider">
+                3 / 3 IRON ANCHORS
+              </span>
+            </div>
+
+            <!-- Solar Arc Continuum Track with Cursor -->
+            <div class="relative h-6 flex items-center my-2">
+              <div class="w-full h-1.5 bg-[#1a1d1a] rounded-full border border-white/5 overflow-hidden">
+                <div class="h-full bg-[#FF9500] rounded-full" style="width: 29.5%;"></div>
+              </div>
+              <!-- Sun Cursor -->
+              <div class="absolute -top-1 w-6 h-6 flex items-center justify-center text-sm shadow-[0_0_12px_#FF9500]" style="left: 28%;">
+                ☀️
+              </div>
+            </div>
+
+            <!-- Solar Quadrants -->
+            <div class="flex justify-between text-[8px] text-[#636c61] font-bold tracking-wider px-0.5 mb-3">
+              <span>05:00 DAWN</span>
+              <span>12:00 ZENITH</span>
+              <span>18:00 DUSK</span>
+              <span>23:00 VOID</span>
+            </div>
+
+            <!-- The Three Sacred Iron Anchors Seals -->
+            <div class="grid grid-cols-3 gap-2 pt-2.5 border-t border-white/5">
+              <button onclick="playHapticDecay(event)" class="bg-[#141814] border border-[#FF950060] rounded-lg p-2 text-center tap-effect">
+                <div class="text-[9px] font-extrabold text-[#FF9500]">✓ SEALED</div>
+                <div class="text-[9px] text-[#d0d6cb] font-bold mt-0.5">Dawn Ignition</div>
+              </button>
+              <button onclick="playHapticDecay(event)" class="bg-[#141814] border border-[#FF950060] rounded-lg p-2 text-center tap-effect">
+                <div class="text-[9px] font-extrabold text-[#FF9500]">○ UNSEALED</div>
+                <div class="text-[9px] text-[#d0d6cb] font-bold mt-0.5">Golden Forge</div>
+              </button>
+              <button onclick="playHapticDecay(event)" class="bg-[#141814] border border-white/10 rounded-lg p-2 text-center tap-effect">
+                <div class="text-[9px] font-extrabold text-[#777]">○ UNSEALED</div>
+                <div class="text-[9px] text-[#8e958a] font-bold mt-0.5">Sleep Sanctum</div>
+              </button>
+            </div>
           </div>
 
           <!-- Quick Test Triggers Banner -->
@@ -968,41 +1017,46 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- SCREEN 4: OBSIDIAN FOCUS SHIELD (APP INTERCEPT) -->
+        <!-- SCREEN 4: THE WITNESS MIRROR (SAKSHI INTERCEPT - DEV-102) -->
         <!-- ============================================== -->
-        <div id="screen-shield" class="screen-view p-6 flex flex-col justify-between min-h-full bg-[#0a0c0a] hidden">
+        <div id="screen-shield" class="screen-view p-6 flex flex-col justify-between min-h-full bg-[#070807] hidden">
           <div>
             <div class="flex items-center justify-between pt-2">
-              <span class="text-[10px] uppercase font-bold tracking-widest text-[#FFB800] bg-[#221c0e] px-2.5 py-1 rounded-full border border-[#FFB80040]">🛡️ OBSIDIAN SHIELD ACTIVE</span>
+              <span class="text-[9px] uppercase font-bold tracking-widest text-[#FF9500] bg-[#1a140b] px-2.5 py-1 rounded-full border border-[#FF950040]">THE WITNESS OF SAKSHI • DEV-102</span>
               <button onclick="setScreen('dincharya')" class="text-xs text-[#888] hover:text-white">✕ Close</button>
             </div>
 
-            <!-- Center Breathing Orb -->
-            <div class="flex flex-col items-center justify-center my-8">
-              <div class="w-40 h-40 rounded-full border-2 border-[#FFB800] breathing-circle flex flex-col items-center justify-center bg-radial from-[#FFB80015] to-transparent mb-6">
-                <div class="text-3xl">👁️</div>
-                <div class="text-[10px] uppercase font-bold tracking-widest text-[#FFB800] mt-1">CONSCIOUS PAUSE</div>
+            <!-- Expanding 7-Second Breath Circle -->
+            <div class="flex flex-col items-center justify-center my-6">
+              <div class="w-36 h-36 rounded-full border-2 border-[#FF9500] breathing-circle flex flex-col items-center justify-center bg-radial from-[#FF950020] to-transparent shadow-[0_0_30px_rgba(255,149,0,0.15)] mb-4">
+                <div class="text-3xl font-extrabold mono text-white" id="witness-circle-timer">7s</div>
+                <div class="text-[9px] uppercase font-extrabold tracking-widest text-[#FF9500] mt-1">ONE BREATH</div>
               </div>
 
-              <div class="serif text-xl font-normal text-white text-center">Unconscious Reflex<br>Intercepted.</div>
-              <p class="text-xs text-[#959d90] text-center max-w-[260px] mt-2 leading-relaxed">
-                You tapped Instagram out of habit. Before the algorithmic feed captures you: breathe.
+              <div class="serif text-lg font-normal text-white text-center italic max-w-[280px] leading-relaxed">
+                “You are entering the unconscious stream. Enter if you choose. But do not go in blind.”
+              </div>
+              <p class="text-[11px] text-[#8e958a] text-center max-w-[260px] mt-2 leading-relaxed">
+                A monastery has no locked steel doors. Only a courtyard where you can hear your own footsteps.
               </p>
             </div>
 
-            <!-- 10-Second Breath Countdown Box -->
-            <div class="bg-[#131613] border border-[#2b3327] rounded-xl p-4 text-center">
-              <div class="text-[11px] text-[#a4aca0] mb-1">Take 3 conscious abdominal breaths...</div>
-              <div class="text-2xl font-extrabold mono text-[#FFB800]" id="shield-timer">10s Remaining</div>
+            <!-- Active Telemetry Reflection -->
+            <div class="bg-[#0f110f] border border-[#232922] rounded-xl p-3.5 text-center">
+              <div class="text-[9px] text-[#FF9500] uppercase tracking-wider font-extrabold mb-0.5">BODHIDHARMA TELEMETRY MIRROR</div>
+              <div class="text-[11px] text-[#c8cec2] italic">
+                “18 interruptions before noon. Your body is seated, but your mind is running away. Take one breath.”
+              </div>
             </div>
           </div>
 
+          <!-- Steve Jobs Sovereign Dual Choice -->
           <div class="space-y-2.5 pb-6">
-            <button onclick="setScreen('dincharya')" class="w-full bg-[#39D98A] text-black font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-wider tap-effect shadow-[0_4px_20px_rgba(57,217,138,0.25)]">
-              Stay in Presence (Close App) ✨
+            <button onclick="playHapticDecay(event); setScreen('dincharya')" class="w-full bg-[#FF9500] text-[#070807] font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-wider tap-effect shadow-[0_4px_20px_rgba(255,149,0,0.25)] flex items-center justify-center gap-1.5">
+              <span>🛡️</span> Step Back to the Center (Return to Forge)
             </button>
-            <button id="proceed-ig-btn" disabled onclick="alert('Instagram opened consciously. Remember your intent.')" class="w-full bg-[#171b16] text-[#555] font-bold text-xs py-3 rounded-xl border border-[#262e24] cursor-not-allowed">
-              I genuinely need this (Unlocks in 10s)
+            <button onclick="playHapticDecay(event); alert('Witness Bell armed for 7 minutes. A subtle Tibetan bowl will recall you to life.'); setScreen('dincharya')" class="w-full bg-[#141614] text-[#a4aca0] hover:text-white font-bold text-[11px] py-3 rounded-xl border border-white/10 tap-effect">
+              Enter with Awareness (7-Minute Witness Bell) →
             </button>
           </div>
         </div>
@@ -1013,7 +1067,7 @@
         <div id="screen-paywall" class="screen-view p-5 pb-8 min-h-full bg-[#0d0e0d] hidden">
           <div class="flex items-center justify-between pb-2 mb-3">
             <button onclick="setScreen('dincharya')" class="text-xs text-[#888] hover:text-white">✕</button>
-            <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#FFB800]">SHANIWAR MONK PASS</span>
+            <span class="text-[10px] uppercase font-bold tracking-[0.2em] text-[#FFB800]">SHANIVAR MONK PASS</span>
             <button onclick="alert('Purchases Restored: Free Tier Active')" class="text-[11px] text-[#888] hover:text-[#ddd]">Restore</button>
           </div>
 
@@ -1108,7 +1162,7 @@
         <div class="text-xs uppercase font-extrabold tracking-widest text-[#FFB800] mb-2">01 / THE CORE UI/UX SHIFT</div>
         <h3 class="serif text-xl font-normal text-white mb-2">No Databases. Pure Living Arc.</h3>
         <p class="text-xs text-[#a0a69a] leading-relaxed mb-4">
-          Most habit and routine apps look like spreadsheets or complex medical checklists. Shaniwar replaces tables with a single, high-contrast 24-hour arc that adapts to your life archetype and keeps you physically moving.
+          Most habit and routine apps look like spreadsheets or complex medical checklists. Shanivar replaces tables with a single, high-contrast 24-hour arc that adapts to your life archetype and keeps you physically moving.
         </p>
         <div class="grid grid-cols-2 gap-3">
           <div class="bg-[#181d17] p-3 rounded-xl border border-[#262e24]">
