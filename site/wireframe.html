@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shanivar — V1 Mobile UI/UX Interactive Prototype</title>
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script>
     // 4-Step Interactive Onboarding State (Jobsian Alignment, DEV-98, DEV-99, DEV-100)
     let obStep = 1;
     let obSelectedLeaks = ['dopamine_feeds', 'morning_inertia'];
@@ -40,12 +41,32 @@
         obSelectedLeaks = obSelectedLeaks.filter(id => id !== leakId);
         cardEl.classList.remove('border-[#FFB800]', 'bg-[#181c15]');
         cardEl.classList.add('border-[#222822]', 'bg-[#101210]');
+        const title = cardEl.querySelector('.leak-title');
+        if (title) {
+          title.classList.remove('text-[#FFB800]');
+          title.classList.add('text-[#ddd]');
+        }
+        const circle = cardEl.querySelector('.leak-check-circle');
+        if (circle) {
+          circle.classList.remove('border-[#FFB800]', 'bg-[#FFB80022]');
+          circle.classList.add('border-[#444]', 'bg-transparent');
+        }
         const check = cardEl.querySelector('.leak-check');
         if (check) check.textContent = '';
       } else {
         obSelectedLeaks.push(leakId);
         cardEl.classList.remove('border-[#222822]', 'bg-[#101210]');
         cardEl.classList.add('border-[#FFB800]', 'bg-[#181c15]');
+        const title = cardEl.querySelector('.leak-title');
+        if (title) {
+          title.classList.remove('text-[#ddd]');
+          title.classList.add('text-[#FFB800]');
+        }
+        const circle = cardEl.querySelector('.leak-check-circle');
+        if (circle) {
+          circle.classList.remove('border-[#444]', 'bg-transparent');
+          circle.classList.add('border-[#FFB800]', 'bg-[#FFB80022]');
+        }
         const check = cardEl.querySelector('.leak-check');
         if (check) check.textContent = '✓';
       }
@@ -508,11 +529,11 @@
                   <div class="flex items-center gap-2.5">
                     <span class="text-lg">⚡</span>
                     <div>
-                      <div class="text-xs font-bold text-[#FFB800]">The Midnight Scroll</div>
+                      <div class="leak-title text-xs font-bold text-[#FFB800]">The Midnight Scroll</div>
                       <div class="text-[10px] text-[#8e958a]">Shorts, Reels, and feeds devouring the quiet night.</div>
                     </div>
                   </div>
-                  <div class="w-5 h-5 rounded-full border border-[#FFB800] bg-[#FFB80022] flex items-center justify-center">
+                  <div class="leak-check-circle w-5 h-5 rounded-full border border-[#FFB800] bg-[#FFB80022] flex items-center justify-center">
                     <span class="leak-check text-[11px] font-extrabold text-[#FFB800]">✓</span>
                   </div>
                 </div>
@@ -521,11 +542,11 @@
                   <div class="flex items-center gap-2.5">
                     <span class="text-lg">🌅</span>
                     <div>
-                      <div class="text-xs font-bold text-[#FFB800]">The Morning Paralysis</div>
+                      <div class="leak-title text-xs font-bold text-[#FFB800]">The Morning Paralysis</div>
                       <div class="text-[10px] text-[#8e958a]">Dragging out of bed, hitting snooze, foggy inertia.</div>
                     </div>
                   </div>
-                  <div class="w-5 h-5 rounded-full border border-[#FFB800] bg-[#FFB80022] flex items-center justify-center">
+                  <div class="leak-check-circle w-5 h-5 rounded-full border border-[#FFB800] bg-[#FFB80022] flex items-center justify-center">
                     <span class="leak-check text-[11px] font-extrabold text-[#FFB800]">✓</span>
                   </div>
                 </div>
@@ -534,11 +555,11 @@
                   <div class="flex items-center gap-2.5">
                     <span class="text-lg">💼</span>
                     <div>
-                      <div class="text-xs font-bold text-[#ddd]">The Fractured Workday</div>
+                      <div class="leak-title text-xs font-bold text-[#ddd]">The Fractured Workday</div>
                       <div class="text-[10px] text-[#8e958a]">Forty open tabs, urgent pings, and shallow multitasking.</div>
                     </div>
                   </div>
-                  <div class="w-5 h-5 rounded-full border border-[#444] flex items-center justify-center">
+                  <div class="leak-check-circle w-5 h-5 rounded-full border border-[#444] flex items-center justify-center">
                     <span class="leak-check text-[11px] font-extrabold text-[#FFB800]"></span>
                   </div>
                 </div>
@@ -547,11 +568,11 @@
                   <div class="flex items-center gap-2.5">
                     <span class="text-lg">🌀</span>
                     <div>
-                      <div class="text-xs font-bold text-[#ddd]">The Restless Twilight</div>
+                      <div class="leak-title text-xs font-bold text-[#ddd]">The Restless Twilight</div>
                       <div class="text-[10px] text-[#8e958a]">Racing thoughts, overthinking, anxiety masking fatigue.</div>
                     </div>
                   </div>
-                  <div class="w-5 h-5 rounded-full border border-[#444] flex items-center justify-center">
+                  <div class="leak-check-circle w-5 h-5 rounded-full border border-[#444] flex items-center justify-center">
                     <span class="leak-check text-[11px] font-extrabold text-[#FFB800]"></span>
                   </div>
                 </div>
