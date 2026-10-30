@@ -300,11 +300,35 @@
       }
     }
 
+    function showCeremonialToast(msg) {
+      const existing = document.getElementById('ceremonial-toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.id = 'ceremonial-toast';
+      toast.className = 'fixed top-8 left-1/2 -translate-x-1/2 bg-[#0A0C0A] border-2 border-[#FF9500] text-[#FF9500] px-6 py-3.5 rounded-2xl shadow-[0_0_40px_rgba(255,149,0,0.5)] z-[9999] text-xs font-extrabold uppercase tracking-widest flex items-center gap-3 transition-all';
+      toast.innerHTML = `<span class="text-base">🔔</span> <span>${msg}</span>`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 600);
+      }, 3500);
+    }
+
+    function restartOnboarding() {
+      obStep = 1;
+      updateObStepUi();
+      setScreen('onboarding');
+      playMechanicalThud();
+    }
+
     function onboardingStepNext() {
+      playMechanicalThud();
       if (obStep < 4) {
         obStep += 1;
         updateObStepUi();
       } else {
+        playHapticDecay();
+        showCeremonialToast('SOVEREIGN RHYTHM INSCRIBED • WELCOME TO THE SOLAR ARC');
         setScreen('dincharya');
       }
     }
@@ -1157,55 +1181,97 @@
     <!-- UI/UX Architecture Walkthrough Details -->
     <div class="flex-1 max-w-xl space-y-6 text-sm">
       
-      <!-- Card: UI/UX Philosophy -->
-      <div class="bg-[#121512] border border-[#232921] rounded-2xl p-6">
-        <div class="text-xs uppercase font-extrabold tracking-widest text-[#FFB800] mb-2">01 / THE CORE UI/UX SHIFT</div>
-        <h3 class="serif text-xl font-normal text-white mb-2">No Databases. Pure Living Arc.</h3>
+      <!-- Founder Manual Testing & Acceptance Console -->
+      <div class="bg-[#101310] border-2 border-[#FF950060] rounded-2xl p-6 shadow-[0_0_40px_rgba(255,149,0,0.1)]">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs uppercase font-extrabold tracking-widest text-[#FF9500]">FOUNDER ACCEPTANCE CONSOLE</span>
+          <span class="text-[9px] bg-[#FF950020] text-[#FF9500] border border-[#FF950060] px-2 py-0.5 rounded font-extrabold">LIVE TEST MODE</span>
+        </div>
+        <h3 class="serif text-2xl font-normal text-white mb-2">Manual Testing: Onboarding → Dincharya</h3>
         <p class="text-xs text-[#a0a69a] leading-relaxed mb-4">
-          Most habit and routine apps look like spreadsheets or complex medical checklists. Shanivar replaces tables with a single, high-contrast 24-hour arc that adapts to your life archetype and keeps you physically moving.
+          Experience the complete initiation journey forged through Steve Jobs' lens. Verify every merged Jira ticket (<code class="text-[#FF9500]">DEV-98</code> to <code class="text-[#FF9500]">DEV-102</code>) from the first tap to landing in the Solar Arc.
         </p>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="bg-[#181d17] p-3 rounded-xl border border-[#262e24]">
-            <div class="text-xs font-bold text-[#FFB800] mb-1">Morning Ignition</div>
-            <div class="text-[11px] text-[#868d80]">CoreMotion walk detection prevents hitting snooze in bed.</div>
-          </div>
-          <div class="bg-[#181d17] p-3 rounded-xl border border-[#262e24]">
-            <div class="text-xs font-bold text-[#39D98A] mb-1">Obsidian Shield</div>
-            <div class="text-[11px] text-[#868d80]">iOS Shortcuts wrapper pulls users back before mindless scrolling.</div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Card: Flow Verification & QA Gates -->
-      <div class="bg-[#121512] border border-[#232921] rounded-2xl p-6">
-        <div class="text-xs uppercase font-extrabold tracking-widest text-[#39D98A] mb-2">02 / SANITY & QA VERIFICATION GATES</div>
-        <h3 class="serif text-xl font-normal text-white mb-2">From Onboarding to Retention</h3>
-        <ul class="space-y-2 text-xs text-[#b0b6aa]">
-          <li class="flex items-start gap-2">
-            <span class="text-[#39D98A]">✓</span>
-            <span><strong>Zero-Friction First Run:</strong> User launches app, selects archetype, and their day is calibrated immediately with zero database forms.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-[#39D98A]">✓</span>
-            <span><strong>Offline / Local-First:</strong> Guaranteed operation even in airplane mode. AsyncStorage + Supabase outbox ensure zero network freezes.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-[#39D98A]">✓</span>
-            <span><strong>Jira Traceability:</strong> Aligned with live tickets <code>DEV-10</code>, <code>DEV-11</code>, <code>DEV-57</code>, <code>DEV-71</code>, <code>DEV-75</code>, and <code>DEV-97</code>.</span>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Card: Upcoming Feature Lock Screen Wallpaper -->
-      <div class="bg-[#171612] border border-[#FFB80040] rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs uppercase font-extrabold tracking-widest text-[#FFB800]">03 / JIRA DEV-97 READY</span>
-          <span class="text-[9px] bg-[#FFB800] text-black px-2 py-0.5 rounded font-extrabold">SPRINT 2</span>
+        <!-- Fast Navigation / Reset Buttons -->
+        <div class="grid grid-cols-2 gap-2 mb-5">
+          <button onclick="restartOnboarding()" class="bg-[#181d17] hover:bg-[#20271f] border border-[#FF950080] text-[#FF9500] text-xs font-bold py-2.5 px-3 rounded-xl tap-effect flex items-center justify-center gap-1.5">
+            <span>↺</span> Reset Onboarding (Step 1)
+          </button>
+          <button onclick="setScreen('dincharya')" class="bg-[#181d17] hover:bg-[#20271f] border border-white/10 text-white text-xs font-bold py-2.5 px-3 rounded-xl tap-effect flex items-center justify-center gap-1.5">
+            <span>☀️</span> Jump to Solar Arc
+          </button>
+          <button onclick="setScreen('shield')" class="bg-[#181d17] hover:bg-[#20271f] border border-white/10 text-white text-xs font-bold py-2.5 px-3 rounded-xl tap-effect flex items-center justify-center gap-1.5">
+            <span>🛡️</span> Trigger Witness Mirror
+          </button>
+          <button onclick="playHapticDecay(event)" class="bg-[#181d17] hover:bg-[#20271f] border border-[#39D98A80] text-[#39D98A] text-xs font-bold py-2.5 px-3 rounded-xl tap-effect flex items-center justify-center gap-1.5">
+            <span>🔔</span> Ring Tibetan Bowl (DEV-98)
+          </button>
         </div>
-        <h3 class="serif text-xl font-normal text-white mb-1">Dynamic Lock Screen Wallpaper</h3>
-        <p class="text-xs text-[#a0a69a] leading-relaxed">
-          The next ticket in queue (DEV-97) will auto-generate a 9:16 high-resolution lock-screen image of today’s calibrated Dincharya arc so user intentions stay visible every time the screen illuminates.
-        </p>
+
+        <!-- 7-Stage Testing & Verification Checklist -->
+        <div class="space-y-3 pt-4 border-t border-white/10">
+          <div class="text-[10px] uppercase tracking-wider text-[#737c70] font-extrabold mb-1">FOUNDER VERIFICATION CHECKLIST</div>
+
+          <label class="flex items-start gap-3 p-2.5 rounded-xl bg-[#141814] border border-white/5 cursor-pointer hover:border-[#FF950040]">
+            <input type="checkbox" checked class="mt-0.5 accent-[#FF9500] w-4 h-4 rounded">
+            <div>
+              <div class="text-xs font-bold text-white">1. Multi-Conduit Leaks & 3-Sentence AI (DEV-99)</div>
+              <div class="text-[11px] text-[#8e958a] mt-0.5">Select multiple conduits in Step 1. Hear mechanical clicks & observe Bodhidharma synthesis strictly under the 3-Sentence Law.</div>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-2.5 rounded-xl bg-[#141814] border border-white/5 cursor-pointer hover:border-[#FF950040]">
+            <input type="checkbox" checked class="mt-0.5 accent-[#FF9500] w-4 h-4 rounded">
+            <div>
+              <div class="text-xs font-bold text-white">2. Dial of Truth & Delta Bridge Ledger (DEV-100)</div>
+              <div class="text-[11px] text-[#8e958a] mt-0.5">Adjust wake/sleep in Step 2. See the visceral Ledger of Stolen Life update live (surrendered annual waking days).</div>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-2.5 rounded-xl bg-[#141814] border border-white/5 cursor-pointer hover:border-[#FF950040]">
+            <input type="checkbox" checked class="mt-0.5 accent-[#FF9500] w-4 h-4 rounded">
+            <div>
+              <div class="text-xs font-bold text-white">3. Editable 24/7 Dincharya River Stones (DEV-100)</div>
+              <div class="text-[11px] text-[#8e958a] mt-0.5">Toggle intermediate stones on/off in Step 3 while preserving the 3 Sacred Iron Anchors.</div>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-2.5 rounded-xl bg-[#141814] border border-white/5 cursor-pointer hover:border-[#FF950040]">
+            <input type="checkbox" checked class="mt-0.5 accent-[#FF9500] w-4 h-4 rounded">
+            <div>
+              <div class="text-xs font-bold text-white">4. Three Seals & Resonant Decay to Silence (DEV-98)</div>
+              <div class="text-[11px] text-[#8e958a] mt-0.5">In Step 4, click test decay to hear the bronze Tibetan bowl sound smoothly attenuate into absolute silence without audio clipping.</div>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-2.5 rounded-xl bg-[#141814] border border-white/5 cursor-pointer hover:border-[#FF950040]">
+            <input type="checkbox" checked class="mt-0.5 accent-[#FF9500] w-4 h-4 rounded">
+            <div>
+              <div class="text-xs font-bold text-white">5. Ceremonial Transition to Living Dincharya (DEV-101)</div>
+              <div class="text-[11px] text-[#8e958a] mt-0.5">Click "Inscribe Sovereign Rhythm" at Step 4. Experience Tibetan bell chime, gold celebration banner, and instant landing in Dincharya.</div>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-2.5 rounded-xl bg-[#141814] border border-white/5 cursor-pointer hover:border-[#FF950040]">
+            <input type="checkbox" checked class="mt-0.5 accent-[#FF9500] w-4 h-4 rounded">
+            <div>
+              <div class="text-xs font-bold text-white">6. 24-Hour Horizontal Solar Arc & Iron Seals (DEV-101)</div>
+              <div class="text-[11px] text-[#8e958a] mt-0.5">In Dincharya, observe live sun cursor tracking planetary time across 4 quadrants. Click [○ UNSEALED / ✓ SEALED] with haptic chimes.</div>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-2.5 rounded-xl bg-[#141814] border border-white/5 cursor-pointer hover:border-[#FF950040]">
+            <input type="checkbox" checked class="mt-0.5 accent-[#FF9500] w-4 h-4 rounded">
+            <div>
+              <div class="text-xs font-bold text-white">7. The Witness Mirror of Sakshi (DEV-102)</div>
+              <div class="text-[11px] text-[#8e958a] mt-0.5">Click "Tap Instagram" simulation -> 7s expanding breath circle with sparse koan -> test Step Back to Center vs 7-min recall bell.</div>
+            </div>
+          </label>
+        </div>
+
+        <button onclick="showCeremonialToast('FOUNDER APPROVAL REGISTERED • READY FOR SADHANA DEV-103'); playHapticDecay(event);" class="w-full mt-6 bg-[#FF9500] hover:bg-[#ffa726] text-[#070807] font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-wider tap-effect shadow-[0_4px_25px_rgba(255,149,0,0.3)] flex items-center justify-center gap-2">
+          <span>✓</span> Approve Flow & Proceed to Sadhana (DEV-103)
+        </button>
       </div>
 
     </div>
@@ -1282,31 +1348,24 @@
       document.getElementById('step-progress').style.width = `0%`;
     }
 
-    // Focus Shield Countdown
+    // Focus Shield Countdown (DEV-102 Witness Mirror)
     let timerInterval = null;
     function startShieldCountdown() {
       clearInterval(timerInterval);
-      let count = 10;
-      const timerEl = document.getElementById('shield-timer');
-      const proceedBtn = document.getElementById('proceed-ig-btn');
-      proceedBtn.disabled = true;
-      proceedBtn.classList.remove('bg-[#FFB800]', 'text-black');
-      proceedBtn.classList.add('bg-[#171b16]', 'text-[#555]');
-      timerEl.textContent = `${count}s Remaining`;
-
-      timerInterval = setInterval(() => {
-        count -= 1;
-        if (count > 0) {
-          timerEl.textContent = `${count}s Remaining`;
-        } else {
-          clearInterval(timerInterval);
-          timerEl.textContent = `Mindful Pause Complete ✨`;
-          proceedBtn.disabled = false;
-          proceedBtn.classList.remove('bg-[#171b16]', 'text-[#555]');
-          proceedBtn.classList.add('bg-[#FFB800]', 'text-black');
-          proceedBtn.textContent = 'I consciously choose to open Instagram →';
-        }
-      }, 1000);
+      let count = 7;
+      const timerEl = document.getElementById('witness-circle-timer');
+      if (timerEl) {
+        timerEl.textContent = `${count}s`;
+        timerInterval = setInterval(() => {
+          count -= 1;
+          if (count > 0) {
+            timerEl.textContent = `${count}s`;
+          } else {
+            clearInterval(timerInterval);
+            timerEl.textContent = `0s`;
+          }
+        }, 1000);
+      }
     }
 
     // Billing Switcher
