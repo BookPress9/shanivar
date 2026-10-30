@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shanivar — The 33 Living Spine & Typography Architecture</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #030403;
+      color: #e5e7eb;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-sacred {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+    .font-cinzel {
+      font-family: 'Cinzel', Georgia, serif;
+    }
+    .font-sans-ui {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-mono-prec {
+      font-family: 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+    }
+    /* Glow animations */
+    @keyframes sushumnaPulse {
+      0%, 100% { opacity: 0.35; filter: drop-shadow(0 0 4px #FFB800); }
+      50% { opacity: 0.95; filter: drop-shadow(0 0 16px #FFB800) drop-shadow(0 0 28px rgba(255, 184, 0, 0.4)); }
+    }
+    .pulse-sushumna {
+      animation: sushumnaPulse 6s ease-in-out infinite;
+    }
+    @keyframes activeNodeBreathe {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 10px rgba(255, 184, 0, 0.6));
+      }
+      50% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 24px rgba(255, 184, 0, 0.95)) drop-shadow(0 0 40px rgba(255, 149, 0, 0.4));
+      }
+    }
+    .active-node-glow {
+      animation: activeNodeBreathe 10s ease-in-out infinite; /* 0.1 Hz breathing resonance */
+      transform-origin: center;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090b09;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #252b22;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FFB800;
+    }
+    .tap-effect {
+      transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), filter 0.15s ease;
+    }
+    .tap-effect:active {
+      transform: scale(0.97);
+      filter: brightness(1.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#030403] text-[#e0e4dd] antialiased selection:bg-[#FFB800] selection:text-black">
+
+  <!-- TOP BAR -->
+  <header class="border-b border-[#181d16] bg-[#070907]/90 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-[#141812] border border-[#2b3327] flex items-center justify-center text-[#FFB800] font-cinzel font-bold text-base shadow-[0_0_15px_rgba(255,184,0,0.15)]">
+        श
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-cinzel tracking-[0.2em] text-xs font-bold text-white uppercase">SHANIVAR</span>
+          <span class="text-[9px] font-mono-prec bg-[#1d221a] border border-[#30392b] text-[#FFB800] px-1.5 py-0.5 rounded font-bold">PHASE 3</span>
+        </div>
+        <div class="text-[10px] text-[#838d7e]">The 33 Living Spine & Typography Architecture Overview</div>
+      </div>
+    </div>
+
+    <!-- Mode Selector Tabs -->
+    <div class="flex items-center bg-[#0d100d] border border-[#20271d] p-1 rounded-xl gap-1">
+      <button onclick="setViewMode('spine')" id="tab-spine" class="px-3.5 py-1.5 rounded-lg text-xs font-mono-prec font-bold tracking-wider transition-all bg-[#FFB800] text-black shadow-[0_0_12px_rgba(255,184,0,0.3)]">
+        🧬 LIVING SPINE
+      </button>
+      <button onclick="setViewMode('typography')" id="tab-typography" class="px-3.5 py-1.5 rounded-lg text-xs font-mono-prec font-bold tracking-wider transition-all text-[#8e9888] hover:text-white">
+        🔤 TYPOGRAPHY SYSTEM
+      </button>
+      <button onclick="triggerBlackSanctum()" class="px-3.5 py-1.5 rounded-lg text-xs font-mono-prec font-bold tracking-wider transition-all bg-[#171c14] border border-[#2b3526] text-[#FFB800] hover:bg-[#20271c] flex items-center gap-1.5">
+        <span>🧘 ENTER THE SILENCE</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- ==================== LEFT COLUMN: THE MOBILE GLASS CONTAINER (5 COLS) ==================== -->
+    <div class="lg:col-span-5 flex flex-col items-center">
+      <!-- Device Shell -->
+      <div class="w-full max-w-[390px] rounded-[48px] bg-[#000000] border-4 border-[#222820] shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_40px_rgba(255,184,0,0.06)] overflow-hidden relative flex flex-col h-[780px]">
+        
+        <!-- Phone Top Bezel / Dynamic Island -->
+        <div class="pt-3 px-6 pb-2 flex items-center justify-between z-20 bg-gradient-to-b from-black via-black/90 to-transparent">
+          <span class="text-[11px] font-mono-prec font-bold text-[#888]">05:30</span>
+          <div class="w-20 h-4 bg-[#111] rounded-full mx-auto border border-[#222]"></div>
+          <div class="flex items-center gap-1.5 text-[10px] text-[#888]">
+            <span class="w-2 h-2 rounded-full bg-[#39D98A] inline-block"></span>
+            <span class="font-mono-prec">216Hz</span>
+          </div>
+        </div>
+
+        <!-- Mobile Header Bar -->
+        <div class="px-5 pt-1 pb-3 border-b border-[#181d16] bg-[#040504] z-10 flex items-center justify-between">
+          <div>
+            <div class="text-[9px] font-mono-prec font-extrabold uppercase tracking-[0.25em] text-[#FFB800]">SADHANA • THE SACRED AXIS</div>
+            <h1 class="font-sacred text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+              The 33 Living Spine
+            </h1>
+          </div>
+          <div class="text-right">
+            <div class="text-[9px] font-mono-prec text-[#777] uppercase">ACTIVE ALTITUDE</div>
+            <div class="text-xs font-mono-prec font-extrabold text-[#FFB800]">NODE 11 • L3</div>
+          </div>
+        </div>
+
+        <!-- Scrollable Spine Stage (The Glass Playground) -->
+        <div id="spine-viewport" class="flex-1 overflow-y-auto px-4 py-6 relative bg-[#000000] flex flex-col items-center">
+
+          <!-- Background Vertical Sushumna Laser Filament -->
+          <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[3px] bg-gradient-to-b from-[#ffffff] via-[#FFB800] via-60% to-[#a77322] pulse-sushumna pointer-events-none z-0"></div>
+
+          <!-- THE 4 EVOLUTIONARY EPOCHS OVERVIEW SILHOUETTE -->
+          <div class="w-full flex flex-col items-center gap-6 z-10 py-4">
+
+            <!-- ==================== EPOCH IV: THE SUMMIT ==================== -->
+            <div class="w-full text-center mb-1">
+              <div class="inline-block px-3 py-1 rounded-full bg-[#161a15] border border-[#2c3727] text-[9px] font-mono-prec font-bold text-[#e8f0e6] tracking-[0.2em] shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                EPOCH IV • THE SUMMIT (V27–V33)
+              </div>
+              <div class="text-[10px] font-sacred italic text-[#8a9884] mt-0.5">Clear Light · Intuitive Stillness · Kevala Kumbhaka</div>
+            </div>
+
+            <!-- Sahasrara Apex Node (V33) -->
+            <div onclick="selectVertebra(33)" class="cursor-pointer tap-effect group flex flex-col items-center">
+              <div class="w-12 h-12 rounded-full border border-[#ffffff88] bg-[#0c120c] flex items-center justify-center relative shadow-[0_0_20px_rgba(255,255,255,0.2)] group-hover:border-white transition-all">
+                <div class="w-4 h-4 rounded-full bg-white shadow-[0_0_12px_#fff]"></div>
+                <span class="absolute -top-1.5 -right-1 text-[8px] font-mono-prec font-bold bg-white text-black px-1 rounded-full">33</span>
+              </div>
+              <span class="text-[9px] font-mono-prec text-[#aaa] mt-1 group-hover:text-white">SAHASRĀRA • CROWN</span>
+            </div>
+
+            <!-- Cervical Cluster (V32 - V27) -->
+            <div class="flex flex-col items-center gap-2.5 w-full">
+              <div onclick="selectVertebra(30)" class="cursor-pointer tap-effect group flex items-center justify-center gap-3 w-48 py-1 px-3 rounded-lg border border-[#222a1f] bg-[#0a0d09]/80 hover:border-[#FFB800]">
+                <div class="w-7 h-7 rounded-full border border-[#8e988a] flex items-center justify-center text-[10px] font-mono-prec text-[#aaa]">30</div>
+                <div class="flex-1 text-left">
+                  <div class="text-[10px] font-bold text-[#ddd]">Ājñā (Third Eye • C4)</div>
+                  <div class="text-[8px] font-mono-prec text-[#777]">Medulla · Single Point</div>
+                </div>
+              </div>
+
+              <div onclick="selectVertebra(27)" class="cursor-pointer tap-effect group flex items-center justify-center gap-3 w-48 py-1 px-3 rounded-lg border border-[#222a1f] bg-[#0a0d09]/80 hover:border-[#FFB800]">
+                <div class="w-7 h-7 rounded-full border border-[#8e988a] flex items-center justify-center text-[10px] font-mono-prec text-[#aaa]">27</div>
+                <div class="flex-1 text-left">
+                  <div class="text-[10px] font-bold text-[#ddd]">Atlas Ring (C1)</div>
+                  <div class="text-[8px] font-mono-prec text-[#777]">Threshold of Summit</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inter-Epoch Axis Bridge -->
+            <div class="w-0.5 h-6 bg-[#333e2e]"></div>
+
+            <!-- ==================== EPOCH III: THE HEART OF TRUTH ==================== -->
+            <div class="w-full text-center mb-1">
+              <div class="inline-block px-3 py-1 rounded-full bg-[#121c17] border border-[#1f362a] text-[9px] font-mono-prec font-bold text-[#39D98A] tracking-[0.2em]">
+                EPOCH III • THE HEART OF TRUTH (V15–V26)
+              </div>
+              <div class="text-[10px] font-sacred italic text-[#7ba591] mt-0.5">Air & Ether · 0.1Hz Cardiac Coherence · Sovereign Voice</div>
+            </div>
+
+            <!-- Thoracic Ribcage Cluster (V26 - V15) -->
+            <div class="flex flex-col items-center gap-2.5 w-full">
+              <div onclick="selectVertebra(24)" class="cursor-pointer tap-effect group flex items-center justify-center gap-3 w-56 py-1 px-3 rounded-xl border border-[#1b2b22] bg-[#09110d]/80 hover:border-[#39D98A]">
+                <div class="w-8 h-8 rounded-full border border-[#39D98A66] flex items-center justify-center text-[10px] font-mono-prec text-[#39D98A]">24</div>
+                <div class="flex-1 text-left">
+                  <div class="text-[10px] font-bold text-[#c7e0d3]">Viśuddha (Throat • T2)</div>
+                  <div class="text-[8px] font-mono-prec text-[#688577]">Silence before speech</div>
+                </div>
+              </div>
+
+              <!-- Anahata Cardiac Axis Node (V20) -->
+              <div onclick="selectVertebra(20)" class="cursor-pointer tap-effect group flex items-center justify-center gap-3 w-64 py-2 px-3 rounded-2xl border-2 border-[#39D98A] bg-[#0c1a13] shadow-[0_0_20px_rgba(57,217,138,0.2)]">
+                <div class="w-10 h-10 rounded-full bg-[#142e21] border border-[#39D98A] flex items-center justify-center text-xs font-mono-prec font-bold text-[#39D98A] shadow-[0_0_12px_#39D98A]">
+                  20
+                </div>
+                <div class="flex-1 text-left">
+                  <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                    Anāhata Heart Resonance
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#39D98A] animate-ping"></span>
+                  </div>
+                  <div class="text-[9px] font-mono-prec text-[#39D98A]">0.1 Hz HRV · Vishnu Granthi</div>
+                </div>
+              </div>
+
+              <div onclick="selectVertebra(15)" class="cursor-pointer tap-effect group flex items-center justify-center gap-3 w-56 py-1 px-3 rounded-xl border border-[#1b2b22] bg-[#09110d]/80 hover:border-[#39D98A]">
+                <div class="w-8 h-8 rounded-full border border-[#39D98A66] flex items-center justify-center text-[10px] font-mono-prec text-[#39D98A]">15</div>
+                <div class="flex-1 text-left">
+                  <div class="text-[10px] font-bold text-[#c7e0d3]">Lower Thoracic (T12)</div>
+                  <div class="text-[8px] font-mono-prec text-[#688577]">The Coherence Bridge</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inter-Epoch Axis Bridge -->
+            <div class="w-0.5 h-6 bg-[#45361c]"></div>
+
+            <!-- ==================== EPOCH II: THE SOLAR FORGE (ACTIVE DWELLING STATION) ==================== -->
+            <div class="w-full text-center mb-1">
+              <div class="inline-block px-3 py-1 rounded-full bg-[#241a08] border border-[#523d14] text-[9px] font-mono-prec font-extrabold text-[#FFB800] tracking-[0.2em] shadow-[0_0_20px_rgba(255,184,0,0.25)]">
+                EPOCH II • THE SOLAR FORGE (V10–V14)
+              </div>
+              <div class="text-[10px] font-sacred italic text-[#d4af66] mt-0.5">Fire (Tapas) · 4-Hour Deep Work · Sovereign Execution</div>
+            </div>
+
+            <!-- THE ACTIVE DWELLING VERTEBRA (NODE 11 • LUMBAR L3) -->
+            <div onclick="selectVertebra(11)" class="cursor-pointer tap-effect group w-full max-w-[320px] py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#1f1708] via-[#2d210a] to-[#1f1708] border-2 border-[#FFB800] shadow-[0_0_35px_rgba(255,184,0,0.35)] relative overflow-hidden active-node-glow">
+              <div class="absolute top-0 right-0 px-2 py-0.5 bg-[#FFB800] text-black text-[8px] font-mono-prec font-extrabold uppercase rounded-bl-lg">
+                CURRENT DWELLING
+              </div>
+
+              <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-xl bg-[#3d2c0d] border-2 border-[#FFB800] flex items-center justify-center text-sm font-mono-prec font-extrabold text-[#FFB800] shadow-[0_0_15px_#FFB800]">
+                  11
+                </div>
+                <div class="flex-1 text-left">
+                  <div class="text-xs font-cinzel font-bold text-white tracking-wider">LUMBAR L3 • MAṆIPŪRA</div>
+                  <div class="text-[10px] text-[#FFB800] font-mono-prec font-semibold mt-0.5">DAY 6 OF 14 • THE VESSEL HOLDS</div>
+                  <div class="text-[9px] text-[#9ca395] mt-1 font-sans-ui">
+                    Anchor compliance: <strong class="text-[#39D98A]">92%</strong> (Passes &ge;85% gate)
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Kriya Ignition Button -->
+              <button onclick="triggerBlackSanctum(); event.stopPropagation();" class="w-full mt-3 py-2 bg-[#FFB800] hover:bg-[#ffa726] text-black font-mono-prec font-bold text-[10px] uppercase rounded-lg tracking-wider tap-effect shadow-[0_0_15px_rgba(255,184,0,0.4)] flex items-center justify-center gap-1.5">
+                <span>⚡ ENTER THE SILENCE (KRIYA PRANAYAMA)</span>
+              </button>
+            </div>
+
+            <!-- Other Lumbar Nodes -->
+            <div class="flex flex-col items-center gap-2.5 w-full">
+              <div onclick="selectVertebra(10)" class="cursor-pointer tap-effect group flex items-center justify-center gap-3 w-56 py-1 px-3 rounded-xl border border-[#382b14] bg-[#141008]/80 hover:border-[#FFB800]">
+                <div class="w-7 h-7 rounded-full border border-[#FFB80088] flex items-center justify-center text-[10px] font-mono-prec text-[#FFB800]">10</div>
+                <div class="flex-1 text-left">
+                  <div class="text-[10px] font-bold text-[#e8c684]">Lumbar L1 (Navel Gate)</div>
+                  <div class="text-[8px] font-mono-prec text-[#8c7445]">Mastered Bedrock</div>
+                </div>
+                <span class="text-[10px] text-[#39D98A]">✓</span>
+              </div>
+            </div>
+
+            <!-- Inter-Epoch Axis Bridge -->
+            <div class="w-0.5 h-6 bg-[#382816]"></div>
+
+            <!-- ==================== EPOCH I: THE BEDROCK ==================== -->
+            <div class="w-full text-center mb-1">
+              <div class="inline-block px-3 py-1 rounded-full bg-[#17130f] border border-[#3d2f21] text-[9px] font-mono-prec font-bold text-[#e0a96d] tracking-[0.2em]">
+                EPOCH I • THE BEDROCK (V1–V9)
+              </div>
+              <div class="text-[10px] font-sacred italic text-[#9e8062] mt-0.5">Earth & Water · Survival Anxiety Dissolved · Grounded Ojas</div>
+            </div>
+
+            <!-- Sacrum & Coccyx Heavy Plates -->
+            <div class="flex flex-col items-center gap-2 w-full pb-4">
+              <div onclick="selectVertebra(5)" class="cursor-pointer tap-effect group flex items-center justify-center gap-3 w-64 py-1.5 px-3 rounded-xl border border-[#3d2f21] bg-[#14100c] hover:border-[#e0a96d]">
+                <div class="w-7 h-7 rounded-full border border-[#e0a96d88] flex items-center justify-center text-[10px] font-mono-prec text-[#e0a96d]">05</div>
+                <div class="flex-1 text-left">
+                  <div class="text-[10px] font-bold text-[#e8cbb0]">Svādhiṣṭhāna (Sacrum S1)</div>
+                  <div class="text-[8px] font-mono-prec text-[#856b53]">Fluid vitality sealed</div>
+                </div>
+                <span class="text-[10px] text-[#39D98A]">✓</span>
+              </div>
+
+              <!-- Base Root Muladhara (V01) -->
+              <div onclick="selectVertebra(1)" class="cursor-pointer tap-effect group flex items-center justify-center gap-3 w-72 py-2 px-4 rounded-xl border-2 border-[#a77322] bg-[#1c140a] shadow-[0_0_15px_rgba(167,115,34,0.3)]">
+                <div class="w-8 h-8 rounded-full bg-[#2a1d0d] border border-[#a77322] flex items-center justify-center text-xs font-mono-prec font-bold text-[#FFB800]">01</div>
+                <div class="flex-1 text-left">
+                  <div class="text-xs font-cinzel font-bold text-white">MŪLĀDHĀRA ANCHOR (Co1)</div>
+                  <div class="text-[8px] font-mono-prec text-[#a77322]">Permanent Earth Bedrock</div>
+                </div>
+                <span class="text-[10px] text-[#39D98A] font-bold">PERMANENT</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Phone Bottom Status Pill -->
+        <div class="py-3 px-6 border-t border-[#181d16] bg-[#070907] flex items-center justify-between text-[11px] font-mono-prec text-[#888] z-20">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#FFB800] animate-pulse"></span>
+            <span>PRANA RESERVOIR: 92%</span>
+          </div>
+          <span class="text-[#FFB800] font-bold">SOIL GATE: 6/14d</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== RIGHT COLUMN: DYNAMIC INSPECTOR & TYPOGRAPHY SYSTEM (7 COLS) ==================== -->
+    <div class="lg:col-span-7 flex flex-col gap-6">
+
+      <!-- ==================== VIEW 1: LIVING SPINE DETAIL VIEW ==================== -->
+      <div id="view-spine-panel" class="bg-[#0b0e0a] border border-[#1f261b] rounded-3xl p-6 shadow-xl relative overflow-hidden">
+        
+        <!-- Header & Steve Jobs Filter Tag -->
+        <div class="flex items-center justify-between pb-4 border-b border-[#181f15] mb-5">
+          <div>
+            <div class="text-[9px] font-mono-prec font-extrabold uppercase tracking-[0.25em] text-[#FFB800]">THE ARCHITECTURAL PROOF</div>
+            <h2 class="font-sacred text-2xl font-bold text-white mt-0.5">How Steve Jobs' Vision Denotes Evolution</h2>
+          </div>
+          <div class="text-right">
+            <span class="px-3 py-1 rounded-full bg-[#1b2216] border border-[#2e3a26] text-[10px] font-mono-prec text-[#FFB800] font-bold">
+              ZERO ARCADE GIMMICKS
+            </span>
+          </div>
+        </div>
+
+        <!-- Active Selected Vertebra Details -->
+        <div class="bg-[#121610] border border-[#2b3524] rounded-2xl p-5 mb-5 relative">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span id="detail-code" class="text-xs font-mono-prec font-extrabold bg-[#FFB800] text-black px-2 py-0.5 rounded">
+                  NODE 11 • L3
+                </span>
+                <span id="detail-epoch" class="text-xs font-mono-prec font-bold text-[#FFB800]">
+                  EPOCH II • THE SOLAR FORGE
+                </span>
+              </div>
+              <h3 id="detail-title" class="font-sacred text-2xl font-bold text-white">
+                Maṇipūra Sovereign Willpower
+              </h3>
+            </div>
+            <div class="text-right">
+              <div class="text-[9px] font-mono-prec text-[#888]">REQUIRED DWELL</div>
+              <div id="detail-dwell" class="text-sm font-mono-prec font-extrabold text-[#39D98A]">14 DAYS MINIMUM</div>
+            </div>
+          </div>
+
+          <p id="detail-desc" class="text-xs text-[#a0a89a] leading-relaxed mt-3 font-sans-ui">
+            The seat of <em>Tapas</em> (purifying heat). In unawakened life, willpower scatters into impulsive multitasking, doomscroll fatigue, and morning paralysis. In Shanivar, dwelling at Node 11 anchors the nervous system to endure 4 solid hours in the Golden Forge without reaching for distraction.
+          </p>
+
+          <div class="grid grid-cols-3 gap-3 mt-4 pt-3 border-t border-[#20271b]">
+            <div class="bg-[#0b0e0a] p-2.5 rounded-xl border border-[#1b2216]">
+              <div class="text-[8px] font-mono-prec text-[#777] uppercase">BIOPHYSICAL CENTER</div>
+              <div id="detail-bio" class="text-xs font-bold text-white mt-0.5">Solar Plexus / Celiac</div>
+            </div>
+            <div class="bg-[#0b0e0a] p-2.5 rounded-xl border border-[#1b2216]">
+              <div class="text-[8px] font-mono-prec text-[#777] uppercase">REVERSAL ACTION</div>
+              <div id="detail-action" class="text-xs font-bold text-[#FFB800] mt-0.5">Ascending Spinal Heat</div>
+            </div>
+            <div class="bg-[#0b0e0a] p-2.5 rounded-xl border border-[#1b2216]">
+              <div class="text-[8px] font-mono-prec text-[#777] uppercase">ROUTINE ANCHOR</div>
+              <div id="detail-anchor" class="text-xs font-bold text-[#39D98A] mt-0.5">09:00–13:00 Golden Forge</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The 3 Core Tenets of the Evolutionary Spine -->
+        <div class="space-y-3">
+          <div class="bg-[#0e120d] border border-[#20281b] p-3.5 rounded-xl flex items-start gap-3">
+            <span class="text-base text-[#FFB800]">1️⃣</span>
+            <div>
+              <div class="text-xs font-bold text-white">Anatomy as Living Architecture, Not an X-Ray</div>
+              <div class="text-[11px] text-[#8e9888] mt-0.5 leading-relaxed">
+                We reject hospital skeletal diagrams. The spine is rendered as a clean, biomorphic axis: broad heavy basalt plates at the sacral base, consolidating into molten gold through the lumbar forge, blossoming into an aerodynamic ribcage at the heart, and crystallizing into pure diamond rings at the crown.
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-[#0e120d] border border-[#20281b] p-3.5 rounded-xl flex items-start gap-3">
+            <span class="text-base text-[#FFB800]">2️⃣</span>
+            <div>
+              <div class="text-xs font-bold text-white">Dwelling vs Gamified Leveling Up</div>
+              <div class="text-[11px] text-[#8e9888] mt-0.5 leading-relaxed">
+                Users do not “beat levels.” They <strong>dwell</strong> on each vertebra until its cognitive and autonomic frequency becomes their natural baseline. The 33 vertebrae denote ~581 days of organic human rewiring.
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-[#0e120d] border border-[#20281b] p-3.5 rounded-xl flex items-start gap-3">
+            <span class="text-base text-[#FFB800]">3️⃣</span>
+            <div>
+              <div class="text-xs font-bold text-white">The Hermetic Symbiosis: Vessel & Flame</div>
+              <div class="text-[11px] text-[#8e9888] mt-0.5 leading-relaxed">
+                The spine cannot ascend if the daily routine leaks. The 3 Sacred Iron Anchors (Dawn Ignition, Golden Forge, Digital Blackout) maintain the Pranic Reservoir (&ge;85% compliance required). Routine preserves; Sadhana ascends.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== VIEW 2: TYPOGRAPHY SYSTEM SPECIFICATION ==================== -->
+      <div id="view-typography-panel" class="hidden bg-[#0b0e0a] border border-[#1f261b] rounded-3xl p-6 shadow-xl">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-[#181f15] mb-5">
+          <div>
+            <div class="text-[9px] font-mono-prec font-extrabold uppercase tracking-[0.25em] text-[#FFB800]">TYPOGRAPHIC DISCIPLINE</div>
+            <h2 class="font-sacred text-2xl font-bold text-white mt-0.5">The Focused 3-Font Hierarchy</h2>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-[#1b2216] border border-[#2e3a26] text-[10px] font-mono-prec text-[#39D98A] font-bold">
+            ZERO VISUAL FRICTION
+          </span>
+        </div>
+
+        <p class="text-xs text-[#9aa395] leading-relaxed mb-6 font-sans-ui">
+          Shanivar unites thousands of years of monastic stillness with high-precision mobile execution. To achieve this, we enforce a strict <strong>three-tier typographic triad</strong>. Each font carries an unambiguous psychological role:
+        </p>
+
+        <!-- The 3 Fonts Side-by-Side Cards -->
+        <div class="space-y-4">
+          
+          <!-- Font 1: The Soul (Sacred Serif) -->
+          <div class="bg-[#121610] border border-[#2a3424] rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[9px] font-mono-prec font-extrabold text-[#FFB800] uppercase tracking-widest">
+                TIER 1 • THE SOUL (SACRED SERIF)
+              </span>
+              <span class="text-[9px] font-mono-prec text-[#777]">Cormorant Garamond / Cinzel</span>
+            </div>
+            <div class="font-sacred text-2xl text-white font-normal leading-tight mb-1">
+              “The midnight screen is the revenge of an unlived day.”
+            </div>
+            <div class="text-[11px] text-[#8e9888] font-sans-ui mt-1">
+              <strong>Usage:</strong> Primary emotional headlines, timeless koans, Epoch titles (THE BEDROCK, THE SUMMIT), and sacred rites. Never used for buttons, captions, or numeric data.
+            </div>
+          </div>
+
+          <!-- Font 2: The Glass (Modern Sans-Serif) -->
+          <div class="bg-[#121610] border border-[#2a3424] rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[9px] font-mono-prec font-extrabold text-[#39D98A] uppercase tracking-widest">
+                TIER 2 • THE GLASS (MODERN GROTESK)
+              </span>
+              <span class="text-[9px] font-mono-prec text-[#777]">Inter / SF Pro Display</span>
+            </div>
+            <div class="font-sans-ui text-base font-semibold text-[#e1e6de] mb-1">
+              Tap every conduit where your vitality drains. Shanivar places an unsparing mirror before you.
+            </div>
+            <div class="text-[11px] text-[#8e9888] font-sans-ui mt-1">
+              <strong>Usage:</strong> Body copy, explanations, interactive toggles, permission cards, and button action labels. Engineered for zero eye fatigue at 10px–15px.
+            </div>
+          </div>
+
+          <!-- Font 3: The Instrument (Precision Monospace) -->
+          <div class="bg-[#121610] border border-[#2a3424] rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[9px] font-mono-prec font-extrabold text-[#5bb4ff] uppercase tracking-widest">
+                TIER 3 • THE INSTRUMENT (PRECISION MONOSPACE)
+              </span>
+              <span class="text-[9px] font-mono-prec text-[#777]">JetBrains Mono / SF Mono</span>
+            </div>
+            <div class="font-mono-prec text-sm font-bold text-[#FFB800] mb-1 tracking-wider">
+              05:30 AM DAWN IGNITION • 216 HZ • +1,186 HRS • NODE 11 • L3
+            </div>
+            <div class="text-[11px] text-[#8e9888] font-sans-ui mt-1">
+              <strong>Usage:</strong> Timestamps, countdown timers, frequency haptics, coordinates, days lost calculations, and compliance meters. Tabular width prevents layout jitter during real-time countdowns.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Typography Audit / Live Component Specimen -->
+        <div class="mt-6 pt-5 border-t border-[#1d2419]">
+          <h4 class="text-xs font-mono-prec font-bold text-white uppercase tracking-wider mb-3">Live Component Specimen</h4>
+          <div class="bg-[#070907] border border-[#1f261b] rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <div class="text-[9px] font-mono-prec text-[#FFB800] font-bold">SACRED ANCHOR 01</div>
+              <div class="font-sacred text-lg text-white font-bold">Dawn Ignition Rite</div>
+              <div class="text-[10px] font-sans-ui text-[#888]">20 physical paces on the earth</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs font-mono-prec font-extrabold text-[#FFB800]">05:30 AM</div>
+              <span class="inline-block mt-1 px-2 py-0.5 rounded text-[8px] font-mono-prec font-bold bg-[#1b281c] text-[#39D98A] border border-[#2d442e]">
+                ✓ ARMED
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  <!-- ==================== BLACK SANCTUM OVERLAY (EYES-CLOSED SADHANA) ==================== -->
+  <div id="black-sanctum-modal" class="fixed inset-0 bg-[#000000] z-[100] hidden flex flex-col items-center justify-between p-8 text-center select-none">
+    
+    <!-- Top Quiet Indicator -->
+    <div class="w-full flex items-center justify-between max-w-md pt-4">
+      <span class="text-[10px] font-mono-prec text-[#444] uppercase tracking-widest">EYES-CLOSED SANCTUM</span>
+      <button onclick="exitBlackSanctum()" class="text-[10px] font-mono-prec text-[#666] hover:text-[#aaa] border border-[#222] px-2.5 py-1 rounded-lg">
+        ✕ EXIT SILENCE
+      </button>
+    </div>
+
+    <!-- Center Breath Phase Reactor -->
+    <div class="flex flex-col items-center justify-center">
+      <!-- Expanding & Contracting Ring -->
+      <div id="breath-ring" class="w-48 h-48 rounded-full border border-[#FFB80033] flex items-center justify-center transition-all duration-[4000ms] ease-in-out relative">
+        <div id="breath-core" class="w-16 h-16 rounded-full bg-[#FFB800] shadow-[0_0_30px_#FFB800] transition-all duration-[4000ms] ease-in-out"></div>
+      </div>
+
+      <div id="breath-verb" class="font-cinzel text-3xl font-extrabold tracking-[0.25em] text-[#FFB800] mt-8 transition-all">
+        RISE
+      </div>
+      <div id="breath-sub" class="text-xs font-mono-prec text-[#888] mt-2">
+        Cool current climbing the Sushumna
+      </div>
+      <div id="breath-timer" class="text-lg font-mono-prec font-bold text-white mt-1">
+        8s
+      </div>
+    </div>
+
+    <!-- Bottom Instruction -->
+    <div class="max-w-xs text-[11px] font-sans-ui text-[#555] pb-4">
+      Place phone against sternum or hold in hand. Close your eyes. Follow the tactile micro-frequency vibration.
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Vertebra Data Structure
+    const VERTEBRAE = {
+      1: {
+        code: 'NODE 01 • Co1',
+        epoch: 'EPOCH I • THE BEDROCK',
+        title: 'Mūlādhāra Foundation Bedrock',
+        dwell: '7 DAYS MINIMUM',
+        desc: 'Permanent earth anchor. In unawakened drift, the mind floats in chronic survival anxiety and restless dopamine seeking. Node 01 grounds the nervous system so your feet touch the earth without panic.',
+        bio: 'Coccygeal / Pudendal Plexus',
+        action: 'Downward Apana Grounding',
+        anchor: '05:30 AM Dawn Ignition'
+      },
+      5: {
+        code: 'NODE 05 • S1',
+        epoch: 'EPOCH I • THE BEDROCK',
+        title: 'Svādhiṣṭhāna Fluid Reservoir',
+        dwell: '7 DAYS MINIMUM',
+        desc: 'Transmutation of instinctual impulse into steady emotional composure (Ojas generation). Emotional turbulence settles like still water.',
+        bio: 'Pelvic Splanchnic Plexus',
+        action: 'Vital Fluid Conservation',
+        anchor: '22:00 Digital Blackout'
+      },
+      11: {
+        code: 'NODE 11 • L3',
+        epoch: 'EPOCH II • THE SOLAR FORGE',
+        title: 'Maṇipūra Sovereign Willpower',
+        dwell: '14 DAYS MINIMUM',
+        desc: 'The seat of Tapas (purifying heat). In unawakened life, willpower scatters into impulsive multitasking and tab-switching. Dwelling at Node 11 anchors the nervous system to endure 4 solid hours in the Golden Forge.',
+        bio: 'Solar Plexus / Celiac',
+        action: 'Ascending Spinal Heat',
+        anchor: '09:00–13:00 Golden Forge'
+      },
+      15: {
+        code: 'NODE 15 • T12',
+        epoch: 'EPOCH III • THE HEART OF TRUTH',
+        title: 'Lower Thoracic Coherence Bridge',
+        dwell: '21 DAYS MINIMUM',
+        desc: 'Bridging metabolic fire into heart coherence. Reactivity drops. The breath naturally deepens into slow 5.5-second cycles.',
+        bio: 'Lower Cardiac Axis',
+        action: '0.1 Hz Resonance',
+        anchor: '13:15 Midday Stop'
+      },
+      20: {
+        code: 'NODE 20 • T7',
+        epoch: 'EPOCH III • THE HEART OF TRUTH',
+        title: 'Anāhata Heart Resonance',
+        dwell: '21 DAYS MINIMUM',
+        desc: 'Piercing Vishnu Granthi (emotional bondage). The practitioner ceases defending the ego or seeking external validation. Pure non-reactive witnessing.',
+        bio: 'Cardiac Plexus / Vagal Brake',
+        action: 'Coherent Electromagnetic Field',
+        anchor: '06:30 PM Sunset Severance'
+      },
+      24: {
+        code: 'NODE 24 • T2',
+        epoch: 'EPOCH III • THE HEART OF TRUTH',
+        title: 'Viśuddha Speech Sovereignty',
+        dwell: '21 DAYS MINIMUM',
+        desc: 'Sovereignty of the voice. Stillness of the tongue. The practitioner speaks only when words improve upon absolute silence.',
+        bio: 'Pharyngeal Plexus / Larynx',
+        action: 'Ether Expansion',
+        anchor: '20:30 Analog Wisdom'
+      },
+      27: {
+        code: 'NODE 27 • C1',
+        epoch: 'EPOCH IV • THE SUMMIT',
+        title: 'Atlas Ring & Medulla Oblongata',
+        dwell: '28 DAYS MINIMUM',
+        desc: 'The mouth of God. Entrance to the sub-occipital cranial vault. Micro-tension at the base of the skull dissolves into effortless spinal verticality.',
+        bio: 'Medulla / Brainstem',
+        action: 'Subtle Cranial Equilibrium',
+        anchor: '22:00 Total Blackout'
+      },
+      30: {
+        code: 'NODE 30 • C4',
+        epoch: 'EPOCH IV • THE SUMMIT',
+        title: 'Ājñā Spiritual Eye Focus',
+        dwell: '28 DAYS MINIMUM',
+        desc: 'Laser clarity between the eyebrows. The mind ceases calculating the past and fearing the future; intuitive stillness takes root.',
+        bio: 'Optic Chiasm / Pineal',
+        action: 'Piercing Rudra Granthi',
+        anchor: '05:30 Dawn Ignition'
+      },
+      33: {
+        code: 'NODE 33 • C7/APEX',
+        epoch: 'EPOCH IV • THE SUMMIT',
+        title: 'Sahasrāra Sovereign Dissolution',
+        dwell: 'PERMANENT CROWN',
+        desc: 'Unitary consciousness. Natural breathlessness (Kevala Kumbhaka). The illusion of separation dissolves into pure presence.',
+        bio: 'Cerebral Cortex / Crown',
+        action: 'Sovereign Unity',
+        anchor: 'Unbroken Living Dincharya'
+      }
+    };
+
+    function selectVertebra(nodeId) {
+      const data = VERTEBRAE[nodeId] || VERTEBRAE[11];
+      document.getElementById('detail-code').textContent = data.code;
+      document.getElementById('detail-epoch').textContent = data.epoch;
+      document.getElementById('detail-title').textContent = data.title;
+      document.getElementById('detail-dwell').textContent = data.dwell;
+      document.getElementById('detail-desc').textContent = data.desc;
+      document.getElementById('detail-bio').textContent = data.bio;
+      document.getElementById('detail-action').textContent = data.action;
+      document.getElementById('detail-anchor').textContent = data.anchor;
+
+      // Play soft mechanical click
+      playTibetanChime(432, 0.08);
+    }
+
+    function setViewMode(mode) {
+      const spineBtn = document.getElementById('tab-spine');
+      const typoBtn = document.getElementById('tab-typography');
+      const spinePanel = document.getElementById('view-spine-panel');
+      const typoPanel = document.getElementById('view-typography-panel');
+
+      if (mode === 'spine') {
+        spineBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-mono-prec font-bold tracking-wider transition-all bg-[#FFB800] text-black shadow-[0_0_12px_rgba(255,184,0,0.3)]";
+        typoBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-mono-prec font-bold tracking-wider transition-all text-[#8e9888] hover:text-white";
+        spinePanel.classList.remove('hidden');
+        typoPanel.classList.add('hidden');
+      } else {
+        typoBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-mono-prec font-bold tracking-wider transition-all bg-[#FFB800] text-black shadow-[0_0_12px_rgba(255,184,0,0.3)]";
+        spineBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-mono-prec font-bold tracking-wider transition-all text-[#8e9888] hover:text-white";
+        typoPanel.classList.remove('hidden');
+        spinePanel.classList.add('hidden');
+      }
+      playTibetanChime(528, 0.06);
+    }
+
+    // Audio Engine: Synthesize 216Hz Singing Bowl with Harmonics
+    function playTibetanChime(freq = 216, duration = 2.8) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const now = ctx.currentTime;
+
+        const harmonics = [
+          { f: freq, g: 0.5 },
+          { f: freq * 2.76, g: 0.15 },
+          { f: freq * 5.4, g: 0.05 }
+        ];
+
+        harmonics.forEach(h => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(h.f, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(h.g, now + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + duration + 0.1);
+        });
+      } catch (e) {}
+    }
+
+    // Black Sanctum 4-Phase Kriya Loop
+    let sanctumTimer = null;
+    let currentPhaseIdx = 0;
+    const KRIYA_PHASES = [
+      { verb: 'RISE', sub: 'Inhale • Cool current climbing Sushumna', sec: 8, scale: 1.5, color: '#FFB800' },
+      { verb: 'STILL', sub: 'Antara Hold • Stillness at Active Node 11', sec: 4, scale: 1.5, color: '#39D98A' },
+      { verb: 'DESCEND', sub: 'Exhale • Warm golden current descending to base', sec: 8, scale: 0.8, color: '#FF9500' },
+      { verb: 'VOID', sub: 'Bahya Hold • Absolute breathless silence', sec: 4, scale: 0.8, color: '#555555' }
+    ];
+
+    function triggerBlackSanctum() {
+      document.getElementById('black-sanctum-modal').classList.remove('hidden');
+      playTibetanChime(216, 3.5);
+      currentPhaseIdx = 0;
+      runKriyaPhase();
+    }
+
+    function exitBlackSanctum() {
+      document.getElementById('black-sanctum-modal').classList.add('hidden');
+      clearTimeout(sanctumTimer);
+      playTibetanChime(432, 1.2);
+    }
+
+    function runKriyaPhase() {
+      const p = KRIYA_PHASES[currentPhaseIdx];
+      const verbEl = document.getElementById('breath-verb');
+      const subEl = document.getElementById('breath-sub');
+      const timerEl = document.getElementById('breath-timer');
+      const ringEl = document.getElementById('breath-ring');
+      const coreEl = document.getElementById('breath-core');
+
+      verbEl.textContent = p.verb;
+      verbEl.style.color = p.color;
+      subEl.textContent = p.sub;
+      ringEl.style.transform = `scale(${p.scale})`;
+      ringEl.style.borderColor = p.color + '66';
+      coreEl.style.backgroundColor = p.color;
+      coreEl.style.boxShadow = `0 0 40px ${p.color}`;
+
+      let remaining = p.sec;
+      timerEl.textContent = remaining + 's';
+
+      const interval = setInterval(() => {
+        remaining--;
+        if (remaining > 0) {
+          timerEl.textContent = remaining + 's';
+        } else {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      sanctumTimer = setTimeout(() => {
+        clearInterval(interval);
+        currentPhaseIdx = (currentPhaseIdx + 1) % KRIYA_PHASES.length;
+        runKriyaPhase();
+      }, p.sec * 1000);
+    }
+  </script>
+</body>
+</html>
