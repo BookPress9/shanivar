@@ -17,7 +17,7 @@
 | # | File | Title | Verse(s) | Category (primary) | Secondary tags | Duration | Citation status |
 |---|---|---|---|---|---|---|---|
 | 01 | [technique-01-two-pauses-of-breath.md](./technique-01-two-pauses-of-breath.md) | Two Pauses of Breath | VBT 24–25 | `BR` breath | gap-between-thoughts | 3–5 min | Verified — 3 independent confirmations |
-| 02 | [technique-02-tranquil-retention.md](./technique-02-tranquil-retention.md) | Tranquil Retention | VBT 27 | `BR` breath | — | 4–6 min | Verified — 2 independent confirmations |
+| 02 | [technique-02-tranquil-retention.md](./technique-02-tranquil-retention.md) | Resting in the Pause | VBT 27 | `BR` breath | — | 4–6 min | Verified — 2 independent confirmations |
 | 03 | [technique-03-silence-after-the-hum.md](./technique-03-silence-after-the-hum.md) | Silence After the Hum | VBT 39–40 | `SO` sound | breath | 3–4 min | Verified — 2 independent confirmations |
 | 04 | [technique-04-the-fading-tone.md](./technique-04-the-fading-tone.md) | The Fading Tone | VBT 41 | `SO` sound | — | 4–6 min | Verified — 2 independent confirmations |
 | 05 | [technique-05-sky-gazing.md](./technique-05-sky-gazing.md) | Sky Gazing | VBT 84 | `VI` visual-gazing | spatial-awareness | 3–5 min | Verified — 2 independent confirmations |

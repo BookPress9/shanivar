@@ -128,6 +128,7 @@ class RoutineOnboardingMachineTest {
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class RoutineOnboardingPlanWriteTest {
+    @get:org.junit.Rule val outboxReset = AppSyncOutboxReset()
     @Test fun useTheseTimesWritesAnchorsOnly() = runBlocking {
         val app = RuntimeEnvironment.getApplication()
         val repo = SharedPrefsRoutinePlanRepository(app)

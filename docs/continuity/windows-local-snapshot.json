@@ -1,0 +1,195 @@
+{
+    "commit":  "bd6bb1c45b6642e78305670367fd9c17553b3de3",
+    "base":  "92ee655f3c3e5e83449180ef9bd101586411cd31",
+    "files":  [
+                  {
+                      "path":  "ai_org/collaboration/tasks/INIT-001-initiation-wireframe.md",
+                      "blob":  "ec0e7639a67dc6dfbaddfc699ca21d30b191ca5c",
+                      "bytes":  1456
+                  },
+                  {
+                      "path":  "ai_org/collaboration/tasks/MKT-003-thirty-day-aura-calendar.md",
+                      "blob":  "f4df83932d63b2e359b7bce026d28888647f06eb",
+                      "bytes":  1422
+                  },
+                  {
+                      "path":  "ai_org/collaboration/tasks/SADHANA-001-immersive-interface.md",
+                      "blob":  "4cec7e220bba4deb771390246c534fa1f3789178",
+                      "bytes":  2141
+                  },
+                  {
+                      "path":  "ai_org/collaboration/tasks/SADHANA-002-tone-review.md",
+                      "blob":  "caf96a66a047c7581b75ffb77c8e4aa772ae3cb5",
+                      "bytes":  1422
+                  },
+                  {
+                      "path":  "ai_org/collaboration/tasks/SADHANA-003-spine-progression-logic.md",
+                      "blob":  "7bff15f9cd48a66aa60b4dbefde4406ff8c6ee68",
+                      "bytes":  2300
+                  },
+                  {
+                      "path":  "ai_org/collaboration/tasks/SADHANA-004-kaleidoscope-loading-state.md",
+                      "blob":  "65b8a7b2f4f82b6e2ea4090db1a882ab1ef95cc3",
+                      "bytes":  2039
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/HANDOFF.md",
+                      "blob":  "c8a3ec2223566e2f702018d191a0fc5691d0d225",
+                      "bytes":  11177
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/QA.md",
+                      "blob":  "d1497f6cf68e85415ac2555ff46b0be5674248b7",
+                      "bytes":  938
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/README.md",
+                      "blob":  "0d5219c036013864e438e351891e473abb16c31e",
+                      "bytes":  2264
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/app.js",
+                      "blob":  "c8c1dcb03d1d4e0458b3d060cede278197268fc2",
+                      "bytes":  22076
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/exports/01-arrival.png",
+                      "blob":  "118912c7b82a9fc0809a33b9f08546dc5b51dd79",
+                      "bytes":  39675
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/exports/02-foundation.png",
+                      "blob":  "2e988bff4de648cc8baad53348b7b156903b74b3",
+                      "bytes":  36118
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/exports/03-routine.png",
+                      "blob":  "f61770b3f8818ae8deabb83915586be8308c3a2e",
+                      "bytes":  45118
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/exports/04-orbit.png",
+                      "blob":  "b4487194f7b739d1935a3ca80244b1d168640d24",
+                      "bytes":  57321
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/exports/05-mobile.png",
+                      "blob":  "48ef6269b394a9ea940ad95700f2f8985e6c70fd",
+                      "bytes":  45859
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/index.html",
+                      "blob":  "55df32a26da40398f34a1863a9f5bedb0efa10a1",
+                      "bytes":  2421
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/style.css",
+                      "blob":  "28f9274bc9775008aa7c2eb04f4eb0aeea964adc",
+                      "bytes":  7279
+                  },
+                  {
+                      "path":  "android-app/wireframes/initiation-v1/verify.mjs",
+                      "blob":  "d737c722411ef57e19bee643d276958b30d7ae11",
+                      "bytes":  5296
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/HANDOFF.md",
+                      "blob":  "951fb56c565ed2829142509aa9be296ae9005f5d",
+                      "bytes":  14395
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/QA.md",
+                      "blob":  "0e9dfd4cad04c06e38679b01e5cca1a81c413ec1",
+                      "bytes":  1504
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/README.md",
+                      "blob":  "62c5316c86644066d977f8827a2854b1a0cca09b",
+                      "bytes":  3759
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/app.js",
+                      "blob":  "e48972d9e7c3c17f19af59330548c1329c5fbbce",
+                      "bytes":  23847
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/assets/shanivar-loading-kaleidoscope.jpg",
+                      "blob":  "41c8a4668c9f09ef6d1b963129d937fb1aa31313",
+                      "bytes":  143150
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/exports/00-loading-screen.png",
+                      "blob":  "1664301fbdedac47e76d543ee09d1e93545822fd",
+                      "bytes":  536482
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/exports/01-sadhana-home.png",
+                      "blob":  "dfb1b427f0a15d6f838d932dd881be8e3da829a8",
+                      "bytes":  386486
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/exports/01b-living-spine.png",
+                      "blob":  "d371f663e2ae3a0c285bb98f715c43ed02507393",
+                      "bytes":  235580
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/exports/02-honest-return.png",
+                      "blob":  "73706b628761f565e256a361998f5622278d5a77",
+                      "bytes":  59740
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/exports/03-capability-path.png",
+                      "blob":  "c9cfa93d9f3ff4d82a70754c9461c2becc810565",
+                      "bytes":  497360
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/exports/04-deep-study.png",
+                      "blob":  "888a88d22f409736fcc771881063f0ffb23b5535",
+                      "bytes":  145380
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/exports/05-mobile-carrying.png",
+                      "blob":  "8b001199309a50555e75157ce24808930f644b8c",
+                      "bytes":  81698
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/index.html",
+                      "blob":  "7818c73ab23ba4cb97530e7426377d3c9402b5e6",
+                      "bytes":  2498
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/loader.css",
+                      "blob":  "7413542cd70cfbd087a79f4d6bc89347ca1dc2aa",
+                      "bytes":  1274
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/spine.css",
+                      "blob":  "412d34b43859b646ac754fac899c859cb32a2a4a",
+                      "bytes":  6204
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/style.css",
+                      "blob":  "5c446ffe74737f72ff6c8cf3c0f9b231fcf4811d",
+                      "bytes":  8437
+                  },
+                  {
+                      "path":  "android-app/wireframes/sadhana-v1/verify.mjs",
+                      "blob":  "f0ed0addc110595260d9a9ed3089d48ecc75eecc",
+                      "bytes":  7653
+                  },
+                  {
+                      "path":  "marketing/shanivar/aura-calendar-30-days.md",
+                      "blob":  "a1e876ec34de832564023b2d69d3cf13b527fd96",
+                      "bytes":  10502
+                  },
+                  {
+                      "path":  "research/sadhana-spine/KUNDALINI_TANTRA_SOURCE_REVIEW_2026-10-12.md",
+                      "blob":  "a227d43267e77fdf40ece28cded50da6e89cde3a",
+                      "bytes":  6400
+                  }
+              ],
+    "branch":  "backup/windows-local-2026-10-17",
+    "note":  "Exact saved original files on an older baseline; archive only. No edits, staging or checkout changes in original worktree. Unsaved editor buffers not inspected.",
+    "date":  "2026-10-17",
+    "timezone":  "Europe/Berlin"
+}

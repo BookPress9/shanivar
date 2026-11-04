@@ -14,6 +14,7 @@ import java.time.LocalTime
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class RoutinePlanRepositoryTest {
+    @get:org.junit.Rule val outboxReset = AppSyncOutboxReset()
     @Test fun saveAndReloadSurvivesProcessDeathSimulation() = runBlocking {
         val app = RuntimeEnvironment.getApplication()
         val repo = SharedPrefsRoutinePlanRepository(app)

@@ -1,0 +1,97 @@
+{
+    "task":  "CONT-001",
+    "state":  "REVIEW",
+    "date":  "2026-10-17",
+    "timezone":  "Europe/Berlin",
+    "applicationCommit":  "848de256277201ae32dde491e52564bab7942b5b",
+    "command":  "android-app/gradlew.bat -p android-app testDebugUnitTest lintDebug assembleDebug --continue --console=plain",
+    "combinedExitCode":  1,
+    "tests":  {
+                  "skipped":  1,
+                  "errors":  0,
+                  "tests":  625,
+                  "failures":  16
+              },
+    "passed":  608,
+    "failedSuites":  [
+                         {
+                             "suite":  "com.shanivar.nativeapp.InitiationUiTest",
+                             "failures":  2,
+                             "failureTypes":  [
+                                                  "java.lang.UnsatisfiedLinkError"
+                                              ]
+                         },
+                         {
+                             "suite":  "com.shanivar.nativeapp.SadhanaLandscapeTest",
+                             "failures":  1,
+                             "failureTypes":  [
+                                                  "java.lang.UnsatisfiedLinkError"
+                                              ]
+                         },
+                         {
+                             "suite":  "com.shanivar.nativeapp.SadhanaLargeFontTest",
+                             "failures":  1,
+                             "failureTypes":  [
+                                                  "java.lang.UnsatisfiedLinkError"
+                                              ]
+                         },
+                         {
+                             "suite":  "com.shanivar.nativeapp.SadhanaUiTest",
+                             "failures":  12,
+                             "failureTypes":  [
+                                                  "java.lang.UnsatisfiedLinkError"
+                                              ]
+                         }
+                     ],
+    "nativeUiVerified":  false,
+    "nativeFailureEvidence":  "Windows refused to load robolectric-nativeruntime.dll: virus or potentially unwanted software",
+    "realEngineResetRegression":  "PASS",
+    "contentMirrorAfterLineEndingFix":  "PASS",
+    "lint":  {
+                 "errors":  0,
+                 "warnings":  16,
+                 "information":  12
+             },
+    "debugApk":  {
+                     "released":  false,
+                     "path":  "android-app/app/build/outputs/apk/debug/app-debug.apk",
+                     "sha256":  "34ea98571e354f7d1f78afa758beaffe4e5a7516290e6ece7a3fad3770202682",
+                     "bytes":  35305461,
+                     "built":  true
+                 },
+    "continuityIntegrationTests":  {
+                                       "passed":  2,
+                                       "failed":  0
+                                   },
+    "webTests":  {
+                     "passed":  8,
+                     "failed":  0
+                 },
+    "notRun":  [
+                   "local Supabase pgTAP",
+                   "live Supabase sync E2E",
+                   "physical devices",
+                   "emulator"
+               ],
+    "draftPr":  "https://github.com/BookPress9/shanivar/pull/2",
+    "originalWindowsSavedFiles":  {
+                                      "branch":  "backup/windows-local-2026-10-17",
+                                      "blobMismatches":  0,
+                                      "commit":  "bd6bb1c45b6642e78305670367fd9c17553b3de3",
+                                      "count":  37
+                                  },
+    "dailyTask":  {
+                      "lastVerifiedTaskResult":  0,
+                      "berlinTime":  "23:30",
+                      "externalFailureAlerts":  false,
+                      "name":  "Shanivar-Daily-GitHub-Status",
+                      "firstStatusCommit":  "64cfdc99ab9352eac6ee8eacbdf0b96ba8029839",
+                      "verifiedAutomaticRun":  {
+                                                   "berlinStart":  "2026-10-17 23:30:00",
+                                                   "utcFinish":  "2026-10-17T21:30:16.271Z",
+                                                   "lastTaskResult":  0,
+                                                   "statusCommit":  "536d2c18cd269d971355431ee7f34fbfd70bde1a",
+                                                   "nextBerlinRun":  "2026-10-18 23:30:00"
+                                               }
+                  }
+}

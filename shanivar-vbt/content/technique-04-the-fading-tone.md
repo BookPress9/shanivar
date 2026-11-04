@@ -7,7 +7,7 @@
 - **What the verse says:** Fix full attention on a single sustained musical tone (the example given is a plucked string) and follow it continuously as it decays — not just at the loud onset, but all the way down through its fading resonance to the edge of audibility.
 
 ## Essence
-Most listening is aimed at the loudest, most obvious part of a sound. This technique redirects listening toward the opposite end: the long, quiet decay most people stop attending to as soon as a sound stops being "interesting." Following a tone all the way to silence trains a kind of sustained, effortless attention that doesn't need a strong stimulus to stay engaged.
+Most listening is aimed at the loudest, most obvious part of a sound. This technique redirects listening toward the opposite end: the long, quiet decay most people stop attending to as soon as a sound stops being "interesting." Following a tone all the way to silence asks for a kind of sustained, effortless attention that doesn't need a strong stimulus to stay engaged.
 
 ## Guided Session Script
 *(Adaptation — modern secular framing. Approximately 5 minutes. Requires one resonant sound source: a singing bowl, a struck glass, a tuning fork, a guitar or piano string, or a recording of one.)*
@@ -22,9 +22,9 @@ When the tone fades below hearing, stay with that edge for a moment — the poin
 
 Produce the tone again (or replay it), and repeat the same close tracking, start to finish.
 
-Do this for four or five rounds. Each time, try to catch the tone a little earlier in its decay and follow it a little further than before.
+Each time, try to catch the tone a little earlier in its decay and follow it a little further than before.
 
-On the last round, after the tone has fully faded, stay seated in the resulting quiet for another thirty seconds before opening your eyes — see if the surrounding silence sounds any different than it did before you started.
+After the tone has fully faded for the last time, stay seated in the resulting quiet before opening your eyes — see if the surrounding silence sounds any different than it did before you started.
 
 ## Modern Adaptation Notes
 - Dropped: the verse's specific endpoint — that the practitioner's "form becomes that of the formless supreme Void" — replaced with a plain, checkable instruction (follow the tone to inaudibility, then rest in the quiet) with no metaphysical claim about identity or dissolution.

@@ -16,6 +16,8 @@ android {
         buildConfigField("String", "API_URL", "\"https://api.thehybridmonk.com/api\"")
         // Supabase sync flag: empty URL = sync off (default). Set -PsupabaseUrl / -PsupabaseAnonKey for local E2E only.
         buildConfigField("String", "SUPABASE_URL", "\"${(project.findProperty("supabaseUrl") as String?) ?: ""}\"")
+        // DEV-47: single sync switch. Debug only until DEV-44 flavours; sync also stays off when the URL is empty.
+        buildConfigField("boolean", "SYNC_ENABLED", "false")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${(project.findProperty("supabaseAnonKey") as String?) ?: ""}\"")
         // MVP streamline task (package 1, 2026-09-18): the one explicit switch between the
         // simplified single-Home launch surface (ShanivarApp's `HomeScreen`) and the earlier
@@ -44,6 +46,7 @@ android {
         debug {
             buildConfigField("boolean", "INITIATION_V1", "true")
             buildConfigField("boolean", "SADHANA_V1", "true")
+            buildConfigField("boolean", "SYNC_ENABLED", "true")
             applicationIdSuffix = ".dev"
             val debugApi = providers.gradleProperty("shanivarApiUrl").getOrElse("http://10.0.2.2:5000/api")
             require(debugApi.matches(Regex("https?://[a-zA-Z0-9.\\-:/]+"))) { "Invalid shanivarApiUrl" }
@@ -72,6 +75,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    // DEV-45 sync engine: WorkManager unique work "outbox-flush" (CONNECTED constraint, own backoff).
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
     // Discipline engine dismissal flows: QR scan (CameraX + ML Kit barcode scanning) and photo +
     // motion (CameraX capture + platform SensorManager, no extra library needed for the sensor side).
     implementation("androidx.camera:camera-core:1.4.1")
@@ -84,6 +89,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("androidx.work:work-testing:2.9.1")
     testImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")

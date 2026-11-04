@@ -27,3 +27,13 @@ All tables: RLS own-rows-only via auth.uid(), idempotent on (user_id, id). Edge 
 ## E2E
 `./gradlew testDebugUnitTest --tests '*SupabaseSyncTest' -PsupabaseE2eUrl=http://127.0.0.1:54321 -PsupabaseE2eAnonKey=<local anon key from supabase status>`
 Guest sign-in → outbox push (attempt + self-report) → idempotent retry → read back → second guest sees nothing (RLS). Skipped when not configured.
+
+## After a box restart (DEV-45)
+`dockerd` is not a system service on the box (no systemd), so the stack is gone after a restart. Bring it back with:
+```
+scripts/dev/start-local-supabase.sh [worktree-dir] [--reset] [--test]
+```
+It starts `dockerd` (log `/tmp/dockerd.log`), opens the Docker socket to the box user, sets the iptables FORWARD policy to ACCEPT, runs `supabase start` in the given worktree (default: this repo), and with `--reset` / `--test` re-applies that worktree's migrations and runs the pgTAP tests. It prints URLs only, never keys. A copy lives at `/workspace/bin/start-local-supabase.sh`. Prerequisites (one-time): `sudo apt-get install -y docker.io` and the Supabase CLI (v2.120.0) in `/usr/local/bin`.
+All worktrees share `project_id = "shanivar-v3"`, so only one stack runs at a time; `--reset` from a worktree switches the local schema to that branch.
+
+DEV-45 E2E (engine against the local stack): `./gradlew testDebugUnitTest -PsupabaseE2eUrl=http://127.0.0.1:54321 -PsupabaseE2eAnonKey="$ANON_KEY"` with `eval "$(supabase status -o env | grep '^ANON_KEY=')"`, so the key never appears on screen.
